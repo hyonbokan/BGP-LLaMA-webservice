@@ -7,6 +7,12 @@ from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.llms import LlamaCpp
 from llama_cpp import Llama
+from torch import cuda
+import transformers
+import os
+from langchain.llms.huggingface_pipeline import HuggingFacePipeline
+from transformers import pipeline
+
 #loading the model at the start of the server itself
 
 #loading the model using the langchain LLamaCpp class
@@ -38,30 +44,58 @@ def BOOK_DATA(request):
     return JsonResponse(books, safe=False)
 
 def AI_GGML(request):
-    model_path = "/media/kamal/DATA/huggingface/hub/llama-2-7b.ggmlv3.q8_0.bin"
+    model_id = 'meta-llama/Llama-2-7b-chat-hf'
+    device = f'cuda:{cuda.current_device()}' if cuda.is_available() else 'cpu'
 
-    llm = Llama(model_path=model_path)
+    # Need auth token for these
+    hf_auth = os.environ.get('hf_token')
+
+    model_config = transformers.AutoConfig.from_pretrained(
+        model_id,
+        use_auth_token=hf_auth
+    )
+
+    model = transformers.AutoModelForCausalLM.from_pretrained(
+        model_id,
+        trust_remote_code=True,
+        config=model_config,
+        device_map='auto',
+        use_auth_token=hf_auth
+    )
+    tokenizer = transformers.AutoTokenizer.from_pretrained(
+    model_id,
+    use_auth_token=hf_auth
+)
+ 
+    # tokenizer.pad_token_id = (0)
+    tokenizer.pad_token = tokenizer.eos_token
+    tokenizer.padding_side = "right"
+    
+    # model_path = "/media/kamal/DATA/huggingface/hub/llama-2-7b.ggmlv3.q8_0.bin"
+
+    # llm = Llama(model_path=model_path)
+    pipe = pipeline(task="text-generation", model=model, tokenizer=tokenizer, max_length=400)
+    llm = HuggingFacePipeline(pipeline=pipe)
 
     queries = Userquery.objects.all().order_by('id')[:5]
     
     query = request.GET['query']
+    print(f"\n{query}\n")
     
-    model_out = llm(query, 
-        max_tokens=75, 
-        echo=True)
-
-    print(model_out['choices'][0]['text'])
-    output = model_out['choices'][0]['text']
+    model_out = llm(query)
+    print(f"\n{model_out}\n")
+    
+    # output = model_out['choices'][0]['text']
     #saving the query and output to database
     query_data = Userquery(
         query=query,
-        reply=output
+        reply=model_out
     )
     query_data.save() 
     context = {
         'queries':queries,
         'query':query,
-        'output':output
+        'output':model_out
     }
 
     return render(request, 'ai_page.html', context)

@@ -43,8 +43,12 @@ def BOOK_DATA(request):
 
     return JsonResponse(books, safe=False)
 
+def DATASET(request):
+    titles = ['Knowledge', 'BGP Analysis Base', 'BGP Real Case Analysis', 'BGP Real-Time Analysis']
+    return render(request, 'dataset.html', {'titles': titles})
+
 def AI_GGML(request):
-    model_id = 'meta-llama/Llama-2-7b-chat-hf'
+    model_id = 'hyonbokan/BGP-LLaMA7-BGPStream-5k-cutoff-1024-max-2048'
     device = f'cuda:{cuda.current_device()}' if cuda.is_available() else 'cpu'
 
     # Need auth token for these
@@ -68,13 +72,11 @@ def AI_GGML(request):
 )
  
     # tokenizer.pad_token_id = (0)
-    tokenizer.pad_token = tokenizer.eos_token
-    tokenizer.padding_side = "right"
-    
-    # model_path = "/media/kamal/DATA/huggingface/hub/llama-2-7b.ggmlv3.q8_0.bin"
+    # tokenizer.pad_token = tokenizer.eos_token
+    # tokenizer.padding_side = "right"
 
     # llm = Llama(model_path=model_path)
-    pipe = pipeline(task="text-generation", model=model, tokenizer=tokenizer, max_length=400)
+    pipe = pipeline(task="text-generation", model=model, tokenizer=tokenizer, max_length=724)
     llm = HuggingFacePipeline(pipeline=pipe)
 
     queries = Userquery.objects.all().order_by('id')[:5]

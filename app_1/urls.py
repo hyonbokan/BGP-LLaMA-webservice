@@ -14,6 +14,7 @@ urlpatterns = [
     path('video_detail/<slug:slug>', views.VIDEO_DETAIL, name='video_detail'),
     path('playlist_detail/<slug:slug>', views.PLAYLIST_DETAIL, name='playlist_detail'),
     path('gallery',views.GALLERY,name='gallery'),
-    path('search',views.SEARCH,name='search')
+    path('search',views.SEARCH,name='search'),
+    path('dataset', views.DATASET, name='dataset'),
 ]
 

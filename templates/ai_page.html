@@ -24,7 +24,13 @@
         <button type="submit">Submit</button>
     </form>
     <p>Your query: <span>{{query}}</span></p>
-    <div class="output" id="output-location">{{output}}</div>
+    {% comment %} <div class="output" id="output-location"> {% endcomment %}
+      <pre>{{ output|linebreaksbr }}
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. 
+        Praesent libero. Sed cursus ante dapibus diam. 
+        Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum.
+      </pre>
+    {% comment %} </div> {% endcomment %}
   </div>
 </div>
 {% endblock %}

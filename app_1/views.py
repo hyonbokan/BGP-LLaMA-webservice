@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from .models import *
+from .model_loader import ModelContainer
 
 #importing the langchain and llama2 related functions
 from langchain.callbacks.manager import CallbackManager
@@ -47,77 +48,23 @@ def DATASET(request):
     titles = ['Knowledge', 'BGP Analysis Base', 'BGP Real Case Analysis', 'BGP Real-Time Analysis']
     return render(request, 'dataset.html', {'titles': titles})
 
-model_pipeline = None
-
-def load_model():
-    global model_pipeline
-    if model_pipeline is None:
-        model_id = 'hyonbokan/BGP-LLaMA7-BGPStream-5k-cutoff-1024-max-2048'
-
-        hf_auth = os.environ.get('hf_token')
-
-        model_config = transformers.AutoConfig.from_pretrained(
-            model_id,
-            use_auth_token=hf_auth
-        )
-
-        model = transformers.AutoModelForCausalLM.from_pretrained(
-            model_id,
-            trust_remote_code=True,
-            config=model_config,
-            device_map='auto',
-            use_auth_token=hf_auth
-        )
-        tokenizer = transformers.AutoTokenizer.from_pretrained(
-        model_id,
-        use_auth_token=hf_auth
-        )
-        model_pipeline = pipeline('text-generation', model=model, tokenizer=tokenizer, max_length=512)
-    return model_pipeline
-
 def AI_GGML(request):
-    # model_id = 'hyonbokan/BGP-LLaMA7-BGPStream-5k-cutoff-1024-max-2048'
-    # device = f'cuda:{cuda.current_device()}' if cuda.is_available() else 'cpu'
-
-    # # Need auth token for these
-    # hf_auth = os.environ.get('hf_token')
-
-    # model_config = transformers.AutoConfig.from_pretrained(
-    #     model_id,
-    #     use_auth_token=hf_auth
-    # )
-
-    # model = transformers.AutoModelForCausalLM.from_pretrained(
-    #     model_id,
-    #     trust_remote_code=True,
-    #     config=model_config,
-    #     device_map='auto',
-    #     use_auth_token=hf_auth
-    # )
-    # tokenizer = transformers.AutoTokenizer.from_pretrained(
-    # model_id,
-    # use_auth_token=hf_auth
-    # )
- 
-    # tokenizer.pad_token_id = (0)
-    # tokenizer.pad_token = tokenizer.eos_token
-    # tokenizer.padding_side = "right"
-
-    # llm = Llama(model_path=model_path)
-    # pipe = pipeline(task="text-generation", model=model, tokenizer=tokenizer, max_length=724)
-    model_pipeline = load_model()
-    # llm = HuggingFacePipeline(pipeline=pipe)
-    llm = HuggingFacePipeline(pipeline=model_pipeline)
-
+    model_pipeline = ModelContainer.load_model()
+    # llm = HuggingFacePipeline(pipeline=model_pipeline)
+    
     queries = Userquery.objects.all().order_by('id')[:5]
     
     query = request.GET['query']
     print(f"\n{query}\n")
     
-    model_out = llm(query)
-    print(f"\n{model_out}\n")
+    model_out = model_pipeline(query)
+    print(f"\n model output: {model_out}\n")
     
-    # output = model_out['choices'][0]['text']
+    output = model_out[0]['generated_text']
+    
+    print(f"\n parsing the output : {output}\n")
+    
+    
     #saving the query and output to database
     query_data = Userquery(
         query=query,
@@ -127,7 +74,7 @@ def AI_GGML(request):
     context = {
         'queries':queries,
         'query':query,
-        'output':model_out
+        'output':output
     }
 
     return render(request, 'ai_page.html', context)

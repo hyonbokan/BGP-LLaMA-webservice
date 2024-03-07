@@ -24,13 +24,29 @@
         <button type="submit">Submit</button>
     </form>
     <p>Your query: <span>{{query}}</span></p>
-    {% comment %} <div class="output" id="output-location"> {% endcomment %}
+    <div class="output" id="output-location", style="white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; max-width: 100%; overflow-x: auto; border: 1px solid #ccc; padding: 1em; box-sizing: border-box;">
       <pre>{{ output|linebreaksbr }}
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. 
-        Praesent libero. Sed cursus ante dapibus diam. 
-        Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum.
-      </pre>
-    {% comment %} </div> {% endcomment %}
+        TCP (Transmission Control Protocol) is a transport-layer protocol used to ensure reliable communication over IP networks. It is a connection-oriented protocol, which means that a connection is established between the sender and receiver before data is sent. This connection is maintained throughout the duration of the communication, and data is sent in a continuous stream.
+
+        TCP is designed to provide reliable data transfer, which means that it ensures that data is delivered in the correct order and without errors. It does this by using a sequence number and acknowledgement mechanism, which allows the sender to track the progress of the data and the receiver to confirm that the data has been received correctly.
+
+        TCP is commonly used for applications that require reliable data transfer, such as file transfers, email, and web browsing. It is also used for real-time applications, such as video streaming and voice over IP (VoIP), where reliability and low latency are critical.
+
+        Some of the key features of TCP include:
+
+        * Connection-oriented: A connection is established between the sender and receiver before data is sent.
+        * Reliable: Data is delivered in the correct order and without errors.
+        * Scalable: TCP can handle a large number of connections and data streams.
+        * Flexible: TCP can adapt to changing network conditions and traffic patterns.
+        * Secure: TCP provides security features, such as encryption and authentication, to protect data from unauthorized access.
+
+        Overall, TCP is a widely used and important protocol that enables reliable communication over IP networks.
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum.
+        </pre>
+      {% comment %} <pre style="white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; max-width: 100%; overflow-x: auto; border: 1px solid #ccc; padding: 1em; box-sizing: border-box;">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum.
+     </pre> {% endcomment %}
+    </div>
   </div>
 </div>
 {% endblock %}

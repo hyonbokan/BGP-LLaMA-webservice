@@ -74,32 +74,6 @@ footer {
     flex-basis: 48%; /* Adjust the width as needed */
     margin-bottom: 1rem;
 }
-/* .output {
-    margin-top: 1rem;
-    background-color: #f9f9f9;
-    padding: 1rem;
-    border: 1px solid #ccc;
-    text-align: left;
-} */
-
-/* .output {
-    border: 1px solid #ccc;
-    padding: 16px; 
-    margin: 16px 0;
-    white-space: pre-wrap; 
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    overflow-x: auto; 
-    overflow-y: auto; 
-    max-height: 200px;
-    background-color: #f9f9f9; 
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
-    font-family: 'Courier New', monospace; 
-    font-size: 0.9em;
-    line-height: 1.4; 
-    max-width: 100%;
-    box-sizing: border-box; 
-} */
 
 .input-output-container {
     margin: 2rem auto;

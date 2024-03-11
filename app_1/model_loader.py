@@ -28,6 +28,11 @@ class ModelContainer:
             tokenizer.eos_token_id = 2 # pad id changed according to the suggestion
             tokenizer.pad_token = tokenizer.eos_token
             tokenizer.padding_side = "right"
-            cls.model_pipeline = pipeline(task="text-generation", model=model, tokenizer=tokenizer, max_length=724)
+            cls.model_pipeline = pipeline(
+                task="text-generation", 
+                model=model, 
+                tokenizer=tokenizer, 
+                max_length=724
+                )
 
         return cls.model_pipeline

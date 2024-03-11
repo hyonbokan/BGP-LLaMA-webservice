@@ -1,42 +1,12 @@
 from django.shortcuts import render
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from django.http import JsonResponse
 from .models import *
 from .model_loader import ModelContainer
-
-#importing the langchain and llama2 related functions
-from langchain.callbacks.manager import CallbackManager
-from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
-from langchain.llms import LlamaCpp
-from llama_cpp import Llama
-from torch import cuda
-import transformers
-import os
-from langchain.llms.huggingface_pipeline import HuggingFacePipeline
-from transformers import pipeline
-
-#loading the model at the start of the server itself
-
-#loading the model using the langchain LLamaCpp class
-#llm = LlamaCpp(
-#    model_path=model_path,
-#    input={"temperature": 0.75, 
-#           "max_length": 75, 
-#           "top_p": 1},
-#    callback_manager=callback_manager,
-#    verbose=False,
-#)
+from .serializer import *
 
 # Create your views here.
-
-def APP_INDEX(request):
-    context = {
-        # "lists":lists,
-        # "inno_pdts":innovative_products,
-        # "condiments":condiments,
-        # "anoms":geographical_anomalies,
-        # "timelines":historical_timelines
-    }
-    return render(request, 'single_pjt.html')
 
 def BOOK_DATA(request):
     books = list(Book.objects.values())
@@ -48,36 +18,58 @@ def DATASET(request):
     titles = ['Knowledge', 'BGP Analysis Base', 'BGP Real Case Analysis', 'BGP Real-Time Analysis']
     return render(request, 'dataset.html', {'titles': titles})
 
-def AI_GGML(request):
-    model_pipeline = ModelContainer.load_model()
-    # llm = HuggingFacePipeline(pipeline=model_pipeline)
+# def BGP_LLaMA(request):
+#     model_pipeline = ModelContainer.load_model()
+#     # llm = HuggingFacePipeline(pipeline=model_pipeline)
     
-    queries = Userquery.objects.all().order_by('id')[:5]
+#     queries = Userquery.objects.all().order_by('id')[:5]
     
-    query = request.GET['query']
-    print(f"\n{query}\n")
+#     query = request.GET['query']
+#     print(f"\n{query}\n")
     
-    model_out = model_pipeline(query)
-    print(f"\n model output: {model_out}\n")
+#     model_out = model_pipeline(query)
+#     print(f"\n model output: {model_out}\n")
     
-    output = model_out[0]['generated_text']
+#     output = model_out[0]['generated_text']
     
-    print(f"\n parsing the output : {output}\n")
+#     print(f"\n parsing the output : {output}\n")
     
     
-    #saving the query and output to database
-    query_data = Userquery(
-        query=query,
-        reply=model_out
-    )
-    query_data.save() 
-    context = {
-        'queries':queries,
-        'query':query,
-        'output':output
-    }
+#     #saving the query and output to database
+#     query_data = Userquery(
+#         query=query,
+#         reply=model_out
+#     )
+#     query_data.save() 
+#     context = {
+#         'queries':queries,
+#         'query':query,
+#         'output':output
+#     }
 
-    return render(request, 'ai_page.html', context)
+#     return render(request, 'ai_page.html', context)
+
+def BGP_LLaMA(request):
+    if 'query' in request.GET:
+        model_pipeline = ModelContainer.load_model()
+        query = request.GET['query']
+        
+        model_out = model_pipeline(query)
+        output = model_out[0]['generated_text']
+        print(f"\n Model Output: {output}\n")
+        # Saving the query and output to the database
+        query_data = Userquery(query=query, reply=output)
+        query_data.save()
+        
+        latest_queries = Userquery.objects.all().order_by('-id')[:5]
+        queries_data = [{'query': q.query, 'reply': q.reply} for q in latest_queries]
+        data = {'output': output, 'queries': queries_data}
+        # data = {'output': 'some_output', 'queries': ['query1', 'query2']}
+        print(f"\nRequest: {request.GET}\n")
+        print(f"\nData: {data}\n")
+        return JsonResponse(data)
+    else:
+        return JsonResponse({'error': 'No query provided'}, status=400)
 
 def AI_PAGE(request):
     queries = Userquery.objects.all().order_by('-id')[:5]
@@ -92,163 +84,3 @@ def CHAT_PAGE(request):
         "queries":queries
     }
     return render(request, 'ai_text_box.html', context)
-
-
-def F_PAGE(request):
-    queries = Userquery.objects.all().order_by('-id')[:10]
-    context = {
-        "queries":queries
-    }
-
-    return render(request, 'falcon_page.html',context)
-
-#The following code will load the falcon model into GPU
-#and then provide the inference
-
-# def AI_FALCON(request):
-#     from langchain import HuggingFacePipeline
-#     from langchain import PromptTemplate, LLMChain
-#     import transformers
-#     import torch
-#     from transformers import BitsAndBytesConfig
-#     from transformers import AutoModelForCausalLM, AutoTokenizer,pipeline
-    
-#     quantization_config = BitsAndBytesConfig(
-#         load_in_4bit=True,
-#         bnb_4bit_compute_dtype=torch.float16,
-#         bnb_4bit_quant_type="nf4",
-#         bnb_4bit_use_double_quant=True,
-#     )
-
-#     queries = Userquery.objects.all().order_by('id')[:5]
-#     query = request.POST.get('query')
-#     llmodel = request.POST.get('modelpath')
-#     topk = int(request.POST.get('topk'))
-#     maxlen = int(request.POST.get('maxlength'))
-#     prompt_template = request.POST.get('prompt_template')
-#     if prompt_template == "":
-#         prompt_template = """Question: {question}
-#         Answer: Let's think step by step."""
-
-#     model_4bit = AutoModelForCausalLM.from_pretrained(
-#         llmodel,
-#         device_map="auto",
-#         quantization_config=quantization_config,
-#         trust_remote_code=True)
-#     #print(" 4-bit model loaded") 
-    
-#     tokenizer = AutoTokenizer.from_pretrained(llmodel)
-#     print("tokenizer ready")
-    
-#     pipeline = transformers.pipeline(
-#         "text-generation",
-#         model=model_4bit,
-#         tokenizer=tokenizer,
-#         use_cache=True,
-#         device_map="auto",
-#         max_length=maxlen,
-#         do_sample=True,
-#         top_k=topk,
-#         num_return_sequences=1,
-#         eos_token_id=tokenizer.eos_token_id,
-#         pad_token_id=tokenizer.eos_token_id,
-#         )
-#     print("pipeline done") 
-
-#     #falcon_llm = HuggingFacePipeline(pipeline=pipeline)
-
-
-#     prompt = PromptTemplate(template=prompt_template,
-#                             input_variables= ["question"])
-
-#     built_prompt = prompt.format(question=query)
-
-#     #print(built_prompt)
-#     #llm_chain = LLMChain(prompt=prompt, llm=falcon_llm)
-
-#     output = pipeline(built_prompt)[0]['generated_text']
-
-#     #print(output)
-    
-#     #saving the query and output to database
-#     query_data = Userquery(
-#         query = query,
-#         llmodel = llmodel,
-#         topk = topk,
-#         maxlength = maxlen, 
-#         prompt_template = prompt_template,
-#         reply=output 
-#     )
-    
-#     query_data.save() 
-    
-#     context = {
-#         'queries':queries,
-#         'query':query,
-#         'output':output
-#     }
-    
-#     return render(request, 'falcon_page.html', context)
-
-def QUERY_DETAIL(request,slug):
-
-    query = Userquery.objects.filter(slug=slug)
-
-    if query.exists():
-        query = query.first()
-
-    context = {
-        'query':query,
-    }
-
-    return render(request,'query_detail.html',context)
-
-def VIDEO_DETAIL(request,slug):
-    video = Video.objects.filter(slug=slug)
-
-    if video.exists():
-        video = video.first()
-
-    context = {
-        'video':video
-    }
-
-    return render(request,'video_detail.html',context)
-
-def PLAYLIST_DETAIL(request,slug):
-    playlistvids = Playlistvideos.objects.filter(playlist__slug=slug) 
-
-    playlists = Playlist.objects.all()
-    
-    if playlistvids.exists():
-        videos = playlistvids
-
-    context = {
-        'videos':videos,
-        'playlists':playlists
-    }
-
-    return render(request,'gallery/playlist_gallery.html',context)
-
-
-def GALLERY(request):
-    videos = Video.objects.all()[:12]
-    playlists = Playlist.objects.all()
-    context = {
-        'videos':videos,
-        'playlists':playlists
-    }
-    return render(request,'gallery/gallery.html',context)
-
-def SEARCH(request):
-    query = request.GET['query']
-    print(query)
-    playlists = Playlist.objects.all()
-    videos = Video.objects.filter(title__icontains = query)
-    print(len(videos))
-    context = {
-        'playlists':playlists,
-        'videos':videos,
-    }
-
-    return render(request, 'gallery/filter_gallery.html',context)

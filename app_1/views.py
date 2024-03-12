@@ -53,16 +53,17 @@ def BGP_LLaMA(request):
     if 'query' in request.GET:
         model_pipeline = ModelContainer.load_model()
         query = request.GET['query']
-        
+        print(f"\n Model Input: {query}\n")
         model_out = model_pipeline(query)
         output = model_out[0]['generated_text']
         print(f"\n Model Output: {output}\n")
-        # Saving the query and output to the database
+        # Saving the query and output to the database (the db structure should be changed)
         query_data = Userquery(query=query, reply=output)
         query_data.save()
         
         latest_queries = Userquery.objects.all().order_by('-id')[:5]
         queries_data = [{'query': q.query, 'reply': q.reply} for q in latest_queries]
+        # Do not give all the queries. Only the current input and output
         data = {'output': output, 'queries': queries_data}
         # data = {'output': 'some_output', 'queries': ['query1', 'query2']}
         print(f"\nRequest: {request.GET}\n")
@@ -70,17 +71,3 @@ def BGP_LLaMA(request):
         return JsonResponse(data)
     else:
         return JsonResponse({'error': 'No query provided'}, status=400)
-
-def AI_PAGE(request):
-    queries = Userquery.objects.all().order_by('-id')[:5]
-    context = {
-        "queries":queries
-    }
-    return render(request, 'ai_page.html', context)
-
-def CHAT_PAGE(request):
-    queries = Userquery.objects.all().order_by('-id')[:5]
-    context = {
-        "queries":queries
-    }
-    return render(request, 'ai_text_box.html', context)

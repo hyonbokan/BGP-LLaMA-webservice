@@ -4,4 +4,6 @@ crispy_forms
 django-crispy-forms
 djangorestframework
 social-auth-app-django
-llama-cpp-python
+
+react
+react-dom

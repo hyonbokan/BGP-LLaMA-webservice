@@ -52,22 +52,23 @@ def DATASET(request):
 def BGP_LLaMA(request):
     if 'query' in request.GET:
         model_pipeline = ModelContainer.load_model()
-        query = request.GET['query']
-        print(f"\n Model Input: {query}\n")
-        model_out = model_pipeline(query)
+        instruction = request.GET['query']
+        print(f"\n Model Input: {instruction}\n")
+        
+        model_out = model_pipeline(instruction)
         output = model_out[0]['generated_text']
         print(f"\n Model Output: {output}\n")
-        # Saving the query and output to the database (the db structure should be changed)
-        query_data = Userquery(query=query, reply=output)
+        
+        query_data = Userquery(instruction=instruction, output=output)
         query_data.save()
         
-        latest_queries = Userquery.objects.all().order_by('-id')[:5]
-        queries_data = [{'query': q.query, 'reply': q.reply} for q in latest_queries]
-        # Do not give all the queries. Only the current input and output
-        data = {'output': output, 'queries': queries_data}
-        # data = {'output': 'some_output', 'queries': ['query1', 'query2']}
+        # latest_insturctions = Userquery.objects.all().order_by('-id')[:5]
+        # instruction_data = [{'instruction': q.instruction, 'output': q.output} for q in latest_insturctions]
+        
+        data = {'instruction': instruction, 'output': output}
         print(f"\nRequest: {request.GET}\n")
         print(f"\nData: {data}\n")
+        
         return JsonResponse(data)
     else:
         return JsonResponse({'error': 'No query provided'}, status=400)

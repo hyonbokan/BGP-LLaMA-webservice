@@ -55,8 +55,13 @@ def BGP_LLaMA(request):
         instruction = request.GET['query']
         print(f"\n Model Input: {instruction}\n")
         
-        model_out = model_pipeline(instruction)
-        output = model_out[0]['generated_text']
+        # Without langchain
+        # model_out = model_pipeline(instruction)
+        # output = model_out[0]['generated_text']
+        
+        # With langchain
+        output = model_pipeline(prompt=instruction)
+        
         print(f"\n Model Output: {output}\n")
         
         query_data = Userquery(instruction=instruction, output=output)

@@ -1,5 +1,6 @@
 from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer, pipeline
 import os
+from langchain.llms.huggingface_pipeline import HuggingFacePipeline
 
 class ModelContainer:
     model_pipeline = None
@@ -25,14 +26,25 @@ class ModelContainer:
                 model_id,
                 use_auth_token=hf_auth
             )
-            tokenizer.eos_token_id = 2 # pad id changed according to the suggestion
-            tokenizer.pad_token = tokenizer.eos_token
-            tokenizer.padding_side = "right"
-            cls.model_pipeline = pipeline(
+            # tokenizer.eos_token_id = 2 # pad id changed according to the suggestion
+            # tokenizer.pad_token = tokenizer.eos_token
+            # tokenizer.padding_side = "right"
+            # cls.model_pipeline = pipeline(
+            #     task="text-generation", 
+            #     return_full_text=True,
+            #     model=model, 
+            #     tokenizer=tokenizer, 
+            #     max_length=724,
+            #     repetition_penalty=1.1
+            #     )
+            model_pipeline = pipeline(
                 task="text-generation", 
+                return_full_text=True,
                 model=model, 
                 tokenizer=tokenizer, 
-                max_length=724
+                max_length=724,
+                repetition_penalty=1.1
                 )
+            cls.llm = HuggingFacePipeline(pipeline=model_pipeline)
 
-        return cls.model_pipeline
+        return cls.llm

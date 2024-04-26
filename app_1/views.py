@@ -56,11 +56,11 @@ def BGP_LLaMA(request):
         print(f"\n Model Input: {instruction}\n")
         
         # Without langchain
-        # model_out = model_pipeline(instruction)
-        # output = model_out[0]['generated_text']
+        model_out = model_pipeline(instruction)
+        output = model_out[0]['generated_text']
         
         # With langchain
-        output = model_pipeline(prompt=instruction)
+        # output = model_pipeline(prompt=instruction)
         
         print(f"\n Model Output: {output}\n")
         

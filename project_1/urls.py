@@ -10,7 +10,6 @@ from . import user_login
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/',include('django.contrib.auth.urls')),
-    path('404',views.PAGE_NOT_FOUND, name='404'),
     path('api/', include('app_1.urls')),
     re_path(r'^.*$', views.index_react, name='index_react'),
 ]

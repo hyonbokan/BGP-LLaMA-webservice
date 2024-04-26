@@ -29,15 +29,8 @@ class ModelContainer:
             # tokenizer.eos_token_id = 2 # pad id changed according to the suggestion
             # tokenizer.pad_token = tokenizer.eos_token
             # tokenizer.padding_side = "right"
-            # cls.model_pipeline = pipeline(
-            #     task="text-generation", 
-            #     return_full_text=True,
-            #     model=model, 
-            #     tokenizer=tokenizer, 
-            #     max_length=724,
-            #     repetition_penalty=1.1
-            #     )
-            model_pipeline = pipeline(
+            
+            cls.model_pipeline = pipeline(
                 task="text-generation", 
                 return_full_text=True,
                 model=model, 
@@ -45,6 +38,15 @@ class ModelContainer:
                 max_length=724,
                 repetition_penalty=1.1
                 )
-            cls.llm = HuggingFacePipeline(pipeline=model_pipeline)
+            
+            # model_pipeline = pipeline(
+            #     task="text-generation", 
+            #     return_full_text=True,
+            #     model=model, 
+            #     tokenizer=tokenizer, 
+            #     max_length=724,
+            #     repetition_penalty=1.1
+            #     )
+            # cls.llm = HuggingFacePipeline(pipeline=model_pipeline)
 
-        return cls.llm
+        return cls.model_pipeline

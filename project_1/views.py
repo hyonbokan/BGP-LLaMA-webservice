@@ -3,9 +3,6 @@ from django.http import HttpResponse
 from django.conf import settings
 import os
 
-def PAGE_NOT_FOUND(request):
-    return render(request, '404.html')
-
 def index_react(request):
     try:
         with open(os.path.join(settings.BASE_DIR, 'react_frontend/build', 'index.html')) as file:

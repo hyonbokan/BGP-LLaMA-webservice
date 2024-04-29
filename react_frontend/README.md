@@ -1,1 +1,1 @@
-# react_front_end
+# BGO-LLaMA webservice frontend

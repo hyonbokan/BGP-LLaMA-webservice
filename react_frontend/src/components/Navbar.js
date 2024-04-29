@@ -42,7 +42,7 @@ const Navbar = () => {
             sx={ sx }
             onClick={handleDownloadClick}
             >
-            DOWNLOAD THE MODEL
+            DOWNLOAD MODEL
           </Button>
         </Stack>
       </Toolbar>

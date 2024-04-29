@@ -27,7 +27,7 @@ const BGPLLaMa = () => {
         }
 
         setIsLoading(true);
-        fetch('http://localhost:8000/api/bgp_llama?query=' + encodeURIComponent(query))
+        fetch('http://127.0.0.1:8000/api/bgp_llama?query=' + encodeURIComponent(query))
             .then(response => {
                 if (!response.ok) {
                     setError('Network response error')
@@ -115,10 +115,10 @@ const BGPLLaMa = () => {
             {/* Model Output Section */}
             {!isLoaing && output && (
                 <div className="mt-4">
-                <h3 className="font-bold mb-2">Your query:</h3>
-                <div className="border p-2">
-                    {output}
-                </div>
+                    <h3 className="font-bold mb-2">Model Output:</h3>
+                    <div className="border p-2 overflow-x-auto">
+                        <pre className="whitespace-pre-wrap"><code>{output}</code></pre>
+                    </div>
                 </div>
             )}
             </div>

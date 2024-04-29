@@ -6,8 +6,12 @@ module.exports = {
   ],
   darkMode: "class",
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'roboto-mono': ['Roboto Mono', 'monospace'],
+        'roboto-condensed': ['Roboto Condensed', 'sans-serif']
+      }
+    },
   },
   plugins: [],
 }
-

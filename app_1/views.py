@@ -72,7 +72,7 @@ def BGP_LLaMA(request):
         
         data = {'instruction': instruction, 'output': output}
         print(f"\nRequest: {request.GET}\n")
-        print(f"\nData: {data}\n")
+        # print(f"\nData: {data}\n")
         
         return JsonResponse(data)
     else:

@@ -90,8 +90,8 @@ const DatasetPage = () => {
                 {sections.map((section, sectionIndex) => (
                     <div
                         key={sectionIndex}
-                        // sx={{ mb: 4}}
-                        style={{ marginTop:'50px', marginBottom:'50px'}}
+                        // padding: $ $ $ $
+                        style={{ marginBottom:'20px', padding: '30px'}}
                     >
                         <Typography variant='h6' gutterBottom>
                             {section.title}
@@ -106,7 +106,7 @@ const DatasetPage = () => {
                                         image={dataset.imageUrl}
                                         alt={dataset.title}/> */}
                                         <CardContent>
-                                            <Typography variant='subtitle1'>{dataset.title}</Typography>
+                                            <Typography variant='h6' sx={{ mb: 1 }}>{dataset.title}</Typography>
                                             <Typography variant='body2'>Instruction count: {dataset.fileCount}</Typography>
                                             <Typography variant='body2'>File size: {dataset.size}</Typography>
                                             <Typography variant='body2'>Type: {dataset.fileType}</Typography>

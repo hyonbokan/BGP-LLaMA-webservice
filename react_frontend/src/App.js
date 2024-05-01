@@ -1,6 +1,8 @@
 import HomePage from './features/HomePage';
 import DatasetPage from './features/DatasetPage';
 import BGPLLaMA from './features/BGPLLaMA';
+import DetailPage from './features/DetailPage';
+
 import {
   BrowserRouter as Router,
   Route,
@@ -14,9 +16,10 @@ function App() {
       <div className="App m-0">
         <main>
           <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/dataset" element={<DatasetPage />} />
-            <Route path="/bgp_llama" element={<BGPLLaMA />} />
+            <Route path='/' element={<HomePage />} />
+            <Route path='/dataset' element={<DatasetPage />} />
+            <Route path='/bgp_llama' element={<BGPLLaMA />} />
+            <Route path='/detail/:itemId' element={<DetailPage />} />
           </Routes>
         </main>
     </div>

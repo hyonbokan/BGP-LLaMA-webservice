@@ -3,28 +3,29 @@ import Navbar from '../components/Navbar';
 import React from 'react';
 import { Grid, Card, CardContent, Typography, IconButton } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const DatasetPage = () => {
-
+    const allDatasets = useSelector(state => state.datasets.allDatasets);
 
     return (
         <div>
             <Header />
             <Navbar />
             <div>
-                {sections.map((section, sectionIndex) => (
+                {allDatasets.map((section, sectionIndex) => (
                     <div
                         key={sectionIndex}
                         // padding: $ $ $ $
                         style={{ marginBottom:'20px', padding: '30px'}}
                     >
-                        <Typography variant='h6' sx={{ fontFamily: 'monospace', fontWeight: 600, mb: 2, ml: 3 }} gutterBotto>
+                        <Typography variant='h6' sx={{ fontFamily: 'monospace', fontWeight: 600, mb: 2, ml: 3 }} gutterBottom>
                             {section.title}
                         </Typography>
                         <Grid container spacing={2}>
                             {section.datasets.map((dataset, index) => (
                                 <Grid item xs={12} sm={6} md={4} key={index}>
-                                    <Link to={`/detail/${section.datasets[index].id}`}>
+                                    <Link to={`/dataset/${section.id}/${section.datasets[index].id}`}>
                                         <Card>
                                             {/* <CardMedia
                                             component='img'
@@ -50,9 +51,7 @@ const DatasetPage = () => {
                                                 <Typography variant='body2' sx={{ fontFamily: 'monospace' }}>Type: {dataset.fileType}</Typography>
                                             </CardContent>
                                             <IconButton aria-label='settings' size='large'>
-
                                             </IconButton>
-
                                         </Card> 
                                     </Link>
                                 </Grid>

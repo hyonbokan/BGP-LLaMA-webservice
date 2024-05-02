@@ -4,9 +4,10 @@ const initialState = {
     allDatasets: [
             {
                 title: 'Self-Instruct Generated Dataset',
+                id: 'self-instruct-generated-dataset',
                 datasets: [
                     {
-                        id: 'self-instruct-bgp-knowledge',
+                        id: 'bgp-knowledge',
                         title:'BGP Knowledge',
                         imageUrl: '',
                         fileCount: 1111,
@@ -15,7 +16,7 @@ const initialState = {
                         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
                     },
                     {   
-                        id: 'self-instruct-pybgpstream-base',
+                        id: 'pybgpstream-base',
                         title:'PyBGPStream Base',
                         imageUrl: '',
                         fileCount: 1111,
@@ -24,7 +25,7 @@ const initialState = {
                         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
                     },
                     {   
-                        id: 'self-instruct-pybgpstream-real-time',
+                        id: 'pybgpstream-real-time',
                         title:'PyBGPStream Real-time Stream',
                         imageUrl: '',
                         fileCount: 1111,
@@ -35,12 +36,12 @@ const initialState = {
                     },
                 ],
             },
-            // other dataset
             {
                 title: 'Manual Seed Tasks',
+                id: 'manual-seed-dataset',
                 datasets: [
                     {
-                        id: 'manual-seed-bgp-knowledge-1',
+                        id: 'bgp-knowledge-1',
                         title:'BGP Knowledge I',
                         imageUrl: '',
                         fileCount: 1111,
@@ -51,7 +52,7 @@ const initialState = {
     
                     },
                     {
-                        id: 'manual-seed-bgp-knowledge-2',
+                        id: 'bgp-knowledge-2',
                         title:'BGP Knowledge II',
                         imageUrl: '',
                         fileCount: 1111,
@@ -62,7 +63,7 @@ const initialState = {
     
                     },
                     {
-                        id: 'manual-seed-bgp-pybgpstream-base',
+                        id: 'bgp-pybgpstream-base',
                         title:'PyBGPStream Base',
                         imageUrl: '',
                         fileCount: 1111,
@@ -73,7 +74,7 @@ const initialState = {
     
                     },
                     {
-                        id: 'manual-seed-bgp-pybgpstream-real-case',
+                        id: 'bgp-pybgpstream-real-case',
                         title:'PyBGPStream Real Cases',
                         imageUrl: '',
                         fileCount: 1111,
@@ -83,7 +84,7 @@ const initialState = {
     
                     },
                     {
-                        id: 'manual-seed-bgp-pybgpstream-real-time',
+                        id: 'bgp-pybgpstream-real-time',
                         title:'PyBGPStream Real-time Stream',
                         imageUrl: '',
                         fileCount: 1111,
@@ -104,29 +105,29 @@ const datasetsSlice = createSlice({
     initialState,
     reducers: {
         addDatasetToSection: (state, action) => {
-            const { sectionTitle, dataset } = action.payload;
-            const section = state.allDatasets.find(sec => sec.title === sectionTitle);
+            const { sectionTitle, newDataset } = action.payload;
+            const section = state.allDatasets.find(section => section.title === sectionTitle);
             if (section) {
-                section.datasets.push(dataset);
+                section.datasets.push(newDataset);
             }
-        },
+        },        
         removeDatasetFromSection: (state, action) => {
             const { sectionTitle, datasetId } = action.payload;
-            const section = state.allDatasets.find(sec => sec.title === sectionTitle);
+            const section = state.allDatasets.find(section => section.title === sectionTitle);
             if (section) {
-                section.datasets = section.datasets.filter(ds => ds.id !== datasetId);
+                section.datasets = section.datasets.filter(dataset => dataset.id !== datasetId);
             }
-        },
+        },        
         updateDatasetInSection: (state, action) => {
-            const { sectionTitle, dataset } = action.payload;
-            const section = state.allDatasets.find(sec => sec.title === sectionTitle);
+            const { sectionTitle, updatedDataset } = action.payload;
+            const section = state.allDatasets.find(section => section.title === sectionTitle);
             if (section) {
-                const index = section.datasets.findIndex(ds => ds.id === dataset.id);
+                const index = section.datasets.findIndex(dataset => dataset.id === updatedDataset.id);
                 if (index !== -1) {
-                    section.datasets[index] = dataset;
+                    section.datasets[index] = updatedDataset;
                 }
             }
-        },
+        },        
         // Additional reducers for adding, removing, or updating whole sections could be added here
     }
 });

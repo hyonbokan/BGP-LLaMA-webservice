@@ -19,7 +19,7 @@ function App() {
             <Route path='/' element={<HomePage />} />
             <Route path='/dataset' element={<DatasetPage />} />
             <Route path='/bgp_llama' element={<BGPLLaMA />} />
-            <Route path='/detail/:itemId' element={<DetailPage />} />
+            <Route path='/dataset/:sectionId/:datasetId' element={<DetailPage />} />
           </Routes>
         </main>
     </div>

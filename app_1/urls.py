@@ -4,8 +4,8 @@ from app_1.views import *
 from . import views
 
 urlpatterns = [
-    path('bgp_llama',views.BGP_LLaMA,name='bgp_llama'),
-    path('dataset', views.DATASET, name='dataset'),
+    path('bgp_llama', views.BGP_LLaMA, name='bgp_llama'),
+    # path('dataset', views.DATASET, name='dataset'),
     # path('', )
+    path('download/<path:file_url>/', views.download_dataset, name='download-dataset')
 ]
-

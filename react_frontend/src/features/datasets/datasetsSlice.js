@@ -9,7 +9,7 @@ const initialState = {
                     {
                         id: 'bgp-knowledge',
                         title:'BGP Knowledge',
-                        imageUrl: '',
+                        fileUrl: '/finetuning_dataset/self-instruct-generated-dataset/bgp-knowledge.json',
                         fileCount: 1111,
                         size: '10 MB',
                         fileType: 'json',
@@ -18,8 +18,8 @@ const initialState = {
                     {   
                         id: 'pybgpstream-base',
                         title:'PyBGPStream Base',
-                        imageUrl: '',
-                        fileCount: 1111,
+                        fileUrl: '/finetuning_dataset/self-instruct-generated-dataset/pybgpstream-base.json',
+                        fileCount: 8609,
                         size: '10 MB',
                         fileType: 'json',
                         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
@@ -27,8 +27,8 @@ const initialState = {
                     {   
                         id: 'pybgpstream-real-time',
                         title:'PyBGPStream Real-time Stream',
-                        imageUrl: '',
-                        fileCount: 1111,
+                        fileUrl: '/finetuning_dataset/self-instruct-generated-dataset/pybgpstream-real-time.json',
+                        fileCount: 1501,
                         size: '10 MB',
                         fileType: 'json',
                         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
@@ -43,7 +43,7 @@ const initialState = {
                     {
                         id: 'bgp-knowledge-1',
                         title:'BGP Knowledge I',
-                        imageUrl: '',
+                        fileUrl: '',
                         fileCount: 1111,
                         size: '10 MB',
                         fileType: 'json',
@@ -54,7 +54,7 @@ const initialState = {
                     {
                         id: 'bgp-knowledge-2',
                         title:'BGP Knowledge II',
-                        imageUrl: '',
+                        fileUrl: '',
                         fileCount: 1111,
                         size: '10 MB',
                         fileType: 'json',
@@ -65,7 +65,7 @@ const initialState = {
                     {
                         id: 'bgp-pybgpstream-base',
                         title:'PyBGPStream Base',
-                        imageUrl: '',
+                        fileUrl: '',
                         fileCount: 1111,
                         size: '10 MB',
                         fileType: 'json',
@@ -76,7 +76,7 @@ const initialState = {
                     {
                         id: 'bgp-pybgpstream-real-case',
                         title:'PyBGPStream Real Cases',
-                        imageUrl: '',
+                        fileUrl: '',
                         fileCount: 1111,
                         size: '10 MB',
                         fileType: 'json',
@@ -86,7 +86,7 @@ const initialState = {
                     {
                         id: 'bgp-pybgpstream-real-time',
                         title:'PyBGPStream Real-time Stream',
-                        imageUrl: '',
+                        fileUrl: '',
                         fileCount: 1111,
                         size: '10 MB',
                         fileType: 'json',

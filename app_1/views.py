@@ -1,22 +1,26 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.http import JsonResponse
+from django.http import JsonResponse, FileResponse, Http404
+from django.conf import settings
 from .models import *
 from .model_loader import ModelContainer
 from .serializer import *
+import os
 
-# Create your views here.
+def download_dataset(request, file_url):
+    # Construct the full file path
+    full_path = os.path.join(settings.MEDIA_ROOT, file_url)
+    print("Constructed file path:", full_path)  # Print the full path
+    
+    # Security checks (e.g., to prevent directory traversal)
+    if not os.path.abspath(full_path).startswith(settings.MEDIA_ROOT):
+        raise Http404("Invalid file path")
 
-def BOOK_DATA(request):
-    books = list(Book.objects.values())
-    print(books)
+    if os.path.exists(full_path) and os.path.isfile(full_path):
+        return FileResponse(open(full_path, 'rb'), as_attachment=True)
+    raise Http404("File does not exist")
 
-    return JsonResponse(books, safe=False)
-
-def DATASET(request):
-    titles = ['Knowledge', 'BGP Analysis Base', 'BGP Real Case Analysis', 'BGP Real-Time Analysis']
-    return render(request, 'dataset.html', {'titles': titles})
 
 # def BGP_LLaMA(request):
 #     model_pipeline = ModelContainer.load_model()

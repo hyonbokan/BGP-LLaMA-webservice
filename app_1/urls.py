@@ -5,7 +5,6 @@ from . import views
 
 urlpatterns = [
     path('bgp_llama', views.BGP_LLaMA, name='bgp_llama'),
-    # path('dataset', views.DATASET, name='dataset'),
-    # path('', )
-    path('download/<path:file_url>/', views.download_dataset, name='download-dataset')
+    path('api/download/<path:file_path>/', views.download_file, name='api-download-file'),
+    # path('api/test-download/', views.test_download_view),
 ]

@@ -1,1 +1,1 @@
-# BGO-LLaMA webservice frontend
+# BGP-LLaMA webservice frontend

@@ -9,7 +9,7 @@ const initialState = {
                     {
                         id: 'bgp-knowledge',
                         title:'BGP Knowledge',
-                        fileUrl: '/finetuning_dataset/self-instruct-generated-dataset/bgp-knowledge.json',
+                        fileUrl: 'finetuning-dataset/self-instruct-generated-dataset/bgp-knowledge.json',
                         fileCount: 1111,
                         size: '10 MB',
                         fileType: 'json',
@@ -18,7 +18,7 @@ const initialState = {
                     {   
                         id: 'pybgpstream-base',
                         title:'PyBGPStream Base',
-                        fileUrl: '/finetuning_dataset/self-instruct-generated-dataset/pybgpstream-base.json',
+                        fileUrl: '/finetuning-dataset/self-instruct-generated-dataset/pybgpstream-base.json',
                         fileCount: 8609,
                         size: '10 MB',
                         fileType: 'json',
@@ -27,7 +27,7 @@ const initialState = {
                     {   
                         id: 'pybgpstream-real-time',
                         title:'PyBGPStream Real-time Stream',
-                        fileUrl: '/finetuning_dataset/self-instruct-generated-dataset/pybgpstream-real-time.json',
+                        fileUrl: '/finetuning-dataset/self-instruct-generated-dataset/pybgpstream-real-time.json',
                         fileCount: 1501,
                         size: '10 MB',
                         fileType: 'json',

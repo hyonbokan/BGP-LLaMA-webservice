@@ -23,9 +23,33 @@ const DetailPage = () => {
     }
     console.log(`section id: ${sectionId}\n dataset id: ${datasetId}`)
 
-    const handleDownload = () => {
-        window.location.href = `http://127.0.0.1:8000/download/${encodeURIComponent(dataset.fileUrl)}`;
-    }
+    const handleDownload = (fileUrl) => {
+        // Make sure that the url is correct, especially the api
+       const url = 'http://127.0.0.1:8000/api/download/' + encodeURIComponent(fileUrl);
+       console.log(`Backend URL: ${url}`); 
+
+       fetch(url, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        }
+       })
+       .then(response => response.blob())
+       .then(blob => {
+        // Create a link element to download the file and remove it
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `${datasetId}.json`);
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+        
+        console.log(`\nDownload URL: ${url}`);
+        console.log(`\nFile Path: ${fileUrl}`);
+       })
+       .catch(error => console.error('Error downloading the file: ', error));
+    };
 
     return (
         <div>
@@ -36,7 +60,7 @@ const DetailPage = () => {
                     {dataset.title}
                 </Typography>
                 <Button 
-                onClick={handleDownload} 
+                onClick={() => handleDownload(dataset.fileUrl)}
                 variant='contained' 
                 color='primary' 
                 style={{ 
@@ -44,7 +68,7 @@ const DetailPage = () => {
                     marginRight: '20px', 
                     fontFamily: 'monospace' }}
                 >
-                    Download
+                    Download Dataset
                 </Button>
                 {sectionId.includes('manual') && (
                     <Button variant='contained' color='primary' style={{ marginBottom: '20px', fontFamily: 'monospace' }}>

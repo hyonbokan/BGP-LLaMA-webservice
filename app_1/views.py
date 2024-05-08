@@ -8,50 +8,36 @@ from .model_loader import ModelContainer
 from .serializer import *
 import os
 
-def download_dataset(request, file_url):
+def download_file(request, file_path):
+    """
+    View function to handle file downloads from MEDIA_ROOT.
+    
+    :param request: The HTTP request object.
+    :param file_path: The relative file path inside the MEDIA_ROOT directory.
+    :return: FileResponse or Http404 if the file is not found.
+    """
+    print("Received file path:", file_path)
+
     # Construct the full file path
-    full_path = os.path.join(settings.MEDIA_ROOT, file_url)
-    print("Constructed file path:", full_path)  # Print the full path
-    
-    # Security checks (e.g., to prevent directory traversal)
-    if not os.path.abspath(full_path).startswith(settings.MEDIA_ROOT):
-        raise Http404("Invalid file path")
+    full_path = os.path.normpath(os.path.join(settings.MEDIA_ROOT, file_path))
+    print("Constructed file path:", full_path)
 
+    # Ensure the path is within the MEDIA_ROOT to prevent unauthorized access
+    if not full_path.startswith(os.path.abspath(settings.MEDIA_ROOT)):
+        print("Unauthorized access attempt:", full_path)
+        raise Http404("Unauthorized access.")
+
+    # Check if the file exists and is a file (not a directory)
     if os.path.exists(full_path) and os.path.isfile(full_path):
-        return FileResponse(open(full_path, 'rb'), as_attachment=True)
-    raise Http404("File does not exist")
+        print("File found, returning response:", full_path)
+        return FileResponse(open(full_path, 'rb'), as_attachment=True, filename=os.path.basename(full_path))
+    else:
+        print("File not found:", full_path)
+        raise Http404("File not found.")
 
-
-# def BGP_LLaMA(request):
-#     model_pipeline = ModelContainer.load_model()
-#     # llm = HuggingFacePipeline(pipeline=model_pipeline)
-    
-#     queries = Userquery.objects.all().order_by('id')[:5]
-    
-#     query = request.GET['query']
-#     print(f"\n{query}\n")
-    
-#     model_out = model_pipeline(query)
-#     print(f"\n model output: {model_out}\n")
-    
-#     output = model_out[0]['generated_text']
-    
-#     print(f"\n parsing the output : {output}\n")
-    
-    
-#     #saving the query and output to database
-#     query_data = Userquery(
-#         query=query,
-#         reply=model_out
-#     )
-#     query_data.save() 
-#     context = {
-#         'queries':queries,
-#         'query':query,
-#         'output':output
-#     }
-
-#     return render(request, 'ai_page.html', context)
+# def test_download_view(request):
+#     logger.info("Test download view executed.")
+#     return FileResponse(open('/path/to/a/sample/file', 'rb'), as_attachment=True)
 
 def BGP_LLaMA(request):
     if 'query' in request.GET:

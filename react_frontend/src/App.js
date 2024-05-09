@@ -1,15 +1,13 @@
-import HomePage from './features/HomePage';
-import DatasetPage from './features/DatasetPage';
-import BGPLLaMA from './features/BGPLLaMA';
-import DetailPage from './features/DetailPage';
-// import DownloadPage from './features/DownloadPage';
-
 import {
   BrowserRouter as Router,
   Route,
   Routes
 } from 'react-router-dom';
-
+import HomePage from './features/HomePage';
+import DatasetPage from './features/DatasetPage';
+import BGPLLaMA from './features/BGPLLaMA';
+import DetailPage from './features/DetailPage';
+import NotFoundPage from './features/NotFoundPage';
 
 function App() {
   return (
@@ -21,7 +19,8 @@ function App() {
             <Route path='/dataset' element={<DatasetPage />} />
             <Route path='/bgp_llama' element={<BGPLLaMA />} />
             <Route path='/dataset/:sectionId/:datasetId' element={<DetailPage />} />
-            {/* <Route path='download/:fileUrl' element={<DownloadPage/>} /> */}
+            {/* Catch-All Route */}
+            <Route path='*' element={<NotFoundPage />} />
           </Routes>
         </main>
     </div>

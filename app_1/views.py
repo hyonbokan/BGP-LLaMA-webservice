@@ -39,7 +39,7 @@ def download_file(request, file_path):
 #     logger.info("Test download view executed.")
 #     return FileResponse(open('/path/to/a/sample/file', 'rb'), as_attachment=True)
 
-def BGP_LLaMA(request):
+def bgp_llama(request):
     if 'query' in request.GET:
         model_pipeline = ModelContainer.load_model()
         instruction = request.GET['query']

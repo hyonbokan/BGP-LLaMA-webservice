@@ -27,7 +27,7 @@ const BGPLLaMa = () => {
         }
 
         setIsLoading(true);
-        fetch('http://127.0.0.1:8000/api/bgp_llama?query=' + encodeURIComponent(query))
+        fetch('http://127.0.0.1:8000/api/bgp-llama?query=' + encodeURIComponent(query))
             .then(response => {
                 if (!response.ok) {
                     setError('Network response error')

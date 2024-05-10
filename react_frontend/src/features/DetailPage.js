@@ -24,8 +24,9 @@ const DetailPage = () => {
     console.log(`section id: ${sectionId}\n dataset id: ${datasetId}`)
 
     const handleDownload = (fileUrl) => {
-        // Make sure that the url is correct, especially the api
-       const url = 'http://127.0.0.1:8000/api/download/' + encodeURIComponent(fileUrl);
+       const relativeFileUrl = fileUrl.replace(/^\/+/, '');
+    // const url = `http://127.0.0.1:8000/api/download/${encodeURIComponent(fileUrl)}`;
+       const url = `http://127.0.0.1:8000/api/download/?file=${encodeURIComponent(relativeFileUrl)}`;
        console.log(`Backend URL: ${url}`); 
 
        fetch(url, {

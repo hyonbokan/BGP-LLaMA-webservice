@@ -1,4 +1,4 @@
-import Header from '../components/Header';
+// import Header from '../components/Header';
 import Navbar from '../components/Navbar';
 import React from 'react';
 import { Grid, Card, CardContent, Typography, IconButton } from '@mui/material';
@@ -10,7 +10,7 @@ const DatasetPage = () => {
 
     return (
         <div>
-            <Header />
+            {/* <Header /> */}
             <Navbar />
             <div>
                 {allDatasets.map((section, sectionIndex) => (

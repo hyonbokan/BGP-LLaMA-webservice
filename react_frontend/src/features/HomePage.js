@@ -1,6 +1,8 @@
-import Header from '../components/Header';
+// import Header from '../components/Header';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import { Container, Typography, Button, Grid, Card, CardContent, Box } from '@mui/material';
+
 
 const HomePage = () => {
   const cards = [
@@ -22,10 +24,10 @@ const HomePage = () => {
   ];
   
     return (
-        <div>
+        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
             {/* <Header /> */}
             <Navbar />
-            <Container maxWidth="lg">
+            <Container component="main" sx={{ flexGrow: 1, width: 'auto', padding: '24px' }}>
                 {/* Hero Section */}
                 <Container sx={{ py: 8, textAlign: 'center' }}>
                     <Typography variant="h2" gutterBottom>
@@ -61,7 +63,8 @@ const HomePage = () => {
                   </Grid>
                 </Box>
             </Container>
-        </div>
+            <Footer />
+        </Box>
       );
     };
 

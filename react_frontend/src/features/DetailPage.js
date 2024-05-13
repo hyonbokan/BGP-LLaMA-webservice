@@ -1,6 +1,7 @@
 import React from "react";
-import Header from "../components/Header";
+// import Header from "../components/Header";
 import Navbar from "../components/Navbar";
+import NotFoundPage from "../features/NotFoundPage";
 import { useParams } from 'react-router-dom';
 import { useSelector } from "react-redux";
 import { Typography, Button, Paper } from '@mui/material';
@@ -15,9 +16,9 @@ const DetailPage = () => {
     if (!dataset) {
         return (
             <div>
-                <Header />
+                {/* <Header /> */}
                 <Navbar />
-                <Typography variant='h6' color='error'>Dataset not found.</Typography>
+                <NotFoundPage />
             </div>
         );
     }
@@ -53,7 +54,7 @@ const DetailPage = () => {
 
     return (
         <div>
-            <Header />
+            {/* <Header /> */}
             <Navbar />
             <Paper style={{ padding: '20px', marginTop: '20px' }}>
                 <Typography variant='h4' component='h1' sx={{ fontFamily: 'monospace' }} gutterBottom>

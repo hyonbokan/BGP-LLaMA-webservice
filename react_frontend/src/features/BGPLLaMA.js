@@ -1,4 +1,4 @@
-import Header from '../components/Header';
+// import Header from '../components/Header';
 import Navbar from '../components/Navbar';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
@@ -56,7 +56,7 @@ const BGPLLaMa = () => {
 
   return (
     <div>
-        <Header />
+        {/* <Header /> */}
         <Navbar />
         <CustomAlert
             open={alertOpen}

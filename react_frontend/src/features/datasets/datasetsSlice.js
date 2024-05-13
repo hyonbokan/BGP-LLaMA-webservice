@@ -43,10 +43,12 @@ const initialState = {
                     {
                         id: 'bgp-knowledge-1',
                         title:'BGP Knowledge I',
-                        fileUrl: '',
+                        fileUrl: '/finetuning-dataset/manual-seed-dataset/bgp-knowledge-1.jsonl',
+                        promptUrl: '/finetuning-dataset/manual-seed-dataset/prompt_knowledge.txt',
                         fileCount: 1111,
                         size: '10 MB',
-                        fileType: 'json',
+                        fileType: 'jsonl',
+                        promptType: 'txt',
                         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
     
     
@@ -54,10 +56,12 @@ const initialState = {
                     {
                         id: 'bgp-knowledge-2',
                         title:'BGP Knowledge II',
-                        fileUrl: '',
+                        fileUrl: '/finetuning-dataset/manual-seed-dataset/bgp-knowledge-2.jsonl',
+                        promptUrl: '/finetuning-dataset/manual-seed-dataset/prompt_knowledge.txt',
                         fileCount: 1111,
                         size: '10 MB',
-                        fileType: 'json',
+                        fileType: 'jsonl',
+                        promptType: 'txt',
                         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
     
     
@@ -65,10 +69,12 @@ const initialState = {
                     {
                         id: 'bgp-pybgpstream-base',
                         title:'PyBGPStream Base',
-                        fileUrl: '',
+                        fileUrl: '/finetuning-dataset/manual-seed-dataset/bgp-pybgpstream-base.jsonl',
+                        promptUrl: '/finetuning-dataset/manual-seed-dataset/prompt_pybgpstream.txt',
                         fileCount: 1111,
                         size: '10 MB',
-                        fileType: 'json',
+                        fileType: 'jsonl',
+                        promptType: 'txt',
                         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
     
     
@@ -77,19 +83,23 @@ const initialState = {
                         id: 'bgp-pybgpstream-real-case',
                         title:'PyBGPStream Real Cases',
                         fileUrl: '',
+                        promptUrl: '/finetuning-dataset/manual-seed-dataset/prompt_pybgpstream.txt',
                         fileCount: 1111,
                         size: '10 MB',
-                        fileType: 'json',
+                        fileType: 'jsonl',
+                        promptType: 'txt',
                         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
     
                     },
                     {
                         id: 'bgp-pybgpstream-real-time',
                         title:'PyBGPStream Real-time Stream',
-                        fileUrl: '',
+                        fileUrl: '/finetuning-dataset/manual-seed-dataset/bgp-pybgpstream-real-time.jsonl',
+                        promptUrl: '/finetuning-dataset/manual-seed-dataset/prompt-pybgpstream-realtime.txt',
                         fileCount: 1111,
                         size: '10 MB',
-                        fileType: 'json',
+                        fileType: 'jsonl',
+                        promptType: 'txt',
                         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
                     },             
                 ]

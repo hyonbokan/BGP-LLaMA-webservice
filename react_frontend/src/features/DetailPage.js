@@ -23,9 +23,8 @@ const DetailPage = () => {
     }
     console.log(`section id: ${sectionId}\n dataset id: ${datasetId}`)
 
-    const handleDownload = (fileUrl) => {
+    const handleDownload = (fileUrl, fileName, fileExtension = '') => {
        const relativeFileUrl = fileUrl.replace(/^\/+/, '');
-    // const url = `http://127.0.0.1:8000/api/download/${encodeURIComponent(fileUrl)}`;
        const url = `http://127.0.0.1:8000/api/download/?file=${encodeURIComponent(relativeFileUrl)}`;
        console.log(`Backend URL: ${url}`); 
 
@@ -38,15 +37,15 @@ const DetailPage = () => {
        .then(response => response.blob())
        .then(blob => {
         // Create a link element to download the file and remove it
-        const url = window.URL.createObjectURL(new Blob([blob]));
+        const dowloadUrl = window.URL.createObjectURL(new Blob([blob]));
         const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', `${datasetId}.json`);
+        link.href = dowloadUrl;
+        link.setAttribute('download', `${fileName}${fileExtension ? '.' + fileExtension : ''}`);
         document.body.appendChild(link);
         link.click();
         link.parentNode.removeChild(link);
         
-        console.log(`\nDownload URL: ${url}`);
+        console.log(`\nDownload URL: ${dowloadUrl}`);
         console.log(`\nFile Path: ${fileUrl}`);
        })
        .catch(error => console.error('Error downloading the file: ', error));
@@ -61,7 +60,7 @@ const DetailPage = () => {
                     {dataset.title}
                 </Typography>
                 <Button 
-                onClick={() => handleDownload(dataset.fileUrl)}
+                onClick={() => handleDownload(dataset.fileUrl, dataset.id, dataset.fileType)}
                 variant='contained' 
                 color='primary' 
                 style={{ 
@@ -72,7 +71,11 @@ const DetailPage = () => {
                     Download Dataset
                 </Button>
                 {sectionId.includes('manual') && (
-                    <Button variant='contained' color='primary' style={{ marginBottom: '20px', fontFamily: 'monospace' }}>
+                    <Button
+                    onClick={() => handleDownload(dataset.fileUrl, dataset.id, dataset.promptType)}
+                    variant='contained' 
+                    color='primary' 
+                    style={{ marginBottom: '20px', fontFamily: 'monospace' }}>
                         Download Base Prompt
                     </Button>
                 )}

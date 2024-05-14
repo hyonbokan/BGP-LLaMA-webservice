@@ -1,7 +1,8 @@
 // import Header from '../components/Header';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import React from 'react';
-import { Grid, Card, CardContent, Typography, IconButton } from '@mui/material';
+import { Grid, Card, CardContent, Typography, IconButton, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -9,10 +10,9 @@ const DatasetPage = () => {
     const allDatasets = useSelector(state => state.datasets.allDatasets);
 
     return (
-        <div>
-            {/* <Header /> */}
+        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
             <Navbar />
-            <div>
+            <Box component='main' sx={{ flexGrow: 1, width: 'auto', padding: '24px'}}>
                 {allDatasets.map((section, sectionIndex) => (
                     <div
                         key={sectionIndex}
@@ -59,8 +59,9 @@ const DatasetPage = () => {
                         </Grid>
                     </div>
                 ))}
-            </div>
-        </div>
+            </Box>
+            <Footer />
+        </Box>
     );
 }
 

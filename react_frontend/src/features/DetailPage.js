@@ -1,10 +1,10 @@
 import React from "react";
-// import Header from "../components/Header";
+import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import NotFoundPage from "../features/NotFoundPage";
 import { useParams } from 'react-router-dom';
 import { useSelector } from "react-redux";
-import { Typography, Button, Paper } from '@mui/material';
+import { Typography, Button, Paper, Box } from '@mui/material';
 
 
 const DetailPage = () => {
@@ -53,41 +53,43 @@ const DetailPage = () => {
     };
 
     return (
-        <div>
-            {/* <Header /> */}
+        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
             <Navbar />
-            <Paper style={{ padding: '20px', marginTop: '20px' }}>
-                <Typography variant='h4' component='h1' sx={{ fontFamily: 'monospace' }} gutterBottom>
-                    {dataset.title}
-                </Typography>
-                <Button 
-                onClick={() => handleDownload(dataset.fileUrl, dataset.id, dataset.fileType)}
-                variant='contained' 
-                color='primary' 
-                style={{ 
-                    marginBottom: '20px', 
-                    marginRight: '20px', 
-                    fontFamily: 'monospace' }}
-                >
-                    Download Dataset
-                </Button>
-                {sectionId.includes('manual') && (
-                    <Button
-                    onClick={() => handleDownload(dataset.fileUrl, dataset.id, dataset.promptType)}
-                    variant='contained' 
-                    color='primary' 
-                    style={{ marginBottom: '20px', fontFamily: 'monospace' }}>
-                        Download Base Prompt
-                    </Button>
-                )}
-                <Typography variant='h5' component='h2' sx={{ fontFamily: 'monospace', fontWeight: 600, marginBottom: '10px' }}>
-                    About Dataset
-                </Typography>
-                <Typography variant='body1' sx={{ fontFamily: 'monospace' }}>
-                    {dataset.description}
-                </Typography>
-            </Paper>
-        </div>
+            <Box component="main" sx={{ flexGrow: 1 }}> {/* This box will grow */}
+                <Paper style={{ padding: '20px', marginTop: '20px' }}>
+                        <Typography variant='h4' component='h1' sx={{ fontFamily: 'monospace' }} gutterBottom>
+                            {dataset.title}
+                        </Typography>
+                        <Button 
+                        onClick={() => handleDownload(dataset.fileUrl, dataset.id, dataset.fileType)}
+                        variant='contained' 
+                        color='primary' 
+                        style={{ 
+                            marginBottom: '20px', 
+                            marginRight: '20px', 
+                            fontFamily: 'monospace' }}
+                        >
+                            Download Dataset
+                        </Button>
+                        {sectionId.includes('manual') && (
+                            <Button
+                            onClick={() => handleDownload(dataset.fileUrl, dataset.id, dataset.promptType)}
+                            variant='contained' 
+                            color='primary' 
+                            style={{ marginBottom: '20px', fontFamily: 'monospace' }}>
+                                Download Base Prompt
+                            </Button>
+                        )}
+                        <Typography variant='h5' component='h2' sx={{ fontFamily: 'monospace', fontWeight: 600, marginBottom: '10px' }}>
+                            About Dataset
+                        </Typography>
+                        <Typography variant='body1' sx={{ fontFamily: 'monospace' }}>
+                            {dataset.description}
+                        </Typography>
+                </Paper>
+            </Box>
+            <Footer />
+        </Box>
     )
 };
 

@@ -1,4 +1,5 @@
 import React from "react";
+import logo from '../logo/logo.png';
 import { Box, Grid, Typography, Link, IconButton, } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import FacebookIcon from '@mui/icons-material/Facebook';
@@ -25,10 +26,10 @@ const Footer = () => {
 
     return (
         <Box component='footer' sx={{ backgroundColor: '#1A202C', padding: 5, marginTop: 2,}}>
-            <Grid container spacing={2}>
+            <Grid container sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Grid item xs={12} sm={4}>
-                    <img src="" alt="logo" style={{ height: 30 }} />
-                    <Box>
+                    <img src={logo} alt="logo" style={{ height: 50 }} />
+                    <Box sx={{backgroundColor: 'green',}}>
                         <IconButton component="a" href="https://github.com/hyonbokan/LLM-research" target="_blank" aria-label="GitHub" style={ iconButtonStyle }>
                             <GitHubIcon />
                         </IconButton>
@@ -47,8 +48,10 @@ const Footer = () => {
                     </Box>
                 </Grid>
 
+                <Grid item sm={4} />
+
                 <Grid item xs={12} sm={2}>
-                    <Typography variant="subtitle1" sx={ titleFontStyle } gutterBottom>Main</Typography>
+                    <Typography variant="subtitle1" sx={ titleFontStyle } gutterBottom>Features</Typography>
                     <Link href="#" underline="hover" sx={ textFontStyle }>Dataset</Link><br />
                     <Link href="#" underline="hover" sx={ textFontStyle }>Fine-tuning</Link><br />
                     <Link href="#" underline="hover" sx={ textFontStyle }>BGP-LLaMA</Link>

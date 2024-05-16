@@ -20,7 +20,7 @@ const Footer = () => {
         color: 'white',
       }
     
-    const iconButtonStyle = { color: 'white' };
+    const iconButtonStyle = { color: 'white', padding: '12px', };
 
 
 
@@ -29,7 +29,7 @@ const Footer = () => {
             <Grid container sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Grid item xs={12} sm={4}>
                     <img src={logo} alt="logo" style={{ height: 50 }} />
-                    <Box sx={{backgroundColor: 'green',}}>
+                    <Box sx={{backgroundColor: 'inherit',}}>
                         <IconButton component="a" href="https://github.com/hyonbokan/LLM-research" target="_blank" aria-label="GitHub" style={ iconButtonStyle }>
                             <GitHubIcon />
                         </IconButton>
@@ -48,7 +48,7 @@ const Footer = () => {
                     </Box>
                 </Grid>
 
-                <Grid item sm={4} />
+                <Grid item xs={false} sm={2} />
 
                 <Grid item xs={12} sm={2}>
                     <Typography variant="subtitle1" sx={ titleFontStyle } gutterBottom>Features</Typography>
@@ -61,6 +61,12 @@ const Footer = () => {
                     <Typography variant="subtitle1" sx={ titleFontStyle } gutterBottom>Learn</Typography>
                     <Link href="#" underline="hover" sx={ textFontStyle }>Paper</Link><br />
                     <Link href="#" underline="hover" sx={ textFontStyle }>Tutotial</Link>
+                </Grid>
+
+                <Grid item xs={12} sm={2}>
+                    <Typography variant="subtitle1" sx={ titleFontStyle } gutterBottom>Contacts</Typography>
+                    <Link href="#" underline="hover" sx={ textFontStyle }>Address</Link><br />
+                    <Link href="#" underline="hover" sx={ textFontStyle }>Email</Link>
                 </Grid>
 
             </Grid>

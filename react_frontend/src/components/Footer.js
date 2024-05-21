@@ -65,8 +65,8 @@ const Footer = () => {
 
                 <Grid item xs={12} sm={2}>
                     <Typography variant="subtitle1" sx={ titleFontStyle } gutterBottom>Contacts</Typography>
-                    <Link href="#" underline="hover" sx={ textFontStyle }>Address</Link><br />
-                    <Link href="#" underline="hover" sx={ textFontStyle }>Email</Link>
+                    <Typography variant="subtitle3" href="#" underline="hover" sx={ textFontStyle }>Address: 99 Daehak-ro, Yuseong-gu, Daejeon, Republic of Korea</Typography><br />
+                    <Typography variant="subtitle3" href="#" underline="hover" sx={ textFontStyle }>Email: hyonbokan@cs-cnu.org</Typography>
                 </Grid>
 
             </Grid>

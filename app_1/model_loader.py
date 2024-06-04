@@ -55,7 +55,7 @@ class ModelContainer:
     def load_model(cls):
         if cls.model_pipeline is None:
             try:
-                model_id = 'hyonbokan/BGP-LLaMA7-BGPStream-5k-cutoff-1024-max-2048'
+                model_id = 'hyonbokan/BGP-LLaMA13-BGPStream10k-cutoff-1024-max-2048-fpFalse'
                 hf_auth = os.environ.get('hf_token')
 
                 model_config = AutoConfig.from_pretrained(

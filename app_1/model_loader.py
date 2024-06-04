@@ -79,7 +79,7 @@ class ModelContainer:
                     return_full_text=True,
                     model=model, 
                     tokenizer=tokenizer, 
-                    max_length=724,
+                    max_length=1024,
                     repetition_penalty=1.1
                 )
                 logging.info("Model loaded successfully")

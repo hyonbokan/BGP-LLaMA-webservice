@@ -23,25 +23,30 @@ const Navbar = () => {
     <AppBar position='static' style={appBarStyle}>
       <Toolbar>
         <Link to="/">
-        <img src={logo} alt='Logo' style={{ height: 50 }} />
+          <img src={logo} alt='Logo' style={{ height: 50 }} />
         </Link>
         <Stack direction='row' spacing={2}>
-          <Button color='inherit' sx={ sx }>
+          <Button color='inherit' sx={sx}>
             <Link to="/dataset">
               Dataset
             </Link>
           </Button>
-          <Button color='inherit' sx={ sx }>
+          {/* <Button color='inherit' sx={sx}>
             <Link to="/bgp_llama">
               BGP-LLaMA
             </Link>
+          </Button> */}
+          <Button color='inherit' sx={sx}>
+            <Link to="/bgp_chat">
+              BGP-LLaMA
+            </Link>
           </Button>
-          <Button 
-            color="primary" 
+          <Button
+            color="primary"
             variant="contained"
-            sx={ sx }
+            sx={sx}
             onClick={handleDownloadClick}
-            >
+          >
             DOWNLOAD MODEL
           </Button>
         </Stack>

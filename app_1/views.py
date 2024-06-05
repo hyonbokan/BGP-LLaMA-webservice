@@ -1,72 +1,80 @@
-from django.shortcuts import render
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from django.http import JsonResponse, FileResponse, Http404, HttpResponse
+from django.http import JsonResponse, FileResponse, Http404, HttpResponse, StreamingHttpResponse
+from django.views.decorators.http import require_http_methods
 from django.conf import settings
 from .models import *
 from .model_loader import ModelContainer
 from .serializer import *
+import json
+from threading import Thread
 import os
+import torch
 
-def download_file(request, file_path):
-    """
-    View function to handle file downloads from MEDIA_ROOT.
-    
-    :param request: The HTTP request object.
-    :param file_path: The relative file path inside the MEDIA_ROOT directory.
-    :return: FileResponse or Http404 if the file is not found.
-    """
-    print("Received file path:", file_path)
+# def bgp_llama(request):
+#     if 'query' in request.GET:
+#         model_pipeline = ModelContainer.load_model()
+#         instruction = request.GET['query']
+#         print(f"\n Model Input: {instruction}\n")
+        
+#         # Without langchain
+#         model_out = model_pipeline(instruction)
+#         output = model_out[0]['generated_text']
+        
+#         print(f"\n Model Output: {output}\n")
+        
+#         query_data = Userquery(instruction=instruction, output=output)
+#         query_data.save()
+        
+#         # latest_insturctions = Userquery.objects.all().order_by('-id')[:5]
+#         # instruction_data = [{'instruction': q.instruction, 'output': q.output} for q in latest_insturctions]
+        
+#         data = {'instruction': instruction, 'output': output}
+#         print(f"\nRequest: {request.GET}\n")
+#         # print(f"\nData: {data}\n")
+        
+#         return JsonResponse(data)
+#     else:
+#         return JsonResponse({'error': 'No query provided'}, status=400)
 
-    # Construct the full file path
-    full_path = os.path.normpath(os.path.join(settings.MEDIA_ROOT, file_path))
-    print("Constructed file path:", full_path)
+# def stream_response_generator(query):
+#     model_pipeline = ModelContainer.load_model()
+#     if not query:
+#         yield 'data: {"error": "No query provided"}\n\n'
+#     else:
+#         print(f'user query: {query}\n')
+#         model_out = model_pipeline(query)
+#         try:
+#             generated_text = model_out[0]['generated_text']
+#             # words = generated_text.split()
+#             for word in generated_text:
+#                 yield f'data: {json.dumps({"generated_text": word})}\n\n'
+#         except Exception as e:
+#             yield f'data: {json.dumps({"error": str(e)})}\n\n'
 
-    # Ensure the path is within the MEDIA_ROOT to prevent unauthorized access
-    if not full_path.startswith(os.path.abspath(settings.MEDIA_ROOT)):
-        print("Unauthorized access attempt:", full_path)
-        raise Http404("Unauthorized access.")
-
-    # Check if the file exists and is a file (not a directory)
-    if os.path.exists(full_path) and os.path.isfile(full_path):
-        print("File found, returning response:", full_path)
-        return FileResponse(open(full_path, 'rb'), as_attachment=True, filename=os.path.basename(full_path))
+def stream_response_generator(query):
+    model, tokenizer, streamer = ModelContainer.load_model()
+    if not query:
+        yield 'data: {"error": "No query provided"}\n\n'
     else:
-        print("File not found:", full_path)
-        raise Http404("File not found.")
+        print(f'user query: {query}\n')
+        inputs = tokenizer([query], return_tensors="pt")
+        inputs = {k: v.to(model.device) for k, v in inputs.items()}  # Move inputs to the model's device
 
-# def test_download_view(request):
-#     logger.info("Test download view executed.")
-#     return FileResponse(open('/path/to/a/sample/file', 'rb'), as_attachment=True)
 
+        # Run the generation in a separate thread
+        generation_kwargs = dict(inputs, streamer=streamer, max_new_tokens=20)
+        thread = Thread(target=model.generate, kwargs=generation_kwargs)
+        thread.start()
+
+        try:
+            for new_text in streamer:
+                yield f'data: {json.dumps({"generated_text": new_text.strip()})}\n\n'
+        except Exception as e:
+            yield f'data: {json.dumps({"error": str(e)})}\n\n'
+
+@require_http_methods(["GET"])
 def bgp_llama(request):
-    if 'query' in request.GET:
-        model_pipeline = ModelContainer.load_model()
-        instruction = request.GET['query']
-        print(f"\n Model Input: {instruction}\n")
-        
-        # Without langchain
-        model_out = model_pipeline(instruction)
-        output = model_out[0]['generated_text']
-        
-        # With langchain
-        # output = model_pipeline(prompt=instruction)
-        
-        print(f"\n Model Output: {output}\n")
-        
-        query_data = Userquery(instruction=instruction, output=output)
-        query_data.save()
-        
-        # latest_insturctions = Userquery.objects.all().order_by('-id')[:5]
-        # instruction_data = [{'instruction': q.instruction, 'output': q.output} for q in latest_insturctions]
-        
-        data = {'instruction': instruction, 'output': output}
-        print(f"\nRequest: {request.GET}\n")
-        # print(f"\nData: {data}\n")
-        
-        return JsonResponse(data)
-    else:
-        return JsonResponse({'error': 'No query provided'}, status=400)
+    query = request.GET.get('query', '')
+    return StreamingHttpResponse(stream_response_generator(query), content_type="text/event-stream")
 
 def download_file_with_query(request):
     file_name = request.GET.get('file')

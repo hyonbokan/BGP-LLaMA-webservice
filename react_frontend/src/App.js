@@ -8,6 +8,7 @@ import DatasetPage from './features/DatasetPage';
 import BGPLLaMA from './features/BGPLLaMA';
 import DetailPage from './features/DetailPage';
 import NotFoundPage from './features/NotFoundPage';
+import BGPchat from './features/BGPchat';
 
 function App() {
   return (
@@ -17,8 +18,9 @@ function App() {
           <Routes>
             <Route path='/' element={<HomePage />} />
             <Route path='/dataset' element={<DatasetPage />} />
-            <Route path='/bgp_llama' element={<BGPLLaMA />} />
+            {/* <Route path='/bgp_llama' element={<BGPLLaMA />} /> */}
             <Route path='/dataset/:sectionId/:datasetId' element={<DetailPage />} />
+            <Route path='/bgp_chat' element={<BGPchat />} />
             {/* Catch-All Route */}
             <Route path='*' element={<NotFoundPage />} />
           </Routes>

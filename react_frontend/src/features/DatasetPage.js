@@ -2,9 +2,17 @@
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import React from 'react';
-import { Grid, Card, CardContent, Typography, IconButton, Box } from '@mui/material';
+import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Link as MuiLink } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+
+const cropDescription = (description, wordLimit) => {
+    const words = description.split(' ');
+    if (words.length > wordLimit) {
+        return words.slice(0, wordLimit).join(' ') + '...';
+    }
+    return description;
+};
 
 const DatasetPage = () => {
     const allDatasets = useSelector(state => state.datasets.allDatasets);
@@ -12,52 +20,49 @@ const DatasetPage = () => {
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
             <Navbar />
-            <Box component='main' sx={{ flexGrow: 1, width: 'auto', padding: '24px'}}>
+            <Box component='main' sx={{ flexGrow: 1, width: 'auto', padding: '24px' }}>
                 {allDatasets.map((section, sectionIndex) => (
-                    <div
-                        key={sectionIndex}
-                        // padding: $ $ $ $
-                        style={{ marginBottom:'20px', padding: '30px'}}
-                    >
-                        <Typography variant='h6' sx={{ fontFamily: 'monospace', fontWeight: 600, mb: 2, ml: 3 }} gutterBottom>
+                    <Box key={sectionIndex} sx={{ marginBottom: '20px', padding: '30px' }}>
+                        <Typography variant='h6' sx={{ fontFamily: 'monospace', fontWeight: 600, mb: 2 }} gutterBottom>
                             {section.title}
                         </Typography>
-                        <Grid container spacing={2}>
-                            {section.datasets.map((dataset, index) => (
-                                <Grid item xs={12} sm={6} md={4} key={index}>
-                                    <Link to={`/dataset/${section.id}/${section.datasets[index].id}`}>
-                                        <Card>
-                                            {/* <CardMedia
-                                            component='img'
-                                            height='140'
-                                            image={dataset.imageUrl}
-                                            alt={dataset.title}/> */}
-                                            <CardContent>
-                                                {/* <Typography variant='subtitle1' sx={{ mb: 1, fontFamily: 'monospace', fontWeight: 600 }}>{dataset.title}</Typography> */}
-                                                <Typography sx={{ mb: 1, fontFamily: 'monospace', fontWeight: 600, fontSize: '18px' }}>{dataset.title}</Typography>
-                                                <Typography variant='body2' sx={{
-                                                    display: '-webkit-box',
-                                                    overflow: 'hidden',
-                                                    // textOverflow: 'ellipsis',
-                                                    WebkitBoxOrient: 'vertical',
-                                                    WebkitLineClamp: 4, // Number of lines to show
-                                                    fontFamily: 'monospace',
-                                                    mb: 1
-                                                    }}>
-                                                    {dataset.description}
-                                                </Typography>
-                                                <Typography variant='body2' sx={{ fontFamily: 'monospace' }}>Instruction count: {dataset.fileCount}</Typography>
-                                                <Typography variant='body2' sx={{ fontFamily: 'monospace' }}>File size: {dataset.size}</Typography>
-                                                <Typography variant='body2' sx={{ fontFamily: 'monospace' }}>Type: {dataset.fileType}</Typography>
-                                            </CardContent>
-                                            <IconButton aria-label='settings' size='large'>
-                                            </IconButton>
-                                        </Card> 
-                                    </Link>
-                                </Grid>
-                            ))}
-                        </Grid>
-                    </div>
+                        <TableContainer component={Paper}>
+                            <Table sx={{ minWidth: 650 }} aria-label="dataset table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell sx={{ fontFamily: 'monospace', fontWeight: 600 }}>Title</TableCell>
+                                        <TableCell sx={{ fontFamily: 'monospace', fontWeight: 600 }}>Description</TableCell>
+                                        <TableCell sx={{ fontFamily: 'monospace', fontWeight: 600 }}>Instruction Count</TableCell>
+                                        <TableCell sx={{ fontFamily: 'monospace', fontWeight: 600 }}>File Size</TableCell>
+                                        <TableCell sx={{ fontFamily: 'monospace', fontWeight: 600 }}>Type</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {section.datasets.map((dataset, index) => (
+                                        <TableRow key={index}>
+                                            <TableCell component="th" scope="row" sx={{ fontFamily: 'monospace', fontWeight: 600 }}>
+                                                <MuiLink component={Link} to={`/dataset/${section.id}/${dataset.id}`}>
+                                                    {dataset.title}
+                                                </MuiLink>
+                                            </TableCell>
+                                            <TableCell sx={{
+                                                display: '-webkit-box',
+                                                overflow: 'hidden',
+                                                WebkitBoxOrient: 'vertical',
+                                                WebkitLineClamp: 4, // Number of lines to show
+                                                fontFamily: 'monospace'
+                                            }}>
+                                                {cropDescription(dataset.description, 20)} {/* Crop to 20 words */}
+                                            </TableCell>
+                                            <TableCell sx={{ fontFamily: 'monospace' }}>{dataset.fileCount}</TableCell>
+                                            <TableCell sx={{ fontFamily: 'monospace' }}>{dataset.size}</TableCell>
+                                            <TableCell sx={{ fontFamily: 'monospace' }}>{dataset.fileType}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </Box>
                 ))}
             </Box>
             <Footer />

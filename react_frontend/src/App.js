@@ -5,10 +5,10 @@ import {
 } from 'react-router-dom';
 import HomePage from './features/HomePage';
 import DatasetPage from './features/DatasetPage';
-import BGPLLaMA from './features/BGPLLaMA';
 import DetailPage from './features/DetailPage';
 import NotFoundPage from './features/NotFoundPage';
 import BGPchat from './features/BGPchat';
+import Finetuning from './features/Finetuning';
 
 function App() {
   return (
@@ -21,6 +21,7 @@ function App() {
             {/* <Route path='/bgp_llama' element={<BGPLLaMA />} /> */}
             <Route path='/dataset/:sectionId/:datasetId' element={<DetailPage />} />
             <Route path='/bgp_chat' element={<BGPchat />} />
+            <Route path='/finetuning' element={<Finetuning/>} />
             {/* Catch-All Route */}
             <Route path='*' element={<NotFoundPage />} />
           </Routes>

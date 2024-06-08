@@ -1,16 +1,45 @@
-import React, { useState, useEffect } from 'react';
-import { Box, TextField, IconButton, List, ListItem, ListItemText, Paper, Typography, Button } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Paper, List, ListItem, ListItemText, TextField, IconButton, Button, Tabs, Tab, Typography, Menu, MenuItem, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Navbar from '../components/Navbar';
 
 const BGPchat = () => {
-    const [messages, setMessages] = useState([{ text: "Welcome to BGP-LLaMA Chat!", sender: "system" }]);
     const [currentMessage, setCurrentMessage] = useState('');
     const [eventSource, setEventSource] = useState(null);
+    const [chatTabs, setChatTabs] = useState([{ id: 1, label: 'Chat 1', messages: [{ text: <Typography sx={{ fontFamily: "monospace" }}>Welcome to BGP-LLaMA Chat!</Typography>, sender: "system" }] }]);
+    const [currentTab, setCurrentTab] = useState(0);
+    const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+    const [renameDialogOpen, setRenameDialogOpen] = useState(false);
+    const [renameValue, setRenameValue] = useState('');
+    const [tabToEdit, setTabToEdit] = useState(null);
+
+    const handleNewChat = () => {
+        const newChatId = chatTabs.length + 1;
+        setChatTabs([...chatTabs, { id: newChatId, label: `Chat ${newChatId}`, messages: [{ text: <Typography sx={{ fontFamily: "monospace" }}>Welcome to BGP-LLaMA Chat!</Typography>, sender: "system" }] }]);
+        setCurrentTab(newChatId - 1);
+        if (eventSource) {
+            eventSource.close(); // Close any existing connection
+        }
+    };
+
+    const handleTabChange = (event, newValue) => {
+        setCurrentTab(newValue);
+        if (eventSource) {
+            eventSource.close(); // Close any existing connection
+        }
+    };
 
     const handleSendMessage = () => {
         if (currentMessage.trim() !== '') {
-            setMessages(prevMessages => [...prevMessages, { text: currentMessage, sender: "user" }]);
+            const updatedTabs = chatTabs.map((tab, index) => {
+                if (index === currentTab) {
+                    return { ...tab, messages: [...tab.messages, { text: currentMessage, sender: "user" }] };
+                }
+                return tab;
+            });
+
+            setChatTabs(updatedTabs);
             setCurrentMessage('');
 
             if (eventSource) {
@@ -26,16 +55,20 @@ const BGPchat = () => {
                 const data = JSON.parse(event.data);
                 if (data.generated_text) {
                     accumulatedResponse += data.generated_text + ' ';
-                    setMessages(prevMessages => {
-                        const updatedMessages = [...prevMessages];
-                        const lastMessageIndex = updatedMessages.length - 1;
-                        if (updatedMessages[lastMessageIndex].sender === "system") {
-                            updatedMessages[lastMessageIndex].text = accumulatedResponse;
-                        } else {
-                            updatedMessages.push({ text: accumulatedResponse, sender: "system" });
+                    const updatedTabsWithResponse = chatTabs.map((tab, index) => {
+                        if (index === currentTab) {
+                            const updatedMessages = [...tab.messages];
+                            const lastMessageIndex = updatedMessages.length - 1;
+                            if (updatedMessages[lastMessageIndex].sender === "system") {
+                                updatedMessages[lastMessageIndex].text = accumulatedResponse;
+                            } else {
+                                updatedMessages.push({ text: accumulatedResponse, sender: "system" });
+                            }
+                            return { ...tab, messages: updatedMessages };
                         }
-                        return updatedMessages;
+                        return tab;
                     });
+                    setChatTabs(updatedTabsWithResponse);
                 }
             };
 
@@ -45,17 +78,20 @@ const BGPchat = () => {
             };
 
             newEventSource.onclose = function() {
-                // Ensure the final accumulated response is added to the messages
-                setMessages(prevMessages => {
-                    const updatedMessages = [...prevMessages];
-                    const lastMessageIndex = updatedMessages.length - 1;
-                    if (updatedMessages[lastMessageIndex].sender === "system") {
-                        updatedMessages[lastMessageIndex].text = accumulatedResponse.trim();
-                    } else {
-                        updatedMessages.push({ text: accumulatedResponse.trim(), sender: "system" });
+                const updatedTabsWithFinalResponse = chatTabs.map((tab, index) => {
+                    if (index === currentTab) {
+                        const updatedMessages = [...tab.messages];
+                        const lastMessageIndex = updatedMessages.length - 1;
+                        if (updatedMessages[lastMessageIndex].sender === "system") {
+                            updatedMessages[lastMessageIndex].text = accumulatedResponse.trim();
+                        } else {
+                            updatedMessages.push({ text: accumulatedResponse.trim(), sender: "system" });
+                        }
+                        return { ...tab, messages: updatedMessages };
                     }
-                    return updatedMessages;
+                    return tab;
                 });
+                setChatTabs(updatedTabsWithFinalResponse);
             };
 
             setEventSource(newEventSource);
@@ -66,20 +102,97 @@ const BGPchat = () => {
         setCurrentMessage(event.target.value);
     };
 
+    const handleMenuOpen = (event, tab) => {
+        setMenuAnchorEl(event.currentTarget);
+        setTabToEdit(tab);
+    };
+
+    const handleMenuClose = () => {
+        setMenuAnchorEl(null);
+        setTabToEdit(null);
+    };
+
+    const handleDeleteTab = () => {
+        const updatedTabs = chatTabs.filter(tab => tab.id !== tabToEdit.id);
+        setChatTabs(updatedTabs);
+        setMenuAnchorEl(null);
+        if (tabToEdit.id === currentTab) {
+            setCurrentTab(0);
+        }
+        if (eventSource) {
+            eventSource.close(); // Close any existing connection
+        }
+    };
+
+    const handleRenameTab = () => {
+        setRenameDialogOpen(true);
+        setRenameValue(tabToEdit.label);
+        setMenuAnchorEl(null);
+    };
+
+    const handleRenameDialogClose = () => {
+        setRenameDialogOpen(false);
+        setRenameValue('');
+        setTabToEdit(null);
+    };
+
+    const handleRenameDialogSave = () => {
+        const updatedTabs = chatTabs.map(tab => tab.id === tabToEdit.id ? { ...tab, label: renameValue } : tab);
+        setChatTabs(updatedTabs);
+        setRenameDialogOpen(false);
+        setRenameValue('');
+        setTabToEdit(null);
+    };
+
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
             <Navbar />
             <Box sx={{ display: 'flex', flexGrow: 1, overflow: 'hidden' }}>
                 <Box sx={{ width: 250, bgcolor: '#f4f4f8', overflowY: 'auto', borderRight: '1px solid #e0e0e0' }}>
-                    {/* Sidebar setup */}
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                        <Button
+                            variant="contained"
+                            onClick={handleNewChat}
+                            sx={{ m: 2, width: '200px'}}
+                        >
+                            <Typography sx={{ fontFamily: 'monospace'}}>
+                                New Chat
+                            </Typography>
+                        </Button>
+                    </Box>
+                    <Tabs
+                        orientation="vertical"
+                        value={currentTab}
+                        onChange={handleTabChange}
+                        sx={{ borderRight: 1, borderColor: 'divider' }}
+                    >
+                        {chatTabs.map((tab, index) => (
+                            <Tab
+                                key={tab.id}
+                                label={
+                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                        {tab.label}
+                                        <IconButton
+                                            size="small"
+                                            onClick={(event) => handleMenuOpen(event, tab)}
+                                            sx={{ ml: 1 }}
+                                        >
+                                            <MoreVertIcon fontSize="small" />
+                                        </IconButton>
+                                    </Box>
+                                }
+                                sx={{ fontFamily: 'monospace' }}
+                            />
+                        ))}
+                    </Tabs>
                 </Box>
                 <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', bgcolor: '#ffffff' }}>
                     <Paper sx={{ flex: 1, overflow: 'auto', p: 2 }}>
                         <List sx={{ padding: 0 }}>
-                            {messages.map((message, index) => (
+                            {chatTabs[currentTab].messages.map((message, index) => (
                                 <ListItem key={index} alignItems="flex-start" sx={{ display: 'flex', flexDirection: message.sender === 'system' ? 'row' : 'row-reverse' }}>
                                     <ListItemText
-                                        primary={message.text}
+                                        primary={<Typography sx={{ fontFamily: 'monospace' }}>{message.text}</Typography>}
                                         primaryTypographyProps={{
                                             sx: {
                                                 fontWeight: 'medium',
@@ -110,12 +223,49 @@ const BGPchat = () => {
                             maxRows={4}
                             sx={{ mr: 1 }}
                         />
-                        <IconButton color="primary" onClick={handleSendMessage}>
-                            <SendIcon />
+                        <IconButton 
+                            color="primary" 
+                            onClick={handleSendMessage}
+                            sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                        >
+                            <SendIcon sx={{ transform: 'rotate(-45deg)' }}/>
                         </IconButton>
                     </Box>
                 </Box>
             </Box>
+
+            <Menu
+                anchorEl={menuAnchorEl}
+                open={Boolean(menuAnchorEl)}
+                onClose={handleMenuClose}
+            >
+                <MenuItem onClick={handleDeleteTab}>Delete</MenuItem>
+                <MenuItem onClick={handleRenameTab}>Rename</MenuItem>
+            </Menu>
+
+            <Dialog open={renameDialogOpen} onClose={handleRenameDialogClose}>
+                <DialogTitle>Rename Chat</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Enter a new name for the chat.
+                    </DialogContentText>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        label="Chat Name"
+                        fullWidth
+                        variant="outlined"
+                        value={renameValue}
+                        onChange={(e) => setRenameValue(e.target.value)}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleRenameDialogClose}>Cancel</Button>
+                    <Button onClick={handleRenameDialogSave} color="primary">
+                        Save
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 };

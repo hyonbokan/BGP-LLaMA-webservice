@@ -9,47 +9,6 @@ from threading import Thread
 import os
 import torch
 
-# def bgp_llama(request):
-#     if 'query' in request.GET:
-#         model_pipeline = ModelContainer.load_model()
-#         instruction = request.GET['query']
-#         print(f"\n Model Input: {instruction}\n")
-        
-#         # Without langchain
-#         model_out = model_pipeline(instruction)
-#         output = model_out[0]['generated_text']
-        
-#         print(f"\n Model Output: {output}\n")
-        
-#         query_data = Userquery(instruction=instruction, output=output)
-#         query_data.save()
-        
-#         # latest_insturctions = Userquery.objects.all().order_by('-id')[:5]
-#         # instruction_data = [{'instruction': q.instruction, 'output': q.output} for q in latest_insturctions]
-        
-#         data = {'instruction': instruction, 'output': output}
-#         print(f"\nRequest: {request.GET}\n")
-#         # print(f"\nData: {data}\n")
-        
-#         return JsonResponse(data)
-#     else:
-#         return JsonResponse({'error': 'No query provided'}, status=400)
-
-# def stream_response_generator(query):
-#     model_pipeline = ModelContainer.load_model()
-#     if not query:
-#         yield 'data: {"error": "No query provided"}\n\n'
-#     else:
-#         print(f'user query: {query}\n')
-#         model_out = model_pipeline(query)
-#         try:
-#             generated_text = model_out[0]['generated_text']
-#             # words = generated_text.split()
-#             for word in generated_text:
-#                 yield f'data: {json.dumps({"generated_text": word})}\n\n'
-#         except Exception as e:
-#             yield f'data: {json.dumps({"error": str(e)})}\n\n'
-
 def stream_response_generator(query):
     model, tokenizer, streamer = ModelContainer.load_model()
     if not query:

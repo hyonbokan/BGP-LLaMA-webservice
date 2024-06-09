@@ -69,13 +69,13 @@ const FineTuningPage = () => {
             <Navbar />
             <Box component='main' sx={{ flexGrow: 1, padding: '24px' }}>
                 <Typography variant='h4' sx={{ fontFamily: 'monospace', fontWeight: 600, mb: 4 }}>
-                    Fine-Tune LLM Model
+                    Fine-Tune LLM
                 </Typography>
                 <Grid container spacing={4}>
                     <Grid item xs={12} md={6}>
                         <Paper sx={{ padding: 3 }}>
                             <Typography variant='h6' sx={{ fontFamily: 'monospace', fontWeight: 600, mb: 2 }}>
-                                Model Selection
+                                LLM Selection
                             </Typography>
                             <FormControl fullWidth sx={{ mb: 3 }}>
                                 <InputLabel id="model-label">LLM Model</InputLabel>
@@ -86,9 +86,9 @@ const FineTuningPage = () => {
                                     onChange={handleModelChange}
                                     label="LLM Model"
                                 >
-                                    <MenuItem value="LLaMA 7B">LLaMA 7B</MenuItem>
-                                    <MenuItem value="LLaMA 13B">LLaMA 13B</MenuItem>
-                                    <MenuItem value="LLaMA 70B">LLaMA 70B</MenuItem>
+                                    <MenuItem value="LLaMA 7B">LLaMA 2 7B</MenuItem>
+                                    <MenuItem value="LLaMA 13B">LLaMA 2 13B</MenuItem>
+                                    <MenuItem value="LLaMA 70B">LLaMA 2 70B</MenuItem>
                                     <MenuItem value="Other">Other</MenuItem>
                                 </Select>
                             </FormControl>

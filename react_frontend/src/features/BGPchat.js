@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { Box, Paper, List, ListItem, ListItemText, TextField, IconButton, Button, Tabs, Tab, Typography, Menu, MenuItem, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Box, Paper, List, ListItem, ListItemText, TextField, IconButton, Button, Tabs, Tab, Typography, Menu, MenuItem, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, CircularProgress } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Navbar from '../components/Navbar';
+import axiosInstance from '../utils/axiosInstance';
 
 const BGPchat = () => {
     const [currentMessage, setCurrentMessage] = useState('');
@@ -13,6 +14,19 @@ const BGPchat = () => {
     const [renameDialogOpen, setRenameDialogOpen] = useState(false);
     const [renameValue, setRenameValue] = useState('');
     const [tabToEdit, setTabToEdit] = useState(null);
+    const [isLoadingModel, setIsLoadingModel] = useState(true);
+
+    useEffect(() => {
+        axiosInstance.post('/load_model')
+            .then(response => {
+                console.log(response.data);
+                setIsLoadingModel(false);
+            })
+            .catch(error => {
+                console.error('Error loading model:', error);
+                setIsLoadingModel(false);
+            });
+    }, []);
 
     const handleNewChat = () => {
         const newChatId = chatTabs.length + 1;
@@ -46,7 +60,7 @@ const BGPchat = () => {
                 eventSource.close();  // Close any existing connection
             }
 
-            const url = `http://127.0.0.1:8001/api/bgp-llama?query=${encodeURIComponent(currentMessage)}`;
+            const url = `http://127.0.0.1:8000/api/bgp-llama?query=${encodeURIComponent(currentMessage)}`;
             const newEventSource = new EventSource(url);
 
             let accumulatedResponse = '';  // Initialize accumulated response
@@ -147,92 +161,99 @@ const BGPchat = () => {
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
             <Navbar />
-            <Box sx={{ display: 'flex', flexGrow: 1, overflow: 'hidden' }}>
-                <Box sx={{ width: 250, bgcolor: '#f4f4f8', overflowY: 'auto', borderRight: '1px solid #e0e0e0' }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                        <Button
-                            variant="contained"
-                            onClick={handleNewChat}
-                            sx={{ m: 2, width: '200px'}}
-                        >
-                            <Typography sx={{ fontFamily: 'monospace'}}>
-                                New Chat
-                            </Typography>
-                        </Button>
-                    </Box>
-                    <Tabs
-                        orientation="vertical"
-                        value={currentTab}
-                        onChange={handleTabChange}
-                        sx={{ borderRight: 1, borderColor: 'divider' }}
-                    >
-                        {chatTabs.map((tab, index) => (
-                            <Tab
-                                key={tab.id}
-                                label={
-                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                        {tab.label}
-                                        <IconButton
-                                            size="small"
-                                            onClick={(event) => handleMenuOpen(event, tab)}
-                                            sx={{ ml: 1 }}
-                                        >
-                                            <MoreVertIcon fontSize="small" />
-                                        </IconButton>
-                                    </Box>
-                                }
-                                sx={{ fontFamily: 'monospace' }}
-                            />
-                        ))}
-                    </Tabs>
+            {isLoadingModel ? (
+                <Box sx={{ display: 'flex', flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <CircularProgress />
+                    <Typography sx={{ ml: 2, fontFamily: 'monospace' }}>Loading model, please wait...</Typography>
                 </Box>
-                <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', bgcolor: '#ffffff' }}>
-                    <Paper sx={{ flex: 1, overflow: 'auto', p: 2 }}>
-                        <List sx={{ padding: 0 }}>
-                            {chatTabs[currentTab].messages.map((message, index) => (
-                                <ListItem key={index} alignItems="flex-start" sx={{ display: 'flex', flexDirection: message.sender === 'system' ? 'row' : 'row-reverse' }}>
-                                    <ListItemText
-                                        primary={<Typography sx={{ fontFamily: 'monospace' }}>{message.text}</Typography>}
-                                        primaryTypographyProps={{
-                                            sx: {
-                                                fontWeight: 'medium',
-                                                color: message.sender === 'system' ? 'gray' : 'primary.main',
-                                                textAlign: message.sender === 'system' ? 'left' : 'right',
-                                                bgcolor: message.sender === 'system' ? '#e0e0e0' : '#e3f2fd',
-                                                borderRadius: 2,
-                                                p: 1,
-                                            }
-                                        }}
-                                    />
-                                </ListItem>
+            ) : (
+                <Box sx={{ display: 'flex', flexGrow: 1, overflow: 'hidden' }}>
+                    <Box sx={{ width: 250, bgcolor: '#f4f4f8', overflowY: 'auto', borderRight: '1px solid #e0e0e0' }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                            <Button
+                                variant="contained"
+                                onClick={handleNewChat}
+                                sx={{ m: 2, width: '200px'}}
+                            >
+                                <Typography sx={{ fontFamily: 'monospace'}}>
+                                    New Chat
+                                </Typography>
+                            </Button>
+                        </Box>
+                        <Tabs
+                            orientation="vertical"
+                            value={currentTab}
+                            onChange={handleTabChange}
+                            sx={{ borderRight: 1, borderColor: 'divider' }}
+                        >
+                            {chatTabs.map((tab, index) => (
+                                <Tab
+                                    key={tab.id}
+                                    label={
+                                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                            {tab.label}
+                                            <IconButton
+                                                size="small"
+                                                onClick={(event) => handleMenuOpen(event, tab)}
+                                                sx={{ ml: 1 }}
+                                            >
+                                                <MoreVertIcon fontSize="small" />
+                                            </IconButton>
+                                        </Box>
+                                    }
+                                    sx={{ fontFamily: 'monospace' }}
+                                />
                             ))}
-                        </List>
-                    </Paper>
-                    <Box
-                        component="form"
-                        sx={{ display: 'flex', alignItems: 'center', p: 2, bgcolor: '#f4f4f8' }}
-                        onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}
-                    >
-                        <TextField
-                            label="Type your message..."
-                            fullWidth
-                            variant="outlined"
-                            value={currentMessage}
-                            onChange={handleMessageChange}
-                            multiline
-                            maxRows={4}
-                            sx={{ mr: 1 }}
-                        />
-                        <IconButton 
-                            color="primary" 
-                            onClick={handleSendMessage}
-                            sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                        </Tabs>
+                    </Box>
+                    <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', bgcolor: '#ffffff' }}>
+                        <Paper sx={{ flex: 1, overflow: 'auto', p: 2 }}>
+                            <List sx={{ padding: 0 }}>
+                                {chatTabs[currentTab].messages.map((message, index) => (
+                                    <ListItem key={index} alignItems="flex-start" sx={{ display: 'flex', flexDirection: message.sender === 'system' ? 'row' : 'row-reverse' }}>
+                                        <ListItemText
+                                            primary={<Typography sx={{ fontFamily: 'monospace' }}>{message.text}</Typography>}
+                                            primaryTypographyProps={{
+                                                sx: {
+                                                    fontWeight: 'medium',
+                                                    color: message.sender === 'system' ? 'gray' : 'primary.main',
+                                                    textAlign: message.sender === 'system' ? 'left' : 'right',
+                                                    bgcolor: message.sender === 'system' ? '#e0e0e0' : '#e3f2fd',
+                                                    borderRadius: 2,
+                                                    p: 1,
+                                                }
+                                            }}
+                                        />
+                                    </ListItem>
+                                ))}
+                            </List>
+                        </Paper>
+                        <Box
+                            component="form"
+                            sx={{ display: 'flex', alignItems: 'center', p: 2, bgcolor: '#f4f4f8' }}
+                            onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}
                         >
-                            <SendIcon sx={{ transform: 'rotate(-45deg)' }}/>
-                        </IconButton>
+                            <TextField
+                                label="Type your message..."
+                                fullWidth
+                                variant="outlined"
+                                value={currentMessage}
+                                onChange={handleMessageChange}
+                                multiline
+                                maxRows={4}
+                                sx={{ mr: 1 }}
+                            />
+                            <IconButton 
+                                color="primary" 
+                                onClick={handleSendMessage}
+                                sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                            >
+                                <SendIcon sx={{ transform: 'rotate(-45deg)' }}/>
+                            </IconButton>
+                        </Box>
                     </Box>
                 </Box>
-            </Box>
+            )}
 
             <Menu
                 anchorEl={menuAnchorEl}

@@ -5,6 +5,9 @@ from . import views
 
 urlpatterns = [
     path('bgp-llama', views.bgp_llama, name='bgp-llama'),
-    path('download/', views.download_file_with_query, name='api-download-file-query'),
+    path('download', views.download_file_with_query, name='api-download-file-query'),
+    path('finetuning', views.finetune_model, name='finetune_model'),
+    path('get_csrf_token', views.get_csrf_token, name='get_csrf_token'),
+    path('load_model', views.load_model_endpoint, name='load_model'),
     re_path(r'.*', views.catch_all),
 ]

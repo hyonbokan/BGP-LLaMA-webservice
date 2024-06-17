@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Box, Button, TextField, Typography, MenuItem, FormControl, InputLabel, Select, Checkbox, FormControlLabel, FormGroup, Grid, CircularProgress, Paper } from '@mui/material';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import axiosInstance from '../utils/axiosInstance';
 
 const FineTuningPage = () => {
     const [model, setModel] = useState('');
@@ -32,6 +33,7 @@ const FineTuningPage = () => {
         lr_scheduler_type: 'cosine',
     });
     const [isLoading, setIsLoading] = useState(false);
+    const [fineTuningStatus, setFineTuningStatus] = useState('');
 
     const handleModelChange = (event) => {
         setModel(event.target.value);
@@ -57,14 +59,33 @@ const FineTuningPage = () => {
 
     const handleStartFineTuning = () => {
         setIsLoading(true);
-        // Dispatch an action or call an API to start fine-tuning
-        setTimeout(() => {
-            setIsLoading(false);
-            alert('Fine-tuning started!');
-        }, 2000); // Simulate an API call
+        const selectedDatasets = Object.keys(datasets).filter(key => datasets[key]);
+        
+        const formData = new FormData();
+        formData.append('model_id', model === 'Other' ? customModel : model);
+        formData.append('finetuned_model_name', finetunedModelName);
+        formData.append('datasets', JSON.stringify(selectedDatasets));
+        formData.append('test_samples', testSamples);
+        formData.append('hyperparameters', JSON.stringify(hyperparameters));
+        if (userDataset) {
+            formData.append('user_dataset', userDataset);
+        }
+
+        axiosInstance.post('/finetuning/fine_tune/', formData)
+            .then(response => {
+                console.log('Fine-tuning started:', response.data);
+                setFineTuningStatus('Fine-tuning started successfully.'); // Update status
+                setIsLoading(false);
+            })
+            .catch(error => {
+                console.error('Error starting fine-tuning:', error);
+                setFineTuningStatus('Error starting fine-tuning.'); // Update status
+                setIsLoading(false);
+            });
     };
 
-    return (
+
+ return (
         <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
             <Navbar />
             <Box component='main' sx={{ flexGrow: 1, padding: '24px' }}>
@@ -86,9 +107,9 @@ const FineTuningPage = () => {
                                     onChange={handleModelChange}
                                     label="LLM Model"
                                 >
-                                    <MenuItem value="LLaMA 7B">LLaMA 2 7B</MenuItem>
-                                    <MenuItem value="LLaMA 13B">LLaMA 2 13B</MenuItem>
-                                    <MenuItem value="LLaMA 70B">LLaMA 2 70B</MenuItem>
+                                    <MenuItem value="meta-llama/Llama-2-7b-chat-hf">LLaMA 2 7B</MenuItem>
+                                    <MenuItem value="meta-llama/Llama-2-13b-chat-hf">LLaMA 2 13B</MenuItem>
+                                    <MenuItem value="meta-llama/Llama-2-70b-chat-hf">LLaMA 2 70B</MenuItem>
                                     <MenuItem value="Other">Other</MenuItem>
                                 </Select>
                             </FormControl>

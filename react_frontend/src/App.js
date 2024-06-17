@@ -3,6 +3,8 @@ import {
   Route,
   Routes
 } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { fetchCsrfToken } from './utils/axiosInstance';
 import HomePage from './features/HomePage';
 import DatasetPage from './features/DatasetPage';
 import DetailPage from './features/DetailPage';
@@ -11,6 +13,10 @@ import BGPchat from './features/BGPchat';
 import FineTuningPage from './features/FineTuningPage';
 
 function App() {
+  useEffect(() => {
+    fetchCsrfToken();
+  }, []);
+
   return (
     <Router>
       <div className="App m-0">

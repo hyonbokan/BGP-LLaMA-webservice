@@ -4,6 +4,8 @@ crispy_forms
 django-crispy-forms
 djangorestframework
 social-auth-app-django
+django-taggit
+django-cors-headers
 
 react
 react-dom

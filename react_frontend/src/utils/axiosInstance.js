@@ -2,9 +2,10 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 const axiosInstance = axios.create({
-    baseURL: 'http://127.0.0.1:8000/api',
+    baseURL: 'http://127.0.0.1:8000/api/',
     headers: {
         'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest', 
     },
 });
 
@@ -20,7 +21,7 @@ axiosInstance.interceptors.request.use((config) => {
 
 export const fetchCsrfToken = async () => {
     try {
-        await axiosInstance.get('get_csrf_token/');
+        await axiosInstance.get('get_csrf_token');
         const csrfToken = Cookies.get('csrftoken');
         if (csrfToken) {
             localStorage.setItem('csrfToken', csrfToken);

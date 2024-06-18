@@ -4,7 +4,7 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.middleware.csrf import get_token
 from .models import *
-from .model_loader import ModelContainer
+# from .model_loader import ModelContainer 
 from .serializer import *
 import json
 from threading import Thread, Lock
@@ -164,33 +164,38 @@ model_lock = Lock()
 
 def load_model():
     global model, tokenizer, streamer
-    if model is None or tokenizer is None or streamer is None:
-        try:
-            model_id = 'meta-llama/Llama-2-7b-hf'
-            hf_auth = os.environ.get('hf_token')
-            model_config = AutoConfig.from_pretrained(
-                model_id,
-                use_auth_token=hf_auth
-            )
-            model = AutoModelForCausalLM.from_pretrained(
-                model_id,
-                trust_remote_code=True,
-                config=model_config,
-                device_map='auto',
-                use_auth_token=hf_auth
-            )
-            tokenizer = AutoTokenizer.from_pretrained(
-                model_id,
-                use_auth_token=hf_auth
-            )
-            tokenizer.pad_token = tokenizer.eos_token
-            tokenizer.padding_side = "right"
-            streamer = TextIteratorStreamer(tokenizer)
-            transformers.logging.set_verbosity(transformers.logging.CRITICAL)
-            logging("Model loaded successfully")
-        except Exception as e:
-            logging.error(f"Failed to load the model: {str(e)}")
-            raise
+    with model_lock:
+        if model is None or tokenizer is None or streamer is None:
+            try:
+                model_id = 'meta-llama/Llama-2-7b-hf'
+                hf_auth = os.environ.get('hf_token')
+
+                model_config = AutoConfig.from_pretrained(
+                    model_id,
+                    use_auth_token=hf_auth
+                )
+                model = AutoModelForCausalLM.from_pretrained(
+                    model_id,
+                    trust_remote_code=True,
+                    config=model_config,
+                    device_map='auto',
+                    use_auth_token=hf_auth
+                )
+                tokenizer = AutoTokenizer.from_pretrained(
+                    model_id,
+                    use_auth_token=hf_auth
+                )
+
+                tokenizer.pad_token = tokenizer.eos_token
+                tokenizer.padding_side = "right"
+
+                streamer = TextIteratorStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
+                transformers.logging.set_verbosity(transformers.logging.CRITICAL)
+
+                logging("Model loaded successfully")
+            except Exception as e:
+                logging.error(f"Failed to load the model: {str(e)}")
+                raise
 
     return model, tokenizer, streamer
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Paper, List, ListItem, ListItemText, TextField, IconButton, Button, Tabs, Tab, Typography, Menu, MenuItem, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, CircularProgress } from '@mui/material';
+import { Box, Paper, List, ListItem, TextField, IconButton, Button, Tabs, Tab, Typography, Menu, MenuItem, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, CircularProgress, Card, CardContent } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Navbar from '../components/Navbar';
@@ -8,16 +8,18 @@ import axiosInstance from '../utils/axiosInstance';
 const BGPchat = () => {
     const [currentMessage, setCurrentMessage] = useState('');
     const [eventSource, setEventSource] = useState(null);
-    const [chatTabs, setChatTabs] = useState([{ id: 1, label: 'Chat 1', messages: [{ text: <Typography sx={{ fontFamily: "monospace" }}>Welcome to BGP-LLaMA Chat!</Typography>, sender: "system" }] }]);
+    const [chatTabs, setChatTabs] = useState([{ id: 1, label: 'Chat 1', messages: [{ text: "Welcome to BGP-LLaMA Chat!", sender: "system" }] }]);
     const [currentTab, setCurrentTab] = useState(0);
     const [menuAnchorEl, setMenuAnchorEl] = useState(null);
     const [renameDialogOpen, setRenameDialogOpen] = useState(false);
     const [renameValue, setRenameValue] = useState('');
     const [tabToEdit, setTabToEdit] = useState(null);
     const [isLoadingModel, setIsLoadingModel] = useState(true);
+    const [partialMessage, setPartialMessage] = useState('');
+    const [isGenerating, setIsGenerating] = useState(false);
 
     useEffect(() => {
-        axiosInstance.post('/load_model')
+        axiosInstance.post('load_model')
             .then(response => {
                 console.log(response.data);
                 setIsLoadingModel(false);
@@ -30,7 +32,7 @@ const BGPchat = () => {
 
     const handleNewChat = () => {
         const newChatId = chatTabs.length + 1;
-        setChatTabs([...chatTabs, { id: newChatId, label: `Chat ${newChatId}`, messages: [{ text: <Typography sx={{ fontFamily: "monospace" }}>Welcome to BGP-LLaMA Chat!</Typography>, sender: "system" }] }]);
+        setChatTabs([...chatTabs, { id: newChatId, label: `Chat ${newChatId}`, messages: [{ text: "Welcome to BGP-LLaMA Chat!", sender: "system" }] }]);
         setCurrentTab(newChatId - 1);
         if (eventSource) {
             eventSource.close(); // Close any existing connection
@@ -46,66 +48,48 @@ const BGPchat = () => {
 
     const handleSendMessage = () => {
         if (currentMessage.trim() !== '') {
+            const userMessage = { text: currentMessage, sender: "user" };
             const updatedTabs = chatTabs.map((tab, index) => {
                 if (index === currentTab) {
-                    return { ...tab, messages: [...tab.messages, { text: currentMessage, sender: "user" }] };
+                    return { ...tab, messages: [...tab.messages, userMessage] };
                 }
                 return tab;
             });
 
             setChatTabs(updatedTabs);
             setCurrentMessage('');
+            setPartialMessage('');
+            setIsGenerating(true);
 
             if (eventSource) {
                 eventSource.close();  // Close any existing connection
             }
 
-            const url = `http://127.0.0.1:8000/api/bgp-llama?query=${encodeURIComponent(currentMessage)}`;
+            const url = `http://127.0.0.1:8000/api/bgp_llama?query=${encodeURIComponent(currentMessage)}`;
             const newEventSource = new EventSource(url);
-
-            let accumulatedResponse = '';  // Initialize accumulated response
 
             newEventSource.onmessage = function(event) {
                 const data = JSON.parse(event.data);
                 if (data.generated_text) {
-                    accumulatedResponse += data.generated_text + ' ';
-                    const updatedTabsWithResponse = chatTabs.map((tab, index) => {
-                        if (index === currentTab) {
-                            const updatedMessages = [...tab.messages];
-                            const lastMessageIndex = updatedMessages.length - 1;
-                            if (updatedMessages[lastMessageIndex].sender === "system") {
-                                updatedMessages[lastMessageIndex].text = accumulatedResponse;
-                            } else {
-                                updatedMessages.push({ text: accumulatedResponse, sender: "system" });
-                            }
-                            return { ...tab, messages: updatedMessages };
-                        }
-                        return tab;
-                    });
-                    setChatTabs(updatedTabsWithResponse);
+                    setPartialMessage(prev => prev + data.generated_text + ' ');
                 }
             };
 
             newEventSource.onerror = function(error) {
                 console.error('EventSource failed:', error);
                 newEventSource.close();
+                setIsGenerating(false);
             };
 
             newEventSource.onclose = function() {
-                const updatedTabsWithFinalResponse = chatTabs.map((tab, index) => {
+                setChatTabs(prevTabs => prevTabs.map((tab, index) => {
                     if (index === currentTab) {
-                        const updatedMessages = [...tab.messages];
-                        const lastMessageIndex = updatedMessages.length - 1;
-                        if (updatedMessages[lastMessageIndex].sender === "system") {
-                            updatedMessages[lastMessageIndex].text = accumulatedResponse.trim();
-                        } else {
-                            updatedMessages.push({ text: accumulatedResponse.trim(), sender: "system" });
-                        }
-                        return { ...tab, messages: updatedMessages };
+                        return { ...tab, messages: [...tab.messages, { text: partialMessage.trim(), sender: "system" }] };
                     }
                     return tab;
-                });
-                setChatTabs(updatedTabsWithFinalResponse);
+                }));
+                setPartialMessage('');
+                setIsGenerating(false);
             };
 
             setEventSource(newEventSource);
@@ -210,22 +194,42 @@ const BGPchat = () => {
                         <Paper sx={{ flex: 1, overflow: 'auto', p: 2 }}>
                             <List sx={{ padding: 0 }}>
                                 {chatTabs[currentTab].messages.map((message, index) => (
-                                    <ListItem key={index} alignItems="flex-start" sx={{ display: 'flex', flexDirection: message.sender === 'system' ? 'row' : 'row-reverse' }}>
-                                        <ListItemText
-                                            primary={<Typography sx={{ fontFamily: 'monospace' }}>{message.text}</Typography>}
-                                            primaryTypographyProps={{
-                                                sx: {
-                                                    fontWeight: 'medium',
-                                                    color: message.sender === 'system' ? 'gray' : 'primary.main',
-                                                    textAlign: message.sender === 'system' ? 'left' : 'right',
-                                                    bgcolor: message.sender === 'system' ? '#e0e0e0' : '#e3f2fd',
-                                                    borderRadius: 2,
-                                                    p: 1,
-                                                }
-                                            }}
-                                        />
-                                    </ListItem>
+                                    <React.Fragment key={index}>
+                                        {message.sender === "user" && (
+                                            <ListItem alignItems="flex-start" sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
+                                                <Card sx={{ bgcolor: '#e3f2fd', borderRadius: 2, maxWidth: '60%' }}>
+                                                    <CardContent>
+                                                        <Typography sx={{ fontFamily: 'monospace', fontWeight: 'medium', color: 'primary.main', textAlign: 'right' }}>
+                                                            {message.text}
+                                                        </Typography>
+                                                    </CardContent>
+                                                </Card>
+                                            </ListItem>
+                                        )}
+                                        {message.sender === "system" && (
+                                            <ListItem alignItems="flex-start" sx={{ display: 'flex', flexDirection: 'row' }}>
+                                                <Card sx={{ bgcolor: '#e0e0e0', borderRadius: 2, maxWidth: '60%' }}>
+                                                    <CardContent>
+                                                        <Typography sx={{ fontFamily: 'monospace', fontWeight: 'medium', color: 'gray', textAlign: 'left' }}>
+                                                            {message.text}
+                                                        </Typography>
+                                                    </CardContent>
+                                                </Card>
+                                            </ListItem>
+                                        )}
+                                    </React.Fragment>
                                 ))}
+                                {partialMessage && (
+                                    <ListItem alignItems="flex-start" sx={{ display: 'flex', flexDirection: 'row' }}>
+                                        <Card sx={{ bgcolor: '#e0e0e0', borderRadius: 2, maxWidth: '60%' }}>
+                                            <CardContent>
+                                                <Typography sx={{ fontFamily: 'monospace', fontWeight: 'medium', color: 'gray', textAlign: 'left' }}>
+                                                    {partialMessage}
+                                                </Typography>
+                                            </CardContent>
+                                        </Card>
+                                    </ListItem>
+                                )}
                             </List>
                         </Paper>
                         <Box
@@ -234,7 +238,7 @@ const BGPchat = () => {
                             onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}
                         >
                             <TextField
-                                label="Type your message..."
+                                label="Input your prompt..."
                                 fullWidth
                                 variant="outlined"
                                 value={currentMessage}
@@ -243,13 +247,20 @@ const BGPchat = () => {
                                 maxRows={4}
                                 sx={{ mr: 1 }}
                             />
-                            <IconButton 
-                                color="primary" 
-                                onClick={handleSendMessage}
-                                sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-                            >
-                                <SendIcon sx={{ transform: 'rotate(-45deg)' }}/>
-                            </IconButton>
+                            {isGenerating ? (
+                                <CircularProgress 
+                                    size={24}
+                                    sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} 
+                                />
+                            ) : (
+                                <IconButton 
+                                    color="primary" 
+                                    onClick={handleSendMessage}
+                                    sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                                >
+                                    <SendIcon sx={{ transform: 'rotate(-45deg)' }}/>
+                                </IconButton>
+                            )}
                         </Box>
                     </Box>
                 </Box>

@@ -199,6 +199,14 @@ def load_model():
 
     return model, tokenizer, streamer
 
+def unload_model():
+    global model, tokenizer, streamer
+    with model_lock:
+        model = None
+        tokenizer = None
+        streamer = None
+        transformers.logging.set_verbosity(transformers.logging.WARNING)
+        logging.info("Model unloaded successfully")
 
 @csrf_exempt
 def load_model_endpoint(request):
@@ -208,6 +216,16 @@ def load_model_endpoint(request):
             return JsonResponse({'status': 'Model loaded successfully'})
         except Exception as e:
             return JsonResponse({'status': 'Failed to load model', 'error': str(e)}, status=500)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+@csrf_exempt
+def unload_model_endpoint(request):
+    if request.method == 'POST':
+        try:
+            unload_model()
+            return JsonResponse({'status': 'Model unloaded successfully'})
+        except Exception as e:
+            return JsonResponse({'status': 'Failed to unload model', 'error': str(e)}, status=500)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 

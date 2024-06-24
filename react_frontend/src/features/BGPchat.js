@@ -28,6 +28,16 @@ const BGPchat = () => {
                 console.error('Error loading model:', error);
                 setIsLoadingModel(false);
             });
+
+        return () => {
+            axiosInstance.post('unload_model')
+                .then(response => {
+                    console.log('Model unloaded successfully:', response.data);
+                })
+                .catch(error => {
+                    console.error('Error unloading model:', error);
+                });
+        };
     }, []);
 
     const handleNewChat = () => {

@@ -17,21 +17,34 @@ from peft import LoraConfig
 import transformers
 import tempfile
 import logging
+from django.conf import settings
 
 @require_http_methods(["GET"])
 def get_csrf_token(request):
     csrf_token = get_token(request)
     return JsonResponse({'csrfToken': csrf_token})
 
+import os
+import json
+import tempfile
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer, TrainingArguments
+from transformers import logging as transformers_logging
+from datasets import load_dataset
+from peft import LoraConfig, get_peft_model
+import torch.cuda as cuda
+from django.conf import settings  # Ensure MEDIA_ROOT is included in settings
+
 @csrf_exempt
 def finetune_model(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
-        model_id = data.get('model_id', 'meta-llama/Llama-2-13b-chat-hf')
-        finetuned_model_name = data.get('finetuned_model_name', 'finetuned-llm')
-        train_test_split = int(data.get('test_samples', 1300))
-        datasets = json.loads(data.get('datasets', '[]'))
-        hyperparameters = json.loads(data.get('hyperparameters', '{}'))
+        # Use request.POST and request.FILES to handle form data and file uploads
+        model_id = request.POST.get('model_id', 'meta-llama/Llama-2-13b-chat-hf')
+        finetuned_model_name = request.POST.get('finetuned_model_name', 'finetuned-llm')
+        train_test_split = int(request.POST.get('test_samples', 1300))
+        datasets = json.loads(request.POST.get('datasets', '[]'))
+        hyperparameters = json.loads(request.POST.get('hyperparameters', '{}'))
         user_dataset = request.FILES.get('user_dataset', None)
         hf_token = os.environ.get('HF_TOKEN')  # Ensure HF_TOKEN is set
 
@@ -128,21 +141,36 @@ def finetune_model(request):
                 eval_dataset=val_data,
                 tokenizer=tokenizer,
                 peft_config=peft_config,
+                dataset_text_field="output",
                 data_collator=data_collator,
             )
 
             return trainer
 
-        # Load dataset
+        # Prepare dataset files
+        combined_data = []
+
+        # Load and combine dataset files
+        for dataset_url in datasets:
+            dataset_path = os.path.join(settings.MEDIA_ROOT, dataset_url)
+            with open(dataset_path, 'r') as file:
+                data = json.load(file)
+                combined_data.extend(data)  # Assuming the datasets are lists of records
+
         if user_dataset:
             with tempfile.NamedTemporaryFile(delete=False) as tmp:
                 tmp.write(user_dataset.read())
                 tmp.flush()
-                data_files = tmp.name
-        else:
-            data_files = "../training_data/Mobile_LLaMA_main.json"
+                with open(tmp.name, 'r') as user_file:
+                    user_data = json.load(user_file)
+                    combined_data.extend(user_data)  # Assuming the user dataset is also a list of records
 
-        data = load_dataset("json", data_files=data_files)
+        # Write combined data to a temporary file
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".json", mode='w') as combined_file:
+            json.dump(combined_data, combined_file)
+            combined_file_path = combined_file.name
+
+        data = load_dataset("json", data_files=combined_file_path)
 
         # Load model and tokenizer
         model = load_model(model_id, hf_token)

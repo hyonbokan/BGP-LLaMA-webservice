@@ -3,18 +3,14 @@ import { Box, Button, TextField, Typography, MenuItem, FormControl, InputLabel, 
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import axiosInstance from '../utils/axiosInstance';
+import { useSelector } from 'react-redux';
 
 const FineTuningPage = () => {
+    const allDatasets = useSelector(state => state.datasets.allDatasets);
     const [model, setModel] = useState('');
     const [customModel, setCustomModel] = useState('');
     const [finetunedModelName, setFinetunedModelName] = useState('');
-    const [datasets, setDatasets] = useState({
-        'bgp-pybgpstream-base': false,
-        'bgp-pybgpstream-real-case': false,
-        'bgp-pybgpstream-real-time': false,
-        'bgp-knowledge-1': false,
-        'bgp-knowledge-2': false,
-    });
+    const [selectedDatasets, setSelectedDatasets] = useState([]);
     const [testSamples, setTestSamples] = useState('');
     const [userDataset, setUserDataset] = useState(null);
     const [hyperparameters, setHyperparameters] = useState({
@@ -40,10 +36,13 @@ const FineTuningPage = () => {
     };
 
     const handleDatasetChange = (event) => {
-        setDatasets({
-            ...datasets,
-            [event.target.name]: event.target.checked,
-        });
+        const { name, checked } = event.target;
+        const dataset = allDatasets.flatMap(group => group.datasets).find(d => d.id === name);
+        if (checked) {
+            setSelectedDatasets([...selectedDatasets, dataset.fileUrl]);
+        } else {
+            setSelectedDatasets(selectedDatasets.filter(url => url !== dataset.fileUrl));
+        }
     };
 
     const handleHyperparameterChange = (event) => {
@@ -59,8 +58,7 @@ const FineTuningPage = () => {
 
     const handleStartFineTuning = () => {
         setIsLoading(true);
-        const selectedDatasets = Object.keys(datasets).filter(key => datasets[key]);
-        
+
         const formData = new FormData();
         formData.append('model_id', model === 'Other' ? customModel : model);
         formData.append('finetuned_model_name', finetunedModelName);
@@ -71,21 +69,44 @@ const FineTuningPage = () => {
             formData.append('user_dataset', userDataset);
         }
 
-        axiosInstance.post('/finetuning/fine_tune/', formData)
+        console.log('Form Data Sent to Backend:', {
+            model_id: model === 'Other' ? customModel : model,
+            datasets: selectedDatasets,
+            test_samples: testSamples,
+            hyperparameters,
+            user_dataset: userDataset ? userDataset.name : null
+        });
+
+        axiosInstance.post('finetuning', formData)
             .then(response => {
                 console.log('Fine-tuning started:', response.data);
-                setFineTuningStatus('Fine-tuning started successfully.'); // Update status
+                setFineTuningStatus('Fine-tuning started successfully.');
                 setIsLoading(false);
             })
             .catch(error => {
                 console.error('Error starting fine-tuning:', error);
-                setFineTuningStatus('Error starting fine-tuning.'); // Update status
+                setFineTuningStatus('Error starting fine-tuning.');
                 setIsLoading(false);
             });
     };
 
+    const hyperparameterFields = [
+        { label: 'Lora Alpha', name: 'lora_alpha', type: 'number' },
+        { label: 'Lora Dropout', name: 'lora_dropout', type: 'number' },
+        { label: 'Lora R', name: 'lora_r', type: 'number' },
+        { label: 'Per Device Train Batch Size', name: 'per_device_train_batch_size', type: 'number' },
+        { label: 'Gradient Accumulation Steps', name: 'gradient_accumulation_steps', type: 'number' },
+        { label: 'Optimizer', name: 'optim', type: 'text' },
+        { label: 'Save Steps', name: 'save_steps', type: 'number' },
+        { label: 'Logging Steps', name: 'logging_steps', type: 'number' },
+        { label: 'Learning Rate', name: 'learning_rate', type: 'number' },
+        { label: 'Max Grad Norm', name: 'max_grad_norm', type: 'number' },
+        { label: 'Max Steps', name: 'max_steps', type: 'number' },
+        { label: 'Warmup Ratio', name: 'warmup_ratio', type: 'number' },
+        { label: 'LR Scheduler Type', name: 'lr_scheduler_type', type: 'text' },
+    ];
 
- return (
+    return (
         <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
             <Navbar />
             <Box component='main' sx={{ flexGrow: 1, padding: '24px' }}>
@@ -138,46 +159,28 @@ const FineTuningPage = () => {
                                 Dataset Selection
                             </Typography>
                             <Grid container spacing={2}>
-                                <Grid item xs={12} sm={6}>
-                                    <Typography variant='subtitle1' sx={{ fontFamily: 'monospace', fontWeight: 600, mb: 1 }}>
-                                        BGP PyBGPStream Datasets
-                                    </Typography>
-                                    <FormGroup>
-                                        {['bgp-pybgpstream-base', 'bgp-pybgpstream-real-case', 'bgp-pybgpstream-real-time'].map((key) => (
-                                            <FormControlLabel
-                                                control={
-                                                    <Checkbox
-                                                        checked={datasets[key]}
-                                                        onChange={handleDatasetChange}
-                                                        name={key}
-                                                    />
-                                                }
-                                                label={key.replace(/-/g, ' ')}
-                                                key={key}
-                                            />
-                                        ))}
-                                    </FormGroup>
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <Typography variant='subtitle1' sx={{ fontFamily: 'monospace', fontWeight: 600, mb: 1 }}>
-                                        BGP Knowledge Datasets
-                                    </Typography>
-                                    <FormGroup>
-                                        {['bgp-knowledge-1', 'bgp-knowledge-2'].map((key) => (
-                                            <FormControlLabel
-                                                control={
-                                                    <Checkbox
-                                                        checked={datasets[key]}
-                                                        onChange={handleDatasetChange}
-                                                        name={key}
-                                                    />
-                                                }
-                                                label={key.replace(/-/g, ' ')}
-                                                key={key}
-                                            />
-                                        ))}
-                                    </FormGroup>
-                                </Grid>
+                                {allDatasets.map((dataset) => (
+                                    <Grid item xs={12} key={dataset.id}>
+                                        <Typography variant='subtitle1' sx={{ fontFamily: 'monospace', fontWeight: 600, mb: 1 }}>
+                                            {dataset.title}
+                                        </Typography>
+                                        <FormGroup>
+                                            {dataset.datasets.map((subDataset) => (
+                                                <FormControlLabel
+                                                    control={
+                                                        <Checkbox
+                                                            checked={selectedDatasets.includes(subDataset.fileUrl)}
+                                                            onChange={handleDatasetChange}
+                                                            name={subDataset.id}
+                                                        />
+                                                    }
+                                                    label={subDataset.title}
+                                                    key={subDataset.id}
+                                                />
+                                            ))}
+                                        </FormGroup>
+                                    </Grid>
+                                ))}
                                 <Grid item xs={12}>
                                     <Typography variant='subtitle1' sx={{ fontFamily: 'monospace', fontWeight: 600, mb: 1 }}>
                                         User Dataset
@@ -220,147 +223,19 @@ const FineTuningPage = () => {
                                 Hyperparameters
                             </Typography>
                             <Grid container spacing={2}>
-                                <Grid item xs={12} sm={4}>
-                                    <TextField
-                                        fullWidth
-                                        label="Lora Alpha"
-                                        type="number"
-                                        name="lora_alpha"
-                                        value={hyperparameters.lora_alpha}
-                                        onChange={handleHyperparameterChange}
-                                        sx={{ mb: 3 }}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <TextField
-                                        fullWidth
-                                        label="Lora Dropout"
-                                        type="number"
-                                        name="lora_dropout"
-                                        value={hyperparameters.lora_dropout}
-                                        onChange={handleHyperparameterChange}
-                                        sx={{ mb: 3 }}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <TextField
-                                        fullWidth
-                                        label="Lora R"
-                                        type="number"
-                                        name="lora_r"
-                                        value={hyperparameters.lora_r}
-                                        onChange={handleHyperparameterChange}
-                                        sx={{ mb: 3 }}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <TextField
-                                        fullWidth
-                                        label="Per Device Train Batch Size"
-                                        type="number"
-                                        name="per_device_train_batch_size"
-                                        value={hyperparameters.per_device_train_batch_size}
-                                        onChange={handleHyperparameterChange}
-                                        sx={{ mb: 3 }}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <TextField
-                                        fullWidth
-                                        label="Gradient Accumulation Steps"
-                                        type="number"
-                                        name="gradient_accumulation_steps"
-                                        value={hyperparameters.gradient_accumulation_steps}
-                                        onChange={handleHyperparameterChange}
-                                        sx={{ mb: 3 }}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <TextField
-                                        fullWidth
-                                        label="Optimizer"
-                                        name="optim"
-                                        value={hyperparameters.optim}
-                                        onChange={handleHyperparameterChange}
-                                        sx={{ mb: 3 }}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <TextField
-                                        fullWidth
-                                        label="Save Steps"
-                                        type="number"
-                                        name="save_steps"
-                                        value={hyperparameters.save_steps}
-                                        onChange={handleHyperparameterChange}
-                                        sx={{ mb: 3 }}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <TextField
-                                        fullWidth
-                                        label="Logging Steps"
-                                        type="number"
-                                        name="logging_steps"
-                                        value={hyperparameters.logging_steps}
-                                        onChange={handleHyperparameterChange}
-                                        sx={{ mb: 3 }}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <TextField
-                                        fullWidth
-                                        label="Learning Rate"
-                                        type="number"
-                                        name="learning_rate"
-                                        value={hyperparameters.learning_rate}
-                                        onChange={handleHyperparameterChange}
-                                        sx={{ mb: 3 }}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <TextField
-                                        fullWidth
-                                        label="Max Grad Norm"
-                                        type="number"
-                                        name="max_grad_norm"
-                                        value={hyperparameters.max_grad_norm}
-                                        onChange={handleHyperparameterChange}
-                                        sx={{ mb: 3 }}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <TextField
-                                        fullWidth
-                                        label="Max Steps"
-                                        type="number"
-                                        name="max_steps"
-                                        value={hyperparameters.max_steps}
-                                        onChange={handleHyperparameterChange}
-                                        sx={{ mb: 3 }}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <TextField
-                                        fullWidth
-                                        label="Warmup Ratio"
-                                        type="number"
-                                        name="warmup_ratio"
-                                        value={hyperparameters.warmup_ratio}
-                                        onChange={handleHyperparameterChange}
-                                        sx={{ mb: 3 }}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <TextField
-                                        fullWidth
-                                        label="LR Scheduler Type"
-                                        name="lr_scheduler_type"
-                                        value={hyperparameters.lr_scheduler_type}
-                                        onChange={handleHyperparameterChange}
-                                        sx={{ mb: 3 }}
-                                    />
-                                </Grid>
+                                {hyperparameterFields.map((field) => (
+                                    <Grid item xs={12} sm={4} key={field.name}>
+                                        <TextField
+                                            fullWidth
+                                            label={field.label}
+                                            type={field.type}
+                                            name={field.name}
+                                            value={hyperparameters[field.name]}
+                                            onChange={handleHyperparameterChange}
+                                            sx={{ mb: 3 }}
+                                        />
+                                    </Grid>
+                                ))}
                             </Grid>
                         </Paper>
                     </Grid>
@@ -371,6 +246,11 @@ const FineTuningPage = () => {
                         {isLoading ? <CircularProgress size={24} /> : 'Start Fine-Tuning'}
                     </Button>
                 </Box>
+                {fineTuningStatus && (
+                    <Typography variant="body2" sx={{ mt: 2, textAlign: 'center', fontFamily: 'monospace' }}>
+                        {fineTuningStatus}
+                    </Typography>
+                )}
             </Box>
             <Footer />
         </Box>

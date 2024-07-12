@@ -16,8 +16,8 @@ const CustomAlert: React.FC<CustomAlertProps> = ({ severity, message, open, onCl
     let timer: ReturnType<typeof setTimeout>;
     if (open) {
       timer = setTimeout(() => {
-        onClose(); // Call the onClose function after 2 seconds
-      }, 2000);
+        onClose(); // Call the onClose function after n seconds
+      }, 5000);
     }
     return () => clearTimeout(timer); // Clean up the timer
   }, [open, onClose]);
@@ -29,7 +29,7 @@ const CustomAlert: React.FC<CustomAlertProps> = ({ severity, message, open, onCl
     <Stack sx={{ width: '100%' }} spacing={2}>
       <Fade in={open} timeout={500}>
         <Alert variant='filled' severity={severity} onClose={onClose}>
-          {/* he onClose function is passed to allow manual closing of the alert, complementing the automatic dismissal mechanism. */}
+          {/* onClose function is passed to allow manual closing of the alert, complementing the automatic dismissal mechanism. */}
             {message}
         </Alert>
       </Fade>

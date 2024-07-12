@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Box, Button, TextField, Typography, MenuItem, FormControl, InputLabel, Select, Checkbox, FormControlLabel, FormGroup, Grid, CircularProgress, Paper } from '@mui/material';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import CustomAlert from '../components/CustomAlert.tsx';
 import axiosInstance from '../utils/axiosInstance';
 import { useSelector } from 'react-redux';
 
@@ -30,6 +31,7 @@ const FineTuningPage = () => {
     });
     const [isLoading, setIsLoading] = useState(false);
     const [fineTuningStatus, setFineTuningStatus] = useState('');
+    const [alert, setAlert] = useState({ open: false, massage: 'Oops, an error occurred!', severity: 'error' });
 
     const handleModelChange = (event) => {
         setModel(event.target.value);
@@ -56,7 +58,30 @@ const FineTuningPage = () => {
         setUserDataset(event.target.files[0]);
     };
 
+    const validateForm = () => {
+        const errors = [];
+
+        if (!model) errors.push('Please select a model.');
+        if (!finetunedModelName) errors.push('Please enter a name for the finetuned model.');
+        if (selectedDatasets.length === 0 && !userDataset) errors.push('Please select at least one dataset or upload a your own custom dataset.');
+        for (const key in hyperparameters) {
+            if (!hyperparameters[key]) errors.push(`Please fill in the ${key.replace(/_/g, '')} field.`);
+        }
+
+        if (errors.length > 0) {
+            return errors.join(' ');
+        }
+        return null;
+    };
+
     const handleStartFineTuning = () => {
+        const validationError = validateForm();
+        if (validationError) {
+            // console.log(validationError)
+            setAlert({ open: true, message: validationError, severity: 'error' });
+            return;
+        }
+
         setIsLoading(true);
 
         const formData = new FormData();
@@ -159,10 +184,9 @@ const FineTuningPage = () => {
                                 Dataset Selection
                             </Typography>
                             <Grid container spacing={2}>
-                                {allDatasets.map((dataset) => (
+                                {allDatasets.filter(dataset => dataset.id === 'self-instruct-generated-dataset').map((dataset) => (
                                     <Grid item xs={12} key={dataset.id}>
                                         <Typography variant='subtitle1' sx={{ fontFamily: 'monospace', fontWeight: 600, mb: 1 }}>
-                                            {dataset.title}
                                         </Typography>
                                         <FormGroup>
                                             {dataset.datasets.map((subDataset) => (
@@ -252,6 +276,12 @@ const FineTuningPage = () => {
                     </Typography>
                 )}
             </Box>
+            <CustomAlert
+                severity={alert.severity}
+                message={alert.message}
+                open={alert.open}
+                onClose={() => setAlert({ ...alert, open: false })}
+            />
             <Footer />
         </Box>
     );

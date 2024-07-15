@@ -16,7 +16,7 @@ const Navbar = () => {
     textDecoration: 'none',
   };
   const appBarStyle = {
-    backgroundColor: '#1A202C', // This is the color code for TailwindCSS's bg-gray-900
+    backgroundColor: '#1A202C',
   };
 
   return (
@@ -25,8 +25,8 @@ const Navbar = () => {
         <Link to="/">
           <img src={logo} alt='Logo' style={{ height: 50, }} />
         </Link>
-        <Box sx={{ flexGrow: 1, ml: 2}}>
-          <Stack direction='row' spacing={2}>
+        <Box sx={{ flexGrow: 1, ml: 3}}>
+          <Stack direction='row' spacing={3}>
             <Button color='inherit' sx={sx}>
               <Link to="/dataset">
                 Dataset
@@ -39,7 +39,7 @@ const Navbar = () => {
             </Button> */}
             <Button color='inherit' sx={sx}>
               <Link to="/bgp_chat">
-                BGP-LLaMA
+                BGP-LLaMA Code-Gen
               </Link>
             </Button>
             <Button color='inherit' sx={sx}>

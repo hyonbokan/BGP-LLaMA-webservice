@@ -10,8 +10,8 @@ const initialState = {
                         id: 'bgp-knowledge',
                         title:'BGP Knowledge',
                         fileUrl: 'finetuning-dataset/self-instruct-generated-dataset/bgp-knowledge.json',
-                        fileCount: 1111,
-                        size: '10 MB',
+                        fileCount: 20000,
+                        size: '18.1 MB',
                         fileType: 'json',
                         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
                     },
@@ -20,7 +20,7 @@ const initialState = {
                         title:'PyBGPStream Base',
                         fileUrl: '/finetuning-dataset/self-instruct-generated-dataset/pybgpstream-base.json',
                         fileCount: 8609,
-                        size: '10 MB',
+                        size: '27.5 MB',
                         fileType: 'json',
                         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
                     },
@@ -29,7 +29,7 @@ const initialState = {
                         title:'PyBGPStream Real-time Stream',
                         fileUrl: '/finetuning-dataset/self-instruct-generated-dataset/pybgpstream-real-time.json',
                         fileCount: 1501,
-                        size: '10 MB',
+                        size: '4.5 MB',
                         fileType: 'json',
                         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
     
@@ -45,8 +45,8 @@ const initialState = {
                         title:'BGP Knowledge I',
                         fileUrl: '/finetuning-dataset/manual-seed-dataset/bgp-knowledge-1.jsonl',
                         promptUrl: '/finetuning-dataset/manual-seed-dataset/prompt_knowledge.txt',
-                        fileCount: 1111,
-                        size: '10 MB',
+                        fileCount: 121,
+                        size: '115 KB',
                         fileType: 'jsonl',
                         promptType: 'txt',
                         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
@@ -58,8 +58,8 @@ const initialState = {
                         title:'BGP Knowledge II',
                         fileUrl: '/finetuning-dataset/manual-seed-dataset/bgp-knowledge-2.jsonl',
                         promptUrl: '/finetuning-dataset/manual-seed-dataset/prompt_knowledge.txt',
-                        fileCount: 1111,
-                        size: '10 MB',
+                        fileCount: 36,
+                        size: '49 KB',
                         fileType: 'jsonl',
                         promptType: 'txt',
                         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
@@ -71,8 +71,8 @@ const initialState = {
                         title:'PyBGPStream Base',
                         fileUrl: '/finetuning-dataset/manual-seed-dataset/bgp-pybgpstream-base.jsonl',
                         promptUrl: '/finetuning-dataset/manual-seed-dataset/prompt_pybgpstream.txt',
-                        fileCount: 1111,
-                        size: '10 MB',
+                        fileCount: 54,
+                        size: '90 KB',
                         fileType: 'jsonl',
                         promptType: 'txt',
                         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
@@ -84,8 +84,8 @@ const initialState = {
                         title:'PyBGPStream Real Cases',
                         fileUrl: '',
                         promptUrl: '/finetuning-dataset/manual-seed-dataset/prompt_pybgpstream.txt',
-                        fileCount: 1111,
-                        size: '10 MB',
+                        fileCount: 25,
+                        size: '61 KB',
                         fileType: 'jsonl',
                         promptType: 'txt',
                         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
@@ -96,8 +96,8 @@ const initialState = {
                         title:'PyBGPStream Real-time Stream',
                         fileUrl: '/finetuning-dataset/manual-seed-dataset/bgp-pybgpstream-real-time.jsonl',
                         promptUrl: '/finetuning-dataset/manual-seed-dataset/prompt-pybgpstream-realtime.txt',
-                        fileCount: 1111,
-                        size: '10 MB',
+                        fileCount: 4,
+                        size: '12 KB',
                         fileType: 'jsonl',
                         promptType: 'txt',
                         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'

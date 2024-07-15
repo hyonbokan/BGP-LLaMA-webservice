@@ -158,7 +158,7 @@ const BGPchat = () => {
             {isLoadingModel ? (
                 <Box sx={{ display: 'flex', flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                     <CircularProgress />
-                    <Typography sx={{ ml: 2, fontFamily: 'monospace' }}>Loading model, please wait...</Typography>
+                    <Typography sx={{ ml: 2, fontFamily: 'monospace', fontWeight: 'bold' }}>Loading the model, please wait...</Typography>
                 </Box>
             ) : (
                 <Box sx={{ display: 'flex', flexGrow: 1, overflow: 'hidden' }}>

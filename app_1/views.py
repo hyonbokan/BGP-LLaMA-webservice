@@ -34,7 +34,7 @@ from transformers import logging as transformers_logging
 from datasets import load_dataset
 from peft import LoraConfig, get_peft_model
 import torch.cuda as cuda
-from django.conf import settings  # Ensure MEDIA_ROOT is included in settings
+from django.conf import settings
 
 @csrf_exempt
 def finetune_model(request):
@@ -195,7 +195,7 @@ def load_model():
     with model_lock:
         if model is None or tokenizer is None or streamer is None:
             try:
-                model_id = 'meta-llama/Llama-2-7b-hf'
+                model_id = 'hyonbokan/BGPStream13-10k-cutoff-1024-max-2048'
                 hf_auth = os.environ.get('hf_token')
 
                 model_config = AutoConfig.from_pretrained(
@@ -264,11 +264,11 @@ def stream_response_generator(query):
     else:
         print(f'user query: {query}\n')
         inputs = tokenizer([query], return_tensors="pt")
-        inputs = {k: v.to(model.device) for k, v in inputs.items()}  # Move inputs to the model's device
+        inputs = {k: v.to(model.device) for k, v in inputs.items()}
 
 
         # Run the generation in a separate thread
-        generation_kwargs = dict(inputs, streamer=streamer, max_new_tokens=20)
+        generation_kwargs = dict(inputs, streamer=streamer, max_new_tokens=712)
         thread = Thread(target=model.generate, kwargs=generation_kwargs)
         thread.start()
 

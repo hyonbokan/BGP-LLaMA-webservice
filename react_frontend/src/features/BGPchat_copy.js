@@ -19,32 +19,36 @@ const BGPchat = () => {
     const [isGenerating, setIsGenerating] = useState(false);
 
 
-    useEffect(() => {
-        return () => {
-            unloadModel();
-        };
-    }, []);
+    // useEffect(() => {
+    //     // Function to load the model
+    //     const loadModel = async () => {
+    //         try {
+    //             const response = await axiosInstance.post('load_model');
+    //             console.log(response.data);
+    //             setIsLoadingModel(false);
+    //         } catch (error) {
+    //             console.error('Error loading model:', error);
+    //             setIsLoadingModel(false);
+    //         }
+    //     };
 
-    const loadModel = async () => {
-        try {
-            setIsLoadingModel(true);
-            const response = await axiosInstance.post('load_model');
-            console.log(response.data);
-            setIsLoadingModel(false);
-        } catch (error) {
-            console.error('Error loading model:', error);
-            setIsLoadingModel(false);
-        }
-    };
+    //     // Function to unload the model
+    //     const unloadModel = async () => {
+    //         try {
+    //             const response = await axiosInstance.post('unload_model');
+    //             console.log('Model unloaded successfully:', response.data);
+    //         } catch (error) {
+    //             console.error('Error unloading model:', error);
+    //         }
+    //     };
 
-    const unloadModel = async () => {
-        try {
-            const response = await axiosInstance.post('unload_model');
-            console.log('Model unloaded successfully:', response.data);
-        } catch (error) {
-            console.error('Error unloading model:', error);
-        }
-    }
+    //     loadModel();
+
+    //     // Unload model on component unmount
+    //     return () => {
+    //         unloadModel();
+    //     };
+    // }, []);
 
     const handleNewChat = () => {
         const newChatId = chatTabs.length + 1;
@@ -62,10 +66,8 @@ const BGPchat = () => {
         }
     };
 
-    const handleSendMessage = async () => {
+    const handleSendMessage = () => {
         if (currentMessage.trim() !== '') {
-            await loadModel(); // Load the model when sending a message
-
             const userMessage = { text: currentMessage, sender: "user" };
             const updatedTabs = chatTabs.map((tab, index) => {
                 if (index === currentTab) {

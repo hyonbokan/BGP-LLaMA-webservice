@@ -39,7 +39,7 @@ const Navbar = () => {
             </Button> */}
             <Button color='inherit' sx={sx}>
               <Link to="/bgp_chat">
-                BGP-LLaMA Code-Gen
+                BGP-LLaMA
               </Link>
             </Button>
             <Button color='inherit' sx={sx}>

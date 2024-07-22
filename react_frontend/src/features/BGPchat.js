@@ -18,27 +18,33 @@ const BGPchat = () => {
     const [partialMessage, setPartialMessage] = useState('');
     const [isGenerating, setIsGenerating] = useState(false);
 
-    useEffect(() => {
-        axiosInstance.post('load_model')
-            .then(response => {
-                console.log(response.data);
-                setIsLoadingModel(false);
-            })
-            .catch(error => {
-                console.error('Error loading model:', error);
-                setIsLoadingModel(false);
-            });
 
+    useEffect(() => {
         return () => {
-            axiosInstance.post('unload_model')
-                .then(response => {
-                    console.log('Model unloaded successfully:', response.data);
-                })
-                .catch(error => {
-                    console.error('Error unloading model:', error);
-                });
+            unloadModel();
         };
     }, []);
+
+    const loadModel = async () => {
+        try {
+            setIsLoadingModel(true);
+            const response = await axiosInstance.post('load_model');
+            console.log(response.data);
+            setIsLoadingModel(false);
+        } catch (error) {
+            console.error('Error loading model:', error);
+            setIsLoadingModel(false);
+        }
+    };
+
+    const unloadModel = async () => {
+        try {
+            const response = await axiosInstance.post('unload_model');
+            console.log('Model unloaded successfully:', response.data);
+        } catch (error) {
+            console.error('Error unloading model:', error);
+        }
+    }
 
     const handleNewChat = () => {
         const newChatId = chatTabs.length + 1;
@@ -56,8 +62,10 @@ const BGPchat = () => {
         }
     };
 
-    const handleSendMessage = () => {
+    const handleSendMessage = async () => {
         if (currentMessage.trim() !== '') {
+            await loadModel(); // Load the model when sending a message
+
             const userMessage = { text: currentMessage, sender: "user" };
             const updatedTabs = chatTabs.map((tab, index) => {
                 if (index === currentTab) {

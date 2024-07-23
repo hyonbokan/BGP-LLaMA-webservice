@@ -196,6 +196,7 @@ def load_model():
         if model is None or tokenizer is None or streamer is None:
             try:
                 model_id = 'hyonbokan/BGPStream13-10k-cutoff-1024-max-2048'
+                # model_id = 'meta-llama/Llama-2-7b-chat-hf'
                 hf_auth = os.environ.get('hf_token')
 
                 model_config = AutoConfig.from_pretrained(
@@ -215,9 +216,10 @@ def load_model():
                 )
 
                 tokenizer.pad_token = tokenizer.eos_token
+                tokenizer.pad_token_id = tokenizer.eos_token_id
                 tokenizer.padding_side = "right"
 
-                streamer = TextIteratorStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
+                streamer = TextIteratorStreamer(tokenizer, skip_prompt=True, skip_special_tokens=False)
                 transformers.logging.set_verbosity(transformers.logging.CRITICAL)
 
                 logging("Model loaded successfully")
@@ -233,7 +235,7 @@ def unload_model():
         model = None
         tokenizer = None
         streamer = None
-        transformers.logging.set_verbosity(transformers.logging.WARNING)
+        # transformers.logging.set_verbosity(transformers.logging.WARNING)
         logging.info("Model unloaded successfully")
 
 @csrf_exempt
@@ -283,8 +285,6 @@ def stream_response_generator(query):
 def bgp_llama(request):
     query = request.GET.get('query', '')
     return StreamingHttpResponse(stream_response_generator(query), content_type="text/event-stream")
-
-
 
 
 

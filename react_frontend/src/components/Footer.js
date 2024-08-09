@@ -22,8 +22,6 @@ const Footer = () => {
     
     const iconButtonStyle = { color: 'white', padding: '12px', };
 
-
-
     return (
         <Box component='footer' sx={{ backgroundColor: '#1A202C', padding: 5, marginTop: 2,}}>
             <Grid container sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -59,8 +57,8 @@ const Footer = () => {
 
                 <Grid item xs={12} sm={2}>
                     <Typography variant="subtitle1" sx={ titleFontStyle } gutterBottom>Learn</Typography>
-                    <Link href="#" underline="hover" sx={ textFontStyle }>Paper</Link><br />
-                    <Link href="#" underline="hover" sx={ textFontStyle }>Tutotial</Link>
+                    <Link href="https://ieeexplore.ieee.org/document/10583947/authors#authors" underline="hover" sx={ textFontStyle }>Paper</Link><br />
+                    <Link href="https://github.com/hyonbokan/LLM-research" underline="hover" sx={ textFontStyle }>Tutotial</Link>
                 </Grid>
 
                 <Grid item xs={12} sm={2}>

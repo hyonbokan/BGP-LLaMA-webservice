@@ -5,7 +5,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Navbar from '../components/Navbar';
 import axiosInstance from '../utils/axiosInstance';
 
-const BGPchat = () => {
+const BGPchatCopy = () => {
     const [currentMessage, setCurrentMessage] = useState('');
     const [eventSource, setEventSource] = useState(null);
     const [chatTabs, setChatTabs] = useState([{ id: 1, label: 'Chat 1', messages: [{ text: "Welcome to BGP-LLaMA Chat!", sender: "system" }] }]);
@@ -322,4 +322,4 @@ const BGPchat = () => {
     );
 };
 
-export default BGPchat;
+export default BGPchatCopy;

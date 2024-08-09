@@ -4,7 +4,6 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.middleware.csrf import get_token
 from .models import *
-# from .model_loader import ModelContainer 
 from .serializer import *
 import json
 from threading import Thread, Lock
@@ -18,23 +17,13 @@ import transformers
 import tempfile
 import logging
 from django.conf import settings
+import time
+from bgp_utils import extract_asn, extract_times, collect_historical_data, collect_real_time_data
 
 @require_http_methods(["GET"])
 def get_csrf_token(request):
     csrf_token = get_token(request)
     return JsonResponse({'csrfToken': csrf_token})
-
-import os
-import json
-import tempfile
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer, TrainingArguments
-from transformers import logging as transformers_logging
-from datasets import load_dataset
-from peft import LoraConfig, get_peft_model
-import torch.cuda as cuda
-from django.conf import settings
 
 @csrf_exempt
 def finetune_model(request):
@@ -184,18 +173,26 @@ def finetune_model(request):
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-
 model = None
 tokenizer = None
 streamer = None
 model_lock = Lock()
+@csrf_exempt
+def unload_model_endpoint(request):
+    if request.method == 'POST':
+        try:
+            unload_model()
+            return JsonResponse({'status': 'Model unloaded successfully'})
+        except Exception as e:
+            return JsonResponse({'status': 'Failed to unload model', 'error': str(e)}, status=500)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 def load_model():
     global model, tokenizer, streamer
     with model_lock:
         if model is None or tokenizer is None or streamer is None:
             try:
-                model_id = 'hyonbokan/BGPStream13-10k-cutoff-1024-max-2048'
+                model_id = "hyonbokan/BGP-LLaMA13-BGPStream5k-cutoff-1024-max-2048-fpFalse"
                 # model_id = 'meta-llama/Llama-2-7b-chat-hf'
                 hf_auth = os.environ.get('hf_token')
 
@@ -248,16 +245,20 @@ def load_model_endpoint(request):
             return JsonResponse({'status': 'Failed to load model', 'error': str(e)}, status=500)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-@csrf_exempt
-def unload_model_endpoint(request):
-    if request.method == 'POST':
-        try:
-            unload_model()
-            return JsonResponse({'status': 'Model unloaded successfully'})
-        except Exception as e:
-            return JsonResponse({'status': 'Failed to unload model', 'error': str(e)}, status=500)
-    return JsonResponse({'error': 'Invalid request method'}, status=405)
-
+def check_query(query):
+    asn = extract_asn(query)
+    from_time, until_time = extract_times(query)
+    if "real-time" not in query.lower():
+        start_time_match = re.search(r'\b(\d{4}-\d{1,2}-\d{1,2} \d{2}:\d{2}:\d{2})\b', query)
+        start_time_str = start_time_match.group(1) if start_time_match else None
+        print("pybgpstream")
+        Thread(target=collect_historical_data, args=(asn, from_time, until_time)).start()
+    elif "real-time" in query.lower():
+        print("\n Begin real-time collection and analysis")
+        Thread(target=collect_real_time_data, args=(asn,)).start()
+    else:
+        print("regular query")
+        
 
 def stream_response_generator(query):
     global model, tokenizer, streamer
@@ -265,6 +266,12 @@ def stream_response_generator(query):
         yield 'data: {"error": "No query provided"}\n\n'
     else:
         print(f'user query: {query}\n')
+        check_query(query)
+        
+        # Wait for data collection to complete before generating output
+        while collect_historical_data or collect_real_time_data:
+            time.sleep(1)
+        
         inputs = tokenizer([query], return_tensors="pt")
         inputs = {k: v.to(model.device) for k, v in inputs.items()}
 

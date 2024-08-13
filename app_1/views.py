@@ -6,7 +6,7 @@ from django.middleware.csrf import get_token
 from .models import *
 from .serializer import *
 import json
-from threading import Thread, Lock
+from threading import Thread, Lock, Event
 import os
 from transformers import AutoModelForCausalLM, AutoConfig, AutoTokenizer, TrainingArguments, TextIteratorStreamer, logging
 from datasets import load_dataset
@@ -18,7 +18,8 @@ import tempfile
 import logging
 from django.conf import settings
 import time
-from bgp_utils import extract_asn, extract_times, collect_historical_data, collect_real_time_data
+from .bgp_utils import extract_asn, extract_times, collect_historical_data, collect_real_time_data, split_dataframe, preprocess_data
+import re
 
 @require_http_methods(["GET"])
 def get_csrf_token(request):
@@ -177,6 +178,9 @@ model = None
 tokenizer = None
 streamer = None
 model_lock = Lock()
+data_collected_event = Event()
+collected_data = None
+
 @csrf_exempt
 def unload_model_endpoint(request):
     if request.method == 'POST':
@@ -192,8 +196,8 @@ def load_model():
     with model_lock:
         if model is None or tokenizer is None or streamer is None:
             try:
-                model_id = "hyonbokan/BGP-LLaMA13-BGPStream5k-cutoff-1024-max-2048-fpFalse"
-                # model_id = 'meta-llama/Llama-2-7b-chat-hf'
+                # model_id = "hyonbokan/BGP-LLaMA13-BGPStream5k-cutoff-1024-max-2048-fpFalse"
+                model_id = 'meta-llama/Llama-2-7b-chat-hf'
                 hf_auth = os.environ.get('hf_token')
 
                 model_config = AutoConfig.from_pretrained(
@@ -245,23 +249,46 @@ def load_model_endpoint(request):
             return JsonResponse({'status': 'Failed to load model', 'error': str(e)}, status=500)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+def process_dataframe(df):
+    chunks = split_dataframe(df, split_size=20)
+    processed_data = []
+    for chunk in chunks:
+        processed_data.append(preprocess_data(chunk))
+    return processed_data
+
+
 def check_query(query):
+    global collected_data, data_collected_event
+    data_collected_event.clear()  # Reset the event
     asn = extract_asn(query)
     from_time, until_time = extract_times(query)
-    if "real-time" not in query.lower():
-        start_time_match = re.search(r'\b(\d{4}-\d{1,2}-\d{1,2} \d{2}:\d{2}:\d{2})\b', query)
-        start_time_str = start_time_match.group(1) if start_time_match else None
-        print("pybgpstream")
-        Thread(target=collect_historical_data, args=(asn, from_time, until_time)).start()
-    elif "real-time" in query.lower():
+    
+    def collect_historical_wrapper():
+        global collected_data
+        df = collect_historical_data(asn, from_time, until_time)
+        collected_data = process_dataframe(df)
+        data_collected_event.set()  # Signal that data collection is complete
+
+    def collect_real_time_wrapper():
+        global collected_data
+        collect_real_time_data(asn)
+        collected_data = ["Real-time data"]  # Placeholder, replace with actual data processing results
+        data_collected_event.set()  # Signal that data collection is complete
+        
+    if "real-time" in query.lower():
         print("\n Begin real-time collection and analysis")
-        Thread(target=collect_real_time_data, args=(asn,)).start()
+        Thread(target=collect_real_time_wrapper).start()
+    elif "real-time" not in query.lower():
+        print("\n Begin historical data collection and analysis")
+        Thread(target=collect_historical_wrapper).start()
     else:
         print("regular query")
-        
+        collected_data = None
+        data_collected_event.set()  # Signal immediately for regular queries
+
 
 def stream_response_generator(query):
-    global model, tokenizer, streamer
+    global model, tokenizer, streamer, collected_data, data_collected_event
     if not query:
         yield 'data: {"error": "No query provided"}\n\n'
     else:
@@ -269,24 +296,41 @@ def stream_response_generator(query):
         check_query(query)
         
         # Wait for data collection to complete before generating output
-        while collect_historical_data or collect_real_time_data:
-            time.sleep(1)
+        data_collected_event.wait()  # This will block until the event is set
         
-        inputs = tokenizer([query], return_tensors="pt")
-        inputs = {k: v.to(model.device) for k, v in inputs.items()}
+        inputs_text = query
+        if collected_data:
+            for data_chunk in collected_data:
+                inputs_text = f"{query}\n\nAnalyse the collected BGP data:\n{collected_data}"
+                print(f"final prompt with data: {inputs_text}")
+                inputs = tokenizer([inputs_text], return_tensors="pt")
+                inputs = {k: v.to(model.device) for k, v in inputs.items()}
 
+                # Run the generation in a separate thread
+                generation_kwargs = dict(inputs, streamer=streamer, max_new_tokens=512)
+                thread = Thread(target=model.generate, kwargs=generation_kwargs)
+                thread.start()
 
-        # Run the generation in a separate thread
-        generation_kwargs = dict(inputs, streamer=streamer, max_new_tokens=712)
-        thread = Thread(target=model.generate, kwargs=generation_kwargs)
-        thread.start()
+                try:
+                    for new_text in streamer:
+                        yield f'data: {json.dumps({"generated_text": new_text.strip()})}\n\n'
+                except Exception as e:
+                    yield f'data: {json.dumps({"error": str(e)})}\n\n'
+        else:
+            print("\nCollected data: None")
+            inputs = tokenizer([query], return_tensors="pt")
+            inputs = {k: v.to(model.device) for k, v in inputs.items()}
 
-        try:
-            for new_text in streamer:
-                yield f'data: {json.dumps({"generated_text": new_text.strip()})}\n\n'
-        except Exception as e:
-            yield f'data: {json.dumps({"error": str(e)})}\n\n'
+            # Run the generation in a separate thread
+            generation_kwargs = dict(inputs, streamer=streamer, max_new_tokens=512)
+            thread = Thread(target=model.generate, kwargs=generation_kwargs)
+            thread.start()
 
+            try:
+                for new_text in streamer:
+                    yield f'data: {json.dumps({"generated_text": new_text.strip()})}\n\n'
+            except Exception as e:
+                yield f'data: {json.dumps({"error": str(e)})}\n\n'
 
 @require_http_methods(["GET"])
 def bgp_llama(request):

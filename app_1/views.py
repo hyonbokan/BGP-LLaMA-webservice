@@ -178,8 +178,10 @@ model = None
 tokenizer = None
 streamer = None
 model_lock = Lock()
+status_update_event = Event()
 data_collected_event = Event()
 collected_data = None
+
 
 @csrf_exempt
 def unload_model_endpoint(request):
@@ -197,7 +199,7 @@ def load_model():
         if model is None or tokenizer is None or streamer is None:
             try:
                 # model_id = "hyonbokan/BGP-LLaMA13-BGPStream5k-cutoff-1024-max-2048-fpFalse"
-                model_id = 'meta-llama/Llama-2-7b-chat-hf'
+                model_id = 'meta-llama/Llama-2-13b-chat-hf'
                 hf_auth = os.environ.get('hf_token')
 
                 model_config = AutoConfig.from_pretrained(
@@ -249,6 +251,21 @@ def load_model_endpoint(request):
             return JsonResponse({'status': 'Failed to load model', 'error': str(e)}, status=500)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+@require_http_methods(["GET"])
+def status_updates(request):
+    return StreamingHttpResponse(status_update_stream(), content_type='text/event-stream')
+
+
+def status_update_stream():
+    while True:
+        status_update_event.wait()  # Wait until the event is set
+        yield f'data: {json.dumps({"status": collected_data})}\n\n'
+        status_update_event.clear()  # Clear the event after sending the update
+
+@require_http_methods(["GET"])
+def status_updates(request):
+    return StreamingHttpResponse(status_update_stream(), content_type='text/event-stream')
+        
 def process_dataframe(df):
     chunks = split_dataframe(df, split_size=20)
     processed_data = []
@@ -268,23 +285,29 @@ def check_query(query):
         df = collect_historical_data(asn, from_time, until_time)
         collected_data = process_dataframe(df)
         data_collected_event.set()  # Signal that data collection is complete
+        status_update_event.set()  # Send status update
 
     def collect_real_time_wrapper():
         global collected_data
         collect_real_time_data(asn)
         collected_data = ["Real-time data"]  # Placeholder, replace with actual data processing results
         data_collected_event.set()  # Signal that data collection is complete
+        status_update_event.set()
         
     if "real-time" in query.lower():
         print("\n Begin real-time collection and analysis")
+        status_update_event.set() # Send status update
         Thread(target=collect_real_time_wrapper).start()
+        
     elif "real-time" not in query.lower():
         print("\n Begin historical data collection and analysis")
+        status_update_event.set() 
         Thread(target=collect_historical_wrapper).start()
     else:
         print("regular query")
         collected_data = None
         data_collected_event.set()  # Signal immediately for regular queries
+        status_update_event.set() 
 
 
 def stream_response_generator(query):
@@ -301,7 +324,8 @@ def stream_response_generator(query):
         inputs_text = query
         if collected_data:
             for data_chunk in collected_data:
-                inputs_text = f"{query}\n\nAnalyse the collected BGP data:\n{collected_data}"
+                # inputs_text = f"{query}\n\nAnalyse the collected BGP data:\n{collected_data}"
+                inputs_text = f"{query}\nAnalyse the collected BGP data:\n{collected_data}"
                 print(f"final prompt with data: {inputs_text}")
                 inputs = tokenizer([inputs_text], return_tensors="pt")
                 inputs = {k: v.to(model.device) for k, v in inputs.items()}

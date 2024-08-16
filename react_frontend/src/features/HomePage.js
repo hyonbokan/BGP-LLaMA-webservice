@@ -2,7 +2,7 @@
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { Container, Typography, Button, Grid, Card, CardContent, Box } from '@mui/material';
-
+import { Link } from 'react-router-dom';
 
 const HomePage = () => {
   const cards = [
@@ -37,7 +37,9 @@ const HomePage = () => {
                     BGP-LLaMA is an instruction-finetuned, open-source LLM on BGP routing knowledge and analysis
                     </Typography>
                     <Button variant="contained" color="primary">
-                    Get Started
+                      <Link to="/bgp_chat">
+                        Get Started
+                      </Link>
                     </Button>
                 </Container>
         

@@ -33,20 +33,20 @@ def build_routes_as(routes):
 
 def extract_features(index, routes, old_routes_as, target_asn, temp_counts):
     features = {
-        "timestamp": None,
-        "asn": target_asn,
-        "num_routes": 0,
-        "num_new_routes": 0,
-        "num_withdrawals": 0,
-        "num_origin_changes": 0,
-        "num_route_changes": 0,
-        "max_path_length": 0,
-        "avg_path_length": 0,
-        "max_edit_distance": 0,
-        "avg_edit_distance": 0,
-        "num_announcements": temp_counts["num_announcements"],
-        "num_withdrawals": temp_counts["num_withdrawals"],
-        "num_unique_prefixes_announced": 0
+        "Timestamp": None,
+        "Autonomous System Number": target_asn,
+        "Number of Routes": 0,  
+        "Number of New Routes": 0,  
+        "Number of Withdrawals": 0,  
+        "Number of Origin Changes": 0,  
+        "Number of Route Changes": 0,  
+        "Maximum Path Length": 0,  
+        "Average Path Length": 0,  
+        "Maximum Edit Distance": 0,  
+        "Average Edit Distance": 0,  
+        "Number of Announcements": temp_counts["Number of Announcements"],  
+        "Total Withdrawals": temp_counts["Total Withdrawals"],  
+        "Number of Unique Prefixes Announced": 0  
     }
 
     routes_as = build_routes_as(routes)
@@ -63,35 +63,35 @@ def extract_features(index, routes, old_routes_as, target_asn, temp_counts):
                     path_old = old_routes_as[target_asn][prefix]
 
                     if path != path_old:
-                        features["num_route_changes"] += 1
+                        features["Number of Route Changes"] += 1
 
                     if path[-1] != path_old[-1]:
-                        features["num_origin_changes"] += 1
+                        features["Number of Origin Changes"] += 1
 
                     path_length = len(path)
                     path_old_length = len(path_old)
 
                     sum_path_length += path_length
-                    if path_length > features["max_path_length"]:
-                        features["max_path_length"] = path_length
+                    if path_length > features["Maximum Path Length"]:
+                        features["Maximum Path Length"] = path_length
 
                     edist = editdistance.eval(path, path_old)
                     sum_edit_distance += edist
-                    if edist > features["max_edit_distance"]:
-                        features["max_edit_distance"] = edist
+                    if edist > features["Maximum Edit Distance"]:
+                        features["Maximum Edit Distance"] = edist
                 else:
-                    features["num_new_routes"] += 1
+                    features["Number of New Routes"] += 1
 
-            features["num_routes"] = num_routes
-            features["avg_path_length"] = sum_path_length / num_routes
-            features["avg_edit_distance"] = sum_edit_distance / num_routes
+            features["Number of Routes"] = num_routes
+            features["Average Path Length"] = sum_path_length / num_routes
+            features["Average Edit Distance"] = sum_edit_distance / num_routes
 
         if target_asn in old_routes_as:
             for prefix in old_routes_as[target_asn].keys():
                 if not (target_asn in routes_as and prefix in routes_as[target_asn]):
-                    features["num_withdrawals"] += 1
+                    features["Total Withdrawals"] += 1
 
-    features["num_unique_prefixes_announced"] = len(routes_as.get(target_asn, {}))
+    features["Number of Unique Prefixes Announced"] = len(routes_as.get(target_asn, {}))
 
     return features, routes_as
 
@@ -110,8 +110,8 @@ def extract_bgp_data(target_asn, from_time, until_time, collectors=['rrc00']):
     index = 0
 
     temp_counts = {
-        "num_announcements": 0,
-        "num_withdrawals": 0
+        "Number of Announcements": 0,
+        "Total Withdrawals": 0
     }
 
     record_count = 0
@@ -126,15 +126,15 @@ def extract_bgp_data(target_asn, from_time, until_time, collectors=['rrc00']):
 
             if elem_time >= current_window_start + timedelta(minutes=5):
                 features, old_routes_as = extract_features(index, routes, old_routes_as, target_asn, temp_counts)
-                features['timestamp'] = current_window_start
+                features['Timestamp'] = current_window_start
                 all_features.append(features)
 
                 current_window_start += timedelta(minutes=5)
                 routes = {}
                 index += 1
                 temp_counts = {
-                    "num_announcements": 0,
-                    "num_withdrawals": 0
+                    "Number of Announcements": 0,
+                    "Total Withdrawals": 0
                 }
 
             prefix = update.get("prefix")
@@ -153,19 +153,19 @@ def extract_bgp_data(target_asn, from_time, until_time, collectors=['rrc00']):
                 path = update['as-path'].split()
                 if path[-1] == target_asn:
                     routes[prefix][collector][peer_asn] = path
-                    temp_counts["num_announcements"] += 1
+                    temp_counts["Number of Announcements"] += 1
             elif elem.type == 'W':
                 if prefix in routes and collector in routes[prefix]:
                     if peer_asn in routes[prefix][collector]:
                         if routes[prefix][collector][peer_asn][-1] == target_asn:
                             routes[prefix][collector].pop(peer_asn, None)
-                            temp_counts["num_withdrawals"] += 1
+                            temp_counts["Total Withdrawals"] += 1
 
     # print(f"Total records processed: {record_count}")
     # print(f"Total elements processed: {element_count}")
-
+    
     features, old_routes_as = extract_features(index, routes, old_routes_as, target_asn, temp_counts)
-    features['timestamp'] = current_window_start
+    features['Timestamp'] = current_window_start
     all_features.append(features)
 
     df_features = pd.json_normalize(all_features, sep='_').fillna(0)
@@ -173,8 +173,10 @@ def extract_bgp_data(target_asn, from_time, until_time, collectors=['rrc00']):
 
     return df_features
 
+
 def collect_historical_data(asn, from_time_str, until_time_str=None):
     # Collect and analyze data for AS8342 from 2022-03-28 13:00:00 to 2022-03-28 14:00:00
+    # 1. What is the number of unique prefixes announced by AS8342 during the monitoring period? 2. What is the number of routes announced by AS8342 during the monitoring period? 3. What is the number of new routes announced by AS8342 during the monitoring period? 4. What is the number of withdrawals made by AS8342 during the monitoring period? 5. What is the maximum path length observed in the BGP updates received from AS8342 during the monitoring period? 6. What is the average path length observed in the BGP updates received from AS8342 during the monitoring period? 7. What is the maximum edit distance observed in the BGP updates received from AS8342 during the monitoring period? 8. What is the average edit distance observed in the BGP updates received from AS8342 during the monitoring period? 9. How many announcements were made by AS8342 during the monitoring period? 10. How many unique prefixes were announced by AS8342 during the monitoring period?
     if asn is None or from_time_str is None:
         print("ASn or start time not provided. Exiting historical data collection.")
         return
@@ -241,7 +243,7 @@ def preprocess_data(data):
     Returns:
     dict: A dictionary in the specified JSON format.
     """
-    input_seg = "[TLE] The section is related to a specific time period of BGP monitoring. Perform BGP analysis with the given data. [TAB] col: | " + " | ".join(data.columns) + " |"
+    input_seg = "[TLE] The section is related to a specific time period of BGP monitoring. [TAB] col: | " + " | ".join(data.columns) + " |"
     
     for idx, row in data.iterrows():
         input_seg += " row {}: | ".format(idx+1) + " | ".join([str(x) for x in row.values]) + " | [SEP]"

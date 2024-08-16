@@ -1,0 +1,11 @@
+Collect and analyze data for AS8342 from 2022-03-28 13:00:00 to 2022-03-28 14:00:00.
+What is the number of unique prefixes announced by AS8342 during the monitoring period?
+What is the number of routes announced by AS8342 during the monitoring period?
+What is the number of new routes announced by AS8342 during the monitoring period?
+What is the number of withdrawals made by AS8342 during the monitoring period?
+What is the maximum path length observed in the BGP updates received from AS8342 during the monitoring period?
+What is the average path length observed in the BGP updates received from AS8342 during the monitoring period?
+What is the maximum edit distance observed in the BGP updates received from AS8342 during the monitoring period?
+What is the average edit distance observed in the BGP updates received from AS8342 during the monitoring period?
+How many announcements were made by AS8342 during the monitoring period?
+How many unique prefixes were announced by AS8342 during the monitoring period?

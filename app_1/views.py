@@ -10,169 +10,167 @@ from threading import Thread, Lock, Event
 import os
 from transformers import AutoModelForCausalLM, AutoConfig, AutoTokenizer, TrainingArguments, TextIteratorStreamer, logging
 from datasets import load_dataset
-from trl import SFTTrainer
+# from trl import SFTTrainer
 from torch import cuda
 from peft import LoraConfig
 import transformers
 import tempfile
 import logging
 from django.conf import settings
-import time
 from .bgp_utils import extract_asn, extract_times, collect_historical_data, collect_real_time_data, split_dataframe, preprocess_data
-import re
 
 @require_http_methods(["GET"])
 def get_csrf_token(request):
     csrf_token = get_token(request)
     return JsonResponse({'csrfToken': csrf_token})
 
-@csrf_exempt
-def finetune_model(request):
-    if request.method == 'POST':
-        # Use request.POST and request.FILES to handle form data and file uploads
-        model_id = request.POST.get('model_id', 'meta-llama/Llama-2-13b-chat-hf')
-        finetuned_model_name = request.POST.get('finetuned_model_name', 'finetuned-llm')
-        train_test_split = int(request.POST.get('test_samples', 1300))
-        datasets = json.loads(request.POST.get('datasets', '[]'))
-        hyperparameters = json.loads(request.POST.get('hyperparameters', '{}'))
-        user_dataset = request.FILES.get('user_dataset', None)
-        hf_token = os.environ.get('HF_TOKEN')  # Ensure HF_TOKEN is set
+# @csrf_exempt
+# def finetune_model(request):
+#     if request.method == 'POST':
+#         # Use request.POST and request.FILES to handle form data and file uploads
+#         model_id = request.POST.get('model_id', 'meta-llama/Llama-2-13b-chat-hf')
+#         finetuned_model_name = request.POST.get('finetuned_model_name', 'finetuned-llm')
+#         train_test_split = int(request.POST.get('test_samples', 1300))
+#         datasets = json.loads(request.POST.get('datasets', '[]'))
+#         hyperparameters = json.loads(request.POST.get('hyperparameters', '{}'))
+#         user_dataset = request.FILES.get('user_dataset', None)
+#         hf_token = os.environ.get('HF_TOKEN')  # Ensure HF_TOKEN is set
 
-        # Extract hyperparameters
-        output_dir = hyperparameters.get('output_dir', "./output")
-        batch_size = hyperparameters.get('batch_size', 4)
-        gradient_accumulation_steps = hyperparameters.get('gradient_accumulation_steps', 1)
-        optim = hyperparameters.get('optim', "paged_adamw_32bit")
-        logging_steps = hyperparameters.get('logging_steps', 200)
-        learning_rate = hyperparameters.get('learning_rate', 1e-4)
-        max_grad_norm = hyperparameters.get('max_grad_norm', 0.3)
-        max_steps = hyperparameters.get('max_steps', 5000)
-        warmup_ratio = hyperparameters.get('warmup_ratio', 0.05)
-        lora_alpha = hyperparameters.get('lora_alpha', 16)
-        lora_dropout = hyperparameters.get('lora_dropout', 0.1)
-        lora_r = hyperparameters.get('lora_r', 64)
-        num_train_epochs = hyperparameters.get('num_train_epochs', 3.0)
-        lr_scheduler_type = hyperparameters.get('lr_scheduler_type', 'cosine')
+#         # Extract hyperparameters
+#         output_dir = hyperparameters.get('output_dir', "./output")
+#         batch_size = hyperparameters.get('batch_size', 4)
+#         gradient_accumulation_steps = hyperparameters.get('gradient_accumulation_steps', 1)
+#         optim = hyperparameters.get('optim', "paged_adamw_32bit")
+#         logging_steps = hyperparameters.get('logging_steps', 200)
+#         learning_rate = hyperparameters.get('learning_rate', 1e-4)
+#         max_grad_norm = hyperparameters.get('max_grad_norm', 0.3)
+#         max_steps = hyperparameters.get('max_steps', 5000)
+#         warmup_ratio = hyperparameters.get('warmup_ratio', 0.05)
+#         lora_alpha = hyperparameters.get('lora_alpha', 16)
+#         lora_dropout = hyperparameters.get('lora_dropout', 0.1)
+#         lora_r = hyperparameters.get('lora_r', 64)
+#         num_train_epochs = hyperparameters.get('num_train_epochs', 3.0)
+#         lr_scheduler_type = hyperparameters.get('lr_scheduler_type', 'cosine')
 
-        def load_model(model_id, hf_auth):
-            model_config = AutoConfig.from_pretrained(model_id, use_auth_token=hf_auth)
-            bnb_config = transformers.BitsAndBytesConfig(load_in_8bit=True)
+#         def load_model(model_id, hf_auth):
+#             model_config = AutoConfig.from_pretrained(model_id, use_auth_token=hf_auth)
+#             bnb_config = transformers.BitsAndBytesConfig(load_in_8bit=True)
 
-            model = AutoModelForCausalLM.from_pretrained(
-                model_id,
-                trust_remote_code=True,
-                config=model_config,
-                quantization_config=bnb_config,
-                device_map='auto',
-                use_auth_token=hf_auth
-            )
-            model.eval()
-            device = f'cuda:{cuda.current_device()}' if cuda.is_available() else 'cpu'
-            print(f"Model loaded on {device}")
-            return model
+#             model = AutoModelForCausalLM.from_pretrained(
+#                 model_id,
+#                 trust_remote_code=True,
+#                 config=model_config,
+#                 quantization_config=bnb_config,
+#                 device_map='auto',
+#                 use_auth_token=hf_auth
+#             )
+#             model.eval()
+#             device = f'cuda:{cuda.current_device()}' if cuda.is_available() else 'cpu'
+#             print(f"Model loaded on {device}")
+#             return model
 
-        def load_tokenizer(model_id, hf_auth):
-            tokenizer = AutoTokenizer.from_pretrained(model_id, use_auth_token=hf_auth)
-            tokenizer.pad_token = tokenizer.eos_token
-            tokenizer.padding_side = "right"
-            return tokenizer
+#         def load_tokenizer(model_id, hf_auth):
+#             tokenizer = AutoTokenizer.from_pretrained(model_id, use_auth_token=hf_auth)
+#             tokenizer.pad_token = tokenizer.eos_token
+#             tokenizer.padding_side = "right"
+#             return tokenizer
 
-        def setup_training(data, tokenizer, model):
-            train_val = data["train"].train_test_split(test_size=train_test_split, shuffle=True, seed=42)
+#         def setup_training(data, tokenizer, model):
+#             train_val = data["train"].train_test_split(test_size=train_test_split, shuffle=True, seed=42)
 
-            def generate_and_tokenize_prompt(data_point):
-                prompt = f"""Below is an instruction that describes a task, paired with an output that provides the completion of the task.
-                ### Instruction:
-                {data_point["instruction"]}
-                ### Response:
-                {data_point["output"]}"""
+#             def generate_and_tokenize_prompt(data_point):
+#                 prompt = f"""Below is an instruction that describes a task, paired with an output that provides the completion of the task.
+#                 ### Instruction:
+#                 {data_point["instruction"]}
+#                 ### Response:
+#                 {data_point["output"]}"""
 
-                result = tokenizer(prompt, truncation=True, max_length=2048, padding=False, return_tensors=None)
-                if (result["input_ids"][-1] != tokenizer.eos_token_id and len(result["input_ids"]) < 2048):
-                    result["input_ids"].append(tokenizer.eos_token_id)
-                    result["attention_mask"].append(1)
-                result["labels"] = result["input_ids"].copy()
-                return result
+#                 result = tokenizer(prompt, truncation=True, max_length=2048, padding=False, return_tensors=None)
+#                 if (result["input_ids"][-1] != tokenizer.eos_token_id and len(result["input_ids"]) < 2048):
+#                     result["input_ids"].append(tokenizer.eos_token_id)
+#                     result["attention_mask"].append(1)
+#                 result["labels"] = result["input_ids"].copy()
+#                 return result
 
-            train_data = train_val["train"].map(generate_and_tokenize_prompt, batched=True)
-            val_data = train_val["test"].map(generate_and_tokenize_prompt, batched=True)
+#             train_data = train_val["train"].map(generate_and_tokenize_prompt, batched=True)
+#             val_data = train_val["test"].map(generate_and_tokenize_prompt, batched=True)
 
-            training_arguments = TrainingArguments(
-                output_dir=output_dir,
-                per_device_train_batch_size=batch_size,
-                gradient_accumulation_steps=gradient_accumulation_steps,
-                optim=optim,
-                logging_steps=logging_steps,
-                learning_rate=learning_rate,
-                max_grad_norm=max_grad_norm,
-                max_steps=max_steps,
-                warmup_ratio=warmup_ratio,
-                num_train_epochs=num_train_epochs,
-                lr_scheduler_type=lr_scheduler_type,
-                group_by_length=True
-            )
+#             training_arguments = TrainingArguments(
+#                 output_dir=output_dir,
+#                 per_device_train_batch_size=batch_size,
+#                 gradient_accumulation_steps=gradient_accumulation_steps,
+#                 optim=optim,
+#                 logging_steps=logging_steps,
+#                 learning_rate=learning_rate,
+#                 max_grad_norm=max_grad_norm,
+#                 max_steps=max_steps,
+#                 warmup_ratio=warmup_ratio,
+#                 num_train_epochs=num_train_epochs,
+#                 lr_scheduler_type=lr_scheduler_type,
+#                 group_by_length=True
+#             )
 
-            peft_config = LoraConfig(
-                lora_alpha=lora_alpha,
-                lora_dropout=lora_dropout,
-                r=lora_r,
-                bias="none",
-                task_type="CAUSAL_LM"
-            )
+#             peft_config = LoraConfig(
+#                 lora_alpha=lora_alpha,
+#                 lora_dropout=lora_dropout,
+#                 r=lora_r,
+#                 bias="none",
+#                 task_type="CAUSAL_LM"
+#             )
 
-            data_collator = transformers.DataCollatorForSeq2Seq(
-                tokenizer, return_tensors="pt", padding=True
-            )
+#             data_collator = transformers.DataCollatorForSeq2Seq(
+#                 tokenizer, return_tensors="pt", padding=True
+#             )
 
-            trainer = SFTTrainer(
-                model=model,
-                args=training_arguments,
-                train_dataset=train_data,
-                eval_dataset=val_data,
-                tokenizer=tokenizer,
-                peft_config=peft_config,
-                dataset_text_field="output",
-                data_collator=data_collator,
-            )
+#             trainer = SFTTrainer(
+#                 model=model,
+#                 args=training_arguments,
+#                 train_dataset=train_data,
+#                 eval_dataset=val_data,
+#                 tokenizer=tokenizer,
+#                 peft_config=peft_config,
+#                 dataset_text_field="output",
+#                 data_collator=data_collator,
+#             )
 
-            return trainer
+#             return trainer
 
-        # Prepare dataset files
-        combined_data = []
+#         # Prepare dataset files
+#         combined_data = []
 
-        # Load and combine dataset files
-        for dataset_url in datasets:
-            dataset_path = os.path.join(settings.MEDIA_ROOT, dataset_url)
-            with open(dataset_path, 'r') as file:
-                data = json.load(file)
-                combined_data.extend(data)  # Assuming the datasets are lists of records
+#         # Load and combine dataset files
+#         for dataset_url in datasets:
+#             dataset_path = os.path.join(settings.MEDIA_ROOT, dataset_url)
+#             with open(dataset_path, 'r') as file:
+#                 data = json.load(file)
+#                 combined_data.extend(data)  # Assuming the datasets are lists of records
 
-        if user_dataset:
-            with tempfile.NamedTemporaryFile(delete=False) as tmp:
-                tmp.write(user_dataset.read())
-                tmp.flush()
-                with open(tmp.name, 'r') as user_file:
-                    user_data = json.load(user_file)
-                    combined_data.extend(user_data)  # Assuming the user dataset is also a list of records
+#         if user_dataset:
+#             with tempfile.NamedTemporaryFile(delete=False) as tmp:
+#                 tmp.write(user_dataset.read())
+#                 tmp.flush()
+#                 with open(tmp.name, 'r') as user_file:
+#                     user_data = json.load(user_file)
+#                     combined_data.extend(user_data)  # Assuming the user dataset is also a list of records
 
-        # Write combined data to a temporary file
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".json", mode='w') as combined_file:
-            json.dump(combined_data, combined_file)
-            combined_file_path = combined_file.name
+#         # Write combined data to a temporary file
+#         with tempfile.NamedTemporaryFile(delete=False, suffix=".json", mode='w') as combined_file:
+#             json.dump(combined_data, combined_file)
+#             combined_file_path = combined_file.name
 
-        data = load_dataset("json", data_files=combined_file_path)
+#         data = load_dataset("json", data_files=combined_file_path)
 
-        # Load model and tokenizer
-        model = load_model(model_id, hf_token)
-        tokenizer = load_tokenizer(model_id, hf_token)
+#         # Load model and tokenizer
+#         model = load_model(model_id, hf_token)
+#         tokenizer = load_tokenizer(model_id, hf_token)
 
-        # Setup and start training
-        trainer = setup_training(data, tokenizer, model)
-        trainer.train()
+#         # Setup and start training
+#         trainer = setup_training(data, tokenizer, model)
+#         trainer.train()
 
-        return JsonResponse({'status': 'Fine-tuning started'})
+#         return JsonResponse({'status': 'Fine-tuning started'})
 
-    return JsonResponse({'error': 'Invalid request method'}, status=405)
+#     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 model = None
 tokenizer = None
@@ -199,7 +197,8 @@ def load_model():
         if model is None or tokenizer is None or streamer is None:
             try:
                 # model_id = "hyonbokan/BGP-LLaMA13-BGPStream5k-cutoff-1024-max-2048-fpFalse"
-                model_id = 'meta-llama/Llama-2-13b-chat-hf'
+                # model_id = 'meta-llama/Llama-2-13b-chat-hf'
+                model_id = 'meta-llama/Llama-2-7b-chat-hf'
                 hf_auth = os.environ.get('hf_token')
 
                 model_config = AutoConfig.from_pretrained(
@@ -289,8 +288,8 @@ def check_query(query):
 
     def collect_real_time_wrapper():
         global collected_data
-        collect_real_time_data(asn)
-        collected_data = ["Real-time data"]  # Placeholder, replace with actual data processing results
+        # collected_data = ["No data collected only say that "]
+        collected_data = collect_real_time_data(asn)
         data_collected_event.set()  # Signal that data collection is complete
         status_update_event.set()
         
@@ -312,6 +311,13 @@ def check_query(query):
 
 def stream_response_generator(query):
     global model, tokenizer, streamer, collected_data, data_collected_event
+    SYSTEM_PROMPT = """You are an AI assistant that answers questions in a friendly manner, based on the given source BGP data. Here are some rules you always follow:
+- Generate human readable output, avoid creating output with gibberish text.
+- Generate only the requested output, don't include any other language before or after the requested output.
+- Never say thank you, that you are happy to help, that you are an AI agent, etc. Just answer directly.
+- Generate professional language typically used in business documents in North America.
+- Never generate offensive or foul language.
+"""
     if not query:
         yield 'data: {"error": "No query provided"}\n\n'
     else:
@@ -322,10 +328,10 @@ def stream_response_generator(query):
         data_collected_event.wait()  # This will block until the event is set
         
         inputs_text = query
-        if collected_data:
-            for data_chunk in collected_data:
+        if not collected_data.empty:
+            for _ in collected_data:
                 # inputs_text = f"{query}\n\nAnalyse the collected BGP data:\n{collected_data}"
-                inputs_text = f"{query}\nAnalyse the collected BGP data:\n{collected_data}"
+                inputs_text = f"{SYSTEM_PROMPT} Here is the query:{query}\nHere is the collected BGP data:\n{collected_data}"
                 print(f"final prompt with data: {inputs_text}")
                 inputs = tokenizer([inputs_text], return_tensors="pt")
                 inputs = {k: v.to(model.device) for k, v in inputs.items()}
@@ -341,8 +347,10 @@ def stream_response_generator(query):
                 except Exception as e:
                     yield f'data: {json.dumps({"error": str(e)})}\n\n'
         else:
-            print("\nCollected data: None")
-            inputs = tokenizer([query], return_tensors="pt")
+            print(f"\nCollected data: {collected_data}")
+            inputs_text = f"{SYSTEM_PROMPT} Here is the query:{query}\nFirst state that due to an error, BGP data cannot be collected. Then address the query"
+            print(f"final prompt with data: {inputs_text}")
+            inputs = tokenizer([inputs_text], return_tensors="pt")
             inputs = {k: v.to(model.device) for k, v in inputs.items()}
 
             # Run the generation in a separate thread
@@ -360,7 +368,6 @@ def stream_response_generator(query):
 def bgp_llama(request):
     query = request.GET.get('query', '')
     return StreamingHttpResponse(stream_response_generator(query), content_type="text/event-stream")
-
 
 
 def download_file_with_query(request):

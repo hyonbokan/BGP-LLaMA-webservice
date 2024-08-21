@@ -174,7 +174,6 @@ def extract_bgp_data(target_asn, from_time, until_time):
 
     return df_features
 
-
 def collect_historical_data(asn, from_time_str, until_time_str=None):
     if asn is None or from_time_str is None:
         print("ASn or start time not provided. Exiting historical data collection.")
@@ -199,13 +198,15 @@ def run_real_time_bgpstream(asn, collection_period, return_dict):
     old_routes_as = {}
     routes = {}
     temp_counts = {
-        "Num Announcements": 0,
-        "Num Withdrawals": 0
+        "Number of Announcements": 0,
+        "Total Withdrawals": 0
     }
     
     try:
         for rec in stream.records():
             current_time = datetime.utcnow()
+            # print(f"Current Time: {current_time}, Window Start: {current_window_start}")
+            
             if time.time() - start_time >= collection_period:
                 print("Collection period ended. Processing data...")
                 break
@@ -215,10 +216,6 @@ def run_real_time_bgpstream(asn, collection_period, return_dict):
                     as_path = elem.fields.get('as-path', '').split()
                     prefix = elem.fields.get('prefix')
 
-                    if not prefix:
-                        print(f"Skipping record with missing prefix: {elem}")
-                        continue
-
                     if asn in as_path:
                         if elem.type == 'A':
                             if prefix not in routes:
@@ -226,44 +223,47 @@ def run_real_time_bgpstream(asn, collection_period, return_dict):
                             if rec.collector not in routes[prefix]:
                                 routes[prefix][rec.collector] = {}
                             routes[prefix][rec.collector][elem.peer_asn] = as_path
-                            temp_counts["Num Announcements"] += 1
+                            temp_counts["Number of Announcements"] += 1
+                            print(temp_counts)
                         elif elem.type == 'W':
                             if prefix in routes:
                                 if rec.collector in routes[prefix]:
                                     if elem.peer_asn in routes[prefix][rec.collector]:
                                         del routes[prefix][rec.collector][elem.peer_asn]
-                                        temp_counts["Num Withdrawals"] += 1
-
-                if current_time >= current_window_start + timedelta(minutes=1):
-                    features, old_routes_as = extract_features(index, routes, old_routes_as, asn, temp_counts)
-                    features['Timestamp'] = current_window_start
-                    all_features.append(features)
-                    print(f"\n\nUpdate: {all_features}\n\n")
-                    
-                    # Update the return_dict with the current minute's data
-                    return_dict['features_df'] = pd.DataFrame(all_features).dropna(axis=1, how='all')
-
-                    # Reset for the next minute
-                    current_window_start += timedelta(minutes=1)
-                    routes = {}
-                    index += 1
-                    temp_counts = {
-                        "Num Announcements": 0,
-                        "Num Withdrawals": 0
-                    }
-                
+                                        temp_counts["Total Withdrawals"] += 1
+                                        print(temp_counts)
             except KeyError as ke:
                 print(f"KeyError processing record: {ke}. Continuing with the next record.")
-                continue  # Skip the current record and continue with the next
+                continue
             
             except ValueError as ve:
                 print(f"ValueError processing record: {ve}. Continuing with the next record.")
-                continue  # Skip the current record and continue with the next
+                continue
 
             except Exception as e:
                 print(f"Unexpected error processing record: {e}. Continuing with the next record.")
-                continue  # Skip the current record and continue with the next
+                continue
 
+
+            if current_time >= current_window_start + timedelta(minutes=1):
+                print(f"Reached time window: {current_window_start} to {current_time}")
+                features, old_routes_as = extract_features(index, routes, old_routes_as, asn, temp_counts)
+                features['Timestamp'] = current_window_start
+                all_features.append(features)
+                # Calculate the end of the current time window
+                next_window_start = current_window_start + timedelta(minutes=1)
+                print(f"\n\nUpdate from {current_window_start} to {next_window_start}: {all_features[-1]}\n\n")
+                # Update the return_dict with the current minute's data
+                return_dict['features_df'] = pd.DataFrame(all_features).dropna(axis=1, how='all')
+                # Reset for the next minute
+                current_window_start = next_window_start
+                routes = {}
+                index += 1
+                temp_counts = {
+                    "Number of Announcements": 0,
+                    "Total Withdrawals": 0
+                }
+            
         if routes:
             features, old_routes_as = extract_features(index, routes, old_routes_as, asn, temp_counts)
             features['Timestamp'] = current_window_start
@@ -274,6 +274,10 @@ def run_real_time_bgpstream(asn, collection_period, return_dict):
         error_message = f"An error occurred during real-time data collection for {asn}: {e}"
         print(error_message)
         return_dict['error'] = error_message
+        # Still update the return_dict with whatever data has been collected so far
+        if all_features:
+            return_dict['features_df'] = pd.DataFrame(all_features).dropna(axis=1, how='all')
+
 
 
 def collect_real_time_data(asn, collection_period=120):
@@ -288,10 +292,10 @@ def collect_real_time_data(asn, collection_period=120):
 
     start_time = time.time()
 
-    while time.time() - start_time < collection_period + 10:
+    while time.time() - start_time < collection_period + 1:
         if 'error' in return_dict:
             print(f"Real-time data collection encountered an error: {return_dict['error']}")
-            # Do not retry, just log the error and break out of the loop
+            features_df = return_dict.get('features_df', pd.DataFrame())
             break
 
         features_df = return_dict.get('features_df', pd.DataFrame())
@@ -299,7 +303,7 @@ def collect_real_time_data(asn, collection_period=120):
         if not features_df.empty:
             print(f"Updated features_df at {datetime.utcnow()}:\n{features_df.tail(1)}\n")
         
-        time.sleep(60)  # Check for updates every minute
+        time.sleep(10)  # Check for updates more frequently (every 10 seconds)
 
     if p.is_alive():
         print("BGPStream collection timed out. Terminating process...")
@@ -336,9 +340,9 @@ def preprocess_data(data):
     Returns:
     dict: A dictionary in the specified JSON format.
     """
-    input_seg = "[TLE] The section is related to a specific time period of BGP monitoring. [TAB] col: | " + " | ".join(data.columns) + " |"
+    input_seg = "[TAB] col: | " + " | ".join(data.columns) + " |"
     
     for idx, row in data.iterrows():
-        input_seg += " row {}: | ".format(idx+1) + " | ".join([str(x) for x in row.values]) + " | [SEP]"
+        input_seg += "row {}: | ".format(idx+1) + " | ".join([str(x) for x in row.values]) + " | [SEP]"
     
     return input_seg

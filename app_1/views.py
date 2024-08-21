@@ -289,7 +289,8 @@ def check_query(query):
     def collect_real_time_wrapper():
         global collected_data
         # collected_data = ["No data collected only say that "]
-        collected_data = collect_real_time_data(asn)
+        df = collect_real_time_data(asn)
+        collected_data = process_dataframe(df)
         data_collected_event.set()  # Signal that data collection is complete
         status_update_event.set()
         
@@ -312,12 +313,11 @@ def check_query(query):
 def stream_response_generator(query):
     global model, tokenizer, streamer, collected_data, data_collected_event
     SYSTEM_PROMPT = """You are an AI assistant that answers questions in a friendly manner, based on the given source BGP data. Here are some rules you always follow:
-- Generate human readable output, avoid creating output with gibberish text.
-- Generate only the requested output, don't include any other language before or after the requested output.
-- Never say thank you, that you are happy to help, that you are an AI agent, etc. Just answer directly.
-- Generate professional language typically used in business documents in North America.
-- Never generate offensive or foul language.
-"""
+    - The BGP data is owned and collected by you, the AI assistant. You are responsible for its collection and availability. If no data is available, you should apologize and state that you will attempt to gather the data again, rather than asking the user to provide anything.
+    - If BGP data is provided, first carefully read and analyze the values of the features. For example, the assistant should identify and extract specific details like number of announcements, timestamps, and other relevant features.
+    - Never say thank you, that you are happy to help, that you are an AI agent, etc. Just answer directly.
+    - Never generate offensive or foul language.
+    """
     if not query:
         yield 'data: {"error": "No query provided"}\n\n'
     else:
@@ -328,10 +328,9 @@ def stream_response_generator(query):
         data_collected_event.wait()  # This will block until the event is set
         
         inputs_text = query
-        if not collected_data.empty:
+        if collected_data:
             for _ in collected_data:
-                # inputs_text = f"{query}\n\nAnalyse the collected BGP data:\n{collected_data}"
-                inputs_text = f"{SYSTEM_PROMPT} Here is the query:{query}\nHere is the collected BGP data:\n{collected_data}"
+                inputs_text = f"{SYSTEM_PROMPT} Here is the query: {query}\nBGP data:\n{''.join(collected_data)}"
                 print(f"final prompt with data: {inputs_text}")
                 inputs = tokenizer([inputs_text], return_tensors="pt")
                 inputs = {k: v.to(model.device) for k, v in inputs.items()}
@@ -348,7 +347,7 @@ def stream_response_generator(query):
                     yield f'data: {json.dumps({"error": str(e)})}\n\n'
         else:
             print(f"\nCollected data: {collected_data}")
-            inputs_text = f"{SYSTEM_PROMPT} Here is the query:{query}\nFirst state that due to an error, BGP data cannot be collected. Then address the query"
+            inputs_text = f"{SYSTEM_PROMPT} Here is the query: {query}\nFirst state that due to an error, BGP data cannot be collected. Then address the query."
             print(f"final prompt with data: {inputs_text}")
             inputs = tokenizer([inputs_text], return_tensors="pt")
             inputs = {k: v.to(model.device) for k, v in inputs.items()}

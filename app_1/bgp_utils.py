@@ -4,6 +4,7 @@ import time
 from datetime import datetime, timedelta
 import editdistance
 import pandas as pd
+import multiprocessing
 
 def extract_asn(query):
     match = re.search(r'\bAS(\d+)\b', query, re.IGNORECASE)
@@ -48,7 +49,7 @@ def extract_features(index, routes, old_routes_as, target_asn, temp_counts):
         "Total Withdrawals": temp_counts["Total Withdrawals"],  
         "Number of Unique Prefixes Announced": 0  
     }
-
+    
     routes_as = build_routes_as(routes)
 
     if index > 0:
@@ -95,12 +96,12 @@ def extract_features(index, routes, old_routes_as, target_asn, temp_counts):
 
     return features, routes_as
 
-def extract_bgp_data(target_asn, from_time, until_time, collectors=['rrc00']):
+def extract_bgp_data(target_asn, from_time, until_time):
     stream = pybgpstream.BGPStream(
         from_time=from_time,
         until_time=until_time,
         record_type="updates",
-        collectors=collectors
+        collectors=['rrc00']
     )
 
     all_features = []
@@ -175,8 +176,6 @@ def extract_bgp_data(target_asn, from_time, until_time, collectors=['rrc00']):
 
 
 def collect_historical_data(asn, from_time_str, until_time_str=None):
-    # Collect and analyze data for AS8342 from 2022-03-28 13:00:00 to 2022-03-28 14:00:00
-    # 1. What is the number of unique prefixes announced by AS8342 during the monitoring period? 2. What is the number of routes announced by AS8342 during the monitoring period? 3. What is the number of new routes announced by AS8342 during the monitoring period? 4. What is the number of withdrawals made by AS8342 during the monitoring period? 5. What is the maximum path length observed in the BGP updates received from AS8342 during the monitoring period? 6. What is the average path length observed in the BGP updates received from AS8342 during the monitoring period? 7. What is the maximum edit distance observed in the BGP updates received from AS8342 during the monitoring period? 8. What is the average edit distance observed in the BGP updates received from AS8342 during the monitoring period? 9. How many announcements were made by AS8342 during the monitoring period? 10. How many unique prefixes were announced by AS8342 during the monitoring period?
     if asn is None or from_time_str is None:
         print("ASn or start time not provided. Exiting historical data collection.")
         return
@@ -187,36 +186,130 @@ def collect_historical_data(asn, from_time_str, until_time_str=None):
     print(f"Starting historical data collection for ASn: {asn} from {from_time_str} to {until_time_str}")
     return extract_bgp_data(asn, from_time_str, until_time_str)
 
-def collect_real_time_data(asn):
-    # Collect real-time data for AS12345
-    if asn is None:
-        print("ASn not provided. Exiting real-time collection.")
-        return
-
-    print(f"Starting real-time data collection for ASn: {asn}")
-
-    # Create a BGPStream instance
+def run_real_time_bgpstream(asn, collection_period, return_dict):
+    all_features = []
     stream = pybgpstream.BGPStream(
         project="ris-live",
         record_type="updates",
     )
 
-    # Record the start time
     start_time = time.time()
-    collection_period = 60  # Example collection period in seconds
+    current_window_start = datetime.utcnow()
+    index = 0
+    old_routes_as = {}
+    routes = {}
+    temp_counts = {
+        "Num Announcements": 0,
+        "Num Withdrawals": 0
+    }
+    
+    try:
+        for rec in stream.records():
+            current_time = datetime.utcnow()
+            if time.time() - start_time >= collection_period:
+                print("Collection period ended. Processing data...")
+                break
+            
+            try:
+                for elem in rec:
+                    as_path = elem.fields.get('as-path', '').split()
+                    prefix = elem.fields.get('prefix')
 
-    # Start the live stream
-    for rec in stream.records():
-        # Check if the collection period has elapsed
-        if collection_period < time.time() - start_time:
-            print("Collection period ended. Processing data...")
+                    if not prefix:
+                        print(f"Skipping record with missing prefix: {elem}")
+                        continue
+
+                    if asn in as_path:
+                        if elem.type == 'A':
+                            if prefix not in routes:
+                                routes[prefix] = {}
+                            if rec.collector not in routes[prefix]:
+                                routes[prefix][rec.collector] = {}
+                            routes[prefix][rec.collector][elem.peer_asn] = as_path
+                            temp_counts["Num Announcements"] += 1
+                        elif elem.type == 'W':
+                            if prefix in routes:
+                                if rec.collector in routes[prefix]:
+                                    if elem.peer_asn in routes[prefix][rec.collector]:
+                                        del routes[prefix][rec.collector][elem.peer_asn]
+                                        temp_counts["Num Withdrawals"] += 1
+
+                if current_time >= current_window_start + timedelta(minutes=1):
+                    features, old_routes_as = extract_features(index, routes, old_routes_as, asn, temp_counts)
+                    features['Timestamp'] = current_window_start
+                    all_features.append(features)
+                    print(f"\n\nUpdate: {all_features}\n\n")
+                    
+                    # Update the return_dict with the current minute's data
+                    return_dict['features_df'] = pd.DataFrame(all_features).dropna(axis=1, how='all')
+
+                    # Reset for the next minute
+                    current_window_start += timedelta(minutes=1)
+                    routes = {}
+                    index += 1
+                    temp_counts = {
+                        "Num Announcements": 0,
+                        "Num Withdrawals": 0
+                    }
+                
+            except KeyError as ke:
+                print(f"KeyError processing record: {ke}. Continuing with the next record.")
+                continue  # Skip the current record and continue with the next
+            
+            except ValueError as ve:
+                print(f"ValueError processing record: {ve}. Continuing with the next record.")
+                continue  # Skip the current record and continue with the next
+
+            except Exception as e:
+                print(f"Unexpected error processing record: {e}. Continuing with the next record.")
+                continue  # Skip the current record and continue with the next
+
+        if routes:
+            features, old_routes_as = extract_features(index, routes, old_routes_as, asn, temp_counts)
+            features['Timestamp'] = current_window_start
+            all_features.append(features)
+            return_dict['features_df'] = pd.DataFrame(all_features).dropna(axis=1, how='all')
+            
+    except Exception as e:
+        error_message = f"An error occurred during real-time data collection for {asn}: {e}"
+        print(error_message)
+        return_dict['error'] = error_message
+
+
+def collect_real_time_data(asn, collection_period=120):
+    features_df = pd.DataFrame()
+    
+    print(f"\nCollecting data for {asn}")
+
+    manager = multiprocessing.Manager()
+    return_dict = manager.dict()
+    p = multiprocessing.Process(target=run_real_time_bgpstream, args=(asn, collection_period, return_dict))
+    p.start()
+
+    start_time = time.time()
+
+    while time.time() - start_time < collection_period + 10:
+        if 'error' in return_dict:
+            print(f"Real-time data collection encountered an error: {return_dict['error']}")
+            # Do not retry, just log the error and break out of the loop
             break
 
-        current_time = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(rec.time))
-        for elem in rec:
-            print(f"Time: {current_time}, Element: {elem}")
-            
-            
+        features_df = return_dict.get('features_df', pd.DataFrame())
+        
+        if not features_df.empty:
+            print(f"Updated features_df at {datetime.utcnow()}:\n{features_df.tail(1)}\n")
+        
+        time.sleep(60)  # Check for updates every minute
+
+    if p.is_alive():
+        print("BGPStream collection timed out. Terminating process...")
+        p.terminate()
+        p.join()
+
+    print(f"\nFinal features df: {features_df}\n")
+    return features_df
+
+
 def split_dataframe(df, split_size=10):
     """
     Split a DataFrame into smaller DataFrames with a specified number of rows.

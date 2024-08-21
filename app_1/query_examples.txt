@@ -11,4 +11,4 @@ How many announcements were made by AS8342 during the monitoring period?
 How many unique prefixes were announced by AS8342 during the monitoring period?
 
 
-Collect real-time BGP data for AS6908. Provide analysis on the BGP features. 
+Collect real-time BGP data for AS3356. Once data is collected, provide analysis on the BGP features. 

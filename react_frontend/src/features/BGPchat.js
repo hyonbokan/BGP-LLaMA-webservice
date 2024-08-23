@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+// import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Box, Paper, List, ListItem, TextField, IconButton, Button, Tabs, Tab, Typography, Menu, MenuItem, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, CircularProgress, Card, CardContent } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Navbar from '../components/Navbar';
-import axiosInstance from '../utils/axiosInstance';
+// import axiosInstance from '../utils/axiosInstance';
 
 const BGPchat = () => {
     const [currentMessage, setCurrentMessage] = useState('');
@@ -14,30 +15,8 @@ const BGPchat = () => {
     const [renameDialogOpen, setRenameDialogOpen] = useState(false);
     const [renameValue, setRenameValue] = useState('');
     const [tabToEdit, setTabToEdit] = useState(null);
-    const [isLoadingModel, setIsLoadingModel] = useState(false);
     const [partialMessage, setPartialMessage] = useState('');
     const [isGenerating, setIsGenerating] = useState(false);
-
-    const loadModel = async () => {
-        try {
-            setIsLoadingModel(true);
-            const response = await axiosInstance.post('load_model');
-            console.log(response.data);
-            setIsLoadingModel(false);
-        } catch (error) {
-            console.error('Error loading model:', error);
-            setIsLoadingModel(false);
-        }
-    };
-
-    const unloadModel = async () => {
-        try {
-            const response = await axiosInstance.post('unload_model');
-            console.log('Model unloaded successfully:', response.data);
-        } catch (error) {
-            console.error('Error unloading model:', error);
-        }
-    }
 
     const handleNewChat = () => {
         const newChatId = chatTabs.length + 1;
@@ -57,8 +36,6 @@ const BGPchat = () => {
 
     const handleSendMessage = async () => {
         if (currentMessage.trim() !== '') {
-            await loadModel(); // Load the model when sending a message
-
             const userMessage = { text: currentMessage, sender: "user" };
             const updatedTabs = chatTabs.map((tab, index) => {
                 if (index === currentTab) {
@@ -101,7 +78,6 @@ const BGPchat = () => {
                 }));
                 setPartialMessage('');
                 setIsGenerating(false);
-                // unloadModel();
             };
 
             setEventSource(newEventSource);
@@ -132,7 +108,6 @@ const BGPchat = () => {
         if (eventSource) {
             eventSource.close(); // Close any existing connection
         }
-        unloadModel(); // Unload the model when a tab is deleted
     };
 
     const handleRenameTab = () => {
@@ -155,137 +130,122 @@ const BGPchat = () => {
         setTabToEdit(null);
     };
 
-    useEffect(() => {
-        loadModel();
-        return () => {
-            unloadModel();
-        };
-    }, []);
-
-    
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
             <Navbar />
-            {isLoadingModel ? (
-                <Box sx={{ display: 'flex', flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <CircularProgress />
-                    <Typography sx={{ ml: 2, fontFamily: 'monospace', fontWeight: 'bold' }}>Loading the model, please wait...</Typography>
-                </Box>
-            ) : (
-                <Box sx={{ display: 'flex', flexGrow: 1, overflow: 'hidden' }}>
-                    <Box sx={{ width: 250, bgcolor: '#f4f4f8', overflowY: 'auto', borderRight: '1px solid #e0e0e0' }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                            <Button
-                                variant="contained"
-                                onClick={handleNewChat}
-                                sx={{ m: 2, width: '200px'}}
-                            >
-                                <Typography sx={{ fontFamily: 'monospace'}}>
-                                    New Chat
-                                </Typography>
-                            </Button>
-                        </Box>
-                        <Tabs
-                            orientation="vertical"
-                            value={currentTab}
-                            onChange={handleTabChange}
-                            sx={{ borderRight: 1, borderColor: 'divider' }}
+            <Box sx={{ display: 'flex', flexGrow: 1, overflow: 'hidden' }}>
+                <Box sx={{ width: 250, bgcolor: '#f4f4f8', overflowY: 'auto', borderRight: '1px solid #e0e0e0' }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                        <Button
+                            variant="contained"
+                            onClick={handleNewChat}
+                            sx={{ m: 2, width: '200px'}}
                         >
-                            {chatTabs.map((tab, index) => (
-                                <Tab
-                                    key={tab.id}
-                                    label={
-                                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                            {tab.label}
-                                            <IconButton
-                                                size="small"
-                                                onClick={(event) => handleMenuOpen(event, tab)}
-                                                sx={{ ml: 1 }}
-                                            >
-                                                <MoreVertIcon fontSize="small" />
-                                            </IconButton>
-                                        </Box>
-                                    }
-                                    sx={{ fontFamily: 'monospace' }}
-                                />
-                            ))}
-                        </Tabs>
+                            <Typography sx={{ fontFamily: 'monospace'}}>
+                                New Chat
+                            </Typography>
+                        </Button>
                     </Box>
-                    <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', bgcolor: '#ffffff' }}>
-                        <Paper sx={{ flex: 1, overflow: 'auto', p: 2 }}>
-                            <List sx={{ padding: 0 }}>
-                                {chatTabs[currentTab].messages.map((message, index) => (
-                                    <React.Fragment key={index}>
-                                        {message.sender === "user" && (
-                                            <ListItem alignItems="flex-start" sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
-                                                <Card sx={{ bgcolor: '#e3f2fd', borderRadius: 2, maxWidth: '60%' }}>
-                                                    <CardContent>
-                                                        <Typography sx={{ fontFamily: 'monospace', fontWeight: 'medium', color: 'primary.main', textAlign: 'right' }}>
-                                                            {message.text}
-                                                        </Typography>
-                                                    </CardContent>
-                                                </Card>
-                                            </ListItem>
-                                        )}
-                                        {message.sender === "system" && (
-                                            <ListItem alignItems="flex-start" sx={{ display: 'flex', flexDirection: 'row' }}>
-                                                <Card sx={{ bgcolor: '#e0e0e0', borderRadius: 2, maxWidth: '60%' }}>
-                                                    <CardContent>
-                                                        <Typography sx={{ fontFamily: 'monospace', fontWeight: 'medium', color: 'gray', textAlign: 'left' }}>
-                                                            {message.text}
-                                                        </Typography>
-                                                    </CardContent>
-                                                </Card>
-                                            </ListItem>
-                                        )}
-                                    </React.Fragment>
-                                ))}
-                                {partialMessage && (
-                                    <ListItem alignItems="flex-start" sx={{ display: 'flex', flexDirection: 'row' }}>
-                                        <Card sx={{ bgcolor: '#e0e0e0', borderRadius: 2, maxWidth: '60%' }}>
-                                            <CardContent>
-                                                <Typography sx={{ fontFamily: 'monospace', fontWeight: 'medium', color: 'gray', textAlign: 'left' }}>
-                                                    {partialMessage}
-                                                </Typography>
-                                            </CardContent>
-                                        </Card>
-                                    </ListItem>
-                                )}
-                            </List>
-                        </Paper>
-                        <Box
-                            component="form"
-                            sx={{ display: 'flex', alignItems: 'center', p: 2, bgcolor: '#f4f4f8' }}
-                            onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}
-                        >
-                            <TextField
-                                label="Input your prompt..."
-                                fullWidth
-                                variant="outlined"
-                                value={currentMessage}
-                                onChange={handleMessageChange}
-                                multiline
-                                maxRows={4}
-                                sx={{ mr: 1 }}
+                    <Tabs
+                        orientation="vertical"
+                        value={currentTab}
+                        onChange={handleTabChange}
+                        sx={{ borderRight: 1, borderColor: 'divider' }}
+                    >
+                        {chatTabs.map((tab, index) => (
+                            <Tab
+                                key={tab.id}
+                                label={
+                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                        {tab.label}
+                                        <IconButton
+                                            size="small"
+                                            onClick={(event) => handleMenuOpen(event, tab)}
+                                            sx={{ ml: 1 }}
+                                        >
+                                            <MoreVertIcon fontSize="small" />
+                                        </IconButton>
+                                    </Box>
+                                }
+                                sx={{ fontFamily: 'monospace' }}
                             />
-                            {isGenerating ? (
-                                <CircularProgress 
-                                    size={24}
-                                    sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} 
-                                />
-                            ) : (
-                                <IconButton 
-                                    color="primary" 
-                                    onClick={handleSendMessage}
-                                    sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-                                >
-                                    <SendIcon sx={{ transform: 'rotate(-45deg)' }}/>
-                                </IconButton>
+                        ))}
+                    </Tabs>
+                </Box>
+                <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', bgcolor: '#ffffff' }}>
+                    <Paper sx={{ flex: 1, overflow: 'auto', p: 2 }}>
+                        <List sx={{ padding: 0 }}>
+                            {chatTabs[currentTab].messages.map((message, index) => (
+                                <React.Fragment key={index}>
+                                    {message.sender === "user" && (
+                                        <ListItem alignItems="flex-start" sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
+                                            <Card sx={{ bgcolor: '#e3f2fd', borderRadius: 2, maxWidth: '60%' }}>
+                                                <CardContent>
+                                                    <Typography sx={{ fontFamily: 'monospace', fontWeight: 'medium', color: 'primary.main', textAlign: 'right' }}>
+                                                        {message.text}
+                                                    </Typography>
+                                                </CardContent>
+                                            </Card>
+                                        </ListItem>
+                                    )}
+                                    {message.sender === "system" && (
+                                        <ListItem alignItems="flex-start" sx={{ display: 'flex', flexDirection: 'row' }}>
+                                            <Card sx={{ bgcolor: '#e0e0e0', borderRadius: 2, maxWidth: '60%' }}>
+                                                <CardContent>
+                                                    <Typography sx={{ fontFamily: 'monospace', fontWeight: 'medium', color: 'gray', textAlign: 'left' }}>
+                                                        {message.text}
+                                                    </Typography>
+                                                </CardContent>
+                                            </Card>
+                                        </ListItem>
+                                    )}
+                                </React.Fragment>
+                            ))}
+                            {partialMessage && (
+                                <ListItem alignItems="flex-start" sx={{ display: 'flex', flexDirection: 'row' }}>
+                                    <Card sx={{ bgcolor: '#e0e0e0', borderRadius: 2, maxWidth: '60%' }}>
+                                        <CardContent>
+                                            <Typography sx={{ fontFamily: 'monospace', fontWeight: 'medium', color: 'gray', textAlign: 'left' }}>
+                                                {partialMessage}
+                                            </Typography>
+                                        </CardContent>
+                                    </Card>
+                                </ListItem>
                             )}
-                        </Box>
+                        </List>
+                    </Paper>
+                    <Box
+                        component="form"
+                        sx={{ display: 'flex', alignItems: 'center', p: 2, bgcolor: '#f4f4f8' }}
+                        onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}
+                    >
+                        <TextField
+                            label="Input your prompt..."
+                            fullWidth
+                            variant="outlined"
+                            value={currentMessage}
+                            onChange={handleMessageChange}
+                            multiline
+                            maxRows={4}
+                            sx={{ mr: 1 }}
+                        />
+                        {isGenerating ? (
+                            <CircularProgress 
+                                size={24}
+                                sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} 
+                            />
+                        ) : (
+                            <IconButton 
+                                color="primary" 
+                                onClick={handleSendMessage}
+                                sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                            >
+                                <SendIcon sx={{ transform: 'rotate(-45deg)' }}/>
+                            </IconButton>
+                        )}
                     </Box>
                 </Box>
-            )}
+            </Box>
 
             <Menu
                 anchorEl={menuAnchorEl}

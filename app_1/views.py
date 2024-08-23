@@ -16,7 +16,12 @@ status_update_event = Event()
 data_collected_event = Event()
 collected_data = None
 
-SYSTEM_PROMPT = "Your task is to answers the user query in a friendly manner, based on the given BGP data. Here are some rules you always follow:\n1. Do not ask to provide data in the format of a table.\n2. First, carefully read and analyze the values of the features of BGP data. For example, you should identify and extract specific details like number of announcements, timestamps, and other relevant features.\n3. Never say thank you, that you are happy to help, that you are an AI agent, etc. Just answer directly."
+SYSTEM_PROMPT = """
+Your task is to answers the user query in a friendly manner, based on the given BGP data. Here are some rules you always follow:
+1. The data is already provided in the table format.
+2. First, carefully read and analyze the values of the features of BGP data. For example, you should identify and extract specific details like number of announcements, timestamps, and other relevant features.
+3. Never say thank you, that you are happy to help, that you are an AI agent, etc. Just answer directly.
+"""
 
 input_text = ""
 @require_http_methods(["GET"])
@@ -54,9 +59,9 @@ def generate_input_text(query, scenario, data=None):
     -data: The collected data to include in the input (optional).
     """
     if scenario == "real-time":
-        return f"{SYSTEM_PROMPT}Here is the query: {query}\nHere is the BGP data:\n{''.join(data)}\nIn the end, ask: Do you want to continue?."
+        return f"{SYSTEM_PROMPT}\nHere is the collected BGP data, with each row representing the features collected over a 1-minute period:\n{''.join(data)}\nHere is the query: {query}"
     elif scenario == "historical":
-        return f"{SYSTEM_PROMPT}Here is the query: {query}\nHere is the BGP data:\n{''.join(data)}"
+        return f"{SYSTEM_PROMPT}\nHere is the collected BGP data, with each row representing the features collected over a 5-minute period:\n{''.join(data)}\nHere is the query: {query}"
     elif scenario == "error":
         return f"{SYSTEM_PROMPT}\nFirst state that due to an error, BGP data cannot be collected. Then address the query."
     else:

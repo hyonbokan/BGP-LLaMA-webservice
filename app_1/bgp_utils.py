@@ -280,10 +280,11 @@ def run_real_time_bgpstream(asn, collection_period, return_dict):
 
 
 
-def collect_real_time_data(asn, collection_period=120):
+def collect_real_time_data(asn, collection_period=300):
+    all_collected_data = []  # List to store all collected DataFrames
     features_df = pd.DataFrame()
-    
-    print(f"\nCollecting data for {asn}")
+
+    print(f"\nCollecting data for ASN {asn} for {collection_period//60} minutes...")
 
     manager = multiprocessing.Manager()
     return_dict = manager.dict()
@@ -291,27 +292,56 @@ def collect_real_time_data(asn, collection_period=120):
     p.start()
 
     start_time = time.time()
+    last_features_df = pd.DataFrame()  # Initialize with an empty DataFrame
 
-    while time.time() - start_time < collection_period + 1:
+    while time.time() - start_time < collection_period + 5:
         if 'error' in return_dict:
             print(f"Real-time data collection encountered an error: {return_dict['error']}")
             features_df = return_dict.get('features_df', pd.DataFrame())
             break
 
         features_df = return_dict.get('features_df', pd.DataFrame())
-        
+
         if not features_df.empty:
-            print(f"Updated features_df at {datetime.utcnow()}:\n{features_df.tail(1)}\n")
-        
-        time.sleep(10)  # Check for updates more frequently (every 10 seconds)
+            print(f"\nUpdated features_df at {datetime.utcnow()}:\n{features_df.tail(1)}\n")
+
+            # Save the current features_df to the list
+            all_collected_data.append(features_df.copy())
+
+            # Check if the DataFrame hasn't changed in the last 20 seconds
+            if not last_features_df.empty and features_df.equals(last_features_df):
+                print("No changes in data for the last few seconds. Restarting data collection...")
+
+                # Calculate remaining time for the collection
+                remaining_time = collection_period - (time.time() - start_time)
+                if remaining_time <= 0:
+                    print("No remaining time left for data collection. Exiting.")
+                    break
+
+                # Restart the process with the remaining collection period
+                p.terminate()
+                p.join()
+                p = multiprocessing.Process(target=run_real_time_bgpstream, args=(asn, remaining_time, return_dict))
+                p.start()
+
+            # Update last_features_df to the current state for the next check
+            last_features_df = features_df.copy()
+
+        time.sleep(65)  # Check for updates every n seconds
 
     if p.is_alive():
         print("BGPStream collection timed out. Terminating process...")
         p.terminate()
         p.join()
 
-    print(f"\nFinal features df: {features_df}\n")
-    return features_df
+    # Concatenate all collected DataFrames into one final DataFrame
+    if all_collected_data:
+        final_features_df = pd.concat(all_collected_data, ignore_index=True)
+    else:
+        final_features_df = features_df
+
+    print(f"\nFinal features df: {final_features_df}\n")
+    return final_features_df
 
 
 def split_dataframe(df, split_size=10):

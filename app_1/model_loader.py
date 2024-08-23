@@ -15,6 +15,7 @@ def load_model():
         if model is None or tokenizer is None or streamer is None:
             try:
                 model_id = 'meta-llama/Llama-2-7b-chat-hf'
+                # model_id = 'meta-llama/Llama-2-13b-chat-hf'
                 hf_auth = os.environ.get('hf_token')
 
                 model_config = AutoConfig.from_pretrained(

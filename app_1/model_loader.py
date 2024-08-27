@@ -14,8 +14,8 @@ def load_model():
     with model_lock:
         if model is None or tokenizer is None or streamer is None:
             try:
-                # model_id = 'meta-llama/Llama-2-7b-chat-hf'
-                model_id = 'hyonbokan/bgp-llama-knowledge-5k'
+                model_id = 'meta-llama/Llama-2-7b-chat-hf'
+                # model_id = 'hyonbokan/bgp-llama-knowledge-5k'
                 hf_auth = os.environ.get('hf_token')
 
                 model_config = AutoConfig.from_pretrained(
@@ -38,7 +38,7 @@ def load_model():
                 tokenizer.pad_token_id = tokenizer.eos_token_id
                 tokenizer.padding_side = "right"
 
-                streamer = TextIteratorStreamer(tokenizer, skip_prompt=True, skip_special_tokens=False)
+                streamer = TextIteratorStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
                 transformers.logging.set_verbosity(transformers.logging.CRITICAL)
 
                 logging.info("Model loaded successfully")

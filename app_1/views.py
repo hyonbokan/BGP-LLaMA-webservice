@@ -9,8 +9,9 @@ import json
 from threading import Thread, Event
 import os
 from django.conf import settings
-from .bgp_utils import extract_asn, extract_times, collect_historical_data, collect_real_time_data, split_dataframe, preprocess_data
+from .bgp_utils import extract_asn, extract_times, collect_historical_data, collect_real_time_data, process_dataframe
 from .model_loader import model, tokenizer, streamer
+import re
 
 status_update_event = Event()
 collected_data = []
@@ -18,10 +19,11 @@ scenario = ""
 input_text = ""
 
 SYSTEM_PROMPT = """
-Your task is to answers the user query in a friendly manner, based on the given BGP data. Here are some rules you always follow:
-1. The data is already provided in the table format.
-2. First, carefully read and analyze the values of the features of BGP data. For example, you should identify and extract specific details like number of announcements, timestamps, and other relevant features.
-3. Never say thank you, that you are happy to help, that you are an AI agent, etc. Just answer directly.
+You are an AI assistant and your task is to answers the user query on the given BGP data. Here are some rules you always follow:
+1. Generate only the requested output, don't include any other language before or after the requested output.
+2. Your answers should be direct and without any suggestions. 
+3. Check the collected BGP data given below. Each row represents the features collected over a specific period. identify and extract specific details like number of announcements, timestamps, and other relevant features.
+4. Never say thank you, that you are happy to help, that you are an AI agent, etc. Just answer directly.
 """
 
 @require_http_methods(["GET"])
@@ -43,13 +45,6 @@ def status_update_stream():
 def status_updates(request):
     return StreamingHttpResponse(status_update_stream(), content_type='text/event-stream')
         
-def process_dataframe(df):
-    chunks = split_dataframe(df, split_size=20)
-    processed_data = []
-    for chunk in chunks:
-        processed_data.append(preprocess_data(chunk))
-    return processed_data
-
 def generate_input_text(query, scenario, data=None):
     """
     Generate the appropriate input text based on the scenario and available data.
@@ -59,11 +54,11 @@ def generate_input_text(query, scenario, data=None):
     -data: The collected data to include in the input (optional).
     """
     if scenario == "real-time":
-        return f"{SYSTEM_PROMPT}\nHere is the collected BGP data, with each row representing the features collected over a 1-minute period:\n{''.join(data)}\nHere is the query: {query}"
+        return f"{SYSTEM_PROMPT}Answer this user query: {query}Here is the summary of the collected BGP data:\n{''.join(data)}\n"
     elif scenario == "historical":
-        return f"{SYSTEM_PROMPT}\nHere is the collected BGP data, with each row representing the features collected over a 5-minute period:\n{''.join(data)}\nHere is the query: {query}"
+        return f"{SYSTEM_PROMPT}\nHere is the query: {query}\nHere is the collected BGP data, with each row representing the features collected over a 5-minute period:\n{''.join(data)}"
     elif scenario == "error":
-        return f"{SYSTEM_PROMPT}\nFirst state that due to an error, BGP data cannot be collected. Then address the query."
+        return f"{SYSTEM_PROMPT}First state that due to an error, BGP data cannot be collected. Then address the query."
     else:
         return f"{SYSTEM_PROMPT}Here is the query: {query}"
     
@@ -95,7 +90,7 @@ def check_query(query):
         print("\n Begin real-time collection and analysis")
         Thread(target=collect_real_time_wrapper).start()
         
-    elif "real-time" not in query.lower():
+    elif re.search(r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}', query):
         print("\n Begin historical data collection and analysis")
         Thread(target=collect_historical_wrapper).start()
     else:
@@ -128,8 +123,15 @@ def stream_response_generator(query):
                 inputs = tokenizer([chunk_input_text], return_tensors="pt")
                 inputs = {k: v.to(model.device) for k, v in inputs.items()}
     
-                # Run the generation in a separate thread
-                generation_kwargs = dict(inputs, streamer=streamer, max_new_tokens=512)
+                generation_kwargs = dict(
+                    inputs,
+                    streamer=streamer,
+                    max_new_tokens=512,
+                    do_sample=True,
+                    top_p=0.95,
+                    temperature=float(0.8),
+                    top_k=1,
+                )
                 thread = Thread(target=model.generate, kwargs=generation_kwargs)
                 thread.start()
 
@@ -142,12 +144,19 @@ def stream_response_generator(query):
                 
         else:
             # Handle the case where no data was collected
-            print(f"\nNo collected data available: \n{input_text}\n")
+            print(f"\n\nNo collected data available: \n{input_text}\n\n")
             inputs = tokenizer([input_text], return_tensors="pt")
             inputs = {k: v.to(model.device) for k, v in inputs.items()}
     
-            # Run the generation in a separate thread
-            generation_kwargs = dict(inputs, streamer=streamer, max_new_tokens=512)
+            generation_kwargs = dict(
+                inputs,
+                streamer=streamer,
+                max_new_tokens=512,
+                do_sample=True,
+                top_p=0.95,
+                temperature=float(0.8),
+                top_k=1,
+            )
             thread = Thread(target=model.generate, kwargs=generation_kwargs)
             thread.start()
 

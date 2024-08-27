@@ -127,7 +127,7 @@ def extract_bgp_data(target_asn, from_time, until_time):
 
             if elem_time >= current_window_start + timedelta(minutes=5):
                 features, old_routes_as = extract_features(index, routes, old_routes_as, target_asn, temp_counts)
-                features['Timestamp'] = current_window_start
+                features['Timestamp'] = current_window_start.strftime('%Y-%m-%d %H:%M:%S')
                 all_features.append(features)
 
                 current_window_start += timedelta(minutes=5)
@@ -166,7 +166,7 @@ def extract_bgp_data(target_asn, from_time, until_time):
     # print(f"Total elements processed: {element_count}")
     
     features, old_routes_as = extract_features(index, routes, old_routes_as, target_asn, temp_counts)
-    features['Timestamp'] = current_window_start
+    features['Timestamp'] = current_window_start.strftime('%Y-%m-%d %H:%M:%S')
     all_features.append(features)
 
     df_features = pd.json_normalize(all_features, sep='_').fillna(0)
@@ -224,14 +224,14 @@ def run_real_time_bgpstream(asn, collection_period, return_dict):
                                 routes[prefix][rec.collector] = {}
                             routes[prefix][rec.collector][elem.peer_asn] = as_path
                             temp_counts["Number of Announcements"] += 1
-                            print(temp_counts)
+                            # print(temp_counts)
                         elif elem.type == 'W':
                             if prefix in routes:
                                 if rec.collector in routes[prefix]:
                                     if elem.peer_asn in routes[prefix][rec.collector]:
                                         del routes[prefix][rec.collector][elem.peer_asn]
                                         temp_counts["Total Withdrawals"] += 1
-                                        print(temp_counts)
+                                        # print(temp_counts)
             except KeyError as ke:
                 print(f"KeyError processing record: {ke}. Continuing with the next record.")
                 continue
@@ -248,7 +248,7 @@ def run_real_time_bgpstream(asn, collection_period, return_dict):
             if current_time >= current_window_start + timedelta(minutes=1):
                 print(f"Reached time window: {current_window_start} to {current_time}")
                 features, old_routes_as = extract_features(index, routes, old_routes_as, asn, temp_counts)
-                features['Timestamp'] = current_window_start
+                features['Timestamp'] = current_window_start.strftime('%Y-%m-%d %H:%M:%S')
                 all_features.append(features)
                 # Calculate the end of the current time window
                 next_window_start = current_window_start + timedelta(minutes=1)
@@ -266,7 +266,7 @@ def run_real_time_bgpstream(asn, collection_period, return_dict):
             
         if routes:
             features, old_routes_as = extract_features(index, routes, old_routes_as, asn, temp_counts)
-            features['Timestamp'] = current_window_start
+            features['Timestamp'] = current_window_start.strftime('%Y-%m-%d %H:%M:%S')
             all_features.append(features)
             return_dict['features_df'] = pd.DataFrame(all_features).dropna(axis=1, how='all')
             
@@ -280,7 +280,7 @@ def run_real_time_bgpstream(asn, collection_period, return_dict):
 
 
 
-def collect_real_time_data(asn, collection_period=300):
+def collect_real_time_data(asn, collection_period=120):
     all_collected_data = []  # List to store all collected DataFrames
     features_df = pd.DataFrame()
 
@@ -360,7 +360,7 @@ def split_dataframe(df, split_size=10):
     return data_list
 
 
-def preprocess_data(data):
+def dataframe_to_tab(data):
     """
     Convert a DataFrame chunk into the specified JSON format for LLM training.
 
@@ -376,3 +376,132 @@ def preprocess_data(data):
         input_seg += "row {}: | ".format(idx+1) + " | ".join([str(x) for x in row.values]) + " | [SEP]"
     
     return input_seg
+
+def split_dataframe(df, split_size):
+    """
+    Split DataFrame into smaller DataFrames of specified size.
+
+    Parameters:
+    df (pd.DataFrame): The DataFrame to split.
+    split_size (int): The number of rows per split.
+
+    Returns:
+    list: A list of DataFrames.
+    """
+    return [df.iloc[i:i + split_size] for i in range(0, len(df), split_size)]
+
+def dataframe_to_string(data):
+    """
+    Convert a DataFrame into a formatted string with tab-separated values.
+
+    Parameters:
+    data (pd.DataFrame): The DataFrame to convert.
+
+    Returns:
+    str: A string representation of the DataFrame.
+    """
+    # Create a list to hold the lines of the formatted string
+    lines = []
+
+    # Add the header line
+    header = "\t".join(data.columns)
+    lines.append(header)
+
+    # Add each row
+    for _, row in data.iterrows():
+        row_str = "\t".join([str(item) for item in row])
+        lines.append(row_str)
+
+    # Join all lines into a single string with newline separators
+    df_string = "\n".join(lines)
+    
+    return df_string
+
+def dataframe_to_tabular_string(df):
+    """
+    Convert a pandas DataFrame into a simple tabular string representation.
+
+    Parameters:
+    df (pd.DataFrame): The DataFrame to convert.
+
+    Returns:
+    str: A string representing the DataFrame in a tabular format.
+    """
+
+    # Create the header row
+    header = " | ".join(df.columns)
+
+    # Create the separator row
+    separator = " | ".join(["-" * len(col) for col in df.columns])
+
+    # Create the data rows
+    data_rows = []
+    for idx, row in df.iterrows():
+        row_string = " | ".join([str(val) for val in row.values])
+        data_rows.append(row_string)
+
+    # Combine all parts into the final string
+    tabular_string = f"{header}\n{separator}\n" + "\n".join(data_rows)
+
+    return tabular_string
+
+
+def df_to_plain_text_description(df):
+    """
+    Convert a DataFrame into a plain text description.
+
+    Parameters:
+    df (pd.DataFrame): The DataFrame to convert.
+
+    Returns:
+    str: A plain text description of the DataFrame content.
+    """
+    description = ""
+
+    for index, row in df.iterrows():
+        row_description = f"At {row['Timestamp']}, AS{row['Autonomous System Number']} observed {row['Number of Announcements']} announcements"
+        
+        if 'Number of Withdrawals' in df.columns:
+            row_description += f" and {row['Number of Withdrawals']} withdrawals"
+
+        if 'Number of Origin Changes' in df.columns and row['Number of Origin Changes'] > 0:
+            row_description += f". There were {row['Number of Origin Changes']} origin changes"
+        
+        if 'Number of Route Changes' in df.columns and row['Number of Route Changes'] > 0:
+            row_description += f" and {row['Number of Route Changes']} route changes"
+        
+        if 'Maximum Path Length' in df.columns:
+            row_description += f". The maximum path length was {row['Maximum Path Length']}"
+        
+        if 'Average Path Length' in df.columns:
+            row_description += f" with an average path length of {row['Average Path Length']}"
+        
+        if 'Maximum Edit Distance' in df.columns:
+            row_description += f". The maximum edit distance observed was {row['Maximum Edit Distance']}"
+        
+        if 'Average Edit Distance' in df.columns:
+            row_description += f" with an average edit distance of {row['Average Edit Distance']}"
+        
+        if 'Number of Unique Prefixes Announced' in df.columns:
+            row_description += f". There were {row['Number of Unique Prefixes Announced']} unique prefixes announced"
+
+        row_description += "."
+        description += row_description + "\n"
+    
+    return description.strip()
+
+def process_dataframe(df):
+    """
+    Process a DataFrame by splitting it into chunks and converting each chunk to a string.
+
+    Parameters:
+    df (pd.DataFrame): The DataFrame to process.
+
+    Returns:
+    list: A list of strings, each representing a chunk of the DataFrame.
+    """
+    chunks = split_dataframe(df, split_size=20)
+    processed_data = []
+    for chunk in chunks:
+        processed_data.append(df_to_plain_text_description(chunk))
+    return processed_data

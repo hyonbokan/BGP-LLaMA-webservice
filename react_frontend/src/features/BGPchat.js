@@ -15,9 +15,10 @@ const BGPchat = () => {
     const [renameDialogOpen, setRenameDialogOpen] = useState(false);
     const [renameValue, setRenameValue] = useState('');
     const [tabToEdit, setTabToEdit] = useState(null);
-    const [partialMessage, setPartialMessage] = useState('');
+    const [outputMessage, setOutputMessage] = useState('');
     const [isGenerating, setIsGenerating] = useState(false);
-
+    const [isCollectingData, setIsCollectingData] = useState(false);
+    
     const handleNewChat = () => {
         const newChatId = chatTabs.length + 1;
         setChatTabs([...chatTabs, { id: newChatId, label: `Chat ${newChatId}`, messages: [{ text: "Welcome to BGP-LLaMA Chat!", sender: "system" }] }]);
@@ -36,18 +37,23 @@ const BGPchat = () => {
 
     const handleSendMessage = async () => {
         if (currentMessage.trim() !== '') {
+
+            setIsGenerating(true);
+            setIsCollectingData(true);
+
             const userMessage = { text: currentMessage, sender: "user" };
+            // Add collecting message to the chat interface\
+            const collectingMessage = { text: "Collecting BGP messages...", sender: "system" };
             const updatedTabs = chatTabs.map((tab, index) => {
                 if (index === currentTab) {
-                    return { ...tab, messages: [...tab.messages, userMessage] };
+                    return { ...tab, messages: [...tab.messages, userMessage, collectingMessage] };
                 }
                 return tab;
             });
 
             setChatTabs(updatedTabs);
             setCurrentMessage('');
-            setPartialMessage('');
-            setIsGenerating(true);
+            setOutputMessage('');
 
             if (eventSource) {
                 eventSource.close();  // Close any existing connection
@@ -58,8 +64,13 @@ const BGPchat = () => {
 
             newEventSource.onmessage = function(event) {
                 const data = JSON.parse(event.data);
-                if (data.generated_text) {
-                    setPartialMessage(prev => prev + data.generated_text + ' ');
+
+                if (data.status === "collecting") {
+                    setIsCollectingData(true);
+                }
+
+                else if (data.status === "generating" && data.generated_text) {
+                    setOutputMessage(prev => prev + data.generated_text + ' ');
                 }
             };
 
@@ -67,17 +78,19 @@ const BGPchat = () => {
                 console.error('EventSource failed:', error);
                 newEventSource.close();
                 setIsGenerating(false);
+                setIsCollectingData(false);
             };
 
-            newEventSource.onclose = function() {
+            newEventSource.onclose = function() {   
                 setChatTabs(prevTabs => prevTabs.map((tab, index) => {
                     if (index === currentTab) {
-                        return { ...tab, messages: [...tab.messages, { text: partialMessage.trim(), sender: "system" }] };
+                        return { ...tab, messages: [...tab.messages, { text: outputMessage.trim(), sender: "system" }] };
                     }
                     return tab;
                 }));
-                setPartialMessage('');
+                setOutputMessage('');
                 setIsGenerating(false);
+                setIsCollectingData(false);
             };
 
             setEventSource(newEventSource);
@@ -201,12 +214,12 @@ const BGPchat = () => {
                                     )}
                                 </React.Fragment>
                             ))}
-                            {partialMessage && (
+                            {outputMessage && (
                                 <ListItem alignItems="flex-start" sx={{ display: 'flex', flexDirection: 'row' }}>
                                     <Card sx={{ bgcolor: '#e0e0e0', borderRadius: 2, maxWidth: '60%' }}>
                                         <CardContent>
                                             <Typography sx={{ fontFamily: 'monospace', fontWeight: 'medium', color: 'gray', textAlign: 'left' }}>
-                                                {partialMessage}
+                                                {outputMessage}
                                             </Typography>
                                         </CardContent>
                                     </Card>
@@ -229,7 +242,7 @@ const BGPchat = () => {
                             maxRows={4}
                             sx={{ mr: 1 }}
                         />
-                        {isGenerating ? (
+                        {isGenerating || isCollectingData ? (
                             <CircularProgress 
                                 size={24}
                                 sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} 

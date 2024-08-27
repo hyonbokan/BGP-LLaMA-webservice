@@ -6,15 +6,16 @@ from django.middleware.csrf import get_token
 from .models import *
 from .serializer import *
 import json
-from threading import Thread, Lock, Event
+from threading import Thread, Event
 import os
 from django.conf import settings
 from .bgp_utils import extract_asn, extract_times, collect_historical_data, collect_real_time_data, split_dataframe, preprocess_data
 from .model_loader import model, tokenizer, streamer
 
 status_update_event = Event()
-data_collected_event = Event()
-collected_data = None
+collected_data = []
+scenario = ""
+input_text = ""
 
 SYSTEM_PROMPT = """
 Your task is to answers the user query in a friendly manner, based on the given BGP data. Here are some rules you always follow:
@@ -23,7 +24,6 @@ Your task is to answers the user query in a friendly manner, based on the given 
 3. Never say thank you, that you are happy to help, that you are an AI agent, etc. Just answer directly.
 """
 
-input_text = ""
 @require_http_methods(["GET"])
 def get_csrf_token(request):
     csrf_token = get_token(request)
@@ -69,8 +69,9 @@ def generate_input_text(query, scenario, data=None):
     
     
 def check_query(query):
-    global collected_data, data_collected_event, input_text
-    data_collected_event.clear()  # Reset the event
+    global collected_data, status_update_event, input_text, scenario
+    status_update_event.clear()
+    
     asn = extract_asn(query)
     from_time, until_time = extract_times(query)
     
@@ -78,62 +79,52 @@ def check_query(query):
         global collected_data, input_text
         df = collect_historical_data(asn, from_time, until_time)
         collected_data = process_dataframe(df)
-        if collected_data:
-            scenario = 'historical'
-            input_text = generate_input_text(query=query, scenario=scenario, data=collected_data)
-        else:
-            scenario = 'error'
-            input_text = generate_input_text(query=query, scenario=scenario)
-        data_collected_event.set()  # Signal that data collection is complete
-        status_update_event.set()  # Send status update
+        scenario = 'historical' if collected_data else 'error'
+        input_text = generate_input_text(query=query, scenario=scenario, data=collected_data)
+        status_update_event.set()
 
     def collect_real_time_wrapper():
         global collected_data, input_text
-        # collected_data = ["No data collected only say that "]
         df = collect_real_time_data(asn)
         collected_data = process_dataframe(df)
-        if collected_data:
-            scenario = 'real-time'
-            input_text = generate_input_text(query=query, scenario=scenario, data=collected_data)
-        else:
-            scenario = 'error'
-            input_text = generate_input_text(query=query, scenario=scenario)
-        data_collected_event.set()  # Signal that data collection is complete
+        scenario = 'real-time' if collected_data else 'error'
+        input_text = generate_input_text(query=query, scenario=scenario, data=collected_data)
         status_update_event.set()
         
     if "real-time" in query.lower():
         print("\n Begin real-time collection and analysis")
-        status_update_event.set() # Send status update
         Thread(target=collect_real_time_wrapper).start()
         
     elif "real-time" not in query.lower():
         print("\n Begin historical data collection and analysis")
-        status_update_event.set() 
         Thread(target=collect_historical_wrapper).start()
     else:
         print("regular query")
-        collected_data = None
+        scenario = "regular query"
         input_text = generate_input_text(query=query)
-        data_collected_event.set()  # Signal immediately for regular queries
         status_update_event.set() 
-
-
+    
 def stream_response_generator(query):
-    global model, tokenizer, streamer, input_text, data_collected_event
+    global model, tokenizer, streamer, input_text, status_update_event, scenario
     if not query:
         yield 'data: {"error": "No query provided"}\n\n'
-    else:
-        print(f'user query: {query}\n')
-        check_query(query)
-        
-        # Wait for data collection to complete before generating output
-        data_collected_event.wait()  # This will block until the event is set
-        
-        if collected_data:
+        return  # Exit early since there's no query
+
+    print(f'user query: {query}\n')
+    check_query(query)
+    
+    # Notify frontend that data collection has started
+    yield 'data: {"status": "collecting", "message": "Collecting BGP messages..."}\n\n'
+    
+    # Wait for data collection to complete before generating output
+    status_update_event.wait()
+    
+    try:
+        # Check if the scenario involves data collection (real-time or historical)
+        if scenario in ["real-time", "historical"]:
             for i, chunk in enumerate(collected_data):
                 chunk_input_text = input_text.replace("{''.join(data)}", chunk)
                 print(f"Final prompt with data (Chunk {i + 1}/{len(collected_data)}): {chunk_input_text}")
-                
                 inputs = tokenizer([chunk_input_text], return_tensors="pt")
                 inputs = {k: v.to(model.device) for k, v in inputs.items()}
     
@@ -141,16 +132,17 @@ def stream_response_generator(query):
                 generation_kwargs = dict(inputs, streamer=streamer, max_new_tokens=512)
                 thread = Thread(target=model.generate, kwargs=generation_kwargs)
                 thread.start()
-    
-                try:
-                    for new_text in streamer:
-                        yield f'data: {json.dumps({"generated_text": new_text.strip()})}\n\n'
-                except Exception as e:
-                    yield f'data: {json.dumps({"error": str(e)})}\n\n'
 
+                # Collect the output from the streamer
+                for new_text in streamer:
+                    yield f'data: {json.dumps({"status": "generating", "generated_text": new_text.strip()})}\n\n'
+                
+                # Ensure the thread has finished before moving to the next chunk
+                thread.join()
+                
         else:
             # Handle the case where no data was collected
-            print(f"\nCollected data: {collected_data}")
+            print(f"\nNo collected data available: \n{input_text}\n")
             inputs = tokenizer([input_text], return_tensors="pt")
             inputs = {k: v.to(model.device) for k, v in inputs.items()}
     
@@ -158,12 +150,21 @@ def stream_response_generator(query):
             generation_kwargs = dict(inputs, streamer=streamer, max_new_tokens=512)
             thread = Thread(target=model.generate, kwargs=generation_kwargs)
             thread.start()
+
+            # Collect the output from the streamer
+            for new_text in streamer:
+                yield f'data: {json.dumps({"status": "generating", "generated_text": new_text.strip()})}\n\n'
+            
+            # Ensure the thread has finished
+            thread.join()
+
+    except Exception as e:
+        error_message = f"An error occurred during text generation: {str(e)}"
+        print(error_message)
+        yield f'data: {json.dumps({"error": error_message})}\n\n'
     
-            try:
-                for new_text in streamer:
-                    yield f'data: {json.dumps({"generated_text": new_text.strip()})}\n\n'
-            except Exception as e:
-                yield f'data: {json.dumps({"error": str(e)})}\n\n'
+    finally:
+        status_update_event.clear()
 
 @require_http_methods(["GET"])
 def bgp_llama(request):

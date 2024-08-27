@@ -6,7 +6,12 @@
 ```bash
 
 ```
-## Key Features
+## Key Features and Technology
+- React
+- Django
+- Typescript
+- Redux
+- SQL
 
 ### Backend
 - **Django**: Backend framework for handling server-side logic and API endpoints for BGP analysis.
@@ -14,8 +19,8 @@
   - Loads the LLM (Large Language Model)
   - Manages API endpoints for BGP analysis
   - Streams the LLM output to the frontend
-  - Allows users to download datasets for fine-tuning
-  - Supports model fine-tuning by users
+  <!-- - Allows users to download datasets for fine-tuning -->
+  <!-- - Supports model fine-tuning by users -->
 
 ### Frontend
 - **React**: Utilized for building the user interface, ensuring a responsive and dynamic user experience.

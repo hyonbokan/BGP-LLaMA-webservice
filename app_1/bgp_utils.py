@@ -327,7 +327,7 @@ def collect_real_time_data(asn, collection_period=300):
             # Update last_features_df to the current state for the next check
             last_features_df = features_df.copy()
 
-        time.sleep(65)  # Check for updates every n seconds
+        time.sleep(63)  # Check for updates every n seconds
 
     if p.is_alive():
         print("BGPStream collection timed out. Terminating process...")

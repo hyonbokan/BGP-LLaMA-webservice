@@ -20,10 +20,10 @@ input_text = ""
 
 SYSTEM_PROMPT = """
 You are an AI assistant and your task is to answers the user query on the given BGP data. Here are some rules you always follow:
-1. Generate only the requested output, don't include any other language before or after the requested output.
-2. Your answers should be direct and without any suggestions. 
-3. Check the collected BGP data given below. Each row represents the features collected over a specific period. identify and extract specific details like number of announcements, timestamps, and other relevant features.
-4. Never say thank you, that you are happy to help, that you are an AI agent, etc. Just answer directly.
+- Generate only the requested output, don't include any other language before or after the requested output.
+- Your answers should be direct and without any suggestions. 
+- Check the collected BGP data given below. Each row represents the features collected over a specific period. identify and extract specific details like number of announcements, timestamps, and other relevant features.
+- Never say thank you, that you are happy to help, that you are an AI agent, etc. Just answer directly.
 """
 
 @require_http_methods(["GET"])
@@ -54,14 +54,14 @@ def generate_input_text(query, scenario, data=None):
     -data: The collected data to include in the input (optional).
     """
     if scenario == "real-time":
-        return f"{SYSTEM_PROMPT}Answer this user query: {query}Here is the summary of the collected BGP data:\n{''.join(data)}\n"
+        return f"{SYSTEM_PROMPT}Answer this user query: {query}\n{''.join(data)}\n"
     elif scenario == "historical":
-        return f"{SYSTEM_PROMPT}\nHere is the query: {query}\nHere is the collected BGP data, with each row representing the features collected over a 5-minute period:\n{''.join(data)}"
+        return f"{SYSTEM_PROMPT}\nHere is the query: {query}\n{''.join(data)}"
     elif scenario == "error":
         return f"{SYSTEM_PROMPT}First state that due to an error, BGP data cannot be collected. Then address the query."
     else:
         return f"{SYSTEM_PROMPT}Here is the query: {query}"
-    
+
     
 def check_query(query):
     global collected_data, status_update_event, input_text, scenario
@@ -71,7 +71,7 @@ def check_query(query):
     from_time, until_time = extract_times(query)
     
     def collect_historical_wrapper():
-        global collected_data, input_text
+        global collected_data, input_text, scenario
         df = collect_historical_data(asn, from_time, until_time)
         collected_data = process_dataframe(df)
         scenario = 'historical' if collected_data else 'error'
@@ -79,7 +79,7 @@ def check_query(query):
         status_update_event.set()
 
     def collect_real_time_wrapper():
-        global collected_data, input_text
+        global collected_data, input_text, scenario
         df = collect_real_time_data(asn)
         collected_data = process_dataframe(df)
         scenario = 'real-time' if collected_data else 'error'
@@ -97,12 +97,12 @@ def check_query(query):
         print("regular query")
         scenario = "regular query"
         input_text = generate_input_text(query=query)
-        status_update_event.set() 
+        status_update_event.set()
     
 def stream_response_generator(query):
     global model, tokenizer, streamer, input_text, status_update_event, scenario
     if not query:
-        yield 'data: {"error": "No query provided"}\n\n'
+        yield 'data: {"status": "error", "message": "No query provided"}\n\n'
         return  # Exit early since there's no query
 
     print(f'user query: {query}\n')
@@ -117,26 +117,26 @@ def stream_response_generator(query):
     try:
         # Check if the scenario involves data collection (real-time or historical)
         if scenario in ["real-time", "historical"]:
+            print(f"\n Scenario: {scenario}\n")
+            # print(f"\n Input text before split: {input_text}\n")
             for i, chunk in enumerate(collected_data):
                 chunk_input_text = input_text.replace("{''.join(data)}", chunk)
-                print(f"Final prompt with data (Chunk {i + 1}/{len(collected_data)}): {chunk_input_text}")
+                print(f"Final prompt with data (Chunk {i + 1}/{len(collected_data)}): {chunk_input_text}\n")
                 inputs = tokenizer([chunk_input_text], return_tensors="pt")
                 inputs = {k: v.to(model.device) for k, v in inputs.items()}
     
                 generation_kwargs = dict(
-                    inputs,
+                    inputs=inputs["input_ids"],
                     streamer=streamer,
-                    max_new_tokens=512,
+                    max_new_tokens=756,
                     do_sample=True,
-                    top_p=0.95,
-                    temperature=float(0.8),
-                    top_k=1,
                 )
                 thread = Thread(target=model.generate, kwargs=generation_kwargs)
                 thread.start()
 
                 # Collect the output from the streamer
                 for new_text in streamer:
+                    print(new_text, end="")
                     yield f'data: {json.dumps({"status": "generating", "generated_text": new_text.strip()})}\n\n'
                 
                 # Ensure the thread has finished before moving to the next chunk
@@ -144,18 +144,16 @@ def stream_response_generator(query):
                 
         else:
             # Handle the case where no data was collected
+            print(f"\n Scenario: {scenario}\n")
             print(f"\n\nNo collected data available: \n{input_text}\n\n")
             inputs = tokenizer([input_text], return_tensors="pt")
             inputs = {k: v.to(model.device) for k, v in inputs.items()}
     
             generation_kwargs = dict(
-                inputs,
+                inputs=inputs["input_ids"],
                 streamer=streamer,
-                max_new_tokens=512,
+                max_new_tokens=756,
                 do_sample=True,
-                top_p=0.95,
-                temperature=float(0.8),
-                top_k=1,
             )
             thread = Thread(target=model.generate, kwargs=generation_kwargs)
             thread.start()

@@ -370,7 +370,7 @@ def dataframe_to_tab(data):
     Returns:
     dict: A dictionary in the specified JSON format.
     """
-    input_seg = "[TAB] col: | " + " | ".join(data.columns) + " |"
+    input_seg = "[TLE] The context is about BGP update message for analysis. The section is related to a specific time period of BGP monitoring. [TAB] col: | " + " | ".join(data.columns) + " |"
     
     for idx, row in data.iterrows():
         input_seg += "row {}: | ".format(idx+1) + " | ".join([str(x) for x in row.values]) + " | [SEP]"
@@ -503,5 +503,5 @@ def process_dataframe(df):
     chunks = split_dataframe(df, split_size=20)
     processed_data = []
     for chunk in chunks:
-        processed_data.append(df_to_plain_text_description(chunk))
+        processed_data.append(dataframe_to_tab(chunk))
     return processed_data

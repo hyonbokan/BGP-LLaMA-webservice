@@ -39,7 +39,7 @@ def load_model():
                 tokenizer.padding_side = "right"
 
                 streamer = TextIteratorStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
-                transformers.logging.set_verbosity(transformers.logging.CRITICAL)
+                # transformers.logging.set_verbosity(transformers.logging.CRITICAL)
 
                 logging.info("Model loaded successfully")
             except Exception as e:

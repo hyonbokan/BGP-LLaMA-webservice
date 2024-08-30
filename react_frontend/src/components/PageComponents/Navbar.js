@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from '../logo/logo.png';
+import logo from '../../logo/logo.png';
 import { Link } from 'react-router-dom';
 import { AppBar, Button, Toolbar, Stack, Box } from '@mui/material';
 

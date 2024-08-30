@@ -1,6 +1,6 @@
 import React from "react";
-import Footer from "../components/Footer";
-import Navbar from "../components/Navbar";
+import Footer from "../components/PageComponents/Footer";
+import Navbar from "../components/PageComponents/Navbar";
 import NotFoundPage from "../features/NotFoundPage";
 import { useParams } from 'react-router-dom';
 import { useSelector } from "react-redux";

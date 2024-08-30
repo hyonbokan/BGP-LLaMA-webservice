@@ -1,5 +1,5 @@
 import React from "react";
-import logo from '../logo/logo.png';
+import logo from '../../logo/logo.png';
 import { Box, Grid, Typography, Link, IconButton, } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import FacebookIcon from '@mui/icons-material/Facebook';

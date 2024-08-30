@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Box, Paper, List, Typography, Menu, MenuItem, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Button } from '@mui/material';
-import Navbar from '../components/Navbar';
-import ChatTabs from '../components/ChatTabs';
-import ChatMessage from '../components/ChatMessage';
-import ChatInputField from '../components/ChatInputField';
+import Navbar from '../components/PageComponents/Navbar';
+import ChatTabs from '../components/BGPChatComponents/ChatTabs';
+import ChatMessage from '../components/BGPChatComponents/ChatMessage';
+import ChatInputField from '../components/BGPChatComponents/ChatInputField';
 import useChat from '../hooks/useChat';
 
 const BGPchat = () => {
@@ -28,7 +28,6 @@ const BGPchat = () => {
         handleRenameDialogSave,
         renameDialogOpen,
         menuAnchorEl,
-        // tabToEdit,
         renameValue,
         setRenameValue,
     } = useChat({
@@ -41,6 +40,13 @@ const BGPchat = () => {
         setOutputMessage,
         outputMessage,
     });
+
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSendMessage();
+        }
+    };
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
@@ -79,6 +85,7 @@ const BGPchat = () => {
                         currentMessage={currentMessage}
                         handleMessageChange={handleMessageChange}
                         handleSendMessage={handleSendMessage}
+                        handleKeyPress={handleKeyPress}
                         isGenerating={isGenerating}
                         isCollectingData={isCollectingData}
                     />

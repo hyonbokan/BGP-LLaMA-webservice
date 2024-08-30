@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Button, TextField, Typography, MenuItem, FormControl, InputLabel, Select, Checkbox, FormControlLabel, FormGroup, Grid, CircularProgress, Paper } from '@mui/material';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import Navbar from '../components/PageComponents/Navbar';
+import Footer from '../components/PageComponents/Footer';
 import CustomAlert from '../components/CustomAlert.tsx';
 import axiosInstance from '../utils/axiosInstance';
 import { useSelector } from 'react-redux';

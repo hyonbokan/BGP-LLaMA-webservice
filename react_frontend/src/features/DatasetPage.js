@@ -1,6 +1,6 @@
 // import Header from '../components/Header';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import Navbar from '../components/PageComponents/Navbar';
+import Footer from '../components/PageComponents/Footer';
 import React from 'react';
 import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Link as MuiLink } from '@mui/material';
 import { Link } from 'react-router-dom';

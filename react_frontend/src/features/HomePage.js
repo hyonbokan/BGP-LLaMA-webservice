@@ -1,6 +1,5 @@
-// import Header from '../components/Header';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import Navbar from '../components/PageComponents/Navbar';
+import Footer from '../components/PageComponents/Footer';
 import { Container, Typography, Button, Grid, Card, CardContent, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
 
@@ -42,6 +41,8 @@ const HomePage = () => {
                       </Link>
                     </Button>
                 </Container>
+
+                {/* New section */}
         
                 <Box sx={{ flexGrow: 1 }}>
                   <Grid container spacing={2}>

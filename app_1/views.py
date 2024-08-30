@@ -98,6 +98,25 @@ def check_query(query):
         scenario = "regular query"
         input_text = generate_input_text(query=query)
         status_update_event.set()
+        
+def generate_llm_response(prompt, streamer):
+    inputs = tokenizer([prompt], return_tensors="pt")
+    inputs = {k: v.to(model.device) for k, v in inputs.items()}
+
+    generation_kwargs = dict(
+        inputs=inputs["input_ids"],
+        streamer=streamer,
+        max_new_tokens=756,
+        do_sample=True,
+    )
+    thread = Thread(target=model.generate, kwargs=generation_kwargs)
+    thread.start()
+
+    for new_text in streamer:
+        yield new_text.strip()
+
+    thread.join()
+
     
 def stream_response_generator(query):
     global model, tokenizer, streamer, input_text, status_update_event, scenario
@@ -122,48 +141,19 @@ def stream_response_generator(query):
             for i, chunk in enumerate(collected_data):
                 chunk_input_text = input_text.replace("{''.join(data)}", chunk)
                 print(f"Final prompt with data (Chunk {i + 1}/{len(collected_data)}): {chunk_input_text}\n")
-                inputs = tokenizer([chunk_input_text], return_tensors="pt")
-                inputs = {k: v.to(model.device) for k, v in inputs.items()}
-    
-                generation_kwargs = dict(
-                    inputs=inputs["input_ids"],
-                    streamer=streamer,
-                    max_new_tokens=756,
-                    do_sample=True,
-                )
-                thread = Thread(target=model.generate, kwargs=generation_kwargs)
-                thread.start()
-
-                # Collect the output from the streamer
-                for new_text in streamer:
-                    print(new_text, end="")
-                    yield f'data: {json.dumps({"status": "generating", "generated_text": new_text.strip()})}\n\n'
-                
-                # Ensure the thread has finished before moving to the next chunk
-                thread.join()
+                generated_output = ""
+                for new_text in generate_llm_response(prompt=chunk_input_text, streamer=streamer):
+                    generated_output += new_text
+                    yield f'data: {json.dumps({"status": "generating", "generated_text": new_text})}\n\n'
+                print(generated_output)
                 
         else:
             # Handle the case where no data was collected
             print(f"\n Scenario: {scenario}\n")
             print(f"\n\nNo collected data available: \n{input_text}\n\n")
-            inputs = tokenizer([input_text], return_tensors="pt")
-            inputs = {k: v.to(model.device) for k, v in inputs.items()}
-    
-            generation_kwargs = dict(
-                inputs=inputs["input_ids"],
-                streamer=streamer,
-                max_new_tokens=756,
-                do_sample=True,
-            )
-            thread = Thread(target=model.generate, kwargs=generation_kwargs)
-            thread.start()
-
-            # Collect the output from the streamer
-            for new_text in streamer:
-                yield f'data: {json.dumps({"status": "generating", "generated_text": new_text.strip()})}\n\n'
+            for new_text in generate_llm_response(prompt=input_text, streamer=streamer):
+                yield f'data: {json.dumps({"status": "generating", "generated_text": new_text})}\n\n'
             
-            # Ensure the thread has finished
-            thread.join()
 
     except Exception as e:
         error_message = f"An error occurred during text generation: {str(e)}"

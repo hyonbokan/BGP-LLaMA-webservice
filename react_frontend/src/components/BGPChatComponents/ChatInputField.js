@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, TextField, IconButton, CircularProgress } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 
-const ChatInputField = ({ currentMessage, handleMessageChange, handleSendMessage, isGenerating, isCollectingData }) => (
+const ChatInputField = ({ currentMessage, handleMessageChange, handleSendMessage, handleKeyPress, isGenerating, isCollectingData }) => (
     <Box
         component="form"
         sx={{ display: 'flex', alignItems: 'center', p: 2, bgcolor: '#f4f4f8' }}
@@ -14,6 +14,7 @@ const ChatInputField = ({ currentMessage, handleMessageChange, handleSendMessage
             variant="outlined"
             value={currentMessage}
             onChange={handleMessageChange}
+            onKeyPress={handleKeyPress}  // Add this line
             multiline
             maxRows={4}
             sx={{ mr: 1 }}

@@ -280,7 +280,7 @@ def run_real_time_bgpstream(asn, collection_period, return_dict):
 
 
 
-def collect_real_time_data(asn, collection_period=120):
+def collect_real_time_data(asn, collection_period=300):
     all_collected_data = []  # List to store all collected DataFrames
     features_df = pd.DataFrame()
 

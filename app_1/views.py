@@ -19,12 +19,14 @@ scenario = ""
 input_text = ""
 
 SYSTEM_PROMPT = """
-You are an AI assistant and your task is to answers the user query on the given BGP data. Here are some rules you always follow:
+You are an AI assistant and your task is to answer the user query on the given BGP data. Here are some rules you always follow:
 - Generate only the requested output, don't include any other language before or after the requested output.
-- Your answers should be direct and without any suggestions. 
-- Check the collected BGP data given below. Each row represents the features collected over a specific period. identify and extract specific details like number of announcements, timestamps, and other relevant features.
-- Never say thank you, that you are happy to help, that you are an AI agent, etc. Just answer directly.
+- Your answers should be direct and include relevant timestamps when analyzing BGP data features.
+- Check the collected BGP data given below. Each row represents the features collected over a specific period.
+- Never say thank you, that you are happy to help, that you are an AI agent, and additional suggestions. Just answer directly.
 """
+
+
 
 @require_http_methods(["GET"])
 def get_csrf_token(request):
@@ -44,15 +46,26 @@ def status_update_stream():
 @require_http_methods(["GET"])
 def status_updates(request):
     return StreamingHttpResponse(status_update_stream(), content_type='text/event-stream')
-        
-def generate_input_text(query, scenario, data=None):
-    """
-    Generate the appropriate input text based on the scenario and available data.
+
+def generate_llm_response(prompt, streamer):
+    inputs = tokenizer([prompt], return_tensors="pt")
+    inputs = {k: v.to(model.device) for k, v in inputs.items()}
+
+    generation_kwargs = dict(
+        inputs=inputs["input_ids"],
+        streamer=streamer,
+        max_new_tokens=756,
+        do_sample=True,
+    )
+    thread = Thread(target=model.generate, kwargs=generation_kwargs)
+    thread.start()
+
+    for new_text in streamer:
+        yield new_text.strip()
+
+    thread.join()
     
-    -query: The original query from the user.
-    -scenario: The type of scenario ("real-time", "historical", "general", "error").
-    -data: The collected data to include in the input (optional).
-    """
+def generate_input_text(query, scenario="regular query", data=None):
     if scenario == "real-time":
         return f"{SYSTEM_PROMPT}Answer this user query: {query}\n{''.join(data)}\n"
     elif scenario == "historical":
@@ -60,7 +73,7 @@ def generate_input_text(query, scenario, data=None):
     elif scenario == "error":
         return f"{SYSTEM_PROMPT}First state that due to an error, BGP data cannot be collected. Then address the query."
     else:
-        return f"{SYSTEM_PROMPT}Here is the query: {query}"
+        return f"You are an AI assistant and your task is to answer the user query on the given BGP data. Here are some rules you always follow:\n- Generate only the requested output, don't include any other language before or after the requested output.\n- Never say thank you, that you are happy to help, that you are an AI agent, and additional suggestions. Just answer directly.\nHere is the query: {query}"
 
     
 def check_query(query):
@@ -88,54 +101,40 @@ def check_query(query):
         
     if "real-time" in query.lower():
         print("\n Begin real-time collection and analysis")
+        scenario = "real-time"
         Thread(target=collect_real_time_wrapper).start()
         
     elif re.search(r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}', query):
         print("\n Begin historical data collection and analysis")
+        scenario = "historical"
         Thread(target=collect_historical_wrapper).start()
     else:
         print("regular query")
-        scenario = "regular query"
         input_text = generate_input_text(query=query)
         status_update_event.set()
         
-def generate_llm_response(prompt, streamer):
-    inputs = tokenizer([prompt], return_tensors="pt")
-    inputs = {k: v.to(model.device) for k, v in inputs.items()}
-
-    generation_kwargs = dict(
-        inputs=inputs["input_ids"],
-        streamer=streamer,
-        max_new_tokens=756,
-        do_sample=True,
-    )
-    thread = Thread(target=model.generate, kwargs=generation_kwargs)
-    thread.start()
-
-    for new_text in streamer:
-        yield new_text.strip()
-
-    thread.join()
 
     
 def stream_response_generator(query):
     global model, tokenizer, streamer, input_text, status_update_event, scenario
     if not query:
         yield 'data: {"status": "error", "message": "No query provided"}\n\n'
-        return  # Exit early since there's no query
+        return  # Exit early
 
     print(f'user query: {query}\n')
     check_query(query)
     
-    # Notify frontend that data collection has started
-    yield 'data: {"status": "collecting", "message": "Collecting BGP messages..."}\n\n'
-    
+    # Notify frontend that data collection has started only for real-time or historical scenarios
+    if scenario in ["real-time", "historical"]:
+        yield 'data: {"status": "collecting", "message": "Collecting BGP messages..."}\n\n'
+        
     # Wait for data collection to complete before generating output
     status_update_event.wait()
     
     try:
         # Check if the scenario involves data collection (real-time or historical)
         if scenario in ["real-time", "historical"]:
+            
             print(f"\n Scenario: {scenario}\n")
             # print(f"\n Input text before split: {input_text}\n")
             for i, chunk in enumerate(collected_data):

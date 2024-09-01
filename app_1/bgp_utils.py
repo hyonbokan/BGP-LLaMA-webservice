@@ -308,7 +308,7 @@ def collect_real_time_data(asn, collection_period=300):
             # Save the current features_df to the list
             all_collected_data.append(features_df.copy())
 
-            # Check if the DataFrame hasn't changed in the last 20 seconds
+            # Check if the DataFrame hasn't changed in the last n seconds
             if not last_features_df.empty and features_df.equals(last_features_df):
                 print("No changes in data for the last few seconds. Restarting data collection...")
 
@@ -339,7 +339,10 @@ def collect_real_time_data(asn, collection_period=300):
         final_features_df = pd.concat(all_collected_data, ignore_index=True)
     else:
         final_features_df = features_df
-
+        
+    # Remove duplicates from the final DataFrame
+    final_features_df = final_features_df.drop_duplicates()
+    
     print(f"\nFinal features df: {final_features_df}\n")
     return final_features_df
 

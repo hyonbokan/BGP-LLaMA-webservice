@@ -22,7 +22,8 @@ const ChatMessage = ({ message }) => (
                         fontFamily: 'monospace',
                         fontWeight: 'medium',
                         color: 'black',
-                        textAlign: message.sender === "user" ? 'right' : 'left', // Align right for user, left for system
+                        // textAlign: message.sender === "user" ? 'right' : 'left',
+                        textAlign: 'justify',
                         whiteSpace: 'pre-line', // Preserve line breaks
                     }}
                 >

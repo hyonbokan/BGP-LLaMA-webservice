@@ -11,6 +11,37 @@ How many announcements were made by AS8342 during the monitoring period?
 How many unique prefixes were announced by AS8342 during the monitoring period?
 
 
-Collect real-time BGP data for AS3356. Provide summary on the BGP data.
+- Identify any time intervals where AS3356 had a significant increase in the number of new routes.
+Based on the given data, the time interval where AS3356 had a significant increase in the number of new routes is between 2024-08-30 06:05:38 and 2024-08-30 06:06:38. 
+During this time period, the number of new routes increased from 0 to 48.
+Please note that the BGP data collected is a snapshot of the network state at a specific time, so the analysis is limited to the given data.
+Additionally, the analysis is based on the data provided and may not reflect the actual behavior of the network.
 
-Monitor BGP announcements and withdrawals in real-time for AS3356 to detect any sudden spikes that could indicate anomaly.
+
+- What is the average value of the total number of announcements by AS3356 during the monitoring period?
+The average value of the total number of announcements by AS3356 during the monitoring period is 5. 
+This is calculated by adding up all the announcements (158761 + 196104 + 162647 + 70) and dividing the result by the number of rows (4). This gives us 5, which is the average value of the total number of announcements by AS3356 during the monitoring period.
+
+
+- Did AS3356 exhibit any unusual behavior in terms of the average path length during the monitoring period?
+- What patterns can be observed in the frequency of route changes for AS3356 during the monitoring period?
+
+- Analyze the consistency of AS3356 in maintaining the same maximum path length over the monitoring period.
+The BGP data collected over the specified period indicates that AS3356 has been consistently maintaining the same maximum path length, 
+which is 0.07142857142857142,over the entire monitoring period. Additionally, the average path length has been maintained at 0.0, 
+indicating that the autonomous system has been maintaining a stable routing environment. 
+The number of announcements and total withdrawals have also been consistent, with 158761 announcements and 0 withdrawals. 
+Finally, the maximum edit distance has been maintained at 0.0, indicating that the autonomous system has not experienced
+any routing changes. In conclusion, AS3356 has been consistently maintaining the same maximum path length and 
+stable routing environment throughout the monitoring period.
+
+- Identify timestamps where the number of routes announced by AS3356 exceeds a threshold of 150000.
+row 2: 2024-08-30 06:05:38
+The number of routes announced by AS3356 exceeds the threshold of 150000 at this timestamp.
+
+
+- Collect real-time BGP data for AS3356. Provide summary on the BGP data such as the number of unique prefixes and routed announced during the monitoring period.
+
+
+
+- Monitor BGP announcements and withdrawals in real-time for AS3356 to detect any sudden spikes that could indicate anomaly.

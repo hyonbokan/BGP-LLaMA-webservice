@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Box, CircularProgress } from '@mui/material'
 
 const useChat = ({ currentMessage, setCurrentMessage, setIsGenerating, setIsCollectingData, eventSource, setEventSource, setOutputMessage, outputMessage }) => {
     const [chatTabs, setChatTabs] = useState([{ id: 1, label: 'Chat 1', messages: [{ text: "Welcome to BGP-LLaMA Chat!", sender: "system" }] }]);
@@ -13,14 +14,14 @@ const useChat = ({ currentMessage, setCurrentMessage, setIsGenerating, setIsColl
         setChatTabs([...chatTabs, { id: newChatId, label: `Chat ${newChatId}`, messages: [{ text: "Welcome to BGP-LLaMA Chat!", sender: "system" }] }]);
         setCurrentTab(newChatId - 1);
         if (eventSource) {
-            eventSource.close(); // Close any existing connection
+            eventSource.close();
         }
     };
 
     const handleTabChange = (event, newValue) => {
         setCurrentTab(newValue);
         if (eventSource) {
-            eventSource.close(); // Close any existing connection
+            eventSource.close();
         }
     };
 
@@ -42,7 +43,7 @@ const useChat = ({ currentMessage, setCurrentMessage, setIsGenerating, setIsColl
             setCurrentTab(0);
         }
         if (eventSource) {
-            eventSource.close(); // Close any existing connection
+            eventSource.close();
         }
     };
 
@@ -66,67 +67,79 @@ const useChat = ({ currentMessage, setCurrentMessage, setIsGenerating, setIsColl
         setTabToEdit(null);
     };
 
-    const handleSendMessage = async () => {
-        if (currentMessage.trim() !== '') {
-            setIsGenerating(true);
-            setIsCollectingData(true);
-
-            const userMessage = { text: currentMessage, sender: "user" };
-            const collectingMessage = { text: "Collecting BGP messages...", sender: "system" };
-
-            const updatedTabs = chatTabs.map((tab, index) => {
-                if (index === currentTab) {
-                    return { ...tab, messages: [...tab.messages, userMessage, collectingMessage] };
-                }
-                return tab;
+    const updateChatTabs = (newMessage) => {
+        setChatTabs(prevTabs =>
+            prevTabs.map((tab, index) =>
+                index === currentTab
+                    ? { ...tab, messages: [...tab.messages, newMessage] }
+                    : tab
+            )
+        );
+    };
+    
+    const handleEventSourceMessage = (data) => {
+        if (data.status === "collecting") {
+            updateChatTabs({
+                text: (
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        Collecting BGP messages
+                        <CircularProgress size={16} sx={{ mr: 1 }} />
+                    </Box>
+                ),
+                sender: "system" 
             });
-
-            setChatTabs(updatedTabs);
-            setCurrentMessage('');
-            setOutputMessage('');
-
-            if (eventSource) {
-                eventSource.close();  // Close any existing connection
-            }
-
-            const url = `http://127.0.0.1:8000/api/bgp_llama?query=${encodeURIComponent(currentMessage)}`;
-            const newEventSource = new EventSource(url);
-
-            newEventSource.onmessage = function(event) {
-                const data = JSON.parse(event.data);
-
-                if (data.status === "collecting") {
-                    setIsCollectingData(true);
-                }
-
-                else if (data.status === "generating" && data.generated_text) {
-                    setOutputMessage(prev => prev + data.generated_text + ' ');
-                }
-            };
-
-            newEventSource.onerror = function(error) {
-                console.error('EventSource failed:', error);
-                newEventSource.close();
-                setIsGenerating(false);
-                setIsCollectingData(false);
-            };
-
-            newEventSource.onclose = function() {
-                setChatTabs(prevTabs => prevTabs.map((tab, index) => {
-                    if (index === currentTab) {
-                        return { ...tab, messages: [...tab.messages, { text: outputMessage.trim(), sender: "system" }] };
-                    }
-                    return tab;
-                }));
-                setOutputMessage('');
-                setIsGenerating(false);
-                setIsCollectingData(false);
-            };
-
-            setEventSource(newEventSource);
+            setIsCollectingData(true);
+        } else if (data.status === "generating" && data.generated_text) {
+            setOutputMessage(prev => prev + data.generated_text + ' ');
         }
     };
-
+    
+    const handleEventSourceError = (eventSource) => {
+        updateChatTabs({ text: "Unexpected error happened", sender: "system" });
+        console.error('EventSource failed:', eventSource);
+        eventSource.close();
+        setIsGenerating(false);
+        setIsCollectingData(false);
+    };
+    
+    const handleEventSourceClose = () => {
+        updateChatTabs({ text: outputMessage.trim(), sender: "system" });
+        setOutputMessage('');
+        setIsGenerating(false);
+        setIsCollectingData(false);
+    };
+    
+    const handleSendMessage = async () => {
+        if (currentMessage.trim() === '') return;
+    
+        setIsGenerating(true);
+        setIsCollectingData(false);
+    
+        const userMessage = { text: currentMessage, sender: "user" };
+        updateChatTabs(userMessage);
+    
+        setCurrentMessage('');
+        setOutputMessage('');
+    
+        if (eventSource) {
+            eventSource.close();
+        }
+    
+        const url = `http://127.0.0.1:8000/api/bgp_llama?query=${encodeURIComponent(currentMessage)}`;
+        const newEventSource = new EventSource(url);
+    
+        newEventSource.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            handleEventSourceMessage(data);
+        };
+    
+        newEventSource.onerror = () => handleEventSourceError(newEventSource);
+    
+        newEventSource.onclose = handleEventSourceClose;
+    
+        setEventSource(newEventSource);
+    };
+    
     const handleMessageChange = (event) => {
         setCurrentMessage(event.target.value);
     };

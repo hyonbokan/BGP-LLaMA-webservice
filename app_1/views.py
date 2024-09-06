@@ -67,13 +67,13 @@ def generate_llm_response(prompt, streamer):
     
 def generate_input_text(query, scenario="regular query", data=None):
     if scenario == "real-time":
-        return f"{SYSTEM_PROMPT}Answer this user query: {query}\n{''.join(data)}\n"
+        return f"{SYSTEM_PROMPT}Answer this user query: {query}\n{''.join(data)}"
     elif scenario == "historical":
-        return f"{SYSTEM_PROMPT}\nHere is the query: {query}\n{''.join(data)}"
+        return f"{SYSTEM_PROMPT}Answer this user query: {query}\n{''.join(data)}"
     elif scenario == "error":
         return f"{SYSTEM_PROMPT}First state that due to an error, BGP data cannot be collected. Then address the query."
     else:
-        return f"You are an AI assistant and your task is to answer the user query on the given BGP data. Here are some rules you always follow:\n- Generate only the requested output, don't include any other language before or after the requested output.\n- Never say thank you, that you are happy to help, that you are an AI agent, and additional suggestions. Just answer directly.\nHere is the query: {query}"
+        return f"You are an AI assistant and your task is to answer the user query on the given BGP data. Here are some rules you always follow:\n- Generate only the requested output, don't include any other language before or after the requested output.\n- Never say thank you, that you are happy to help, that you are an AI agent, and additional suggestions. Just answer directly.\nAnswer this user query: {query}"
 
     
 def check_query(query):
@@ -110,6 +110,7 @@ def check_query(query):
         Thread(target=collect_historical_wrapper).start()
     else:
         print("regular query")
+        scenario = "regular query"
         input_text = generate_input_text(query=query)
         status_update_event.set()
         
@@ -134,7 +135,6 @@ def stream_response_generator(query):
     try:
         # Check if the scenario involves data collection (real-time or historical)
         if scenario in ["real-time", "historical"]:
-            
             print(f"\n Scenario: {scenario}\n")
             # print(f"\n Input text before split: {input_text}\n")
             for i, chunk in enumerate(collected_data):
@@ -145,6 +145,7 @@ def stream_response_generator(query):
                     generated_output += new_text
                     yield f'data: {json.dumps({"status": "generating", "generated_text": new_text})}\n\n'
                 print(generated_output)
+                yield f'data: {json.dumps({"status": "complete", "generated_text": generated_output})}\n\n'
                 
         else:
             # Handle the case where no data was collected
@@ -152,8 +153,8 @@ def stream_response_generator(query):
             print(f"\n\nNo collected data available: \n{input_text}\n\n")
             for new_text in generate_llm_response(prompt=input_text, streamer=streamer):
                 yield f'data: {json.dumps({"status": "generating", "generated_text": new_text})}\n\n'
+            yield f'data: {json.dumps({"status": "complete", "generated_text": generated_output})}\n\n'
             
-
     except Exception as e:
         error_message = f"An error occurred during text generation: {str(e)}"
         print(error_message)

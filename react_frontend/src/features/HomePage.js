@@ -6,8 +6,8 @@ import { Link } from 'react-router-dom';
 const HomePage = () => {
   const cards = [
     {
-      title: "Instruction Finetuning Dataset ",
-      description: "Finetune LLaMA or other open-source LLMs with our dataset.",
+      title: "BGP-LLaMA documentation",
+      description: "Learn how to interact with BGP-LLaMA.",
       gradient: "linear-gradient(145deg, rgba(255,255,255,1) 0%, rgba(214,214,255,1) 100%)"
     },
     {

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Box, CircularProgress } from '@mui/material'
+import { useState, useEffect } from 'react';
+import { Box, CircularProgress } from '@mui/material';
 
 const useChat = ({ currentMessage, setCurrentMessage, setIsGenerating, setIsCollectingData, eventSource, setEventSource, setOutputMessage, outputMessage }) => {
     const [chatTabs, setChatTabs] = useState([{ id: 1, label: 'Chat 1', messages: [{ text: "Welcome to BGP-LLaMA Chat!", sender: "system" }] }]);
@@ -8,6 +8,11 @@ const useChat = ({ currentMessage, setCurrentMessage, setIsGenerating, setIsColl
     const [renameDialogOpen, setRenameDialogOpen] = useState(false);
     const [renameValue, setRenameValue] = useState('');
     const [tabToEdit, setTabToEdit] = useState(null);
+    const [collectingMessageIndex, setCollectingMessageIndex] = useState(null);
+
+    useEffect(() => {
+        console.log('Updated chatTabs:', chatTabs);
+    }, [chatTabs]);
 
     const handleNewChat = () => {
         const newChatId = chatTabs.length + 1;
@@ -76,24 +81,60 @@ const useChat = ({ currentMessage, setCurrentMessage, setIsGenerating, setIsColl
             )
         );
     };
+
+    const replaceCollectingMessage = (newMessage) => {
+        setChatTabs(prevTabs => 
+            prevTabs.map((tab, index) =>
+                index === currentTab && collectingMessageIndex !== null
+                    ? {
+                        ...tab,
+                        messages: tab.messages.map((msg, i) =>
+                            i === collectingMessageIndex ? newMessage : msg
+                        ),
+                    }
+                    : tab
+            )
+        );
+        setCollectingMessageIndex(null); // Clear the index after replacing
+    };
     
     const handleEventSourceMessage = (data) => {
         if (data.status === "collecting") {
-            updateChatTabs({
+            console.log("\nCollecting data event");
+            setIsCollectingData(true);
+
+            const collectingMessage = {
                 text: (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         Collecting BGP messages
+                        <Box sx={{ width: '8px' }} /> {/* Adding space */}
                         <CircularProgress size={16} sx={{ mr: 1 }} />
                     </Box>
                 ),
-                sender: "system" 
-            });
-            setIsCollectingData(true);
-        } else if (data.status === "generating" && data.generated_text) {
+                sender: "system"
+            };
+
+            updateChatTabs(collectingMessage);
+            setCollectingMessageIndex(chatTabs[currentTab].messages.length);
+        }
+
+        if (data.status === "generating" && data.generated_text) {
+            console.log("\nGenerating output data event");
             setOutputMessage(prev => prev + data.generated_text + ' ');
         }
+
+        if (data.status === "complete") {
+            console.log("\nCompleted output data event");
+            setIsCollectingData(false);
+
+            // Replace the "Collecting BGP messages" message with the final output
+            replaceCollectingMessage({
+                text: outputMessage.trim(),
+                sender: 'system'
+            });
+        }
     };
-    
+
     const handleEventSourceError = (eventSource) => {
         updateChatTabs({ text: "Unexpected error happened", sender: "system" });
         console.error('EventSource failed:', eventSource);

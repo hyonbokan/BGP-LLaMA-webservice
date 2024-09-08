@@ -21,8 +21,8 @@ def load_model():
         if model is None or tokenizer is None or streamer is None:
             try:
                 # model_id = 'meta-llama/Llama-2-13b-chat-hf'
-                # model_id = 'meta-llama/Meta-Llama-3.1-8B-Instruct'
-                model_id = 'hyonbokan/bgp-llama-knowledge-5k'
+                model_id = 'meta-llama/Meta-Llama-3.1-8B-Instruct'
+                # model_id = 'hyonbokan/bgp-llama-knowledge-5k'
                 hf_auth = os.environ.get('hf_token')
 
                 model_config = AutoConfig.from_pretrained(
@@ -63,7 +63,7 @@ def generate_response(prompt):
         inputs=inputs["input_ids"],
         streamer=streamer,
         max_new_tokens=756,  # Adjust based on your requirements
-        # do_sample=True,
+        do_sample=True,
     )
     
     thread = Thread(target=model.generate, kwargs=generation_kwargs)
@@ -85,7 +85,7 @@ def generate_response(prompt):
 user_query = "Analyze the consistency of AS3356 in maintaining the same maximum path length over the monitoring period."
 prompt = f"""
 You are an AI assistant and your task is to answers the user query on the given BGP data. Here are some rules you always follow:
-- Generate only the requested output, don't include any other language before or after the requested output..
+- Generate only the requested output, don't include any other language before or after the requested output.
 - Your answers should be direct and include relevant timestamps when analyzing BGP data features.
 - Check the collected BGP data given below. Each row represents the features collected over a specific period.
 - Never say thank you, that you are happy to help, that you are an AI agent, and additional suggestions. Just answer directly.

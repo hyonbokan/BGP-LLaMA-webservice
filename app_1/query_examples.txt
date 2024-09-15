@@ -45,3 +45,5 @@ The number of routes announced by AS3356 exceeds the threshold of 150000 at this
 
 
 - Monitor BGP announcements and withdrawals in real-time for AS3356 to detect any sudden spikes that could indicate anomaly.
+
+- Which ASNs appear most frequently in the AS paths for the target ASN?

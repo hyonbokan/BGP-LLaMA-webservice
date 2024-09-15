@@ -136,7 +136,7 @@ const useChat = ({ currentMessage, setCurrentMessage, setIsGenerating, setIsColl
     };
 
     const handleEventSourceError = (eventSource) => {
-        updateChatTabs({ text: "Unexpected error happened", sender: "system" });
+        // updateChatTabs({ text: "Unexpected error happened", sender: "system" });
         console.error('EventSource failed:', eventSource);
         eventSource.close();
         setIsGenerating(false);

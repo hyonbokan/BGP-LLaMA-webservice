@@ -73,7 +73,7 @@ def generate_input_text(query, scenario="regular query", data=None):
     elif scenario == "error":
         return f"{SYSTEM_PROMPT}First state that due to an error, BGP data cannot be collected. Then address the query."
     else:
-        return f"You are an AI assistant and your task is to answer the user query on the given BGP data. Here are some rules you always follow:\n- Generate only the requested output, don't include any other language before or after the requested output.\n- Never say thank you, that you are happy to help, that you are an AI agent, and additional suggestions. Just answer directly.\nAnswer this user query: {query}"
+        return f"You are an AI assistant and your task is to answer the user query on the given BGP data. Here are some rules you always follow:\n- Generate only the requested output, don't include any other language before or after the requested output.\n- Never say thank you, that you are happy to help, that you are an AI agent, and additional suggestions. Just answer directly. Answer this user query: {query}"
 
     
 def check_query(query):
@@ -150,7 +150,8 @@ def stream_response_generator(query):
         else:
             # Handle the case where no data was collected
             print(f"\n Scenario: {scenario}\n")
-            print(f"\n\nNo collected data available: \n{input_text}\n\n")
+            print(f"\n\nNo collected data available. \nPrompt: \n{input_text}\n\n")
+            generated_output = "" 
             for new_text in generate_llm_response(prompt=input_text, streamer=streamer):
                 yield f'data: {json.dumps({"status": "generating", "generated_text": new_text})}\n\n'
             yield f'data: {json.dumps({"status": "complete", "generated_text": generated_output})}\n\n'

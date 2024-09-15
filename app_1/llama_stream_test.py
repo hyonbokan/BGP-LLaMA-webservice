@@ -80,9 +80,9 @@ def generate_response(prompt):
     
     return generated_text.strip()
 
-# user_query = "Identify timestamps where the number of routes announced by AS3356 exceeds a threshold of 150000."
+user_query = "Identify timestamps where the number of routes announced by AS3356 exceeds a threshold of 150000."
 # user_query = "Identify any time intervals where AS3356 had a significant increase in the number of new routes."
-user_query = "Analyze the consistency of AS3356 in maintaining the same maximum path length over the monitoring period."
+# user_query = "Analyze the consistency of AS3356 in maintaining the same maximum path length over the monitoring period."
 prompt = f"""
 You are an AI assistant and your task is to answers the user query on the given BGP data. Here are some rules you always follow:
 - Generate only the requested output, don't include any other language before or after the requested output.

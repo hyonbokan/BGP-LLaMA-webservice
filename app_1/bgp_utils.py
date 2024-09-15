@@ -36,20 +36,21 @@ def extract_features(index, routes, old_routes_as, target_asn, temp_counts):
     features = {
         "Timestamp": None,
         "Autonomous System Number": target_asn,
-        "Number of Routes": 0,  
-        "Number of New Routes": 0,  
-        "Number of Withdrawals": 0,  
-        "Number of Origin Changes": 0,  
-        "Number of Route Changes": 0,  
-        "Maximum Path Length": 0,  
-        "Average Path Length": 0,  
-        "Maximum Edit Distance": 0,  
-        "Average Edit Distance": 0,  
-        "Number of Announcements": temp_counts["Number of Announcements"],  
-        "Total Withdrawals": temp_counts["Total Withdrawals"],  
-        "Number of Unique Prefixes Announced": 0  
+        "Number of Routes": 0,
+        "Number of New Routes": 0,
+        "Number of Withdrawals": 0,
+        "Number of Origin Changes": 0,
+        "Number of Route Changes": 0,
+        "Maximum Path Length": 0,
+        "Average Path Length": 0,
+        "Maximum Edit Distance": 0,
+        "Average Edit Distance": 0,
+        "Number of Announcements": temp_counts["Number of Announcements"],
+        "Total Withdrawals": temp_counts["Total Withdrawals"],
+        "Number of Unique Prefixes Announced": 0,
+        "Paths": []
     }
-    
+
     routes_as = build_routes_as(routes)
 
     if index > 0:
@@ -59,8 +60,12 @@ def extract_features(index, routes, old_routes_as, target_asn, temp_counts):
             sum_edit_distance = 0
 
             for prefix in routes_as[target_asn].keys():
+                path = routes_as[target_asn][prefix]
+
+                # Convert the path list to a string and store it in the features list
+                features["Paths"].append(f"{prefix}: {' '.join(path)}")
+
                 if target_asn in old_routes_as and prefix in old_routes_as[target_asn]:
-                    path = routes_as[target_asn][prefix]
                     path_old = old_routes_as[target_asn][prefix]
 
                     if path != path_old:
@@ -96,6 +101,7 @@ def extract_features(index, routes, old_routes_as, target_asn, temp_counts):
 
     return features, routes_as
 
+
 def extract_bgp_data(target_asn, from_time, until_time):
     stream = pybgpstream.BGPStream(
         from_time=from_time,
@@ -117,6 +123,8 @@ def extract_bgp_data(target_asn, from_time, until_time):
 
     record_count = 0
     element_count = 0
+
+    print(f"Starting BGP data extraction for ASN {target_asn} from {from_time} to {until_time}")
 
     for rec in stream.records():
         record_count += 1
@@ -151,10 +159,12 @@ def extract_bgp_data(target_asn, from_time, until_time):
                 routes[prefix][collector] = {}
 
             if elem.type == 'A':
-                path = update['as-path'].split()
-                if path[-1] == target_asn:
-                    routes[prefix][collector][peer_asn] = path
-                    temp_counts["Number of Announcements"] += 1
+                as_path = update.get('as-path')
+                if as_path:
+                    path = as_path.split()
+                    if path[-1] == target_asn:
+                        routes[prefix][collector][peer_asn] = path
+                        temp_counts["Number of Announcements"] += 1
             elif elem.type == 'W':
                 if prefix in routes and collector in routes[prefix]:
                     if peer_asn in routes[prefix][collector]:
@@ -162,17 +172,18 @@ def extract_bgp_data(target_asn, from_time, until_time):
                             routes[prefix][collector].pop(peer_asn, None)
                             temp_counts["Total Withdrawals"] += 1
 
-    # print(f"Total records processed: {record_count}")
-    # print(f"Total elements processed: {element_count}")
-    
+    print(f"Total records processed: {record_count}")
+    print(f"Total elements processed: {element_count}")
+
     features, old_routes_as = extract_features(index, routes, old_routes_as, target_asn, temp_counts)
     features['Timestamp'] = current_window_start.strftime('%Y-%m-%d %H:%M:%S')
     all_features.append(features)
 
     df_features = pd.json_normalize(all_features, sep='_').fillna(0)
+    print(df_features.columns)
     print(df_features)
-
     return df_features
+
 
 def collect_historical_data(asn, from_time_str, until_time_str=None):
     if asn is None or from_time_str is None:
@@ -205,33 +216,33 @@ def run_real_time_bgpstream(asn, collection_period, return_dict):
     try:
         for rec in stream.records():
             current_time = datetime.utcnow()
-            # print(f"Current Time: {current_time}, Window Start: {current_window_start}")
-            
+
             if time.time() - start_time >= collection_period:
                 print("Collection period ended. Processing data...")
                 break
-            
+
             try:
                 for elem in rec:
                     as_path = elem.fields.get('as-path', '').split()
                     prefix = elem.fields.get('prefix')
 
+                    # Process announcements and withdrawals involving the target ASN
                     if asn in as_path:
-                        if elem.type == 'A':
+                        if elem.type == 'A':  # Announcement
                             if prefix not in routes:
                                 routes[prefix] = {}
                             if rec.collector not in routes[prefix]:
                                 routes[prefix][rec.collector] = {}
                             routes[prefix][rec.collector][elem.peer_asn] = as_path
                             temp_counts["Number of Announcements"] += 1
-                            # print(temp_counts)
-                        elif elem.type == 'W':
+
+                        elif elem.type == 'W':  # Withdrawal
                             if prefix in routes:
                                 if rec.collector in routes[prefix]:
                                     if elem.peer_asn in routes[prefix][rec.collector]:
                                         del routes[prefix][rec.collector][elem.peer_asn]
                                         temp_counts["Total Withdrawals"] += 1
-                                        # print(temp_counts)
+
             except KeyError as ke:
                 print(f"KeyError processing record: {ke}. Continuing with the next record.")
                 continue
@@ -244,18 +255,22 @@ def run_real_time_bgpstream(asn, collection_period, return_dict):
                 print(f"Unexpected error processing record: {e}. Continuing with the next record.")
                 continue
 
-
+            # Time window check: aggregate and reset every 1 minute
             if current_time >= current_window_start + timedelta(minutes=1):
                 print(f"Reached time window: {current_window_start} to {current_time}")
+
+                # Extract features, including paths
                 features, old_routes_as = extract_features(index, routes, old_routes_as, asn, temp_counts)
                 features['Timestamp'] = current_window_start.strftime('%Y-%m-%d %H:%M:%S')
                 all_features.append(features)
-                # Calculate the end of the current time window
+
+                # Update return_dict with real-time data
+                return_dict['features_df'] = pd.DataFrame(all_features).dropna(axis=1, how='all')
+
+                # Log update and prepare for the next minute
                 next_window_start = current_window_start + timedelta(minutes=1)
                 print(f"\n\nUpdate from {current_window_start} to {next_window_start}: {all_features[-1]}\n\n")
-                # Update the return_dict with the current minute's data
-                return_dict['features_df'] = pd.DataFrame(all_features).dropna(axis=1, how='all')
-                # Reset for the next minute
+
                 current_window_start = next_window_start
                 routes = {}
                 index += 1
@@ -263,22 +278,30 @@ def run_real_time_bgpstream(asn, collection_period, return_dict):
                     "Number of Announcements": 0,
                     "Total Withdrawals": 0
                 }
-            
+
+        # Final extraction for any remaining data after the collection period ends
         if routes:
             features, old_routes_as = extract_features(index, routes, old_routes_as, asn, temp_counts)
             features['Timestamp'] = current_window_start.strftime('%Y-%m-%d %H:%M:%S')
             all_features.append(features)
             return_dict['features_df'] = pd.DataFrame(all_features).dropna(axis=1, how='all')
-            
+
     except Exception as e:
         error_message = f"An error occurred during real-time data collection for {asn}: {e}"
         print(error_message)
         return_dict['error'] = error_message
-        # Still update the return_dict with whatever data has been collected so far
         if all_features:
             return_dict['features_df'] = pd.DataFrame(all_features).dropna(axis=1, how='all')
 
 
+
+def convert_lists_to_tuples(df):
+    # Identify columns that contain list values
+    for col in df.columns:
+        if df[col].apply(lambda x: isinstance(x, list)).any():
+            # Convert the list values to tuples (hashable type)
+            df[col] = df[col].apply(tuple)
+    return df
 
 def collect_real_time_data(asn, collection_period=300):
     all_collected_data = []  # List to store all collected DataFrames
@@ -339,10 +362,13 @@ def collect_real_time_data(asn, collection_period=300):
         final_features_df = pd.concat(all_collected_data, ignore_index=True)
     else:
         final_features_df = features_df
-        
+
+    # Convert list columns to tuples before removing duplicates
+    final_features_df = convert_lists_to_tuples(final_features_df)
+
     # Remove duplicates from the final DataFrame
     final_features_df = final_features_df.drop_duplicates()
-    
+
     print(f"\nFinal features df: {final_features_df}\n")
     return final_features_df
 

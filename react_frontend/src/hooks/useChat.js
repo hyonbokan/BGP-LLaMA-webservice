@@ -171,7 +171,13 @@ const useChat = ({ currentMessage, setCurrentMessage, setIsGenerating, setIsColl
     
         newEventSource.onmessage = function(event) {
             const data = JSON.parse(event.data);
+            console.log(data);
             handleEventSourceMessage(data);
+
+            if (data.session_id) {
+                sessionId = data.session_id;
+                console.log(sessionId);
+            }
         };
     
         newEventSource.onerror = () => handleEventSourceError(newEventSource);

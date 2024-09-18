@@ -1,52 +1,149 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer, AutoConfig, TextIteratorStreamer
-import transformers
 import logging
+import sys
+import torch
 import os
+from llama_index.llms.huggingface import HuggingFaceLLM
+from llama_index.embeddings.huggingface import HuggingFaceEmbedding
+from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex
+from llama_index.core import PromptTemplate
 from threading import Lock
 
-model = None
-tokenizer = None
-streamer = None
+# Logging configuration
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+logger = logging.getLogger()
+logger.addHandler(logging.StreamHandler(stream=sys.stdout))
+
+LLAMA3_8B_INSTRUCT = "meta-llama/Meta-Llama-3.1-8B-Instruct"
+CUSTOM_MODEL = "hyonbokan/bgp-llama-knowledge-5k"
 model_lock = Lock()
 
-def load_model():
-    global model, tokenizer, streamer
+
+# System prompt
+SYSTEM_PROMPT = """
+You are an AI assistant that answers questions in a friendly manner, based on the given source BGP data. Here are some rules you always follow:
+- Generate only the requested output, don't include any other language before or after the requested output.
+- Your answers should be direct and include relevant timestamps when analyzing BGP data features.
+- Check the collected BGP data given below. Each row represents the features collected over a specific period.
+- Never say thank you, that you are happy to help, that you are an AI agent, and additional suggestions.
+"""
+
+# Prompt template
+query_wrapper_prompt = PromptTemplate("[INST]<>\n" + SYSTEM_PROMPT + "<>\n\n{query_str}[/INST] ")
+
+
+def initialize_models():
     with model_lock:
-        if model is None or tokenizer is None or streamer is None:
-            try:
-                model_id = 'meta-llama/Llama-2-7b-chat-hf'
-                # model_id = 'hyonbokan/bgp-llama-knowledge-5k'
-                hf_auth = os.environ.get('hf_token')
+            llm = HuggingFaceLLM(
+                context_window=4096,
+                max_new_tokens=512,
+                generate_kwargs={"temperature": 0.0, "do_sample": False},
+                query_wrapper_prompt=query_wrapper_prompt,
+                tokenizer_name=LLAMA3_8B_INSTRUCT,
+                model_name=LLAMA3_8B_INSTRUCT,
+                device_map="auto",
+                model_kwargs={"torch_dtype": torch.float16, "load_in_8bit": False},
+                
+            )
 
-                model_config = AutoConfig.from_pretrained(
-                    model_id,
-                    use_auth_token=hf_auth
-                )
-                model = AutoModelForCausalLM.from_pretrained(
-                    model_id,
-                    trust_remote_code=True,
-                    config=model_config,
-                    device_map='auto',
-                    use_auth_token=hf_auth
-                )
-                tokenizer = AutoTokenizer.from_pretrained(
-                    model_id,
-                    use_auth_token=hf_auth
-                )
+            embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5")
 
-                tokenizer.pad_token = tokenizer.eos_token
-                tokenizer.pad_token_id = tokenizer.eos_token_id
-                tokenizer.padding_side = "right"
+            Settings.llm = llm
+            Settings.embed_model = embed_model
 
-                streamer = TextIteratorStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
-                # transformers.logging.set_verbosity(transformers.logging.CRITICAL)
+            logger.info("Models loaded and set globally.")
 
-                logging.info("Model loaded successfully")
-            except Exception as e:
-                logging.error(f"Failed to load the model: {str(e)}")
-                raise
+# Load documents from directory
+def load_documents(directory_path):
+    reader = SimpleDirectoryReader(directory_path)
+    documents = reader.load_data()
+    return documents
 
-    return model, tokenizer, streamer
+# Create vector store index
+def create_index(documents):
+    index = VectorStoreIndex.from_documents(documents)
+    return index
+
+# Query the engine with streaming support
+def stream_bgp_query(query, directory_path=None):
+    # Ensure models are initialized only if they haven't been set already
+    with model_lock:
+        if not hasattr(Settings, "llm") or not hasattr(Settings, "embed_model"):
+            logger.info("Models not found in Settings. Initializing...")
+            initialize_models()
+    
+    index = None
+    
+    # If a directory path is provided, load documents from that directory
+    if directory_path:
+        logger.info(f"Loading documents from {directory_path} for RAG.")
+        documents = load_documents(directory_path)
+        index = create_index(documents)
+
+    # If no directory path is provided, try using default documents
+    if index is None and not directory_path:
+        logger.info("\nNo specific BGP data provided. Loading default documents for regular query.")
+        default_directory_path = "/home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/knowledge"
+        documents = load_documents(default_directory_path)
+        if documents:
+            index = create_index(documents)
+        else:
+            logger.warning(f"No default documents found in directory: {default_directory_path}. Proceeding with LLM response without augmentation.")
+    
+    logger.info(f"\nuser query: {query}\n")
+    
+    # Create the query engine
+    query_engine = index.as_query_engine(streaming=True)
+
+    # Perform the query and yield response tokens
+    response = query_engine.query(query)
+    for token in response.response_gen:
+        yield token
+
+    logger.info("Query completed.")
+
+# model = None
+# tokenizer = None
+# streamer = None
+
+# def load_model():
+#     global model, tokenizer, streamer
+#     with model_lock:
+#         if model is None or tokenizer is None or streamer is None:
+#             try:
+#                 model_id = 'meta-llama/Llama-2-7b-chat-hf'
+#                 # model_id = 'hyonbokan/bgp-llama-knowledge-5k'
+#                 hf_auth = os.environ.get('hf_token')
+
+#                 model_config = AutoConfig.from_pretrained(
+#                     model_id,
+#                     use_auth_token=hf_auth
+#                 )
+#                 model = AutoModelForCausalLM.from_pretrained(
+#                     model_id,
+#                     trust_remote_code=True,
+#                     config=model_config,
+#                     device_map='auto',
+#                     use_auth_token=hf_auth
+#                 )
+#                 tokenizer = AutoTokenizer.from_pretrained(
+#                     model_id,
+#                     use_auth_token=hf_auth
+#                 )
+
+#                 tokenizer.pad_token = tokenizer.eos_token
+#                 tokenizer.pad_token_id = tokenizer.eos_token_id
+#                 tokenizer.padding_side = "right"
+
+#                 streamer = TextIteratorStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
+#                 # transformers.logging.set_verbosity(transformers.logging.CRITICAL)
+
+#                 logging.info("Model loaded successfully")
+#             except Exception as e:
+#                 logging.error(f"Failed to load the model: {str(e)}")
+#                 raise
+
+#     return model, tokenizer, streamer
 
 
 # @csrf_exempt

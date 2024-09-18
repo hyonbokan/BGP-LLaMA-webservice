@@ -1,10 +1,13 @@
 import pybgpstream
 import re
+import os
 import time
 from datetime import datetime, timedelta
 import editdistance
-import pandas as pd
 import multiprocessing
+import uuid
+import pandas as pd
+from django.conf import settings
 
 def extract_asn(query):
     match = re.search(r'\bAS(\d+)\b', query, re.IGNORECASE)
@@ -102,7 +105,100 @@ def extract_features(index, routes, old_routes_as, target_asn, temp_counts):
     return features, routes_as
 
 
+# def extract_bgp_data(target_asn, from_time, until_time):
+#     stream = pybgpstream.BGPStream(
+#         from_time=from_time,
+#         until_time=until_time,
+#         record_type="updates",
+#         collectors=['rrc00']
+#     )
+
+#     all_features = []
+#     old_routes_as = {}
+#     routes = {}
+#     current_window_start = datetime.strptime(from_time, "%Y-%m-%d %H:%M:%S")
+#     index = 0
+
+#     temp_counts = {
+#         "Number of Announcements": 0,
+#         "Total Withdrawals": 0
+#     }
+
+#     record_count = 0
+#     element_count = 0
+
+#     print(f"Starting BGP data extraction for ASN {target_asn} from {from_time} to {until_time}")
+
+#     for rec in stream.records():
+#         record_count += 1
+#         for elem in rec:
+#             element_count += 1
+#             update = elem.fields
+#             elem_time = datetime.utcfromtimestamp(elem.time)
+
+#             if elem_time >= current_window_start + timedelta(minutes=5):
+#                 features, old_routes_as = extract_features(index, routes, old_routes_as, target_asn, temp_counts)
+#                 features['Timestamp'] = current_window_start.strftime('%Y-%m-%d %H:%M:%S')
+#                 all_features.append(features)
+
+#                 current_window_start += timedelta(minutes=5)
+#                 routes = {}
+#                 index += 1
+#                 temp_counts = {
+#                     "Number of Announcements": 0,
+#                     "Total Withdrawals": 0
+#                 }
+
+#             prefix = update.get("prefix")
+#             if prefix is None:
+#                 continue
+
+#             peer_asn = update.get("peer_asn", "unknown")
+#             collector = rec.collector
+
+#             if prefix not in routes:
+#                 routes[prefix] = {}
+#             if collector not in routes[prefix]:
+#                 routes[prefix][collector] = {}
+
+#             if elem.type == 'A':
+#                 as_path = update.get('as-path')
+#                 if as_path:
+#                     path = as_path.split()
+#                     if path[-1] == target_asn:
+#                         routes[prefix][collector][peer_asn] = path
+#                         temp_counts["Number of Announcements"] += 1
+#             elif elem.type == 'W':
+#                 if prefix in routes and collector in routes[prefix]:
+#                     if peer_asn in routes[prefix][collector]:
+#                         if routes[prefix][collector][peer_asn][-1] == target_asn:
+#                             routes[prefix][collector].pop(peer_asn, None)
+#                             temp_counts["Total Withdrawals"] += 1
+
+#     print(f"Total records processed: {record_count}")
+#     print(f"Total elements processed: {element_count}")
+
+#     features, old_routes_as = extract_features(index, routes, old_routes_as, target_asn, temp_counts)
+#     features['Timestamp'] = current_window_start.strftime('%Y-%m-%d %H:%M:%S')
+#     all_features.append(features)
+
+#     df_features = pd.json_normalize(all_features, sep='_').fillna(0)
+#     print(df_features.columns)
+#     print(df_features)
+#     return df_features
+
 def extract_bgp_data(target_asn, from_time, until_time):
+    # Generate a unique UUID for the dataset
+    data_uuid = uuid.uuid4()
+
+    # Define the output path in the media directory
+    media_dir = os.path.join(settings.MEDIA_ROOT, 'rag_bgp_data', str(data_uuid))
+    os.makedirs(media_dir, exist_ok=True)  # Ensure the directory exists
+
+    # Define the file name and path inside the new directory
+    file_name = f"bgp_data_{data_uuid}.csv"
+    file_path = os.path.join(media_dir, file_name)
+
     stream = pybgpstream.BGPStream(
         from_time=from_time,
         until_time=until_time,
@@ -175,15 +271,22 @@ def extract_bgp_data(target_asn, from_time, until_time):
     print(f"Total records processed: {record_count}")
     print(f"Total elements processed: {element_count}")
 
+    # Capture any remaining features after the final time window
     features, old_routes_as = extract_features(index, routes, old_routes_as, target_asn, temp_counts)
     features['Timestamp'] = current_window_start.strftime('%Y-%m-%d %H:%M:%S')
     all_features.append(features)
 
+    # Convert collected features to a DataFrame
     df_features = pd.json_normalize(all_features, sep='_').fillna(0)
     print(df_features.columns)
     print(df_features)
-    return df_features
 
+    # Save the DataFrame to a CSV file inside the newly created directory
+    df_features.to_csv(file_path, index=False)
+    print(f"Data saved to {file_path} in {media_dir}")
+
+    # Return the directory path (not the file path)
+    return media_dir
 
 def collect_historical_data(asn, from_time_str, until_time_str=None):
     if asn is None or from_time_str is None:
@@ -193,7 +296,6 @@ def collect_historical_data(asn, from_time_str, until_time_str=None):
     if until_time_str is None:
         until_time_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-    print(f"Starting historical data collection for ASn: {asn} from {from_time_str} to {until_time_str}")
     return extract_bgp_data(asn, from_time_str, until_time_str)
 
 def run_real_time_bgpstream(asn, collection_period, return_dict):

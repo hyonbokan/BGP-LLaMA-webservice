@@ -27,8 +27,8 @@ CUSTOM_MODEL = "hyonbokan/bgp-llama-knowledge-5k"
 SYSTEM_PROMPT = """
 You are an AI assistant that answers questions in a friendly manner, based on the given source BGP data. Here are some rules you always follow:
 - Generate only the requested output, don't include any other language before or after the requested output.
-- Your answers should be direct and include relevant timestamps when analyzing BGP data features.
-- Check the collected BGP data given below. Each row represents the features collected over a specific period.
+- Your answers should be direct and include relevant timestamps and values when analyzing BGP data features.
+- Be clear without repeating yourself.
 - Never say thank you, that you are happy to help, that you are an AI agent, and additional suggestions.
 """
 
@@ -90,7 +90,7 @@ def main():
     logger.info("Creating vector store index...")
     index = create_index(documents)
 
-    query = "What is BGP in computer network?"
+    query = "Collect and analyze data for AS8342 from 2022-03-28 15:10:00 to 2022-03-28 15:25:00."
     logger.info(f"Running query: {query}")
     query_bgp_data(index, query)
 

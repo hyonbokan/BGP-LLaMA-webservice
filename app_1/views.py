@@ -10,7 +10,7 @@ from threading import Thread, Event
 import queue
 import os
 from django.conf import settings
-from .bgp_utils import extract_asn, extract_times, collect_historical_data, collect_real_time_data, process_dataframe
+from .bgp_utils import extract_asn, extract_times, collect_historical_data, collect_real_time_data, extract_real_time_span
 from .model_loader import stream_bgp_query
 import re
 from uuid import uuid4
@@ -109,26 +109,28 @@ def check_query(query, session_id):
 
     asn = extract_asn(query)
     from_time, until_time = extract_times(query)
-
+    real_time_span = extract_real_time_span(query)
     # Queue to communicate the directory path from the thread
     dir_path_queue = queue.Queue()
 
     def collect_historical_wrapper():
-        dir_path = collect_historical_data(asn, from_time, until_time)  # Data stored in directory path
+        dir_path = collect_historical_data(asn, from_time, until_time)
         if dir_path:
-            session['data_dir'] = dir_path  # Store the directory in session
-            dir_path_queue.put(dir_path)  # Put the result in the queue
+            session['data_dir'] = dir_path
+            print(f"\nSession: {session}\n")
+            dir_path_queue.put(dir_path)
         else:
-            dir_path_queue.put(None)  # Put None to indicate failure
+            dir_path_queue.put(None)
         status_update_event.set()
 
     def collect_real_time_wrapper():
-        dir_path = collect_real_time_data(asn)  # Data stored in directory path
+        dir_path = collect_real_time_data(asn, real_time_span)
         if dir_path:
-            session['data_dir'] = dir_path  # Store the directory in session
-            dir_path_queue.put(dir_path)  # Put the result in the queue
+            session['data_dir'] = dir_path_queue
+            print(f"\nSession: {session}\n")
+            dir_path_queue.put(dir_path)
         else:
-            dir_path_queue.put(None)  # Put None to indicate failure
+            dir_path_queue.put(None)
         status_update_event.set()
 
     if "real-time" in query.lower():

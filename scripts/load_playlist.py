@@ -1,13 +1,10 @@
 import pandas as pd
 import json
-# https://django-extensions.readthedocs.io/en/latest/runscript.html
-
-# python3 manage.py runscript load_video
 
 from app_1.models import Playlist, Playlistvideos, Video
 
 def run():
-    yt_playlist = "/media/kamal/DATA/yt_data/playlist_videos.json"
+    yt_playlist = ""
 
     Playlist.objects.all().delete()
     Playlistvideos.objects.all().delete()

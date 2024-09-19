@@ -39,7 +39,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',  # Ensure this is before CommonMiddleware
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -75,7 +75,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'project_1.wsgi.application'
 
 # Configure session settings
-SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # You can choose a different backend if needed
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_SECURE = True  # Enable this for HTTPS connections
 SESSION_COOKIE_HTTPONLY = True  # Helps mitigate against XSS attacks
 SESSION_COOKIE_SAMESITE = 'Lax'  # Adjust as needed for your requirements

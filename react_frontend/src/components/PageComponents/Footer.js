@@ -50,9 +50,9 @@ const Footer = () => {
 
                 <Grid item xs={12} sm={2}>
                     <Typography variant="subtitle1" sx={ titleFontStyle } gutterBottom>Features</Typography>
-                    <Link href="#" underline="hover" sx={ textFontStyle }>Dataset</Link><br />
-                    <Link href="#" underline="hover" sx={ textFontStyle }>Fine-tuning</Link><br />
-                    <Link href="#" underline="hover" sx={ textFontStyle }>BGP-LLaMA</Link>
+                    <Link to="/dataset" underline="hover" sx={ textFontStyle }>Dataset</Link><br />
+                    <Link to="/bgp_chat" underline="hover" sx={ textFontStyle }>BGP-LLaMA</Link><br />
+                    <Link href="https://github.com/hyonbokan/LLM-research/blob/main/finetune_main/finetuning_base/llama_bgpstream_finetune.ipynb" underline="hover" sx={ textFontStyle }>Fine-tuning</Link>
                 </Grid>
 
                 <Grid item xs={12} sm={2}>

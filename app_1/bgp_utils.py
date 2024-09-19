@@ -21,6 +21,41 @@ def extract_times(query):
     until_time = matches[1] if len(matches) > 1 else None
     return from_time, until_time
 
+def extract_real_time_span(query):
+    patterns = {
+        'minutes': r'(\d+)\s*minutes?',
+        'hours': r'(\d+)\s*hours?',
+        'days': r'(\d+)\s*days?',
+        'weeks': r'(\d+)\s*weeks?'
+    }
+    
+    minutes = hours = days = weeks = 0
+    
+    for unit, pattern in patterns.items():
+        match = re.search(pattern, query, re.IGNORECASE)
+        if match:
+            value = int(match.group(1))
+            if unit == 'minutes':
+                minutes = value
+            elif unit == 'hours':
+                hours = value
+            elif unit == 'days':
+                days = value
+            elif unit == 'weeks':
+                weeks = value
+
+    # Calculate the total collection period
+    total_seconds = (minutes * 60) + (hours * 3600) + (days * 86400) + (weeks * 604800)
+    
+    # If no time span is specified, default to 5 minutes (300 seconds)
+    if total_seconds == 0:
+        total_seconds = 300
+    
+    collection_period = timedelta(seconds=total_seconds)
+    print(f"\nParsed time span for real-time collection: {collection_period} (total seconds: {total_seconds})")
+    return collection_period
+
+
 def build_routes_as(routes):
     routes_as = {}
     for prefix in routes:
@@ -193,11 +228,17 @@ def extract_bgp_data(target_asn, from_time, until_time):
 
     # Define the output path in the media directory
     media_dir = os.path.join(settings.MEDIA_ROOT, 'rag_bgp_data', str(data_uuid))
-    os.makedirs(media_dir, exist_ok=True)  # Ensure the directory exists
+    os.makedirs(media_dir, exist_ok=True)
+    
+    # Check if the directory exists
+    if not os.path.exists(media_dir):
+        raise OSError(f"Failed to create directory: {media_dir}")
+    print(f"\nDirectory created: {media_dir}")
 
     # Define the file name and path inside the new directory
     file_name = f"bgp_data_{data_uuid}.csv"
     file_path = os.path.join(media_dir, file_name)
+    print(f"\nFile will be saved to: {file_path}")
 
     stream = pybgpstream.BGPStream(
         from_time=from_time,
@@ -282,8 +323,11 @@ def extract_bgp_data(target_asn, from_time, until_time):
     print(df_features)
 
     # Save the DataFrame to a CSV file inside the newly created directory
-    df_features.to_csv(file_path, index=False)
-    print(f"Data saved to {file_path} in {media_dir}")
+    try:
+        df_features.to_csv(file_path, index=False)
+        print(f"Data saved to {file_path} in {media_dir}")
+    except Exception as e:
+        print(f"Error saving file: {str(e)}")
 
     # Return the directory path (not the file path)
     return media_dir
@@ -297,6 +341,14 @@ def collect_historical_data(asn, from_time_str, until_time_str=None):
         until_time_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     return extract_bgp_data(asn, from_time_str, until_time_str)
+
+def convert_lists_to_tuples(df):
+    # Identify columns that contain list values
+    for col in df.columns:
+        if df[col].apply(lambda x: isinstance(x, list)).any():
+            # Convert the list values to tuples (hashable type)
+            df[col] = df[col].apply(tuple)
+    return df
 
 def run_real_time_bgpstream(asn, collection_period, return_dict):
     all_features = []
@@ -319,7 +371,7 @@ def run_real_time_bgpstream(asn, collection_period, return_dict):
         for rec in stream.records():
             current_time = datetime.utcnow()
 
-            if time.time() - start_time >= collection_period:
+            if time.time() - start_time >= collection_period.total_seconds():
                 print("Collection period ended. Processing data...")
                 break
 
@@ -369,11 +421,7 @@ def run_real_time_bgpstream(asn, collection_period, return_dict):
                 # Update return_dict with real-time data
                 return_dict['features_df'] = pd.DataFrame(all_features).dropna(axis=1, how='all')
 
-                # Log update and prepare for the next minute
-                next_window_start = current_window_start + timedelta(minutes=1)
-                print(f"\n\nUpdate from {current_window_start} to {next_window_start}: {all_features[-1]}\n\n")
-
-                current_window_start = next_window_start
+                current_window_start = current_window_start + timedelta(minutes=1)
                 routes = {}
                 index += 1
                 temp_counts = {
@@ -395,19 +443,20 @@ def run_real_time_bgpstream(asn, collection_period, return_dict):
         if all_features:
             return_dict['features_df'] = pd.DataFrame(all_features).dropna(axis=1, how='all')
 
-
-
-def convert_lists_to_tuples(df):
-    # Identify columns that contain list values
-    for col in df.columns:
-        if df[col].apply(lambda x: isinstance(x, list)).any():
-            # Convert the list values to tuples (hashable type)
-            df[col] = df[col].apply(tuple)
-    return df
-
 def collect_real_time_data(asn, collection_period=300):
     all_collected_data = []  # List to store all collected DataFrames
     features_df = pd.DataFrame()
+
+    # Generate a unique UUID for the real-time data session
+    data_uuid = uuid.uuid4()
+
+    # Define the output path in the media directory
+    media_dir = os.path.join(settings.MEDIA_ROOT, 'rag_bgp_data', str(data_uuid))
+    os.makedirs(media_dir, exist_ok=True)  # Ensure the directory exists
+
+    # Define the file name and path inside the new directory
+    file_name = f"bgp_real_time_data_{data_uuid}.csv"
+    file_path = os.path.join(media_dir, file_name)
 
     print(f"\nCollecting data for ASN {asn} for {collection_period//60} minutes...")
 
@@ -419,7 +468,7 @@ def collect_real_time_data(asn, collection_period=300):
     start_time = time.time()
     last_features_df = pd.DataFrame()  # Initialize with an empty DataFrame
 
-    while time.time() - start_time < collection_period + 5:
+    while time.time() - start_time < collection_period.total_seconds() + 5:
         if 'error' in return_dict:
             print(f"Real-time data collection encountered an error: {return_dict['error']}")
             features_df = return_dict.get('features_df', pd.DataFrame())
@@ -438,7 +487,7 @@ def collect_real_time_data(asn, collection_period=300):
                 print("No changes in data for the last few seconds. Restarting data collection...")
 
                 # Calculate remaining time for the collection
-                remaining_time = collection_period - (time.time() - start_time)
+                remaining_time = collection_period.total_seconds() - (time.time() - start_time)
                 if remaining_time <= 0:
                     print("No remaining time left for data collection. Exiting.")
                     break
@@ -446,7 +495,7 @@ def collect_real_time_data(asn, collection_period=300):
                 # Restart the process with the remaining collection period
                 p.terminate()
                 p.join()
-                p = multiprocessing.Process(target=run_real_time_bgpstream, args=(asn, remaining_time, return_dict))
+                p = multiprocessing.Process(target=run_real_time_bgpstream, args=(asn, timedelta(seconds=remaining_time), return_dict))
                 p.start()
 
             # Update last_features_df to the current state for the next check
@@ -471,8 +520,12 @@ def collect_real_time_data(asn, collection_period=300):
     # Remove duplicates from the final DataFrame
     final_features_df = final_features_df.drop_duplicates()
 
-    print(f"\nFinal features df: {final_features_df}\n")
-    return final_features_df
+    # Save the final DataFrame to a CSV file
+    final_features_df.to_csv(file_path, index=False)
+    print(f"\nFinal data saved to {file_path}\n")
+
+    # Return the directory path (not the file path) for further processing, such as RAG queries
+    return media_dir
 
 
 def split_dataframe(df, split_size=10):

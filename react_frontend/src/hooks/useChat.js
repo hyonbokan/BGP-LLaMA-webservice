@@ -120,18 +120,17 @@ const useChat = ({ currentMessage, setCurrentMessage, setIsGenerating, setIsColl
 
         if (data.status === "generating" && data.generated_text) {
             console.log("\nGenerating output data event");
+            // Replace the "Collecting BGP messages" message with the final output
+            replaceCollectingMessage({
+                text: outputMessage.trim(),
+                sender: 'system'
+            });
             setOutputMessage(prev => prev + data.generated_text + ' ');
         }
 
         if (data.status === "complete") {
             console.log("\nCompleted output data event");
             setIsCollectingData(false);
-
-            // Replace the "Collecting BGP messages" message with the final output
-            replaceCollectingMessage({
-                text: outputMessage.trim(),
-                sender: 'system'
-            });
         }
     };
 
@@ -173,11 +172,6 @@ const useChat = ({ currentMessage, setCurrentMessage, setIsGenerating, setIsColl
             const data = JSON.parse(event.data);
             console.log(data);
             handleEventSourceMessage(data);
-
-            if (data.session_id) {
-                sessionId = data.session_id;
-                console.log(sessionId);
-            }
         };
     
         newEventSource.onerror = () => handleEventSourceError(newEventSource);

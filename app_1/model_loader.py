@@ -23,8 +23,8 @@ model_lock = Lock()
 SYSTEM_PROMPT = """
 You are an AI assistant that answers questions in a friendly manner, based on the given source BGP data. Here are some rules you always follow:
 - Generate only the requested output, don't include any other language before or after the requested output.
-- Your answers should be direct and include relevant timestamps when analyzing BGP data features.
-- Check the collected BGP data given below. Each row represents the features collected over a specific period.
+- Your answers should be direct and include relevant timestamps and values when analyzing BGP data features.
+- Be clear without repeating yourself.
 - Never say thank you, that you are happy to help, that you are an AI agent, and additional suggestions.
 """
 
@@ -43,7 +43,6 @@ def initialize_models():
                 model_name=LLAMA3_8B_INSTRUCT,
                 device_map="auto",
                 model_kwargs={"torch_dtype": torch.float16, "load_in_8bit": False},
-                
             )
 
             embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5")
@@ -97,8 +96,19 @@ def stream_bgp_query(query, directory_path=None):
 
     # Perform the query and yield response tokens
     response = query_engine.query(query)
+    # Set stopping condition to stop at [/INST]
+    stop_token = "[/INST]"
+
+    # Stream the generated response tokens
+    generated_text = ""
     for token in response.response_gen:
+        generated_text += token
         yield token
+        
+        # Check if stop token is encountered, and stop the generation
+        if stop_token in generated_text:
+            logger.info(f"Stop token {stop_token} encountered. Stopping generation.")
+            break
 
     logger.info("Query completed.")
 

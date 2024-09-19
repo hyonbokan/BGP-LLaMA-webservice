@@ -1,14 +1,11 @@
 import pandas as pd
 import json
-# https://django-extensions.readthedocs.io/en/latest/runscript.html
-
-# python3 manage.py runscript load_video
 
 from app_1.models import Video 
 
 def run():
-    yt_table="/media/kamal/DATA/yt_data/youtube_processing/table_data.csv"
-    yt_descriptions = "/media/kamal/DATA/yt_data/descriptions/video_description.json"
+    yt_table=""
+    yt_descriptions = ""
     yt_thumbnails = "/Media/thumbnails/"
     table_data = pd.read_csv(yt_table)
     content = table_data.iloc[1:,:]

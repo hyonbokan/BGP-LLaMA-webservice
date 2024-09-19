@@ -36,7 +36,7 @@ def initialize_models():
     with model_lock:
             llm = HuggingFaceLLM(
                 context_window=4096,
-                max_new_tokens=512,
+                max_new_tokens=300,
                 generate_kwargs={"temperature": 0.0, "do_sample": False},
                 query_wrapper_prompt=query_wrapper_prompt,
                 tokenizer_name=LLAMA3_8B_INSTRUCT,

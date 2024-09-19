@@ -3,6 +3,7 @@ from django.http import JsonResponse, FileResponse, Http404, HttpResponse, Strea
 from django.views.decorators.http import require_http_methods
 from django.conf import settings
 from django.middleware.csrf import get_token
+from django.shortcuts import render
 from .models import *
 from .serializer import *
 import json
@@ -57,27 +58,7 @@ def get_current_status_message():
         return "Data collection complete, ready for query."
     else:
         return "Data is being collected..."
-
-@require_http_methods(["GET"])
-def bgp_llama(request):
-    query = request.GET.get('query', '')
-    session_id = request.GET.get('session_id', None)  # Get session_id from the request, if provided
-
-    if not query:
-        return StreamingHttpResponse(
-            json.dumps({"status": "error", "message": "No query provided"}), 
-            content_type="application/json"
-        )
-
-    # Ensure session ID is created or retrieved before streaming begins
-    session_id = get_or_create_session_id(session_id)
-
-    # Run the check_query to determine the scenario and run RAG query if needed
-    response_stream = check_query(query, session_id)
     
-    return StreamingHttpResponse(response_stream, content_type="text/event-stream")
-
-
 def get_or_create_session_id(session_id=None):
     """
     Retrieve an existing session ID or create a new one.
@@ -96,82 +77,95 @@ def get_or_create_session_id(session_id=None):
                 "scenario": None,
                 "data_dir": None
             }
-
     return session_id
 
+def bgp_llama(request):
+    query = request.GET.get('query', '')
+    session = request.session
 
-def check_query(query, session_id):
+    if not query:
+        return StreamingHttpResponse(
+            json.dumps({"status": "error", "message": "No query provided"}), 
+            content_type="application/json"
+        )
+
+    # Ensure the session is saved and has a session_key
+    if not session.session_key:
+        session.save()
+
+    session_id = session.session_key
+    print(f"Session ID for current request: {session_id}")
+
+    # Run the check_query to determine the scenario and run RAG query if needed
+    response_stream = check_query(query, session)
+
+    return StreamingHttpResponse(response_stream, content_type="text/event-stream")
+
+
+def check_query(query, session):
     global status_update_event, scenario
     status_update_event.clear()
 
-    # Get the session object
-    session = chat_sessions.get(session_id)
+    print(f"Session ID: {session.session_key}")
+    print(f"Session data at start of check_query: {session.items()}")
 
     asn = extract_asn(query)
     from_time, until_time = extract_times(query)
     real_time_span = extract_real_time_span(query)
+
     # Queue to communicate the directory path from the thread
     dir_path_queue = queue.Queue()
 
     def collect_historical_wrapper():
         dir_path = collect_historical_data(asn, from_time, until_time)
-        if dir_path:
-            session['data_dir'] = dir_path
-            print(f"\nSession: {session}\n")
-            dir_path_queue.put(dir_path)
-        else:
-            dir_path_queue.put(None)
+        dir_path_queue.put(dir_path)
         status_update_event.set()
 
     def collect_real_time_wrapper():
         dir_path = collect_real_time_data(asn, real_time_span)
-        if dir_path:
-            session['data_dir'] = dir_path_queue
-            print(f"\nSession: {session}\n")
-            dir_path_queue.put(dir_path)
-        else:
-            dir_path_queue.put(None)
+        dir_path_queue.put(dir_path)
         status_update_event.set()
 
+    # Handle real-time data collection
     if "real-time" in query.lower():
         print("\n Begin real-time collection and analysis")
         yield 'data: {"status": "collecting", "message": "Collecting BGP messages..."}\n\n'
-        # Start the thread to collect real-time data
         Thread(target=collect_real_time_wrapper).start()
 
-        # Wait for the data collection thread to finish
         status_update_event.wait()
-
-        # Get the directory path from the queue
         dir_path = dir_path_queue.get()
         if dir_path:
-            # Now run the RAG query once data collection is done
+            # Update session in main thread
+            session['data_dir'] = dir_path
+            session.save()
+            print(f"\nSession updated data_dir in main thread: {session['data_dir']}\n")
             for token in run_rag_query(query, directory_path=dir_path):
                 yield token
         else:
             yield 'data: {"status": "error", "message": "Real-time data collection failed"}\n\n'
 
+    # Handle historical data collection
     elif re.search(r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}', query):
         print("\n Begin historical data collection and analysis")
         yield 'data: {"status": "collecting", "message": "Collecting BGP messages..."}\n\n'
-        # Start the thread to collect historical data
         Thread(target=collect_historical_wrapper).start()
-
-        # Wait for the data collection thread to finish
         status_update_event.wait()
-
-        # Get the directory path from the queue
         dir_path = dir_path_queue.get()
         if dir_path:
-            # Run RAG after data collection is done
+            # Update session in main thread
+            session['data_dir'] = dir_path
+            session.save()
+            print(f"\nSession updated data_dir in main thread: {session['data_dir']}\n")
             for token in run_rag_query(query, directory_path=dir_path):
                 yield token
         else:
             yield 'data: {"status": "error", "message": "Historical data collection failed"}\n\n'
 
+    # Handle regular query
     else:
-        print(f"\nProcessing regular query... \n")
+        print(f"\nProcessing regular query...\n")
         data_dir = session.get('data_dir')
+        print(f"Session data_dir retrieved: {data_dir}")
         if data_dir:
             for token in run_rag_query(query, directory_path=data_dir):
                 yield token
@@ -179,9 +173,7 @@ def check_query(query, session_id):
             print("\nNo data directory found in session.\n")
             for token in run_rag_query(query, directory_path=None):
                 yield token
-                
         status_update_event.set()
-
 
 def run_rag_query(query, directory_path):
     """

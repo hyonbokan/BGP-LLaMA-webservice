@@ -1,14 +1,27 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Box, CircularProgress } from '@mui/material';
 
-const useChat = ({ currentMessage, setCurrentMessage, setIsGenerating, setIsCollectingData, eventSource, setEventSource, setOutputMessage, outputMessage }) => {
-    const [chatTabs, setChatTabs] = useState([{ id: 1, label: 'Chat 1', messages: [{ text: "Welcome to BGP-LLaMA Chat!", sender: "system" }] }]);
+const useChat = ({
+    currentMessage,
+    setCurrentMessage,
+    setIsGenerating,
+    setIsCollectingData,
+    eventSource,
+    setEventSource,
+    setOutputMessage,
+    outputMessage,
+}) => {
+    const [chatTabs, setChatTabs] = useState([
+        { id: 1, label: 'Chat 1', messages: [{ text: "Welcome to BGP-LLaMA Chat!", sender: "system" }] },
+    ]);
     const [currentTab, setCurrentTab] = useState(0);
     const [menuAnchorEl, setMenuAnchorEl] = useState(null);
     const [renameDialogOpen, setRenameDialogOpen] = useState(false);
     const [renameValue, setRenameValue] = useState('');
     const [tabToEdit, setTabToEdit] = useState(null);
-    const [collectingMessageIndex, setCollectingMessageIndex] = useState(null);
+
+    // Use refs for indices
+    const generatingMessageIndexRef = useRef(null);
 
     useEffect(() => {
         console.log('Updated chatTabs:', chatTabs);
@@ -21,6 +34,7 @@ const useChat = ({ currentMessage, setCurrentMessage, setIsGenerating, setIsColl
         if (eventSource) {
             eventSource.close();
         }
+        generatingMessageIndexRef.current = null;
     };
 
     const handleTabChange = (event, newValue) => {
@@ -28,6 +42,7 @@ const useChat = ({ currentMessage, setCurrentMessage, setIsGenerating, setIsColl
         if (eventSource) {
             eventSource.close();
         }
+        generatingMessageIndexRef.current = null;
     };
 
     const handleMenuOpen = (event, tab) => {
@@ -50,7 +65,9 @@ const useChat = ({ currentMessage, setCurrentMessage, setIsGenerating, setIsColl
         if (eventSource) {
             eventSource.close();
         }
+        generatingMessageIndexRef.current = null;
     };
+    
 
     const handleRenameTab = () => {
         setRenameDialogOpen(true);
@@ -73,36 +90,18 @@ const useChat = ({ currentMessage, setCurrentMessage, setIsGenerating, setIsColl
     };
 
     const updateChatTabs = (newMessage) => {
-        setChatTabs(prevTabs =>
+        setChatTabs((prevTabs) =>
             prevTabs.map((tab, index) =>
-                index === currentTab
-                    ? { ...tab, messages: [...tab.messages, newMessage] }
-                    : tab
+                index === currentTab ? { ...tab, messages: [...tab.messages, newMessage] } : tab
             )
         );
     };
 
-    const replaceCollectingMessage = (newMessage) => {
-        setChatTabs(prevTabs => 
-            prevTabs.map((tab, index) =>
-                index === currentTab && collectingMessageIndex !== null
-                    ? {
-                        ...tab,
-                        messages: tab.messages.map((msg, i) =>
-                            i === collectingMessageIndex ? newMessage : msg
-                        ),
-                    }
-                    : tab
-            )
-        );
-        setCollectingMessageIndex(null); // Clear the index after replacing
-    };
-    
     const handleEventSourceMessage = (data) => {
         if (data.status === "collecting") {
             console.log("\nCollecting data event");
             setIsCollectingData(true);
-
+    
             const collectingMessage = {
                 text: (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -113,40 +112,74 @@ const useChat = ({ currentMessage, setCurrentMessage, setIsGenerating, setIsColl
                 ),
                 sender: "system"
             };
-
+    
+            // Add the new collecting message and reset generating index
             updateChatTabs(collectingMessage);
-            setCollectingMessageIndex(chatTabs[currentTab].messages.length);
+            generatingMessageIndexRef.current = null;  // Reset for a new message
         }
-
-        if (data.status === "generating" && data.generated_text) {
-            console.log("\nGenerating output data event");
-            // Replace the "Collecting BGP messages" message with the final output
-            replaceCollectingMessage({
-                text: outputMessage.trim(),
-                sender: 'system'
+    
+        if (data.status === 'generating' && data.generated_text) {
+            console.log('\nGenerating output data event');
+        
+            // Append to the current message being generated
+            setChatTabs((prevTabs) => {
+                return prevTabs.map((tab, index) => {
+                    if (index === currentTab) {
+                        let messages = [...tab.messages];
+    
+                        // If no ongoing message, start a new one
+                        if (generatingMessageIndexRef.current === null) {
+                            const assistantMessage = {
+                                text: data.generated_text, // Start with the current token
+                                sender: 'system',
+                            };
+                            messages.push(assistantMessage);
+                            generatingMessageIndexRef.current = messages.length - 1; // Track the index of the ongoing message
+                        } else {
+                            // Append to the ongoing message
+                            messages = messages.map((msg, msgIndex) => {
+                                if (msgIndex === generatingMessageIndexRef.current) {
+                                    return {
+                                        ...msg,
+                                        text: (msg.text || '') + data.generated_text, // Append tokens to the same message
+                                    };
+                                } else {
+                                    return msg;
+                                }
+                            });
+                        }
+    
+                        return { ...tab, messages };
+                    } else {
+                        return tab;
+                    }
+                });
             });
-            setOutputMessage(prev => prev + data.generated_text + ' ');
         }
-
-        if (data.status === "complete") {
-            console.log("\nCompleted output data event");
+    
+        if (data.status === 'complete') {
+            console.log('\nCompleted output data event');
             setIsCollectingData(false);
+            setIsGenerating(false);
+            generatingMessageIndexRef.current = null; // Reset the index after message completion
+            setOutputMessage(''); // Clear the output message
         }
     };
-
+    
+    
     const handleEventSourceError = (eventSource) => {
-        // updateChatTabs({ text: "Unexpected error happened", sender: "system" });
         console.error('EventSource failed:', eventSource);
         eventSource.close();
         setIsGenerating(false);
         setIsCollectingData(false);
+        generatingMessageIndexRef.current = null;
     };
     
     const handleEventSourceClose = () => {
-        updateChatTabs({ text: outputMessage.trim(), sender: "system" });
         setOutputMessage('');
         setIsGenerating(false);
         setIsCollectingData(false);
+        generatingMessageIndexRef.current = null;
     };
     
     const handleSendMessage = async () => {

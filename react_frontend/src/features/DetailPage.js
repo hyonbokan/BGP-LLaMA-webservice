@@ -41,7 +41,11 @@ const DetailPage = () => {
                                 About Dataset
                             </Typography>
                         </Box>
-                        <Typography variant='body1' sx={{ fontFamily: 'monospace', ml: 2}}>
+                        <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1, mb: 3 }}>
+                                <Box>{renderDownloadButton('Download Dataset', dataset.fileUrl, dataset.id, dataset.fileType)}</Box>
+                                <Box>{sectionId.includes('manual') && renderDownloadButton('Download Base Prompt', dataset.fileUrl, dataset.id, dataset.promptType)}</Box>
+                        </Box>
+                        <Typography variant='body1' sx={{ fontFamily: 'monospace', ml: 2, mb: 2}}>
                             {dataset.description}
                         </Typography>
                     </Grid>
@@ -52,10 +56,6 @@ const DetailPage = () => {
                             <Typography variant='h5' component='h2' sx={{ fontFamily: 'monospace', fontWeight: 500, mr: 2}}>
                                 JSON Structure
                             </Typography>
-                            <Box>
-                                {renderDownloadButton('Download Dataset', dataset.fileUrl, dataset.id, dataset.fileType)}
-                                {sectionId.includes('manual') && renderDownloadButton('Download Base Prompt', dataset.fileUrl, dataset.id, dataset.promptType)}
-                            </Box>
                         </Box>
                         <Paper
                             elevation={3}

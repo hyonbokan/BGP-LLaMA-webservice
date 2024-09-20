@@ -40,7 +40,7 @@ row 2: 2024-08-30 06:05:38
 The number of routes announced by AS3356 exceeds the threshold of 150000 at this timestamp.
 
 
-- Collect real-time BGP data for AS3356 for 3 minutes. Provide summary on the BGP data such as the number of unique prefixes and routed announced during the monitoring period.
+- Collect real-time BGP data for AS3356 for 1 minutes and provide summary on the BGP data.
 
 
 

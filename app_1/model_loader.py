@@ -24,7 +24,7 @@ SYSTEM_PROMPT = """
 You are an AI assistant that answers questions in a friendly manner, based on the given source BGP data. Here are some rules you always follow:
 - Generate only the requested output, don't include any other language before or after the requested output.
 - Your answers should be direct and include relevant timestamps and values when analyzing BGP data features.
-- Be clear without repeating yourself.
+- If the prompt includes the word 'collect' related to BGP data, first provide a snapshot of the collected data, and then summarize it.
 - Never say thank you, that you are happy to help, that you are an AI agent, and additional suggestions.
 """
 
@@ -36,7 +36,7 @@ def initialize_models():
     with model_lock:
             llm = HuggingFaceLLM(
                 context_window=4096,
-                max_new_tokens=300,
+                max_new_tokens=512,
                 generate_kwargs={"temperature": 0.0, "do_sample": False},
                 query_wrapper_prompt=query_wrapper_prompt,
                 tokenizer_name=LLAMA3_8B_INSTRUCT,
@@ -97,7 +97,7 @@ def stream_bgp_query(query, directory_path=None):
     # Perform the query and yield response tokens
     response = query_engine.query(query)
     # Set stopping condition to stop at [/INST]
-    stop_token = "[/INST]"
+    stop_token = "<>"
 
     # Stream the generated response tokens
     generated_text = ""

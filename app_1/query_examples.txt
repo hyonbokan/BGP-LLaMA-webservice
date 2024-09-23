@@ -40,10 +40,13 @@ row 2: 2024-08-30 06:05:38
 The number of routes announced by AS3356 exceeds the threshold of 150000 at this timestamp.
 
 
-- Collect real-time BGP data for AS3356 for 1 minutes and provide summary on the BGP data.
+- Collect real-time BGP data for AS3356 for 10 minutes and provide summary on the BGP data.
 
 
 
 - Monitor BGP announcements and withdrawals in real-time for AS3356 to detect any sudden spikes that could indicate anomaly.
 
 - Which ASNs appear most frequently in the AS paths for the target ASN?
+
+
+const url = `http://127.0.0.1:8000/api/bgp_llama?query=${encodeURIComponent(currentMessage)}`;

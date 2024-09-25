@@ -7,6 +7,7 @@ from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.core import Settings
 from llama_index.core import SimpleDirectoryReader
 from llama_index.core import VectorStoreIndex
+from llama_index.embeddings.nvidia.base import NVIDIAEmbedding
 
 # Logging configuration
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
@@ -23,12 +24,15 @@ LLAMA2_70B_CHAT = "meta-llama/Llama-2-70b-chat-hf"
 LLAMA3_8B_INSTRUCT = "meta-llama/Meta-Llama-3.1-8B-Instruct"
 CUSTOM_MODEL = "hyonbokan/bgp-llama-knowledge-5k"
 
-# System prompt
+BGE_SMALL = "BAAI/bge-small-en-v1.5"
+BGE_ICL = "BAAI/bge-en-icl"
+BGE_M3 = "BAAI/bge-m3"
+
 SYSTEM_PROMPT = """
 You are an AI assistant that answers questions in a friendly manner, based on the given source BGP data. Here are some rules you always follow:
 - Generate only the requested output, don't include any other language before or after the requested output.
-- Your answers should be direct and include relevant timestamps and values when analyzing BGP data features.
-- Be clear without repeating yourself.
+- Your answers should be elaborate and include relevant timestamps and values when analyzing BGP data features.
+- If the prompt includes the word 'collect' related to BGP data, first provide a snapshot of the collected data, and then summarize it.
 - Never say thank you, that you are happy to help, that you are an AI agent, and additional suggestions.
 """
 
@@ -48,7 +52,8 @@ def initialize_models():
         model_kwargs={"torch_dtype": torch.float16, "load_in_8bit": False},
     )
 
-    embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5")
+    embed_model = HuggingFaceEmbedding(model_name=BGE_ICL)
+    # embed_model = NVIDIAEmbedding(model="NV-Embed-v2")
 
     # Set the models to the global Settings
     Settings.llm = llm
@@ -78,21 +83,28 @@ def query_bgp_data(index, query):
     for token in response.response_gen:
         print(token, end="")
         sys.stdout.flush()  # Flush to ensure immediate output
+    print()  # Print a newline after the response
 
-# Main function
+# Main function with continuous querying
 def main():
     logger.info("Initializing models...")
     llm, embed_model = initialize_models()
 
     logger.info("Loading documents...")
-    documents = load_documents("/home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/knowledge")
+    documents = load_documents("/home/hb/dataset_bgp/bgp_tab_rag_test")
 
     logger.info("Creating vector store index...")
     index = create_index(documents)
 
-    query = "Collect and analyze data for AS8342 from 2022-03-28 15:10:00 to 2022-03-28 15:25:00."
-    logger.info(f"Running query: {query}")
-    query_bgp_data(index, query)
+    # Continuous querying loop
+    while True:
+        query = input("Enter your query (or type 'exit' to quit): ").strip()
+        if query.lower() == 'exit':
+            print("Exiting the program.")
+            break
+        
+        logger.info(f"Running query: {query}")
+        query_bgp_data(index, query)
 
 if __name__ == "__main__":
     main()

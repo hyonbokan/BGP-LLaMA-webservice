@@ -7,6 +7,7 @@ import editdistance
 import multiprocessing
 import uuid
 import pandas as pd
+import networkx as nx
 from django.conf import settings
 
 def extract_asn(query):
@@ -21,31 +22,43 @@ def extract_times(query):
     until_time = matches[1] if len(matches) > 1 else None
     return from_time, until_time
 
+import re
+from datetime import timedelta
+
 def extract_real_time_span(query):
     patterns = {
-        'minutes': r'(\d+)\s*minutes?',
-        'hours': r'(\d+)\s*hours?',
-        'days': r'(\d+)\s*days?',
-        'weeks': r'(\d+)\s*weeks?'
+        'minutes': r'((?:\d+|a|an))\s*(?:minute|minutes)\b',
+        'hours': r'((?:\d+|a|an))\s*(?:hour|hours)\b',
+        'days': r'((?:\d+|a|an))\s*(?:day|days)\b',
+        'weeks': r'((?:\d+|a|an))\s*(?:week|weeks)\b'
     }
     
-    minutes = hours = days = weeks = 0
+    total_minutes = total_hours = total_days = total_weeks = 0
     
     for unit, pattern in patterns.items():
-        match = re.search(pattern, query, re.IGNORECASE)
-        if match:
-            value = int(match.group(1))
+        matches = re.findall(pattern, query, re.IGNORECASE)
+        for match in matches:
+            match_lower = match.lower()
+            if match_lower in ('a', 'an'):
+                value = 1
+            else:
+                value = int(match)
             if unit == 'minutes':
-                minutes = value
+                total_minutes += value
             elif unit == 'hours':
-                hours = value
+                total_hours += value
             elif unit == 'days':
-                days = value
+                total_days += value
             elif unit == 'weeks':
-                weeks = value
+                total_weeks += value
 
     # Calculate the total collection period
-    total_seconds = (minutes * 60) + (hours * 3600) + (days * 86400) + (weeks * 604800)
+    total_seconds = (
+        (total_minutes * 60) +
+        (total_hours * 3600) +
+        (total_days * 86400) +
+        (total_weeks * 604800)
+    )
     
     # If no time span is specified, default to 5 minutes (300 seconds)
     if total_seconds == 0:
@@ -54,7 +67,6 @@ def extract_real_time_span(query):
     collection_period = timedelta(seconds=total_seconds)
     print(f"\nParsed time span for real-time collection: {collection_period} (total seconds: {total_seconds})")
     return collection_period
-
 
 def build_routes_as(routes):
     routes_as = {}
@@ -74,68 +86,65 @@ def extract_features(index, routes, old_routes_as, target_asn, temp_counts):
     features = {
         "Timestamp": None,
         "Autonomous System Number": target_asn,
-        "Number of Routes": 0,
-        "Number of New Routes": 0,
-        "Number of Withdrawals": 0,
-        "Number of Origin Changes": 0,
-        "Number of Route Changes": 0,
+        "Total Routes": 0,
+        "New Routes": temp_counts["num_new_routes"],
+        "Withdrawals": temp_counts["num_withdrawals"],
+        "Origin Changes": temp_counts["num_origin_changes"],
+        "Route Changes": temp_counts["num_route_changes"],
         "Maximum Path Length": 0,
         "Average Path Length": 0,
         "Maximum Edit Distance": 0,
         "Average Edit Distance": 0,
-        "Number of Announcements": temp_counts["Number of Announcements"],
-        "Total Withdrawals": temp_counts["Total Withdrawals"],
-        "Number of Unique Prefixes Announced": 0,
-        "Paths": []
+        "Announcements": temp_counts["num_announcements"],
+        "Unique Prefixes Announced": 0,
+        "Graph Average Degree": 0,
+        "Graph Betweenness Centrality": 0,
+        "Graph Closeness Centrality": 0,
+        "Graph Eigenvector Centrality": 0
     }
 
     routes_as = build_routes_as(routes)
 
-    if index > 0:
-        if target_asn in routes_as:
-            num_routes = len(routes_as[target_asn])
-            sum_path_length = 0
-            sum_edit_distance = 0
+    if index > 0 and target_asn in routes_as:
+        num_routes = len(routes_as[target_asn])
+        sum_path_length = 0
+        sum_edit_distance = 0
 
-            for prefix in routes_as[target_asn].keys():
-                path = routes_as[target_asn][prefix]
+        # Build the graph for the current ASN
+        G = nx.Graph()
+        for prefix, path in routes_as[target_asn].items():
+            for i in range(len(path) - 1):
+                G.add_edge(path[i], path[i + 1])
 
-                # Convert the path list to a string and store it in the features list
-                features["Paths"].append(f"{prefix}: {' '.join(path)}")
+        # Calculate graph features if the graph has nodes
+        if G.number_of_nodes() > 0:
+            features["Graph Average Degree"] = sum(dict(G.degree).values()) / G.number_of_nodes()
+            features["Graph Betweenness Centrality"] = sum(nx.betweenness_centrality(G).values()) / G.number_of_nodes()
+            features["Graph Closeness Centrality"] = sum(nx.closeness_centrality(G).values()) / G.number_of_nodes()
+            features["Graph Eigenvector Centrality"] = sum(nx.eigenvector_centrality(G).values()) / G.number_of_nodes()
 
-                if target_asn in old_routes_as and prefix in old_routes_as[target_asn]:
-                    path_old = old_routes_as[target_asn][prefix]
+        for prefix in routes_as[target_asn].keys():
+            path = routes_as[target_asn][prefix]
+            if target_asn in old_routes_as and prefix in old_routes_as[target_asn]:
+                path_old = old_routes_as[target_asn][prefix]
 
-                    if path != path_old:
-                        features["Number of Route Changes"] += 1
+                if path != path_old:
+                    features["Route Changes"] += 1  # Already counted in temp_counts
+                if path[-1] != path_old[-1]:
+                    features["Origin Changes"] += 1  # Already counted in temp_counts
 
-                    if path[-1] != path_old[-1]:
-                        features["Number of Origin Changes"] += 1
+                path_length = len(path)
+                sum_path_length += path_length
+                edist = editdistance.eval(path, path_old)
+                sum_edit_distance += edist
+                features["Maximum Path Length"] = max(features["Maximum Path Length"], path_length)
+                features["Maximum Edit Distance"] = max(features["Maximum Edit Distance"], edist)
 
-                    path_length = len(path)
-                    path_old_length = len(path_old)
+        features["Total Routes"] = num_routes
+        features["Average Path Length"] = sum_path_length / num_routes if num_routes else 0
+        features["Average Edit Distance"] = sum_edit_distance / num_routes if num_routes else 0
 
-                    sum_path_length += path_length
-                    if path_length > features["Maximum Path Length"]:
-                        features["Maximum Path Length"] = path_length
-
-                    edist = editdistance.eval(path, path_old)
-                    sum_edit_distance += edist
-                    if edist > features["Maximum Edit Distance"]:
-                        features["Maximum Edit Distance"] = edist
-                else:
-                    features["Number of New Routes"] += 1
-
-            features["Number of Routes"] = num_routes
-            features["Average Path Length"] = sum_path_length / num_routes
-            features["Average Edit Distance"] = sum_edit_distance / num_routes
-
-        if target_asn in old_routes_as:
-            for prefix in old_routes_as[target_asn].keys():
-                if not (target_asn in routes_as and prefix in routes_as[target_asn]):
-                    features["Total Withdrawals"] += 1
-
-    features["Number of Unique Prefixes Announced"] = len(routes_as.get(target_asn, {}))
+    features["Unique Prefixes Announced"] = len(routes_as.get(target_asn, {}))
 
     return features, routes_as
 
@@ -253,9 +262,13 @@ def extract_bgp_data(target_asn, from_time, until_time):
     current_window_start = datetime.strptime(from_time, "%Y-%m-%d %H:%M:%S")
     index = 0
 
+    # Update temp_counts to match extract_features
     temp_counts = {
-        "Number of Announcements": 0,
-        "Total Withdrawals": 0
+        "num_announcements": 0,
+        "num_withdrawals": 0,
+        "num_new_routes": 0,
+        "num_origin_changes": 0,
+        "num_route_changes": 0
     }
 
     record_count = 0
@@ -270,17 +283,24 @@ def extract_bgp_data(target_asn, from_time, until_time):
             update = elem.fields
             elem_time = datetime.utcfromtimestamp(elem.time)
 
+            # If the time exceeds the 5-minute window, process the window and reset
             if elem_time >= current_window_start + timedelta(minutes=5):
-                features, old_routes_as = extract_features(index, routes, old_routes_as, target_asn, temp_counts)
+                features, old_routes_as = extract_features(
+                    index, routes, old_routes_as, target_asn, temp_counts
+                )
                 features['Timestamp'] = current_window_start.strftime('%Y-%m-%d %H:%M:%S')
                 all_features.append(features)
 
+                # Move to the next 5-minute window
                 current_window_start += timedelta(minutes=5)
-                routes = {}
+                routes = {}  # Reset the routes for the next window
                 index += 1
                 temp_counts = {
-                    "Number of Announcements": 0,
-                    "Total Withdrawals": 0
+                    "num_announcements": 0,
+                    "num_withdrawals": 0,
+                    "num_new_routes": 0,
+                    "num_origin_changes": 0,
+                    "num_route_changes": 0
                 }
 
             prefix = update.get("prefix")
@@ -295,25 +315,60 @@ def extract_bgp_data(target_asn, from_time, until_time):
             if collector not in routes[prefix]:
                 routes[prefix][collector] = {}
 
+            # Processing Announcements (A) and Withdrawals (W)
             if elem.type == 'A':
                 as_path = update.get('as-path')
                 if as_path:
                     path = as_path.split()
                     if path[-1] == target_asn:
+                        # Check if it's a new route
+                        if prefix not in routes or collector not in routes[prefix] or peer_asn not in routes[prefix][collector]:
+                            temp_counts["num_new_routes"] += 1
+
+                        # Compare with old routes for changes
+                        if target_asn in old_routes_as and prefix in old_routes_as.get(target_asn, {}):
+                            old_path = old_routes_as[target_asn][prefix]
+                            if path != old_path:
+                                temp_counts["num_route_changes"] += 1
+                            if path[-1] != old_path[-1]:
+                                temp_counts["num_origin_changes"] += 1
+
+                        # Update the route
                         routes[prefix][collector][peer_asn] = path
-                        temp_counts["Number of Announcements"] += 1
+                        temp_counts["num_announcements"] += 1
             elif elem.type == 'W':
                 if prefix in routes and collector in routes[prefix]:
                     if peer_asn in routes[prefix][collector]:
                         if routes[prefix][collector][peer_asn][-1] == target_asn:
                             routes[prefix][collector].pop(peer_asn, None)
-                            temp_counts["Total Withdrawals"] += 1
+                            temp_counts["num_withdrawals"] += 1
+
+        # Handle time windows where no new data comes in
+        while elem_time >= current_window_start + timedelta(minutes=5):
+            features, old_routes_as = extract_features(
+                index, routes, old_routes_as, target_asn, temp_counts
+            )
+            features['Timestamp'] = current_window_start.strftime('%Y-%m-%d %H:%M:%S')
+            all_features.append(features)
+
+            current_window_start += timedelta(minutes=5)
+            routes = {}
+            index += 1
+            temp_counts = {
+                "num_announcements": 0,
+                "num_withdrawals": 0,
+                "num_new_routes": 0,
+                "num_origin_changes": 0,
+                "num_route_changes": 0
+            }
 
     print(f"Total records processed: {record_count}")
     print(f"Total elements processed: {element_count}")
 
     # Capture any remaining features after the final time window
-    features, old_routes_as = extract_features(index, routes, old_routes_as, target_asn, temp_counts)
+    features, old_routes_as = extract_features(
+        index, routes, old_routes_as, target_asn, temp_counts
+    )
     features['Timestamp'] = current_window_start.strftime('%Y-%m-%d %H:%M:%S')
     all_features.append(features)
 
@@ -322,14 +377,12 @@ def extract_bgp_data(target_asn, from_time, until_time):
     print(df_features.columns)
     print(df_features)
 
-    # Save the DataFrame to a CSV file inside the newly created directory
     try:
         df_features.to_csv(file_path, index=False)
         print(f"Data saved to {file_path} in {media_dir}")
     except Exception as e:
         print(f"Error saving file: {str(e)}")
 
-    # Return the directory path (not the file path)
     return media_dir
 
 def collect_historical_data(asn, from_time_str, until_time_str=None):
@@ -346,7 +399,6 @@ def convert_lists_to_tuples(df):
     # Identify columns that contain list values
     for col in df.columns:
         if df[col].apply(lambda x: isinstance(x, list)).any():
-            # Convert the list values to tuples (hashable type)
             df[col] = df[col].apply(tuple)
     return df
 
@@ -363,8 +415,11 @@ def run_real_time_bgpstream(asn, collection_period, return_dict):
     old_routes_as = {}
     routes = {}
     temp_counts = {
-        "Number of Announcements": 0,
-        "Total Withdrawals": 0
+        "num_announcements": 0,
+        "num_withdrawals": 0,
+        "num_new_routes": 0,
+        "num_origin_changes": 0,
+        "num_route_changes": 0
     }
     
     try:
@@ -379,23 +434,40 @@ def run_real_time_bgpstream(asn, collection_period, return_dict):
                 for elem in rec:
                     as_path = elem.fields.get('as-path', '').split()
                     prefix = elem.fields.get('prefix')
-
-                    # Process announcements and withdrawals involving the target ASN
+                    if not prefix:
+                        continue
+                    
                     if asn in as_path:
-                        if elem.type == 'A':  # Announcement
-                            if prefix not in routes:
-                                routes[prefix] = {}
-                            if rec.collector not in routes[prefix]:
-                                routes[prefix][rec.collector] = {}
-                            routes[prefix][rec.collector][elem.peer_asn] = as_path
-                            temp_counts["Number of Announcements"] += 1
+                        collector = rec.collector
+                        peer_asn = elem.peer_asn
 
-                        elif elem.type == 'W':  # Withdrawal
-                            if prefix in routes:
-                                if rec.collector in routes[prefix]:
-                                    if elem.peer_asn in routes[prefix][rec.collector]:
-                                        del routes[prefix][rec.collector][elem.peer_asn]
-                                        temp_counts["Total Withdrawals"] += 1
+                        if prefix not in routes:
+                            routes[prefix] = {}
+                        if collector not in routes[prefix]:
+                            routes[prefix][collector] = {}
+
+                        if elem.type == 'A':
+                            path = as_path
+                            # Check if it's a new route
+                            if peer_asn not in routes[prefix][collector]:
+                                temp_counts["num_new_routes"] += 1
+
+                            # Compare with old routes for changes
+                            if asn in old_routes_as and prefix in old_routes_as.get(asn, {}):
+                                old_path = old_routes_as[asn][prefix]
+                                if path != old_path:
+                                    temp_counts["num_route_changes"] += 1
+                                if path[-1] != old_path[-1]:
+                                    temp_counts["num_origin_changes"] += 1
+
+                            routes[prefix][collector][peer_asn] = path
+                            temp_counts["num_announcements"] += 1
+                            
+                        elif elem.type == 'W':
+                            if peer_asn in routes[prefix][collector]:
+                                if routes[prefix][collector][peer_asn][-1] == asn:
+                                    del routes[prefix][collector][peer_asn]
+                                    temp_counts["num_withdrawals"] += 1
 
             except KeyError as ke:
                 print(f"KeyError processing record: {ke}. Continuing with the next record.")
@@ -414,7 +486,9 @@ def run_real_time_bgpstream(asn, collection_period, return_dict):
                 print(f"Reached time window: {current_window_start} to {current_time}")
 
                 # Extract features, including paths
-                features, old_routes_as = extract_features(index, routes, old_routes_as, asn, temp_counts)
+                features, old_routes_as = extract_features(
+                    index, routes, old_routes_as, asn, temp_counts
+                )
                 features['Timestamp'] = current_window_start.strftime('%Y-%m-%d %H:%M:%S')
                 all_features.append(features)
 
@@ -424,14 +498,19 @@ def run_real_time_bgpstream(asn, collection_period, return_dict):
                 current_window_start = current_window_start + timedelta(minutes=1)
                 routes = {}
                 index += 1
+                # Reset temp_counts for the next window
                 temp_counts = {
-                    "Number of Announcements": 0,
-                    "Total Withdrawals": 0
+                    "num_announcements": 0,
+                    "num_withdrawals": 0,
+                    "num_new_routes": 0,
+                    "num_origin_changes": 0,
+                    "num_route_changes": 0
                 }
-
-        # Final extraction for any remaining data after the collection period ends
+                
         if routes:
-            features, old_routes_as = extract_features(index, routes, old_routes_as, asn, temp_counts)
+            features, old_routes_as = extract_features(
+                index, routes, old_routes_as, asn, temp_counts
+            )
             features['Timestamp'] = current_window_start.strftime('%Y-%m-%d %H:%M:%S')
             all_features.append(features)
             return_dict['features_df'] = pd.DataFrame(all_features).dropna(axis=1, how='all')
@@ -450,11 +529,8 @@ def collect_real_time_data(asn, collection_period=300):
     # Generate a unique UUID for the real-time data session
     data_uuid = uuid.uuid4()
 
-    # Define the output path in the media directory
     media_dir = os.path.join(settings.MEDIA_ROOT, 'rag_bgp_data', str(data_uuid))
     os.makedirs(media_dir, exist_ok=True)  # Ensure the directory exists
-
-    # Define the file name and path inside the new directory
     file_name = f"bgp_real_time_data_{data_uuid}.csv"
     file_path = os.path.join(media_dir, file_name)
 
@@ -466,7 +542,7 @@ def collect_real_time_data(asn, collection_period=300):
     p.start()
 
     start_time = time.time()
-    last_features_df = pd.DataFrame()  # Initialize with an empty DataFrame
+    last_features_df = pd.DataFrame()
 
     while time.time() - start_time < collection_period.total_seconds() + 5:
         if 'error' in return_dict:
@@ -501,7 +577,7 @@ def collect_real_time_data(asn, collection_period=300):
             # Update last_features_df to the current state for the next check
             last_features_df = features_df.copy()
 
-        time.sleep(63)  # Check for updates every n seconds
+        time.sleep(63)
 
     if p.is_alive():
         print("BGPStream collection timed out. Terminating process...")
@@ -523,8 +599,7 @@ def collect_real_time_data(asn, collection_period=300):
     # Save the final DataFrame to a CSV file
     final_features_df.to_csv(file_path, index=False)
     print(f"\nFinal data saved to {file_path}\n")
-
-    # Return the directory path (not the file path) for further processing, such as RAG queries
+    
     return media_dir
 
 
@@ -643,22 +718,28 @@ def df_to_plain_text_description(df):
     description = ""
 
     for index, row in df.iterrows():
-        row_description = f"At {row['Timestamp']}, AS{row['Autonomous System Number']} observed {row['Number of Announcements']} announcements"
+        row_description = f"At {row['Timestamp']}, AS{row['Autonomous System Number']} observed {row['Announcements']} announcements"
         
-        if 'Number of Withdrawals' in df.columns:
-            row_description += f" and {row['Number of Withdrawals']} withdrawals"
+        if 'Withdrawals' in df.columns and row['Withdrawals'] > 0:
+            row_description += f" and {row['Withdrawals']} withdrawals"
+        
+        if 'New Routes' in df.columns and row['New Routes'] > 0:
+            row_description += f". There were {row['New Routes']} new routes added"
+        
+        if 'Origin Changes' in df.columns and row['Origin Changes'] > 0:
+            row_description += f", with {row['Origin Changes']} origin changes"
+        
+        if 'Route Changes' in df.columns and row['Route Changes'] > 0:
+            row_description += f" and {row['Route Changes']} route changes"
+        
+        if 'Total Routes' in df.columns:
+            row_description += f". A total of {row['Total Routes']} routes were active"
 
-        if 'Number of Origin Changes' in df.columns and row['Number of Origin Changes'] > 0:
-            row_description += f". There were {row['Number of Origin Changes']} origin changes"
-        
-        if 'Number of Route Changes' in df.columns and row['Number of Route Changes'] > 0:
-            row_description += f" and {row['Number of Route Changes']} route changes"
-        
         if 'Maximum Path Length' in df.columns:
-            row_description += f". The maximum path length was {row['Maximum Path Length']}"
+            row_description += f", with a maximum path length of {row['Maximum Path Length']}"
         
         if 'Average Path Length' in df.columns:
-            row_description += f" with an average path length of {row['Average Path Length']}"
+            row_description += f" and an average path length of {row['Average Path Length']}"
         
         if 'Maximum Edit Distance' in df.columns:
             row_description += f". The maximum edit distance observed was {row['Maximum Edit Distance']}"
@@ -666,9 +747,22 @@ def df_to_plain_text_description(df):
         if 'Average Edit Distance' in df.columns:
             row_description += f" with an average edit distance of {row['Average Edit Distance']}"
         
-        if 'Number of Unique Prefixes Announced' in df.columns:
-            row_description += f". There were {row['Number of Unique Prefixes Announced']} unique prefixes announced"
+        if 'Unique Prefixes Announced' in df.columns:
+            row_description += f". There were {row['Unique Prefixes Announced']} unique prefixes announced"
 
+        # Add graph-related features if available
+        if 'Graph Average Degree' in df.columns:
+            row_description += f". The graph's average degree was {row['Graph Average Degree']}"
+        
+        if 'Graph Betweenness Centrality' in df.columns:
+            row_description += f", betweenness centrality was {row['Graph Betweenness Centrality']}"
+        
+        if 'Graph Closeness Centrality' in df.columns:
+            row_description += f", closeness centrality was {row['Graph Closeness Centrality']}"
+        
+        if 'Graph Eigenvector Centrality' in df.columns:
+            row_description += f", and eigenvector centrality was {row['Graph Eigenvector Centrality']}"
+        
         row_description += "."
         description += row_description + "\n"
     

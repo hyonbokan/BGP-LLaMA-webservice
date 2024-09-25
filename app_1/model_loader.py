@@ -14,16 +14,20 @@ logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logger = logging.getLogger()
 logger.addHandler(logging.StreamHandler(stream=sys.stdout))
 
+model_lock = Lock()
+# LLM models
 LLAMA3_8B_INSTRUCT = "meta-llama/Meta-Llama-3.1-8B-Instruct"
 CUSTOM_MODEL = "hyonbokan/bgp-llama-knowledge-5k"
-model_lock = Lock()
 
+# Embed models
+BGE_SMALL = "BAAI/bge-small-en-v1.5"
+BGE_ICL = "BAAI/bge-en-icl"
+BGE_M3 = "BAAI/bge-m3"
 
-# System prompt
 SYSTEM_PROMPT = """
 You are an AI assistant that answers questions in a friendly manner, based on the given source BGP data. Here are some rules you always follow:
 - Generate only the requested output, don't include any other language before or after the requested output.
-- Your answers should be direct and include relevant timestamps and values when analyzing BGP data features.
+- Your answers should be elaborate and include relevant timestamps and values when analyzing BGP data features.
 - If the prompt includes the word 'collect' related to BGP data, first provide a snapshot of the collected data, and then summarize it.
 - Never say thank you, that you are happy to help, that you are an AI agent, and additional suggestions.
 """
@@ -45,7 +49,7 @@ def initialize_models():
                 model_kwargs={"torch_dtype": torch.float16, "load_in_8bit": False},
             )
 
-            embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5")
+            embed_model = HuggingFaceEmbedding(model_name=BGE_ICL)
 
             Settings.llm = llm
             Settings.embed_model = embed_model

@@ -231,7 +231,3 @@ const datasetsSlice = createSlice({
 
 export const { addDatasetToSection, removeDatasetFromSection, updateDatasetInSection } = datasetsSlice.actions;
 export default datasetsSlice.reducer;
-
-// Initial State: Defined starting state for the slice.
-// Reducers: Functions defining how state changes in response to actions. These update the state based on the type of action and the payload provided.
-// Action Creators: Automatically generated functions (addDataset, removeDataset, updateDataset) that you can call to create action objects to dispatch to the store.

@@ -26,25 +26,19 @@ This is calculated by adding up all the announcements (158761 + 196104 + 162647 
 - Did AS3356 exhibit any unusual behavior in terms of the average path length during the monitoring period?
 - What patterns can be observed in the frequency of route changes for AS3356 during the monitoring period?
 
-- Analyze the consistency of AS3356 in maintaining the same maximum path length over the monitoring period.
-The BGP data collected over the specified period indicates that AS3356 has been consistently maintaining the same maximum path length, 
-which is 0.07142857142857142,over the entire monitoring period. Additionally, the average path length has been maintained at 0.0, 
-indicating that the autonomous system has been maintaining a stable routing environment. 
-The number of announcements and total withdrawals have also been consistent, with 158761 announcements and 0 withdrawals. 
-Finally, the maximum edit distance has been maintained at 0.0, indicating that the autonomous system has not experienced
-any routing changes. In conclusion, AS3356 has been consistently maintaining the same maximum path length and 
-stable routing environment throughout the monitoring period.
+- Analyze the consistency of AS4134 in maintaining the same maximum path length over the monitoring period.
+The maximum path length of AS4134 is 4, which is consistent throughout the monitoring period. The longest AS path observed is '38001 9002 4134', which has a length of 4. This suggests that AS4134 maintains a consistent routing policy throughout the monitoring period. The maximum path length is observed in the following prefixes: '61.134.0.0/18', '61.150.0.0/17', '61.186.0.0/17', '123.197.0.0/17', '210.25.0.0/17', '211.88.0.0/16', '218.30.20.0/22', '218.30.80.0/22', '218.30.84.0/23', '219.149.128.0/18', '58.40.0.0/15', '117.80.0.0/13', '124.116.0.0/16', '202.97.32.0/19', '202.101.0.0/18', '202.109.0.0/17', '202.130.248.0/21', '202.181.112.0/20', '210.73.192.0/19', '210.74.224.0/19', '218.30.0.0/20', '218.30.16.0/22', '218.30.66.0/23', '218.30.224.0/19', '123.172.0.0/15', '125.76.0.0/17', '106.116.0.0/15', '112.112.162.0/24', '203.215.235.0/24', '202.98.160.0/19', '203.175.192.0/18', '203.191.144.0/21', '203.207.200.0/22', '203.215.232.0/24', '203.215.236.0/24', '210.75.0.0/19', '210.75.0.0/18', '210.75.32.0/19', '210.76.64.0/19', '210.77.160.0/20',
 
-- Identify timestamps where the number of routes announced by AS3356 exceeds a threshold of 150000.
+- Identify timestamps where the number of routes announced by AS4134 exceeds a threshold of 150000.
 row 2: 2024-08-30 06:05:38
 The number of routes announced by AS3356 exceeds the threshold of 150000 at this timestamp.
 
 
-- Collect real-time BGP data for AS3356 for 10 minutes and provide summary on the BGP data.
+- Collect real-time BGP data for AS3356 for a day and provide summary on the BGP data.
 
 
 
-- Monitor BGP announcements and withdrawals in real-time for AS3356 to detect any sudden spikes that could indicate anomaly.
+- Monitor BGP announcements and withdrawals in real-time for AS4134 to detect any sudden spikes that could indicate anomaly.
 
 - Which ASNs appear most frequently in the AS paths for the target ASN?
 

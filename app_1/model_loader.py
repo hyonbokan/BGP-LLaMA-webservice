@@ -15,6 +15,9 @@ logger = logging.getLogger()
 logger.addHandler(logging.StreamHandler(stream=sys.stdout))
 
 model_lock = Lock()
+index_cache = {}
+index_lock = Lock()
+
 # LLM models
 LLAMA3_8B_INSTRUCT = "meta-llama/Meta-Llama-3.1-8B-Instruct"
 CUSTOM_MODEL = "hyonbokan/bgp-llama-knowledge-5k"
@@ -67,8 +70,8 @@ def create_index(documents):
     index = VectorStoreIndex.from_documents(documents)
     return index
 
-# Query the engine with streaming support
 def stream_bgp_query(query, directory_path=None):
+    global index_cache
     # Ensure models are initialized only if they haven't been set already
     with model_lock:
         if not hasattr(Settings, "llm") or not hasattr(Settings, "embed_model"):
@@ -76,31 +79,43 @@ def stream_bgp_query(query, directory_path=None):
             initialize_models()
     
     index = None
-    
-    # If a directory path is provided, load documents from that directory
-    if directory_path:
-        logger.info(f"Loading documents from {directory_path} for RAG.")
-        documents = load_documents(directory_path)
-        index = create_index(documents)
 
-    # If no directory path is provided, try using default documents
-    if index is None and not directory_path:
-        logger.info("\nNo specific BGP data provided. Loading default documents for regular query.")
-        default_directory_path = "/home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/knowledge"
-        documents = load_documents(default_directory_path)
-        if documents:
-            index = create_index(documents)
+    # Determine the directory path to use
+    if directory_path:
+        directory_to_use = directory_path
+    else:
+        # Use default directory path
+        directory_to_use = "/home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/knowledge"
+
+    # Check if index is already cached
+    with index_lock:
+        if directory_to_use in index_cache:
+            logger.info(f"Using cached index for directory: {directory_to_use}")
+            index = index_cache[directory_to_use]
         else:
-            logger.warning(f"No default documents found in directory: {default_directory_path}. Proceeding with LLM response without augmentation.")
-    
-    logger.info(f"\nuser query: {query}\n")
+            logger.info(f"Loading documents from {directory_to_use} for RAG.")
+            documents = load_documents(directory_to_use)
+            if documents:
+                index = create_index(documents)
+                index_cache[directory_to_use] = index
+                logger.info(f"Index created and cached for directory: {directory_to_use}")
+            else:
+                logger.warning(f"No documents found in directory: {directory_to_use}. Proceeding with LLM response without augmentation.")
+                index = None  # Handle as per your requirements
+
+    if index is None:
+        logger.warning("No index available. Proceeding with LLM response without augmentation.")
+        # Implement logic to handle queries without an index, if needed
+        return
+
+    logger.info(f"\nUser query: {query}\n")
     
     # Create the query engine
     query_engine = index.as_query_engine(streaming=True)
 
     # Perform the query and yield response tokens
     response = query_engine.query(query)
-    # Set stopping condition to stop at [/INST]
+    # Set stopping condition to stop at [<>]
     stop_token = "<>"
 
     # Stream the generated response tokens
@@ -115,6 +130,7 @@ def stream_bgp_query(query, directory_path=None):
             break
 
     logger.info("Query completed.")
+
 
 # model = None
 # tokenizer = None

@@ -141,19 +141,17 @@ def check_query(query, session):
 def run_rag_query(query, directory_path):
     """
     Run the RAG-based query using the directory path where the BGP data is stored.
-    If directory_path is None, run the query using default documents or no documents.
+    If directory_path is None, run the query using default documents.
     """
     try:
         if directory_path:
             logger.info(f"Running RAG query with data from: {directory_path}")
-            # Stream query with the collected BGP data
-            for token in stream_bgp_query(query, directory_path):
-                yield f'data: {json.dumps({"status": "generating", "generated_text": token})}\n\n'
         else:
-            logger.info("Running RAG query without specific BGP data.")
-            for token in stream_bgp_query(query, None):
-                yield f'data: {json.dumps({"status": "generating", "generated_text": token})}\n\n'
-    
+            logger.info("Running RAG query with default documents.")
+
+        # Stream query with the collected BGP data or default documents
+        for token in stream_bgp_query(query, directory_path):
+            yield f'data: {json.dumps({"status": "generating", "generated_text": token})}\n\n'
     except Exception as e:
         logger.error(f"RAG query failed: {str(e)}")
         yield f'data: {json.dumps({"status": "error", "message": str(e)})}\n\n'

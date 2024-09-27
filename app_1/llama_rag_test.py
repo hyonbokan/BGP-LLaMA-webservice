@@ -31,7 +31,7 @@ BGE_M3 = "BAAI/bge-m3"
 SYSTEM_PROMPT = """
 You are an AI assistant that answers questions in a friendly manner, based on the given source BGP data. Here are some rules you always follow:
 - Generate only the requested output, don't include any other language before or after the requested output.
-- Your answers should be elaborate and include relevant timestamps and values when analyzing BGP data features.
+- Your answers should be elaborate and include relevant timestamps and corresponding values when analyzing BGP data features.
 - If the prompt includes the word 'collect' related to BGP data, first provide a snapshot of the collected data, and then summarize it.
 - Never say thank you, that you are happy to help, that you are an AI agent, and additional suggestions.
 """
@@ -91,7 +91,7 @@ def main():
     llm, embed_model = initialize_models()
 
     logger.info("Loading documents...")
-    documents = load_documents("/home/hb/dataset_bgp/bgp_tab_rag_test")
+    documents = load_documents("/home/hb/dataset_bgp/bgp_tab_rag_test/full_text")
 
     logger.info("Creating vector store index...")
     index = create_index(documents)

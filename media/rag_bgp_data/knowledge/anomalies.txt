@@ -1,0 +1,14 @@
+On 2017-08-25 03:15:00, Autonomous System 15169 experienced an anomaly:
+  - Flapping Anomaly detected (Frequent changes in route announcements and withdrawals, indicating network instability.)
+    Feature: Std Dev of Updates
+    Value: 60252.00671929922
+    Feature: Announcements
+    Value: 456660
+
+On 2017-08-25 03:20:00, Autonomous System 15169 experienced an anomaly:
+  - Flapping Anomaly detected (Frequent changes in route announcements and withdrawals, indicating network instability.)
+    Feature: Std Dev of Updates
+    Value: 36118.136530234595
+    Feature: Announcements
+    Value: 525024
+

@@ -1,0 +1,8 @@
+Anomaly Summary:
+
+A total of 2 anomalies were detected during the observation period.
+
+Flapping Anomaly: 2 occurrences
+  - At 2017-08-25 03:15:00, AS15169 had triggered Std Dev of Updates, Announcements.
+  - At 2017-08-25 03:20:00, AS15169 had triggered Std Dev of Updates, Announcements.
+

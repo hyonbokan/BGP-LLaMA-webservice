@@ -1,15 +1,12 @@
-Collect and analyze data for AS8342 from 2022-03-28 15:10:00 to 2022-03-28 15:25:00.
-What is the number of unique prefixes announced by AS8342 during the monitoring period?
-What is the number of routes announced by AS8342 during the monitoring period?
-What is the number of new routes announced by AS8342 during the monitoring period?
-What is the number of withdrawals made by AS8342 during the monitoring period?
-What is the maximum path length observed in the BGP updates received from AS8342 during the monitoring period?
-What is the average path length observed in the BGP updates received from AS8342 during the monitoring period?
-What is the maximum edit distance observed in the BGP updates received from AS8342 during the monitoring period?
-What is the average edit distance observed in the BGP updates received from AS8342 during the monitoring period?
-How many announcements were made by AS8342 during the monitoring period?
-How many unique prefixes were announced by AS8342 during the monitoring period?
+Collect and analyze data for AS32934 from 2021-10-04 14:00:00 to 2021-10-04 16:00:00.
+Collect and analyze data for AS32934 from 2021-10-04 14:00:00 to 2021-10-04 16:00:00 for prefixes 129.134.30.0/24 and 129.134.30.0/23.
 
+
+Collect BGP data for AS15169 from 2017-08-25 03:00:00 to 2017-08-25 04:00:00.
+- provide detail on leak anomaly
+- provide detail on route manipulation
+- provide statistical summary
+- identify anomaly
 
 - Identify any time intervals where AS3356 had a significant increase in the number of new routes.
 Based on the given data, the time interval where AS3356 had a significant increase in the number of new routes is between 2024-08-30 06:05:38 and 2024-08-30 06:06:38. 
@@ -34,13 +31,14 @@ row 2: 2024-08-30 06:05:38
 The number of routes announced by AS3356 exceeds the threshold of 150000 at this timestamp.
 
 
-- Collect real-time BGP data for AS3356 for a day and provide summary on the BGP data.
+Collect real-time BGP data for AS3356 for 30 minutes and provide summary on the BGP data.
 
+When was the highest count of announcements observed and what is the value?
 
-
-- Monitor BGP announcements and withdrawals in real-time for AS4134 to detect any sudden spikes that could indicate anomaly.
-
-- Which ASNs appear most frequently in the AS paths for the target ASN?
+Provide the summary on the routing data
 
 
 const url = `http://127.0.0.1:8000/api/bgp_llama?query=${encodeURIComponent(currentMessage)}`;
+
+
+

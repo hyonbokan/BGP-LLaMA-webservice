@@ -28,6 +28,16 @@ BGE_SMALL = "BAAI/bge-small-en-v1.5"
 BGE_ICL = "BAAI/bge-en-icl"
 BGE_M3 = "BAAI/bge-m3"
 
+csv_path = "/home/hb/dataset_bgp/candidates"
+json_path = "/home/hb/dataset_bgp/bgp_tab_rag_test/euro_1136/json/"
+narrative = "/home/hb/dataset_bgp/bgp_tab_rag_test/euro_1136/narrative"
+new_nar = "/home/hb/dataset_bgp/bgp_tab_rag_test/euro_1136/new_nar"
+process_files = "/home/hb/dataset_bgp/bgp_tab_rag_test/euro_1136/process_file"
+five_min_summary = "/home/hb/dataset_bgp/bgp_tab_rag_test/realtime_3356/json_struct"
+full_text_nar = "/home/hb/dataset_bgp/bgp_tab_rag_test/euro_1136/full_text_nar"
+facebook = "/home/hb/dataset_bgp/bgp_tab_rag_test/facebook/anomaly_detect_new"
+
+
 SYSTEM_PROMPT = """
 You are an AI assistant that answers questions in a friendly manner, based on the given source BGP data. Here are some rules you always follow:
 - Generate only the requested output, don't include any other language before or after the requested output.
@@ -52,7 +62,7 @@ def initialize_models():
         model_kwargs={"torch_dtype": torch.float16, "load_in_8bit": False},
     )
 
-    embed_model = HuggingFaceEmbedding(model_name=BGE_ICL)
+    embed_model = HuggingFaceEmbedding(model_name=BGE_SMALL)
     # embed_model = NVIDIAEmbedding(model="NV-Embed-v2")
 
     # Set the models to the global Settings
@@ -79,6 +89,16 @@ def query_bgp_data(index, query):
     # Start query and get the streaming response generator
     response = query_engine.query(query)
     
+    # Output retrieved documents
+    print("\nRetrieved Documents:")
+    print("-" * 80)
+    for idx, node in enumerate(response.source_nodes):
+        print(f"\nDocument {idx + 1}:")
+        print(f"Score: {node.score}")
+        print(f"Metadata: {node.node.metadata}")
+        print(f"Content:\n{node.node.get_content()}")
+    print("-" * 80)
+
     # Stream tokens to the console
     for token in response.response_gen:
         print(token, end="")
@@ -91,7 +111,7 @@ def main():
     llm, embed_model = initialize_models()
 
     logger.info("Loading documents...")
-    documents = load_documents("/home/hb/dataset_bgp/bgp_tab_rag_test/full_text")
+    documents = load_documents(facebook)
 
     logger.info("Creating vector store index...")
     index = create_index(documents)

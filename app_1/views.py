@@ -10,10 +10,9 @@ from threading import Thread, Event
 import queue
 import os
 from django.conf import settings
-from .bgp_utils import extract_asn, extract_times, collect_historical_data, collect_real_time_data, extract_real_time_span
+from .bgp_utils import extract_asn, extract_target_prefixes, extract_times, collect_historical_data, collect_real_time_data, extract_real_time_span
 from .model_loader import stream_bgp_query
 import re
-from uuid import uuid4
 
 status_update_event = Event()
 scenario = ""
@@ -73,6 +72,7 @@ def check_query(query, session):
     status_update_event.clear()
 
     asn = extract_asn(query)
+    target_prefixes = extract_target_prefixes(query)
     from_time, until_time = extract_times(query)
     real_time_span = extract_real_time_span(query)
 
@@ -80,12 +80,12 @@ def check_query(query, session):
     dir_path_queue = queue.Queue()
 
     def collect_historical_wrapper():
-        dir_path = collect_historical_data(asn, from_time, until_time)
+        dir_path = collect_historical_data(from_time=from_time, until_time=until_time, target_asn=asn, target_prefixes=target_prefixes)
         dir_path_queue.put(dir_path)
         status_update_event.set()
 
     def collect_real_time_wrapper():
-        dir_path = collect_real_time_data(asn, real_time_span)
+        dir_path = collect_real_time_data(asn=asn, target_prefixes=target_prefixes, collection_period=real_time_span)
         dir_path_queue.put(dir_path)
         status_update_event.set()
 

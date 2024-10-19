@@ -1,0 +1,19 @@
+On 2024-10-19 02:24:00, Autonomous System 3356 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+Overall Summary:
+
+During the observation period, Autonomous Systems reported various BGP metrics. The total number of routes ranged from 0 to 0, with an average of 0.00 routes. Announcements varied between 0 and 0, averaging 0.00 announcements. Withdrawals varied between 0 and 0, averaging 0.00 withdrawals. The maximum path length observed was 0 hops, with an average path length of 0.00 hops. Communities ranged from 0 to 0, with an average of 0.00. The system observed an average prefix length of 0.0, with a maximum of 0 and a minimum of 0.
+
+Top 10 Peers with the Highest Number of Updates:
+No peer updates data available.
+
+
+Policy-Related Metrics Summary:
+
+Local Preference values ranged from 0.00 to 0.00, with an average of 0.00.
+MED values ranged from 0.00 to 0.00, with an average of 0.00.
+AS Path Prepending was observed 0 times during the observation period.
+A total of 0 unique community values were observed.

@@ -672,10 +672,10 @@ def collect_historical_data(from_time, target_asn, target_prefixes=None, until_t
     return extract_bgp_data(from_time=from_time, until_time=until_time, target_asn=target_asn, target_prefixes=target_prefixes)
 
 def convert_lists_to_tuples(df):
-    # Identify columns that contain list values
     for col in df.columns:
+        # Check if any element in the column is a list
         if df[col].apply(lambda x: isinstance(x, list)).any():
-            df[col] = df[col].apply(tuple)
+            df[col] = df[col].apply(lambda x: tuple(x) if isinstance(x, list) else x)
     return df
 
 def run_real_time_bgpstream(asn, collection_period, target_prefixes, return_dict):
@@ -693,14 +693,12 @@ def run_real_time_bgpstream(asn, collection_period, target_prefixes, return_dict
     
     # Initialize temp_counts with all required keys
     temp_counts = initialize_temp_counts()
-    
-    # Additional data collections
+    temp_counts['as_path_prepending'] = 0
     prefix_lengths = []
     med_values = []
     local_prefs = []
     communities_per_prefix = {}
     peer_updates = defaultdict(int)
-    
     anomaly_data = {
         "target_prefixes_withdrawn": 0,
         "target_prefixes_announced": 0,
@@ -850,27 +848,29 @@ def run_real_time_bgpstream(asn, collection_period, target_prefixes, return_dict
                     prefix_lengths, med_values, local_prefs, 
                     communities_per_prefix, peer_updates, anomaly_data, temp_counts
                 )
-                features['Timestamp'] = current_window_start.strftime('%Y-%m-%d %H:%M:%S')
-                print(f"\nFeatures Announcements {features['Announcements']}\n")
-                print(f"Features at index {index}: {features}")
-                
-                all_features.append(features)
+                # Check if features is non-empty
+                if features:
+                    features['Timestamp'] = current_window_start.strftime('%Y-%m-%d %H:%M:%S')
+                    print(f"Features at index {index}: {features}")
+                    
+                    all_features.append(features)
 
-                # Check if features is a valid dictionary
-                if isinstance(features, dict) and features:
-                    # Create DataFrame with an explicit index
-                    features_df = pd.DataFrame(features, index=[0]).dropna(axis=1, how='all')
-                    # Update return_dict with the latest features
-                    return_dict['features_df'] = features_df
+                    # Create DataFrame with an explicit index only if features is non-empty
+                    try:
+                        features_df = pd.DataFrame([features]).dropna(axis=1, how='all')
+                        # Update return_dict with the latest features
+                        return_dict['features_df'] = features_df
+                    except ValueError as ve:
+                        print(f"ValueError creating DataFrame from features: {ve}. Skipping this window.")
                 else:
-                    print(f"No valid features extracted at index {index}.")
+                    print(f"No features extracted for this window. Skipping DataFrame creation.")
 
                 current_window_start = current_time.replace(second=0, microsecond=0)
                 routes = {}
                 index += 1
                 # Reset temp_counts for the next window
                 temp_counts = initialize_temp_counts()
-                # Reset additional data collections
+                temp_counts['as_path_prepending'] = 0
                 prefix_lengths = []
                 med_values = []
                 local_prefs = []
@@ -889,10 +889,17 @@ def run_real_time_bgpstream(asn, collection_period, target_prefixes, return_dict
                 prefix_lengths, med_values, local_prefs, 
                 communities_per_prefix, peer_updates, anomaly_data, temp_counts
             )
-            features['Timestamp'] = current_window_start.strftime('%Y-%m-%d %H:%M:%S')
-            all_features.append(features)
-            return_dict['features_df'] = pd.DataFrame(all_features).dropna(axis=1, how='all')
-
+            if features:
+                features['Timestamp'] = current_window_start.strftime('%Y-%m-%d %H:%M:%S')
+                all_features.append(features)
+                try:
+                    final_features_df = pd.DataFrame(all_features).dropna(axis=1, how='all')
+                    return_dict['features_df'] = final_features_df
+                except ValueError as ve:
+                    print(f"ValueError creating final DataFrame from all_features: {ve}.")
+            else:
+                print("No features extracted in the final aggregation window.")
+                
     except Exception as e:
         error_message = f"An error occurred during real-time data collection for {asn}: {e}"
         print(error_message)
@@ -911,6 +918,7 @@ def collect_real_time_data(asn, target_prefixes, collection_period=timedelta(min
 
     media_dir = os.path.join(settings.MEDIA_ROOT, 'rag_bgp_data', f'realtime_AS{asn}_{data_uuid}')
     os.makedirs(media_dir, exist_ok=True)  # Ensure the directory exists
+    print(f"\nDirectory created: {media_dir}")
 
     print(f"\nCollecting data for ASN {asn} for {collection_period.total_seconds() // 60} minutes...")
 
@@ -985,7 +993,7 @@ def collect_real_time_data(asn, target_prefixes, collection_period=timedelta(min
         final_features_df = features_df
 
     # Convert list columns to tuples before removing duplicates
-    # final_features_df = convert_lists_to_tuples(final_features_df)
+    final_features_df = convert_lists_to_tuples(final_features_df)
 
     # Remove duplicates from the final DataFrame
     final_features_df = final_features_df.drop_duplicates()

@@ -37,6 +37,10 @@ When was the highest count of announcements observed and what is the value?
 
 Provide the summary on the routing data
 
+provide policy report=
+
+BGP community tags. Show the top 10 most frequently used community tags. (future)
+
 
 const url = `http://127.0.0.1:8000/api/bgp_llama?query=${encodeURIComponent(currentMessage)}`;
 

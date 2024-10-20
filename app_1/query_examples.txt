@@ -37,7 +37,11 @@ When was the highest count of announcements observed and what is the value?
 
 Provide the summary on the routing data
 
-provide policy report=
+provide policy report
+
+what are the top peer asn by announcements?
+
+what are the most advertised prefixes?
 
 BGP community tags. Show the top 10 most frequently used community tags. (future)
 

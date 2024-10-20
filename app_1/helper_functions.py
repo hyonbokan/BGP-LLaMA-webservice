@@ -40,7 +40,7 @@ def generate_overall_summary(df, summary_metrics, total_updates_per_peer, top_n_
     overall_summary_text += f"Top {top_n_peers} Peers with the Highest Number of Updates:\n"
     sorted_peers = sorted(total_updates_per_peer.items(), key=lambda x: x[1], reverse=True)[:top_n_peers]
     if sorted_peers:
-        peer_details = ', '.join([f"AS{asn} ({updates:.2f} updates)" for asn, updates in sorted_peers])
+        peer_details = ', '.join([f"AS{asn}" for asn, _ in sorted_peers])
         overall_summary_text += (
             f"The top {top_n_peers} peers contributing the most updates are {peer_details}.\n"
         )
@@ -75,7 +75,6 @@ def generate_overall_summary(df, summary_metrics, total_updates_per_peer, top_n_
     overall_summary_text += f"A total of {len(all_communities)} unique community values were observed.\n"
 
     return overall_summary_text
-
 
 
 def generate_data_point_log(row, timestamp, as_number):
@@ -138,17 +137,33 @@ def parse_prefix_list(prefixes_str, idx, column_name):
     return prefixes_list
 
 
-def generate_updates_per_peer_info(row, timestamp, peers_nested):
-    peers = [asn for peer_list in peers_nested for asn in peer_list]
+def generate_updates_per_peer_info(row, timestamp, peer_asns):
     updates_info = f"At {timestamp}, updates per peer were as follows:\n"
-    if peers:
-        for peer_asn in peers:
-            if isinstance(peer_asn, str) and peer_asn.isdigit():
-                updates = row['Average Updates per Peer']
-                updates_info += f"  - AS{peer_asn}: {updates:.2f} updates\n"
+    
+    if peer_asns:
+        for peer_asn in peer_asns:
+            if peer_asn.isdigit():
+                updates = row.get('Average Updates per Peer', 0.0)
+                updates_info += f"  - AS{peer_asn}: {updates} updates\n"
     else:
         updates_info += "  No peer updates were observed.\n"
+    
     return updates_info
+
+def generate_updates_per_prefix_info(timestamp, top_prefixes, prefix_updates):
+    updates_info = f"At {timestamp}, updates per top prefix were as follows:\n"
+    
+    if top_prefixes:
+        for prefix, updates in zip(top_prefixes, prefix_updates):
+            if prefix:
+                # updates_info += f"  - Prefix {prefix}: {updates:.2f} updates\n"
+                updates_info += f"  - Prefix {prefix}\n"
+    else:
+        updates_info += "  No prefix updates were observed.\n"
+    
+    return updates_info
+
+
 
 def detect_anomalies(row, anomaly_rules, require_all_conditions=False):
     operators_map = {

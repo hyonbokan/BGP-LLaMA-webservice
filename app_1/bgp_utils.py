@@ -644,12 +644,13 @@ def extract_bgp_data(from_time, until_time, target_asn, target_prefixes=None,
         communities_per_prefix, peer_updates, anomaly_data, temp_counts
     )
     features['Timestamp'] = current_window_start.strftime("%Y-%m-%d %H:%M:%S")
+    print(f"Features at index {index}: {features}")
     all_features.append(features)
     
     # Convert collected features to a DataFrame
     df_features = pd.json_normalize(all_features, sep='_').fillna(0)
     print(df_features)
-    
+    df_features.to_csv(f"/home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/knowledge/{target_asn}.csv")
     process_bgp(df=df_features, output_dir=media_dir)
     print(f"\nFinal data saved to {media_dir}\n")
 
@@ -997,7 +998,8 @@ def collect_real_time_data(asn, target_prefixes, collection_period=timedelta(min
 
     # Remove duplicates from the final DataFrame
     final_features_df = final_features_df.drop_duplicates()
-
+    print(final_features_df[['Top Peer 1 ASN', 'Top Peer 2 ASN', 'Top Prefix 1', 'Top Prefix 2']].head())
+    final_features_df.to_csv(f"/home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/knowledge/{asn}.csv")
     # Save the final DataFrame to a CSV file
     process_bgp(df=final_features_df, output_dir=media_dir)
     print(f"\nFinal data saved to {media_dir}\n")

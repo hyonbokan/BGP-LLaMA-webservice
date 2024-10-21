@@ -16,7 +16,8 @@ from .helper_functions import (
     collect_policy_info,
     generate_policy_log,
     write_logs_to_file,
-    generate_policy_summary
+    generate_policy_summary,
+    generate_as_path_changes_summary
 )
 
 numeric_columns = [
@@ -43,6 +44,7 @@ def process_bgp(
     updates_per_peer_filename='updates_per_peer.txt',
     updates_per_prefix_filename='updates_per_prefix.txt',
     anomaly_summary_filename='anomaly_summary.txt',
+    as_path_changes_summary_filename='as_path_changes_summary.txt',
     anomalies_filename='anomalies.txt',
     policy_summary_filename='policy_summary.txt',
     top_n_peers=5,       # Number of top peers to include in the overall summary
@@ -257,7 +259,8 @@ def process_bgp(
 
     # Generate and write Anomaly Summary
     generate_and_write_anomaly_summary(anomalies, output_dir, anomaly_summary_filename)
-
+    generate_as_path_changes_summary(df, output_dir, as_path_changes_summary_filename)
+     
     # Generate and write Policy Summary
     policy_summary_text = generate_policy_summary(df, summary_metrics)
     with open(os.path.join(output_dir, policy_summary_filename), 'a', encoding='utf-8') as f:

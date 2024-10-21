@@ -12,6 +12,7 @@ from django.conf import settings
 from collections import defaultdict, Counter
 import ipaddress
 from .preprocessing_data import process_bgp
+import logging
 
 def initialize_temp_counts():
     return {
@@ -548,10 +549,14 @@ def extract_bgp_data(from_time, until_time, target_asn, target_prefixes=None,
                         try:
                             tgt_net = ipaddress.ip_network(tgt_prefix)
                             prefix_net = ipaddress.ip_network(prefix)
-                            if prefix_net.subnet_of(tgt_net):
-                                process_update = True
-                                break
+                            
+                            # Only compare if both prefixes are of the same IP version
+                            if tgt_net.version == prefix_net.version:
+                                if prefix_net.subnet_of(tgt_net):
+                                    process_update = True
+                                    break
                         except ValueError:
+                            logging.warning(f"Invalid prefix encountered: {tgt_prefix} or {prefix}")
                             continue  # Invalid prefix, skip
             else:
                 # If target_prefixes is None, we don't filter by prefixes
@@ -732,20 +737,19 @@ def run_real_time_bgpstream(asn, collection_period, target_prefixes, return_dict
                         process_update = True
 
                     # If target_prefixes are provided, check if the prefix is in target_prefixes
-                    if target_prefixes:
-                        if prefix in target_prefixes:
-                            process_update = True
-                        else:
-                            # Check if the prefix is a subprefix of any target_prefix
-                            for tgt_prefix in target_prefixes:
-                                try:
-                                    tgt_net = ipaddress.ip_network(tgt_prefix)
-                                    prefix_net = ipaddress.ip_network(prefix)
-                                    if prefix_net.subnet_of(tgt_net):
-                                        process_update = True
-                                        break
-                                except ValueError:
-                                    continue  # Invalid prefix, skip
+                    for tgt_prefix in target_prefixes:
+                        try:
+                            tgt_net = ipaddress.ip_network(tgt_prefix)
+                            prefix_net = ipaddress.ip_network(prefix)
+                            
+                            # Only compare if both prefixes are of the same IP version
+                            if tgt_net.version == prefix_net.version:
+                                if prefix_net.subnet_of(tgt_net):
+                                    process_update = True
+                                    break
+                        except ValueError:
+                            logging.warning(f"Invalid prefix encountered: {tgt_prefix} or {prefix}")
+                            continue  # Invalid prefix, skip
                     else:
                         # If target_prefixes is None, we don't filter by prefixes
                         pass

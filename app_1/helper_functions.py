@@ -77,6 +77,63 @@ def generate_overall_summary(df, summary_metrics, total_updates_per_peer, top_n_
     return overall_summary_text
 
 
+def generate_as_path_changes_summary(df, output_dir, as_path_changes_summary_filename):
+    try:
+        summary = "AS Path Changes Summary Report\n"
+        summary += "="*30 + "\n\n"
+
+        # Ensure 'AS Path Changes' and 'Autonomous System Number' columns exist
+        missing_columns = []
+        for col in ['AS Path Changes', 'Autonomous System Number']:
+            if col not in df.columns:
+                missing_columns.append(col)
+
+        if missing_columns:
+            for col in missing_columns:
+                logging.error(f"Column '{col}' not found in the DataFrame.")
+                summary += f"Error: '{col}' column is missing from the data.\n"
+            with open(os.path.join(output_dir, as_path_changes_summary_filename), 'w', encoding='utf-8') as f:
+                f.write(summary)
+            return
+
+        # Calculate total AS path changes
+        total_changes = df['AS Path Changes'].sum()
+        summary += f"Total AS Path Changes Detected: {int(total_changes)}\n\n"
+
+        # Aggregate AS path changes per ASN
+        as_path_changes_per_asn = df.groupby('Autonomous System Number')['AS Path Changes'].sum()
+
+        # Identify top 5 ASNs with the most AS path changes
+        top_asns = as_path_changes_per_asn.sort_values(ascending=False).head(5)
+
+        summary += "Top ASNs with Most AS Path Changes:\n"
+        if not top_asns.empty:
+            # Use .items() instead of .iteritems()
+            for asn, changes in top_asns.items():
+                summary += f" - AS{asn}: {int(changes)} changes\n"
+        else:
+            summary += "No AS path changes detected.\n"
+
+        summary += "\n"
+
+        # Optional: Include percentage contribution of top ASNs
+        if total_changes > 0 and not top_asns.empty:
+            summary += "Percentage Contribution of Top ASNs:\n"
+            for asn, changes in top_asns.items():
+                percentage = (changes / total_changes) * 100
+                summary += f" - AS{asn}: {percentage:.2f}% of total changes\n"
+            summary += "\n"
+            
+        # Write summary to file
+        summary_file_path = os.path.join(output_dir, as_path_changes_summary_filename)
+        with open(summary_file_path, 'w', encoding='utf-8') as f:
+            f.write(summary)
+
+        logging.info(f"AS Path Changes Summary Report generated at '{summary_file_path}'.")
+
+    except Exception as e:
+        logging.error(f"Failed to generate AS Path Changes Summary: {e}")
+
 def generate_data_point_log(row, timestamp, as_number):
     log_entry = (
         f"On {timestamp}, Autonomous System {as_number} observed {int(row['Announcements'])} announcements. "
@@ -221,6 +278,21 @@ def detect_anomalies(row, anomaly_rules, require_all_conditions=False):
                     conditions_met = False
                     break
 
+        # Additional logic to capture all unexpected ASNs in the row for Hijack Anomaly
+        if conditions_met and anomaly_type == 'Hijack Anomaly':
+            unexpected_asns = []
+            # Assuming up to 3 unexpected ASN columns; adjust range if more ASNs are possible
+            for i in range(1, 4):
+                asn_col = f'Unexpected ASN {i}'
+                asn = row.get(asn_col)
+                if pd.notnull(asn) and asn != 0:
+                    try:
+                        unexpected_asns.append(int(asn))
+                    except ValueError:
+                        logging.warning(f"Invalid ASN value '{asn}' in column '{asn_col}'. Skipping.")
+            if unexpected_asns:
+                details['unexpected_asns_in_paths'] = unexpected_asns
+
         if conditions_met and triggered_features:
             anomalies_detected.append({
                 'type': anomaly_type,
@@ -239,12 +311,16 @@ def generate_anomaly_log(anomaly, timestamp, as_number):
 
     # List triggered features and their details
     for feature, value in anomaly['details'].items():
-        anomaly_log += f"    Feature: {feature}\n"
-        anomaly_log += f"    Value: {value}\n"
+        if feature == 'unexpected_asns_in_paths':
+            # Format the list of ASNs
+            asns_str = ', '.join([f"AS{asn}" for asn in value])
+            anomaly_log += f"    Unexpected ASNs in Paths: {asns_str}\n"
+        else:
+            anomaly_log += f"    Feature: {feature}\n"
+            anomaly_log += f"    Value: {value}\n"
 
     anomaly_log += "\n"
     return anomaly_log
-
 
 def generate_and_write_anomaly_summary(anomalies, output_dir, filename):
     anomaly_summary = "Anomaly Summary:\n\n"

@@ -1,0 +1,175 @@
+At 2021-10-04 14:00:00, updates per peer were as follows:
+  - AS58057: 91.66666666666667 updates
+  - AS34927: 91.66666666666667 updates
+  - AS57463: 91.66666666666667 updates
+  - AS0: 91.66666666666667 updates
+  - AS0: 91.66666666666667 updates
+
+At 2021-10-04 14:05:00, updates per peer were as follows:
+  - AS58057: 47.666666666666664 updates
+  - AS34927: 47.666666666666664 updates
+  - AS57463: 47.666666666666664 updates
+  - AS0: 47.666666666666664 updates
+  - AS0: 47.666666666666664 updates
+
+At 2021-10-04 14:10:00, updates per peer were as follows:
+  - AS58057: 51.333333333333336 updates
+  - AS34927: 51.333333333333336 updates
+  - AS57463: 51.333333333333336 updates
+  - AS0: 51.333333333333336 updates
+  - AS0: 51.333333333333336 updates
+
+At 2021-10-04 14:15:00, updates per peer were as follows:
+  - AS58057: 15.19047619047619 updates
+  - AS34927: 15.19047619047619 updates
+  - AS61218: 15.19047619047619 updates
+  - AS34800: 15.19047619047619 updates
+  - AS50628: 15.19047619047619 updates
+
+At 2021-10-04 14:20:00, updates per peer were as follows:
+  - AS58057: 61.6 updates
+  - AS34927: 61.6 updates
+  - AS61218: 61.6 updates
+  - AS42861: 61.6 updates
+  - AS57463: 61.6 updates
+
+At 2021-10-04 14:25:00, updates per peer were as follows:
+  - AS34927: 5.733333333333333 updates
+  - AS37989: 5.733333333333333 updates
+  - AS61218: 5.733333333333333 updates
+  - AS4826: 5.733333333333333 updates
+  - AS131477: 5.733333333333333 updates
+
+At 2021-10-04 14:30:00, updates per peer were as follows:
+  - AS58057: 17.789473684210527 updates
+  - AS34927: 17.789473684210527 updates
+  - AS61218: 17.789473684210527 updates
+  - AS49788: 17.789473684210527 updates
+  - AS205148: 17.789473684210527 updates
+
+At 2021-10-04 14:35:00, updates per peer were as follows:
+  - AS58057: 95.6 updates
+  - AS6881: 95.6 updates
+  - AS34927: 95.6 updates
+  - AS61218: 95.6 updates
+  - AS57463: 95.6 updates
+
+At 2021-10-04 14:40:00, updates per peer were as follows:
+  - AS34927: 6.84 updates
+  - AS13830: 6.84 updates
+  - AS58057: 6.84 updates
+  - AS61218: 6.84 updates
+  - AS29504: 6.84 updates
+
+At 2021-10-04 14:45:00, updates per peer were as follows:
+  - AS34927: 10.0 updates
+  - AS29504: 10.0 updates
+  - AS57463: 10.0 updates
+  - AS56662: 10.0 updates
+  - AS6881: 10.0 updates
+
+At 2021-10-04 14:50:00, updates per peer were as follows:
+  - AS34927: 17.5 updates
+  - AS57463: 17.5 updates
+  - AS0: 17.5 updates
+  - AS0: 17.5 updates
+  - AS0: 17.5 updates
+
+At 2021-10-04 14:55:00, updates per peer were as follows:
+  - AS34927: 33.5 updates
+  - AS57463: 33.5 updates
+  - AS0: 33.5 updates
+  - AS0: 33.5 updates
+  - AS0: 33.5 updates
+
+At 2021-10-04 15:00:00, updates per peer were as follows:
+  - AS58057: 38.0 updates
+  - AS49673: 38.0 updates
+  - AS34927: 38.0 updates
+  - AS49134: 38.0 updates
+  - AS131477: 38.0 updates
+
+At 2021-10-04 15:05:00, updates per peer were as follows:
+  - AS34927: 3.814814814814815 updates
+  - AS61218: 3.814814814814815 updates
+  - AS49134: 3.814814814814815 updates
+  - AS34549: 3.814814814814815 updates
+  - AS49420: 3.814814814814815 updates
+
+At 2021-10-04 15:10:00, updates per peer were as follows:
+  - AS34927: 3.4444444444444446 updates
+  - AS42861: 3.4444444444444446 updates
+  - AS44393: 3.4444444444444446 updates
+  - AS3257: 3.4444444444444446 updates
+  - AS61218: 3.4444444444444446 updates
+
+At 2021-10-04 15:15:00, updates per peer were as follows:
+  - AS34927: 10.23076923076923 updates
+  - AS131477: 10.23076923076923 updates
+  - AS6881: 10.23076923076923 updates
+  - AS61218: 10.23076923076923 updates
+  - AS207564: 10.23076923076923 updates
+
+At 2021-10-04 15:20:00, updates per peer were as follows:
+  - AS58057: 39.75 updates
+  - AS34927: 39.75 updates
+  - AS6881: 39.75 updates
+  - AS57463: 39.75 updates
+  - AS0: 39.75 updates
+
+At 2021-10-04 15:25:00, updates per peer were as follows:
+  - AS6881: 76.0 updates
+  - AS58057: 76.0 updates
+  - AS34927: 76.0 updates
+  - AS61218: 76.0 updates
+  - AS57463: 76.0 updates
+
+At 2021-10-04 15:30:00, updates per peer were as follows:
+  - AS58057: 11.4 updates
+  - AS34927: 11.4 updates
+  - AS131477: 11.4 updates
+  - AS37721: 11.4 updates
+  - AS205148: 11.4 updates
+
+At 2021-10-04 15:35:00, updates per peer were as follows:
+  - AS58057: 12.61111111111111 updates
+  - AS29504: 12.61111111111111 updates
+  - AS34927: 12.61111111111111 updates
+  - AS202297: 12.61111111111111 updates
+  - AS61218: 12.61111111111111 updates
+
+At 2021-10-04 15:40:00, updates per peer were as follows:
+  - AS37721: 158.73333333333332 updates
+  - AS44103: 158.73333333333332 updates
+  - AS58057: 158.73333333333332 updates
+  - AS22652: 158.73333333333332 updates
+  - AS7575: 158.73333333333332 updates
+
+At 2021-10-04 15:45:00, updates per peer were as follows:
+  - AS58057: 16.293478260869566 updates
+  - AS44393: 16.293478260869566 updates
+  - AS34800: 16.293478260869566 updates
+  - AS60474: 16.293478260869566 updates
+  - AS35619: 16.293478260869566 updates
+
+At 2021-10-04 15:50:00, updates per peer were as follows:
+  - AS22652: 64.81443298969072 updates
+  - AS44103: 64.81443298969072 updates
+  - AS49752: 64.81443298969072 updates
+  - AS7575: 64.81443298969072 updates
+  - AS3333: 64.81443298969072 updates
+
+At 2021-10-04 15:55:00, updates per peer were as follows:
+  - AS58057: 26.6 updates
+  - AS44393: 26.6 updates
+  - AS34927: 26.6 updates
+  - AS60474: 26.6 updates
+  - AS35619: 26.6 updates
+
+At 2021-10-04 16:00:00, updates per peer were as follows:
+  - AS0: 0.0 updates
+  - AS0: 0.0 updates
+  - AS0: 0.0 updates
+  - AS0: 0.0 updates
+  - AS0: 0.0 updates
+

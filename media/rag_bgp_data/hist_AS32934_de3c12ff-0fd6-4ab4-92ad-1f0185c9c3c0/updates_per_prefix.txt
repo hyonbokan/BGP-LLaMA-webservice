@@ -1,0 +1,175 @@
+At 2021-10-04 14:00:00, updates per top prefix were as follows:
+  - Prefix 2a03:2880::/36
+  - Prefix 2a03:2880:1000::/36
+  - Prefix 2a03:2880:2000::/36
+  - Prefix 2a03:2881::/32
+  - Prefix 2a03:2880::/32
+
+At 2021-10-04 14:05:00, updates per top prefix were as follows:
+  - Prefix 2a03:2880::/36
+  - Prefix 2a03:2880:1000::/36
+  - Prefix 2a03:2880:2000::/36
+  - Prefix 2a03:2881::/32
+  - Prefix 2a03:2880::/32
+
+At 2021-10-04 14:10:00, updates per top prefix were as follows:
+  - Prefix 2a03:2880:2000::/36
+  - Prefix 2a03:2880:1000::/36
+  - Prefix 2a03:2880::/36
+  - Prefix 2a03:2880:f0ff::/48
+  - Prefix 2a03:2880:f1ff::/48
+
+At 2021-10-04 14:15:00, updates per top prefix were as follows:
+  - Prefix 2a03:2880:ff0b::/48
+  - Prefix 2a03:2880:ff0a::/48
+  - Prefix 129.134.26.0/24
+  - Prefix 2a03:2880:1000::/36
+  - Prefix 2a03:2880::/36
+
+At 2021-10-04 14:20:00, updates per top prefix were as follows:
+  - Prefix 2a03:2880::/36
+  - Prefix 2a03:2880:2000::/36
+  - Prefix 2a03:2880:1000::/36
+  - Prefix 2a03:2881::/32
+  - Prefix 2620:0:1c00::/40
+
+At 2021-10-04 14:25:00, updates per top prefix were as follows:
+  - Prefix 31.13.89.0/24
+  - Prefix 157.240.25.0/24
+  - Prefix 2a03:2880:f2ff::/48
+  - Prefix 2a03:2880:f0ff::/48
+  - Prefix 2a03:2880:f1ff::/48
+
+At 2021-10-04 14:30:00, updates per top prefix were as follows:
+  - Prefix 157.240.25.0/24
+  - Prefix 31.13.89.0/24
+  - Prefix 2a03:2880::/36
+  - Prefix 2a03:2880:1000::/36
+  - Prefix 2a03:2880:2000::/36
+
+At 2021-10-04 14:35:00, updates per top prefix were as follows:
+  - Prefix 2a03:2880:1000::/36
+  - Prefix 2a03:2880::/36
+  - Prefix 2a03:2880:2000::/36
+  - Prefix 2a03:2881::/32
+  - Prefix 2a03:2880::/32
+
+At 2021-10-04 14:40:00, updates per top prefix were as follows:
+  - Prefix 129.134.27.0/24
+  - Prefix 2a03:2880:ff0a::/48
+  - Prefix 129.134.29.0/24
+  - Prefix 129.134.26.0/24
+  - Prefix 2a03:2880:f0ff::/48
+
+At 2021-10-04 14:45:00, updates per top prefix were as follows:
+  - Prefix 2a03:2880:ff0a::/48
+  - Prefix 2a03:2881::/32
+  - Prefix 2a03:2880::/32
+  - Prefix 2a03:2880::/36
+  - Prefix 2a03:2880:f2ff::/48
+
+At 2021-10-04 14:50:00, updates per top prefix were as follows:
+  - Prefix 2a03:2880:f0ff::/48
+  - Prefix 2a03:2880:f1ff::/48
+  - Prefix 2a03:2880:f2ff::/48
+  - Prefix 2a03:2881::/32
+  - Prefix 2620:0:1c00::/40
+
+At 2021-10-04 14:55:00, updates per top prefix were as follows:
+  - Prefix 2a03:2881::/32
+  - Prefix 2a03:2880::/32
+  - Prefix 2a03:2880::/36
+  - Prefix 2a03:2880:f2ff::/48
+  - Prefix 2a03:2880:f0ff::/48
+
+At 2021-10-04 15:00:00, updates per top prefix were as follows:
+  - Prefix 2a03:2880:f031::/48
+  - Prefix 2a03:2881:4000::/48
+  - Prefix 2a03:2881:4::/48
+  - Prefix 2a03:2881::/48
+  - Prefix 2a03:2880:f231::/48
+
+At 2021-10-04 15:05:00, updates per top prefix were as follows:
+  - Prefix 129.134.26.0/24
+  - Prefix 2a03:2881::/32
+  - Prefix 2a03:2880::/32
+  - Prefix 2a03:2880::/36
+  - Prefix 2a03:2880:f2ff::/48
+
+At 2021-10-04 15:10:00, updates per top prefix were as follows:
+  - Prefix 129.134.26.0/24
+  - Prefix 2a03:2880:f0ff::/48
+  - Prefix 2a03:2880:f1ff::/48
+  - Prefix 2a03:2880:f2ff::/48
+  - Prefix 2a03:2881::/32
+
+At 2021-10-04 15:15:00, updates per top prefix were as follows:
+  - Prefix 2a03:2880:f031::/48
+  - Prefix 2a03:2880:f131::/48
+  - Prefix 2a03:2880:f231::/48
+  - Prefix 2a03:2881::/48
+  - Prefix 2a03:2881:4::/48
+
+At 2021-10-04 15:20:00, updates per top prefix were as follows:
+  - Prefix 2a03:2880::/36
+  - Prefix 2a03:2880:2000::/36
+  - Prefix 2a03:2880:1000::/36
+  - Prefix 2a03:2880:f0ff::/48
+  - Prefix 2a03:2880:f1ff::/48
+
+At 2021-10-04 15:25:00, updates per top prefix were as follows:
+  - Prefix 2a03:2880:2000::/36
+  - Prefix 2a03:2880:1000::/36
+  - Prefix 2a03:2880::/36
+  - Prefix 2a03:2880:f0ff::/48
+  - Prefix 2a03:2880:f1ff::/48
+
+At 2021-10-04 15:30:00, updates per top prefix were as follows:
+  - Prefix 157.240.25.0/24
+  - Prefix 31.13.89.0/24
+  - Prefix 129.134.26.0/24
+  - Prefix 2a03:2880::/36
+  - Prefix 2a03:2880:1000::/36
+
+At 2021-10-04 15:35:00, updates per top prefix were as follows:
+  - Prefix 129.134.26.0/24
+  - Prefix 2620:0:1c00::/40
+  - Prefix 157.240.0.0/17
+  - Prefix 2a03:2880:3000::/36
+  - Prefix 2620:13e:1000::/44
+
+At 2021-10-04 15:40:00, updates per top prefix were as follows:
+  - Prefix 185.89.218.0/23
+  - Prefix 129.134.30.0/23
+  - Prefix 129.134.25.0/24
+  - Prefix 69.171.250.0/24
+  - Prefix 185.89.218.0/24
+
+At 2021-10-04 15:45:00, updates per top prefix were as follows:
+  - Prefix 66.111.48.0/22
+  - Prefix 129.134.30.0/23
+  - Prefix 2620:13e:1000::/44
+  - Prefix 2a03:2880:f0fc::/47
+  - Prefix 185.89.218.0/23
+
+At 2021-10-04 15:50:00, updates per top prefix were as follows:
+  - Prefix 129.134.66.0/24
+  - Prefix 129.134.71.0/24
+  - Prefix 129.134.70.0/24
+  - Prefix 129.134.75.0/24
+  - Prefix 129.134.74.0/24
+
+At 2021-10-04 15:55:00, updates per top prefix were as follows:
+  - Prefix 2a03:2881:4009::/48
+  - Prefix 129.134.79.0/24
+  - Prefix 129.134.72.0/24
+  - Prefix 129.134.73.0/24
+  - Prefix 2a03:2881:4000::/48
+
+At 2021-10-04 16:00:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+

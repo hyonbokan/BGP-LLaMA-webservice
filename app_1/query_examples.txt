@@ -1,6 +1,6 @@
 Collect and analyze data for AS32934 from 2021-10-04 14:00:00 to 2021-10-04 16:00:00.
 Collect and analyze data for AS32934 from 2021-10-04 14:00:00 to 2021-10-04 16:00:00 for prefixes 129.134.30.0/24 and 129.134.30.0/23.
-
+Collect and analyze data for AS32934 from 2021-10-04 07:00:00 to 2021-10-05 22:00:00 for prefixes 129.134.30.0/24 and 129.134.30.0/23.
 
 Collect BGP data for AS15169 from 2017-08-25 03:00:00 to 2017-08-25 04:00:00.
 - provide report on detected anomalies

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Box, CircularProgress } from '@mui/material';
+import BGPChatTutorial from '../components/BGPChatTutorial';
 
 const useChat = ({
     currentMessage,
@@ -12,7 +13,16 @@ const useChat = ({
     outputMessage,
 }) => {
     const [chatTabs, setChatTabs] = useState([
-        { id: 1, label: 'Chat 1', messages: [{ text: "Welcome to BGP-LLaMA Chat!", sender: "system" }] },
+        { 
+            id: 1, 
+            label: 'Chat 1', 
+            messages: [
+                { 
+                    text: <BGPChatTutorial />,
+                    sender: "system" 
+                }
+            ] 
+        }
     ]);
     const [currentTab, setCurrentTab] = useState(0);
     const [menuAnchorEl, setMenuAnchorEl] = useState(null);
@@ -29,7 +39,14 @@ const useChat = ({
 
     const handleNewChat = () => {
         const newChatId = chatTabs.length + 1;
-        setChatTabs([...chatTabs, { id: newChatId, label: `Chat ${newChatId}`, messages: [{ text: "Welcome to BGP-LLaMA Chat!", sender: "system" }] }]);
+        setChatTabs([...chatTabs, { 
+            id: newChatId, 
+            label: `Chat ${newChatId}`, 
+            messages: [{ 
+                text: "Welcome to BGP-LLaMA Chat!", 
+                sender: "system" 
+            }] 
+        }]);
         setCurrentTab(newChatId - 1);
         if (eventSource) {
             eventSource.close();

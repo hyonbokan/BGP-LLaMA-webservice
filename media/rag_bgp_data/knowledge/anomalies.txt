@@ -1,14 +1,110 @@
+On 2017-08-25 00:00:00, Autonomous System 15169 experienced an anomaly:
+  - Path Manipulation Anomaly detected (Unusual modifications to the AS path, such as excessive AS path prepending.)
+    Feature: AS Path Prepending
+    Value: 7
+
+On 2017-08-25 02:15:00, Autonomous System 15169 experienced an anomaly:
+  - Flapping Anomaly detected (Frequent changes in route announcements and withdrawals, indicating network instability.)
+    Feature: Std Dev of Updates
+    Value: 2.2047403259511418
+
 On 2017-08-25 03:15:00, Autonomous System 15169 experienced an anomaly:
   - Flapping Anomaly detected (Frequent changes in route announcements and withdrawals, indicating network instability.)
     Feature: Std Dev of Updates
     Value: 60252.00671929922
-    Feature: Announcements
-    Value: 456660
+
+On 2017-08-25 03:15:00, Autonomous System 15169 experienced an anomaly:
+  - Path Manipulation Anomaly detected (Unusual modifications to the AS path, such as excessive AS path prepending.)
+    Feature: AS Path Prepending
+    Value: 20813
+
+On 2017-08-25 03:20:00, Autonomous System 15169 experienced an anomaly:
+  - Leak Anomaly detected (Excessive route withdrawals or unexpected route advertisements indicating possible route leaks.)
+    Feature: Route Changes
+    Value: 87900
 
 On 2017-08-25 03:20:00, Autonomous System 15169 experienced an anomaly:
   - Flapping Anomaly detected (Frequent changes in route announcements and withdrawals, indicating network instability.)
     Feature: Std Dev of Updates
-    Value: 36118.136530234595
-    Feature: Announcements
-    Value: 525024
+    Value: 36118.1365302346
+
+On 2017-08-25 03:20:00, Autonomous System 15169 experienced an anomaly:
+  - Path Manipulation Anomaly detected (Unusual modifications to the AS path, such as excessive AS path prepending.)
+    Feature: AS Path Prepending
+    Value: 43156
+
+On 2017-08-25 03:25:00, Autonomous System 15169 experienced an anomaly:
+  - Leak Anomaly detected (Excessive route withdrawals or unexpected route advertisements indicating possible route leaks.)
+    Feature: Route Changes
+    Value: 83847
+
+On 2017-08-25 03:25:00, Autonomous System 15169 experienced an anomaly:
+  - Flapping Anomaly detected (Frequent changes in route announcements and withdrawals, indicating network instability.)
+    Feature: Std Dev of Updates
+    Value: 18688.407179025533
+
+On 2017-08-25 03:25:00, Autonomous System 15169 experienced an anomaly:
+  - Path Manipulation Anomaly detected (Unusual modifications to the AS path, such as excessive AS path prepending.)
+    Feature: AS Path Prepending
+    Value: 17576
+
+On 2017-08-25 03:30:00, Autonomous System 15169 experienced an anomaly:
+  - Leak Anomaly detected (Excessive route withdrawals or unexpected route advertisements indicating possible route leaks.)
+    Feature: Route Changes
+    Value: 73201
+
+On 2017-08-25 03:30:00, Autonomous System 15169 experienced an anomaly:
+  - Flapping Anomaly detected (Frequent changes in route announcements and withdrawals, indicating network instability.)
+    Feature: Std Dev of Updates
+    Value: 24475.290289940574
+
+On 2017-08-25 03:30:00, Autonomous System 15169 experienced an anomaly:
+  - Path Manipulation Anomaly detected (Unusual modifications to the AS path, such as excessive AS path prepending.)
+    Feature: AS Path Prepending
+    Value: 6912
+
+On 2017-08-25 03:35:00, Autonomous System 15169 experienced an anomaly:
+  - Leak Anomaly detected (Excessive route withdrawals or unexpected route advertisements indicating possible route leaks.)
+    Feature: Route Changes
+    Value: 59746
+
+On 2017-08-25 03:35:00, Autonomous System 15169 experienced an anomaly:
+  - Flapping Anomaly detected (Frequent changes in route announcements and withdrawals, indicating network instability.)
+    Feature: Std Dev of Updates
+    Value: 20285.64086835809
+
+On 2017-08-25 03:35:00, Autonomous System 15169 experienced an anomaly:
+  - Path Manipulation Anomaly detected (Unusual modifications to the AS path, such as excessive AS path prepending.)
+    Feature: AS Path Prepending
+    Value: 2470
+
+On 2017-08-25 05:25:00, Autonomous System 15169 experienced an anomaly:
+  - Flapping Anomaly detected (Frequent changes in route announcements and withdrawals, indicating network instability.)
+    Feature: Std Dev of Updates
+    Value: 3.792129601369161
+
+On 2017-08-25 05:25:00, Autonomous System 15169 experienced an anomaly:
+  - Path Manipulation Anomaly detected (Unusual modifications to the AS path, such as excessive AS path prepending.)
+    Feature: AS Path Prepending
+    Value: 54
+
+On 2017-08-25 05:30:00, Autonomous System 15169 experienced an anomaly:
+  - Flapping Anomaly detected (Frequent changes in route announcements and withdrawals, indicating network instability.)
+    Feature: Std Dev of Updates
+    Value: 2.1833148891823746
+
+On 2017-08-25 05:30:00, Autonomous System 15169 experienced an anomaly:
+  - Path Manipulation Anomaly detected (Unusual modifications to the AS path, such as excessive AS path prepending.)
+    Feature: AS Path Prepending
+    Value: 40
+
+On 2017-08-25 06:55:00, Autonomous System 15169 experienced an anomaly:
+  - Flapping Anomaly detected (Frequent changes in route announcements and withdrawals, indicating network instability.)
+    Feature: Std Dev of Updates
+    Value: 3.3293623547839064
+
+On 2017-08-25 06:55:00, Autonomous System 15169 experienced an anomaly:
+  - Path Manipulation Anomaly detected (Unusual modifications to the AS path, such as excessive AS path prepending.)
+    Feature: AS Path Prepending
+    Value: 62
 

@@ -1,0 +1,14 @@
+Overall Summary:
+
+During the observation period, Autonomous Systems reported various BGP metrics. The total number of routes ranged from 0 to 346, with an average of 126.56 routes. Announcements varied between 0 and 21188, averaging 598.57 announcements. Withdrawals varied between 0 and 254, averaging 1.86 withdrawals. The maximum path length observed was 9 hops, with an average path length of 3.16 hops. Communities ranged from 0 to 64175, with an average of 1336.77. The system observed an average prefix length of 42.4, with a maximum of 48 and a minimum of 0.
+
+Top 5 Peers with the Highest Number of Updates:
+The top 5 peers contributing the most updates are AS6881, AS34927, AS6939, AS44393, AS49134.
+
+
+Policy-Related Metrics Summary:
+
+Local Preference values ranged from 0.00 to 0.00, with an average of 0.00.
+MED values ranged from 0.00 to 0.00, with an average of 0.00.
+AS Path Prepending was observed 4758 times during the observation period.
+A total of 0 unique community values were observed.

@@ -1,0 +1,595 @@
+At 2017-08-25 00:00:00, updates per top prefix were as follows:
+  - Prefix 104.132.161.0/24
+  - Prefix 64.9.224.0/24
+  - Prefix 64.9.225.0/24
+  - Prefix 64.9.228.0/23
+  - Prefix 0
+
+At 2017-08-25 00:05:00, updates per top prefix were as follows:
+  - Prefix 104.132.161.0/24
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 00:10:00, updates per top prefix were as follows:
+  - Prefix 104.132.161.0/24
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 00:15:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 00:20:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 00:25:00, updates per top prefix were as follows:
+  - Prefix 104.132.161.0/24
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 00:30:00, updates per top prefix were as follows:
+  - Prefix 64.9.224.0/24
+  - Prefix 64.9.225.0/24
+  - Prefix 64.9.228.0/23
+  - Prefix 104.132.161.0/24
+  - Prefix 0
+
+At 2017-08-25 00:35:00, updates per top prefix were as follows:
+  - Prefix 104.132.161.0/24
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 00:40:00, updates per top prefix were as follows:
+  - Prefix 104.132.161.0/24
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 00:45:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 00:50:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 00:55:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 01:00:00, updates per top prefix were as follows:
+  - Prefix 64.9.224.0/24
+  - Prefix 64.9.225.0/24
+  - Prefix 64.9.228.0/23
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 01:05:00, updates per top prefix were as follows:
+  - Prefix 104.132.161.0/24
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 01:10:00, updates per top prefix were as follows:
+  - Prefix 104.132.161.0/24
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 01:15:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 01:20:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 01:25:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 01:30:00, updates per top prefix were as follows:
+  - Prefix 64.9.224.0/24
+  - Prefix 64.9.225.0/24
+  - Prefix 64.9.228.0/23
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 01:35:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 01:40:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 01:45:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 01:50:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 01:55:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 02:00:00, updates per top prefix were as follows:
+  - Prefix 64.9.224.0/24
+  - Prefix 64.9.225.0/24
+  - Prefix 64.9.228.0/23
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 02:05:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 02:10:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 02:15:00, updates per top prefix were as follows:
+  - Prefix 209.85.234.0/24
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 02:20:00, updates per top prefix were as follows:
+  - Prefix 209.85.234.0/24
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 02:25:00, updates per top prefix were as follows:
+  - Prefix 209.85.234.0/24
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 02:30:00, updates per top prefix were as follows:
+  - Prefix 64.9.224.0/24
+  - Prefix 64.9.225.0/24
+  - Prefix 64.9.228.0/23
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 02:35:00, updates per top prefix were as follows:
+  - Prefix 104.132.150.0/24
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 02:40:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 02:45:00, updates per top prefix were as follows:
+  - Prefix 209.85.234.0/24
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 02:50:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 02:55:00, updates per top prefix were as follows:
+  - Prefix 209.85.234.0/24
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 03:00:00, updates per top prefix were as follows:
+  - Prefix 64.9.224.0/24
+  - Prefix 64.9.225.0/24
+  - Prefix 64.9.228.0/23
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 03:05:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 03:10:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 03:15:00, updates per top prefix were as follows:
+  - Prefix 49.213.40.0/24
+  - Prefix 203.215.68.0/22
+  - Prefix 210.4.0.0/19
+  - Prefix 121.96.211.0/24
+  - Prefix 210.4.16.0/20
+
+At 2017-08-25 03:20:00, updates per top prefix were as follows:
+  - Prefix 46.249.96.0/24
+  - Prefix 216.72.225.0/24
+  - Prefix 209.88.90.0/23
+  - Prefix 209.88.92.0/22
+  - Prefix 83.141.144.0/22
+
+At 2017-08-25 03:25:00, updates per top prefix were as follows:
+  - Prefix 209.88.92.0/22
+  - Prefix 209.88.90.0/23
+  - Prefix 216.72.225.0/24
+  - Prefix 46.249.96.0/24
+  - Prefix 49.202.247.0/24
+
+At 2017-08-25 03:30:00, updates per top prefix were as follows:
+  - Prefix 49.202.245.0/24
+  - Prefix 49.202.246.0/24
+  - Prefix 49.202.247.0/24
+  - Prefix 177.55.229.0/24
+  - Prefix 88.248.47.0/24
+
+At 2017-08-25 03:35:00, updates per top prefix were as follows:
+  - Prefix 131.0.128.0/24
+  - Prefix 153.162.132.0/24
+  - Prefix 153.162.133.0/24
+  - Prefix 153.162.134.0/24
+  - Prefix 153.162.135.0/24
+
+At 2017-08-25 03:40:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 03:45:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 03:50:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 03:55:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 04:00:00, updates per top prefix were as follows:
+  - Prefix 64.9.224.0/24
+  - Prefix 64.9.225.0/24
+  - Prefix 64.9.228.0/23
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 04:05:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 04:10:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 04:15:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 04:20:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 04:25:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 04:30:00, updates per top prefix were as follows:
+  - Prefix 64.9.224.0/24
+  - Prefix 64.9.225.0/24
+  - Prefix 64.9.228.0/23
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 04:35:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 04:40:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 04:45:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 04:50:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 04:55:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 05:00:00, updates per top prefix were as follows:
+  - Prefix 64.9.224.0/24
+  - Prefix 64.9.225.0/24
+  - Prefix 64.9.228.0/23
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 05:05:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 05:10:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 05:15:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 05:20:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 05:25:00, updates per top prefix were as follows:
+  - Prefix 104.132.125.0/24
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 05:30:00, updates per top prefix were as follows:
+  - Prefix 104.132.125.0/24
+  - Prefix 64.9.224.0/24
+  - Prefix 64.9.225.0/24
+  - Prefix 64.9.228.0/23
+  - Prefix 0
+
+At 2017-08-25 05:35:00, updates per top prefix were as follows:
+  - Prefix 104.132.125.0/24
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 05:40:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 05:45:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 05:50:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 05:55:00, updates per top prefix were as follows:
+  - Prefix 104.132.125.0/24
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 06:00:00, updates per top prefix were as follows:
+  - Prefix 64.9.224.0/24
+  - Prefix 64.9.225.0/24
+  - Prefix 64.9.228.0/23
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 06:05:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 06:10:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 06:15:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 06:20:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 06:25:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 06:30:00, updates per top prefix were as follows:
+  - Prefix 64.9.224.0/24
+  - Prefix 64.9.225.0/24
+  - Prefix 64.9.228.0/23
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 06:35:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 06:40:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 06:45:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 06:50:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 06:55:00, updates per top prefix were as follows:
+  - Prefix 104.132.126.0/24
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+
+At 2017-08-25 07:00:00, updates per top prefix were as follows:
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+  - Prefix 0
+

@@ -1,0 +1,8 @@
+AS Path Changes Summary Report
+==============================
+
+Total AS Path Changes Detected: 0
+
+Top ASNs with Most AS Path Changes:
+ - AS15169: 0 changes
+

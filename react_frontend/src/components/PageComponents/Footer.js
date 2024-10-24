@@ -28,7 +28,7 @@ const Footer = () => {
                 <Grid item xs={12} sm={4}>
                     <img src={logo} alt="logo" style={{ height: 50 }} />
                     <Box sx={{backgroundColor: 'inherit',}}>
-                        <IconButton component="a" href="https://github.com/hyonbokan/LLM-research" target="_blank" aria-label="GitHub" style={ iconButtonStyle }>
+                        <IconButton component="a" href="https://github.com/hyonbokan/" target="_blank" aria-label="GitHub" style={ iconButtonStyle }>
                             <GitHubIcon />
                         </IconButton>
                         <IconButton component="a" href="https://www.facebook.com" target="_blank" aria-label="Facebook" style={ iconButtonStyle }>

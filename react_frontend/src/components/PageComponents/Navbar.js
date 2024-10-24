@@ -32,11 +32,6 @@ const Navbar = () => {
                 Dataset
               </Link>
             </Button>
-            {/* <Button color='inherit' sx={sx}>
-              <Link to="/bgp_llama">
-                BGP-LLaMA
-              </Link>
-            </Button> */}
             <Button color='inherit' sx={sx}>
               <Link to="/bgp_chat">
                 BGP-LLaMA

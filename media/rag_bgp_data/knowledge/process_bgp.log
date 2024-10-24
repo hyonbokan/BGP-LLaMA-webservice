@@ -1,0 +1,24 @@
+2024-10-24 09:54:02,540 WARNING:Column 'Top Peer 1 Updates' not found in the DataFrame. Filling with 0.0.
+2024-10-24 09:54:02,540 WARNING:Column 'Top Peer 2 Updates' not found in the DataFrame. Filling with 0.0.
+2024-10-24 09:54:02,541 WARNING:Column 'Top Peer 3 Updates' not found in the DataFrame. Filling with 0.0.
+2024-10-24 09:54:02,541 WARNING:Column 'Top Peer 4 Updates' not found in the DataFrame. Filling with 0.0.
+2024-10-24 09:54:02,542 WARNING:Column 'Top Peer 5 Updates' not found in the DataFrame. Filling with 0.0.
+2024-10-24 09:54:02,542 WARNING:Column 'Top Prefix 1 Updates' not found in the DataFrame. Filling with 0.0.
+2024-10-24 09:54:02,543 WARNING:Column 'Top Prefix 2 Updates' not found in the DataFrame. Filling with 0.0.
+2024-10-24 09:54:02,543 WARNING:Column 'Top Prefix 3 Updates' not found in the DataFrame. Filling with 0.0.
+2024-10-24 09:54:02,544 WARNING:Column 'Top Prefix 4 Updates' not found in the DataFrame. Filling with 0.0.
+2024-10-24 09:54:02,544 WARNING:Column 'Top Prefix 5 Updates' not found in the DataFrame. Filling with 0.0.
+2024-10-24 09:54:02,597 INFO:Calculated 'Average Updates per Prefix' as Total Updates divided by Total Prefixes Announced.
+2024-10-24 09:54:02,765 INFO:AS Path Changes Summary Report generated at '/home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/knowledge/as_path_changes_summary.txt'.
+2024-10-24 10:12:47,624 WARNING:Column 'Top Peer 1 Updates' not found in the DataFrame. Filling with 0.0.
+2024-10-24 10:12:47,625 WARNING:Column 'Top Peer 2 Updates' not found in the DataFrame. Filling with 0.0.
+2024-10-24 10:12:47,625 WARNING:Column 'Top Peer 3 Updates' not found in the DataFrame. Filling with 0.0.
+2024-10-24 10:12:47,626 WARNING:Column 'Top Peer 4 Updates' not found in the DataFrame. Filling with 0.0.
+2024-10-24 10:12:47,627 WARNING:Column 'Top Peer 5 Updates' not found in the DataFrame. Filling with 0.0.
+2024-10-24 10:12:47,627 WARNING:Column 'Top Prefix 1 Updates' not found in the DataFrame. Filling with 0.0.
+2024-10-24 10:12:47,628 WARNING:Column 'Top Prefix 2 Updates' not found in the DataFrame. Filling with 0.0.
+2024-10-24 10:12:47,628 WARNING:Column 'Top Prefix 3 Updates' not found in the DataFrame. Filling with 0.0.
+2024-10-24 10:12:47,629 WARNING:Column 'Top Prefix 4 Updates' not found in the DataFrame. Filling with 0.0.
+2024-10-24 10:12:47,629 WARNING:Column 'Top Prefix 5 Updates' not found in the DataFrame. Filling with 0.0.
+2024-10-24 10:12:47,663 INFO:Calculated 'Average Updates per Prefix' as Total Updates divided by Total Prefixes Announced.
+2024-10-24 10:12:47,697 INFO:AS Path Changes Summary Report generated at '/home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/knowledge/as_path_changes_summary.txt'.

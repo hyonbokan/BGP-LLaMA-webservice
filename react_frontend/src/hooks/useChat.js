@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { Box, CircularProgress } from '@mui/material';
 import BGPChatTutorial from '../components/BGPChatTutorial';
 
@@ -33,9 +33,9 @@ const useChat = ({
     // Use refs for indices
     const generatingMessageIndexRef = useRef(null);
 
-    useEffect(() => {
-        console.log('Updated chatTabs:', chatTabs);
-    }, [chatTabs]);
+    // useEffect(() => {
+    //     console.log('Updated chatTabs:', chatTabs);
+    // }, [chatTabs]);
 
     const handleNewChat = () => {
         const newChatId = chatTabs.length + 1;
@@ -215,7 +215,7 @@ const useChat = ({
             eventSource.close();
         }
     
-        const url = `http://127.0.0.1:8000/api/bgp_llama?query=${encodeURIComponent(currentMessage)}`;
+        const url = `https://llama.cnu.ac.kr/api/bgp_llama?query=${encodeURIComponent(currentMessage)}`;
         const newEventSource = new EventSource(url);
     
         newEventSource.onmessage = function(event) {

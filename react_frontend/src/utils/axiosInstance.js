@@ -2,7 +2,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 const axiosInstance = axios.create({
-    baseURL: 'http://127.0.0.1:8000/api/',
+    baseURL: 'https://llama.cnu.ac.kr/api/',
     headers: {
         'Content-Type': 'application/json',
         'X-Requested-With': 'XMLHttpRequest', 

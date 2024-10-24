@@ -75,8 +75,8 @@ CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[
 ])
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://bgp-llama.com',
-    'https://www.bgp-llama.com',
+    'https://llama.cnu.ac.kr',
+    # 'https://www.llama.cnu.ac.kr',
     'http://localhost:3000',
     'http://127.0.0.1:8000',
 ]

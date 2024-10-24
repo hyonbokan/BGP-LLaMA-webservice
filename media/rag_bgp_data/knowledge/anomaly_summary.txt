@@ -1,8 +1,26 @@
 Anomaly Summary:
 
-A total of 2 anomalies were detected during the observation period.
+A total of 22 anomalies were detected during the observation period.
 
-Flapping Anomaly: 2 occurrences
-  - At 2017-08-25 03:15:00, AS15169 had triggered Std Dev of Updates, Announcements.
-  - At 2017-08-25 03:20:00, AS15169 had triggered Std Dev of Updates, Announcements.
+Path Manipulation Anomaly: 9 occurrences
+  - At 2017-08-25 00:00:00, AS15169 had triggered AS Path Prepending.
+  - At 2017-08-25 03:15:00, AS15169 had triggered AS Path Prepending.
+  - At 2017-08-25 03:20:00, AS15169 had triggered AS Path Prepending.
+  - At 2017-08-25 03:25:00, AS15169 had triggered AS Path Prepending.
+  - At 2017-08-25 03:30:00, AS15169 had triggered AS Path Prepending.
+  ...and 4 more occurrences.
+
+Flapping Anomaly: 9 occurrences
+  - At 2017-08-25 02:15:00, AS15169 had triggered Std Dev of Updates.
+  - At 2017-08-25 03:15:00, AS15169 had triggered Std Dev of Updates.
+  - At 2017-08-25 03:20:00, AS15169 had triggered Std Dev of Updates.
+  - At 2017-08-25 03:25:00, AS15169 had triggered Std Dev of Updates.
+  - At 2017-08-25 03:30:00, AS15169 had triggered Std Dev of Updates.
+  ...and 4 more occurrences.
+
+Leak Anomaly: 4 occurrences
+  - At 2017-08-25 03:20:00, AS15169 had triggered Route Changes.
+  - At 2017-08-25 03:25:00, AS15169 had triggered Route Changes.
+  - At 2017-08-25 03:30:00, AS15169 had triggered Route Changes.
+  - At 2017-08-25 03:35:00, AS15169 had triggered Route Changes.
 

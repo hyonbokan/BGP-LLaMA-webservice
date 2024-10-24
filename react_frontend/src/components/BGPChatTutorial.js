@@ -1,5 +1,4 @@
-import React from 'react';
-import { Typography, Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 
 const BGPChatTutorial = () => (
   <Box sx={{ p: 3 }}>
@@ -22,14 +21,14 @@ const BGPChatTutorial = () => (
     </Typography>
 
     <Typography variant="body1" paragraph>
-      - For <b>historical data</b>, please specify the timeline in the format <i>yy-mm-dd hh:mm:ss</i>.
+      - For <b>historical data</b>, please specify the timeline in the format <i>yy-mm-dd hh:mm:ss</i>, and it is recommended to include both the target ASN and prefixes for comprehensive analysis.
     </Typography>
     <Typography variant="body2" paragraph>
-      Example: <i>Collect BGP data for AS15169 from 2017-08-25 03:00:00 to 2017-08-25 04:00:00.</i>
+      Example: <i>Collect and analyze data for AS32934 from 2021-10-04 07:00:00 to 2021-10-05 22:00:00 for prefixes 129.134.30.0/24 and 129.134.30.0/23.</i>
     </Typography>
 
     <Typography variant="body1" paragraph>
-      - For <b>real-time data</b>, use the term <i>"real-time"</i> along with the duration (e.g., minutes, hours, days).
+      - For <b>real-time data</b>, use the term <i>"real-time"</i> along with the duration (e.g., minutes, hours, days), specify target ASN and optionally prefixes.
     </Typography>
     <Typography variant="body2" paragraph>
       Example: <i>Collect real-time BGP data for AS3356 for 30 minutes.</i>
@@ -39,7 +38,7 @@ const BGPChatTutorial = () => (
       2. Default BGP Dataset
     </Typography>
     <Typography variant="body1" paragraph>
-      By default, the system has access to data from Facebook AS32934 between <b>2021-10-04 07:00:00</b> and <b>2021-10-05 22:00:00</b>, which covers a notable BGP anomaly event.
+      By default, the system has access to data from Google AS15169 between <b>2017-08-25 00:00:00</b> and <b>2017-08-25 07:00:00</b>, which covers a notable BGP anomaly event.
     </Typography>
 
     <Typography variant="h6" gutterBottom>

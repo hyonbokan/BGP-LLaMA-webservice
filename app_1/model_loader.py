@@ -1,11 +1,12 @@
-from transformers import AutoModelForCausalLM, AutoTokenizer, AutoConfig, TextIteratorStreamer
+# from transformers import AutoModelForCausalLM, AutoTokenizer, AutoConfig, TextIteratorStreamer
 import logging
 import sys
 import torch
-import os
+# import os
+from django.conf import settings
 from llama_index.llms.huggingface import HuggingFaceLLM
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
-from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex
+from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex, ServiceContext
 from llama_index.core import PromptTemplate
 from threading import Lock
 
@@ -40,31 +41,35 @@ query_wrapper_prompt = PromptTemplate(
     "<s>[INST] " + SYSTEM_PROMPT + "\n\n{query_str} [/INST]</s>"
 )
 
-
 def initialize_models():
     with model_lock:
-            llm = HuggingFaceLLM(
+         if not hasattr(settings, 'llm') or not hasattr(settings, 'embed_model'):
+            try:
+                llm = HuggingFaceLLM(
                 context_window=4096,
                 max_new_tokens=756,
                 generate_kwargs={
-                        "temperature": 0.7,
-                        "do_sample": True,
-                        "repetition_penalty": 1.1
-                    },
+                    "temperature": 0.7,
+                    "do_sample": True,
+                    "repetition_penalty": 1.1
+                },
                 query_wrapper_prompt=query_wrapper_prompt,
                 tokenizer_name=LLAMA3_8B_INSTRUCT,
                 model_name=LLAMA3_8B_INSTRUCT,
                 device_map="auto",
-                model_kwargs={"torch_dtype": torch.float16, "load_in_8bit": False},
-            )
+                model_kwargs={"torch_dtype": torch.float32,
+                              "load_in_8bit": False},
+                )
 
-            embed_model = HuggingFaceEmbedding(model_name=BGE_SMALL)
+                embed_model = HuggingFaceEmbedding(model_name=BGE_SMALL)
 
-            Settings.llm = llm
-            Settings.embed_model = embed_model
-
-            logger.info("Models loaded and set globally.")
-
+                settings.llm = llm
+                settings.embed_model = embed_model
+                
+                logger.info("Models loaded and set globally.")
+            except Exception as e:
+                logger.error(f"Error initializing models: {str(e)}")
+                raise e
 # Load documents from directory
 def load_documents(directory_path):
     reader = SimpleDirectoryReader(directory_path)
@@ -73,68 +78,73 @@ def load_documents(directory_path):
 
 # Create vector store index
 def create_index(documents):
-    index = VectorStoreIndex.from_documents(documents)
+    service_context = ServiceContext.from_defaults(llm=settings.llm, embed_model=settings.embed_model)
+    index = VectorStoreIndex.from_documents(documents, service_context=service_context)
     return index
 
 def stream_bgp_query(query, directory_path=None):
-    global index_cache
-    # Ensure models are initialized only if they haven't been set already
-    with model_lock:
-        if not hasattr(Settings, "llm") or not hasattr(Settings, "embed_model"):
-            logger.info("Models not found in Settings. Initializing...")
-            initialize_models()
-    
-    index = None
+    try:
+        global index_cache
+        # Ensure models are initialized only if they haven't been set already
+        with model_lock:
+            if not hasattr(settings, "llm") or not hasattr(settings, "embed_model"):
+                logger.info("Models not found in Settings. Initializing...")
+                initialize_models()
+        
+        index = None
 
-    # Determine the directory path to use
-    if directory_path:
-        directory_to_use = directory_path
-    else:
-        # Use default directory path
-        directory_to_use = "/home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/knowledge"
-
-    # Check if index is already cached
-    with index_lock:
-        if directory_to_use in index_cache:
-            logger.info(f"Using cached index for directory: {directory_to_use}")
-            index = index_cache[directory_to_use]
+        # Determine the directory path to use
+        if directory_path:
+            directory_to_use = directory_path
         else:
-            logger.info(f"Loading documents from {directory_to_use} for RAG.")
-            documents = load_documents(directory_to_use)
-            if documents:
-                index = create_index(documents)
-                index_cache[directory_to_use] = index
-                logger.info(f"Index created and cached for directory: {directory_to_use}")
+            # Use default directory path
+            directory_to_use = "/home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/knowledge"
+
+        # Check if index is already cached
+        with index_lock:
+            if directory_to_use in index_cache:
+                logger.info(f"Using cached index for directory: {directory_to_use}")
+                index = index_cache[directory_to_use]
             else:
-                logger.warning(f"No documents found in directory: {directory_to_use}. Proceeding with LLM response without augmentation.")
-                index = None  # Handle as per your requirements
+                logger.info(f"Loading documents from {directory_to_use} for RAG.")
+                documents = load_documents(directory_to_use)
+                if documents:
+                    index = create_index(documents)
+                    index_cache[directory_to_use] = index
+                    logger.info(f"Index created and cached for directory: {directory_to_use}")
+                else:
+                    logger.warning(f"No documents found in directory: {directory_to_use}. Proceeding with LLM response without augmentation.")
+                    index = None  # Handle as per your requirements
 
-    if index is None:
-        logger.warning("No index available. Proceeding with LLM response without augmentation.")
-        # Implement logic to handle queries without an index, if needed
-        return
+        if index is None:
+            logger.warning("No index available. Proceeding with LLM response without augmentation.")
+            # Implement logic to handle queries without an index, if needed
+            return
 
-    logger.info(f"\nUser query: {query}\n")
-    
-    # Create the query engine
-    query_engine = index.as_query_engine(streaming=True)
+        logger.info(f"\nUser query: {query}\n")
+        
+        # Create the query engine
+        query_engine = index.as_query_engine(streaming=True)
 
-    # Perform the query and yield response tokens
-    response = query_engine.query(query)
-    
-    stop_tokens = ["</s>", "[/INST]"]
+        # Perform the query and yield response tokens
+        response = query_engine.query(query)
+        
+        stop_tokens = ["</s>", "[/INST]"]
 
-    # Stream the generated response tokens
-    generated_text = ""
-    for token in response.response_gen:
-        generated_text += token
-        # Check if any of the stop tokens are in the token
-        if any(stop_token in token for stop_token in stop_tokens):
-            logger.info(f"Stop token encountered. Stopping generation.")
-            break
-        yield token
+        # Stream the generated response tokens
+        generated_text = ""
+        for token in response.response_gen:
+            generated_text += token
+            # Check if any of the stop tokens are in the token
+            if any(stop_token in token for stop_token in stop_tokens):
+                logger.info(f"Stop token encountered. Stopping generation.")
+                break
+            yield token
 
-    logger.info("Query completed.")
+        logger.info("Query completed.")
+    except Exception as e:
+        logger.error(f"Error in stream_bgp_query: {str(e)}")
+        yield f"Error: {str(e)}"
 
 
 # model = None

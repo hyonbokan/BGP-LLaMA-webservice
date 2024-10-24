@@ -1,8 +1,211 @@
+On 2017-08-25 00:00:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 5
+  - AS Path Prepending observed 7 times
+  - Community Values: 14061:4003, 1299:4000, 1299:20002, 14061:4000, 1299:20740, 1299:20000, 14061:2002, 14061:3000, 14061:2000, 14061:3100
+
+On 2017-08-25 00:05:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 5
+  - Community Values: 3257:8012, 3257:54900, 3257:54901, 3257:50001, 3257:30016
+
+On 2017-08-25 00:10:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 4
+  - AS Path Prepending observed 1 times
+  - Community Values: 3257:8012, 3257:54900, 3257:54901, 3257:50001, 3257:30016
+
+On 2017-08-25 00:15:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 00:20:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 00:25:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 5
+
+On 2017-08-25 00:30:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 5
+  - AS Path Prepending observed 6 times
+  - Community Values: 14061:2000, 14061:3100, 14061:3000, 14061:2002
+
+On 2017-08-25 00:35:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 5
+
+On 2017-08-25 00:40:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 5
+
+On 2017-08-25 00:45:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 00:50:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 00:55:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 01:00:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 5
+  - AS Path Prepending observed 6 times
+  - Community Values: 14061:2000, 14061:3100, 14061:3000, 14061:2002
+
+On 2017-08-25 01:05:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 5
+  - Community Values: 3257:30308, 3257:8011, 3257:51100, 3257:50002, 3257:51104
+
+On 2017-08-25 01:10:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 4
+  - Community Values: 45896:1015
+
+On 2017-08-25 01:15:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 01:20:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 01:25:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 01:30:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 5
+  - AS Path Prepending observed 6 times
+  - Community Values: 14061:2000, 14061:3100, 14061:3000, 14061:2002
+
+On 2017-08-25 01:35:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 01:40:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 01:45:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 01:50:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 01:55:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 02:00:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 5
+  - AS Path Prepending observed 6 times
+  - Community Values: 14061:2000, 14061:3100, 14061:3000, 14061:2002
+
+On 2017-08-25 02:05:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 02:10:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 02:15:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 2
+  - Community Values: 3356:666, 3356:86, 3356:22, 3356:2012, 3356:3, 3356:575
+
+On 2017-08-25 02:20:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 2
+  - Community Values: 45896:1015
+
+On 2017-08-25 02:25:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 3
+  - Community Values: 174:22008, 29608:30700, 174:21100
+
+On 2017-08-25 02:30:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 5
+  - AS Path Prepending observed 6 times
+  - Community Values: 14061:2000, 14061:3100, 14061:3000, 14061:2002
+
+On 2017-08-25 02:35:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 4
+
+On 2017-08-25 02:40:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 02:45:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 2
+  - Community Values: 3303:1007, 3303:3067, 3303:1004
+
+On 2017-08-25 02:50:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 02:55:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 3
+  - Community Values: 3356:666, 3356:86, 29608:30600, 3356:502, 3356:2, 3356:2066
+
 On 2017-08-25 03:00:00, Autonomous System 15169 had the following policy-related observations:
   - Average Local Preference: 0.00
   - Average MED: 0.00
   - Maximum AS Path Length: 5
   - AS Path Prepending observed 6 times
+  - Community Values: 14061:2000, 14061:3100, 14061:3000, 14061:2002
 
 On 2017-08-25 03:05:00, Autonomous System 15169 had the following policy-related observations:
   - Average Local Preference: 0.00
@@ -19,30 +222,35 @@ On 2017-08-25 03:15:00, Autonomous System 15169 had the following policy-related
   - Average MED: 0.00
   - Maximum AS Path Length: 22
   - AS Path Prepending observed 20813 times
+  - Community Values: 286:888, 13030:51901, 286:800, 286:3001, 14061:2002, 286:28, 16735:7003, 14061:3000, 16735:7000, 13030:4211, 286:18, 286:29, 14061:2000, 13030:7167, 16735:28303, 286:4501, 7660:9001, 286:4511, 7660:9003, 14061:3008, 13030:1, 286:49, 286:19, 286:4991, 2516:1030
 
 On 2017-08-25 03:20:00, Autonomous System 15169 had the following policy-related observations:
   - Average Local Preference: 0.00
   - Average MED: 0.00
   - Maximum AS Path Length: 22
   - AS Path Prepending observed 43156 times
+  - Community Values: 2516:1001, 23673:9903, 286:888, 1103:1000, 1103:101, 286:800, 9902:65101, 286:3001, 8220:5511, 20764:3011, 1103:102, 20764:3021, 9902:20, 20764:3007, 8220:65400, 286:28, 23673:55329, 65001:400, 8492:1306, 20764:3006, 9902:9000, 9902:9505, 50384:4001, 50384:3016, 8758:110, 29608:30400, 20764:3026, 286:18, 286:29, 1273:23000, 5511:543, 8758:300, 65001:30, 65001:1000, 3216:3000, 8220:65020, 286:4501, 1273:23977, 5511:666, 7660:9001, 1103:100, 286:4511, 7660:9003, 2516:2000, 286:49, 286:19, 286:4991, 65001:33, 2516:1003, 5511:5511, 5511:700, 2516:1030, 3216:3001
 
 On 2017-08-25 03:25:00, Autonomous System 15169 had the following policy-related observations:
   - Average Local Preference: 0.00
   - Average MED: 0.00
   - Maximum AS Path Length: 23
   - AS Path Prepending observed 17576 times
+  - Community Values: 15576:106, 2516:1001, 286:888, 1103:1000, 1103:101, 286:800, 286:3001, 8220:5511, 1103:102, 14061:2002, 8220:65400, 286:28, 23673:55329, 65001:400, 15576:100, 8220:65030, 8758:110, 29608:30400, 14061:3000, 286:18, 286:29, 14061:2000, 5511:543, 8758:300, 65001:30, 65001:1000, 286:4501, 8220:65020, 8220:65401, 5511:666, 7660:9001, 286:4511, 15576:1000, 7660:9003, 2516:2000, 14061:3008, 286:49, 286:19, 286:4991, 5511:5511, 5511:700, 65001:33, 2516:1003, 2516:1030
 
 On 2017-08-25 03:30:00, Autonomous System 15169 had the following policy-related observations:
   - Average Local Preference: 0.00
   - Average MED: 0.00
   - Maximum AS Path Length: 24
   - AS Path Prepending observed 6912 times
+  - Community Values: 15576:106, 3303:1005, 2516:1001, 286:888, 1103:1000, 1103:101, 3303:1004, 3303:8199, 286:800, 286:3001, 8220:5511, 1103:102, 14061:2002, 8220:65400, 286:28, 65001:400, 15576:100, 16735:7003, 8220:65030, 8758:110, 14061:3000, 16735:7000, 286:18, 286:29, 14061:2000, 14061:3100, 8758:300, 65001:30, 65001:1000, 16735:28303, 8220:65020, 286:4501, 8220:65401, 1103:100, 15576:1000, 286:4511, 2516:2000, 15576:105, 286:49, 286:19, 286:4991, 65001:33, 2516:1003, 3303:3065
 
 On 2017-08-25 03:35:00, Autonomous System 15169 had the following policy-related observations:
   - Average Local Preference: 0.00
   - Average MED: 0.00
   - Maximum AS Path Length: 23
   - AS Path Prepending observed 2470 times
+  - Community Values: 286:28, 8758:300, 15576:106, 286:888, 15576:100, 286:4501, 286:49, 286:19, 286:800, 286:4991, 8220:65020, 8758:110, 286:3001, 8220:5511, 286:18, 15576:1000, 8220:65400, 286:29
 
 On 2017-08-25 03:40:00, Autonomous System 15169 had the following policy-related observations:
   - Average Local Preference: 0.00
@@ -67,19 +275,211 @@ On 2017-08-25 03:55:00, Autonomous System 15169 had the following policy-related
 On 2017-08-25 04:00:00, Autonomous System 15169 had the following policy-related observations:
   - Average Local Preference: 0.00
   - Average MED: 0.00
+  - Maximum AS Path Length: 5
+  - AS Path Prepending observed 6 times
+  - Community Values: 14061:2000, 14061:3100, 14061:3000, 14061:2002
+
+On 2017-08-25 04:05:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
   - Maximum AS Path Length: 0
 
-Overall Summary:
+On 2017-08-25 04:10:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
 
-During the observation period, Autonomous Systems reported various BGP metrics. The total number of routes ranged from 0 to 156989, with an average of 40242.54 routes. Announcements varied between 0 and 525024, averaging 115044.00 announcements. Withdrawals varied between 0 and 0, averaging 0.00 withdrawals. The maximum path length observed was 24 hops, with an average path length of 2.43 hops. Communities ranged from 0 to 2024196, with an average of 405942.54. The system observed an average prefix length of 10.6, with a maximum of 24 and a minimum of 0.
+On 2017-08-25 04:15:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
 
-Top 10 Peers with the Highest Number of Updates:
-No peer updates data available.
+On 2017-08-25 04:20:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 04:25:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 04:30:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 5
+  - AS Path Prepending observed 6 times
+  - Community Values: 14061:2000, 14061:3100, 14061:3000, 14061:2002
+
+On 2017-08-25 04:35:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 04:40:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 04:45:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 04:50:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 04:55:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 05:00:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 5
+  - AS Path Prepending observed 6 times
+  - Community Values: 14061:2000, 14061:3100, 14061:3000, 14061:2002
+
+On 2017-08-25 05:05:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 05:10:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 05:15:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 05:20:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 05:25:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 7
+  - AS Path Prepending observed 54 times
+  - Community Values: 3356:666, 3356:86, 3356:2050, 3356:3, 3356:575, 3549:30840, 3549:2451, 3356:12192
+
+On 2017-08-25 05:30:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 7
+  - AS Path Prepending observed 40 times
+  - Community Values: 10026:23009, 10026:40692, 10026:33036, 10026:1410, 14061:3000, 14061:2002, 14061:2000, 14061:3100, 10026:1230
+
+On 2017-08-25 05:35:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 4
+  - AS Path Prepending observed 1 times
+  - Community Values: 3356:666, 3356:86, 3549:2950, 3549:2011, 3356:2011, 3549:2017, 3356:22, 3549:2521, 3549:2581, 3549:32344, 3549:34076, 3356:3, 3356:575, 3549:30840, 3549:2991, 3549:33036, 3549:31826
+
+On 2017-08-25 05:40:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 05:45:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 05:50:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 05:55:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 3
+  - Community Values: 3303:3056, 3303:8102, 3303:1006, 3303:1004
+
+On 2017-08-25 06:00:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 5
+  - AS Path Prepending observed 6 times
+  - Community Values: 14061:2000, 14061:3100, 14061:3000, 14061:2002
+
+On 2017-08-25 06:05:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 06:10:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 06:15:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 06:20:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 06:25:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 06:30:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 5
+  - AS Path Prepending observed 6 times
+  - Community Values: 14061:2000, 14061:3100, 14061:3000, 14061:2002
+
+On 2017-08-25 06:35:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 06:40:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 06:45:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 06:50:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+On 2017-08-25 06:55:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 7
+  - AS Path Prepending observed 62 times
+  - Community Values: 3356:666, 3356:86, 3549:2544, 3356:22, 3356:500, 3356:11084, 3356:2, 3549:31826, 3356:2106
+
+On 2017-08-25 07:00:00, Autonomous System 15169 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
 
 
-Policy-Related Metrics Summary:
+Policy Summary:
 
 Local Preference values ranged from 0.00 to 0.00, with an average of 0.00.
 MED values ranged from 0.00 to 0.00, with an average of 0.00.
-AS Path Prepending was observed 90933 times during the observation period.
-A total of 0 unique community values were observed.
+AS Path Prepending was observed 91158 times during the observation period.
+A total of 134 unique community values were observed.

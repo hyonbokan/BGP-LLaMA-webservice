@@ -1,6 +1,7 @@
 import Navbar from '../components/PageComponents/Navbar';
 import Footer from '../components/PageComponents/Footer';
-import { Container, Typography, Button, Grid, Card, CardContent, Box, CardMedia } from '@mui/material';
+import HomePageTutorial from '../components/HomePageTutorial';
+import { Container, Typography, Button, Grid, Card, CardContent, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 const HomePage = () => {
@@ -42,29 +43,11 @@ const HomePage = () => {
                 </Container>
 
                 {/* Middle section */}
-                <Grid container spacing={4} sx={{ py: 8 }}>
-                  <Grid item xs={12} md={6}>
-                    <Typography variant='h5' gutterBottom>
-                      Overview of BGP-LLaMA
-                    </Typography>
-                    <Typography variant='body1' color='textSecondary' paragraph>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <Card>
-                      <CardMedia 
-                        component='iframe'
-                        height='315'
-                        image=''
-                        title="BGP-LLaMA Demo"
-                      />
-                    </Card>
-                  </Grid>
-                </Grid>
+                <HomePageTutorial />
 
                 {/* Bottom section */}
                 <Box sx={{ flexGrow: 1, padding: '5px' }}>
+                  {/* bottom cards */}
                   <Grid container spacing={2}>
                     {cards.map((card, index) => (
                       <Grid item xs={12} sm={6} md={4} key={index}>
@@ -84,6 +67,7 @@ const HomePage = () => {
                       </Grid>
                     ))}
                   </Grid>
+                  {/* bottom cards */}
                 </Box>
             </Container>
             <Footer />

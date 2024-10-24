@@ -1,6 +1,7 @@
 from venv import logger
 from django.http import JsonResponse, FileResponse, Http404, HttpResponse, StreamingHttpResponse
 from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.middleware.csrf import get_token
 from .models import *
@@ -9,7 +10,6 @@ import json
 from threading import Thread, Event
 import queue
 import os
-from django.conf import settings
 from .bgp_utils import extract_asn, extract_target_prefixes, extract_times, collect_historical_data, collect_real_time_data, extract_real_time_span
 from .model_loader import stream_bgp_query
 import re
@@ -43,7 +43,7 @@ def get_current_status_message():
     else:
         return "Data is being collected..."
     
-
+@csrf_exempt
 def bgp_llama(request):
     query = request.GET.get('query', '')
     session = request.session
@@ -61,11 +61,14 @@ def bgp_llama(request):
     session_id = session.session_key
     print(f"Session ID for current request: {session_id}")
 
-    # Run the check_query to determine the scenario and run RAG query if needed
-    response_stream = check_query(query, session)
-
-    return StreamingHttpResponse(response_stream, content_type="text/event-stream")
-
+    try:
+        response_stream = check_query(query, session)
+        response = StreamingHttpResponse(response_stream, content_type="text/event-stream")
+        response['X-Accel-Buffering'] = 'no'  # Disable Nginx buffering
+        return response
+    except Exception as e:
+        logger.error(f"Error in bgp_llama view: {str(e)}")
+        return JsonResponse({"status": "error", "message": str(e)}, status=500)
 
 def check_query(query, session):
     global status_update_event
@@ -139,10 +142,6 @@ def check_query(query, session):
         status_update_event.set()
 
 def run_rag_query(query, directory_path):
-    """
-    Run the RAG-based query using the directory path where the BGP data is stored.
-    If directory_path is None, run the query using default documents.
-    """
     try:
         if directory_path:
             logger.info(f"Running RAG query with data from: {directory_path}")

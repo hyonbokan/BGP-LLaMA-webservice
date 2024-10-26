@@ -98,7 +98,7 @@ def stream_bgp_query(query, directory_path=None):
             directory_to_use = directory_path
         else:
             # Use default directory path
-            directory_to_use = "/home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/knowledge"
+            directory_to_use = "/home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/default"
 
         # Check if index is already cached
         with index_lock:

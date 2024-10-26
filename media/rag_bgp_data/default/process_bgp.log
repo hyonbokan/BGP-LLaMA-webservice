@@ -1,0 +1,1864 @@
+2024-10-25 16:25:05,426 WARNING:Column 'Top Peer 1 Updates' not found in the DataFrame. Filling with 0.0.
+2024-10-25 16:25:05,427 WARNING:Column 'Top Peer 2 Updates' not found in the DataFrame. Filling with 0.0.
+2024-10-25 16:25:05,427 WARNING:Column 'Top Peer 3 Updates' not found in the DataFrame. Filling with 0.0.
+2024-10-25 16:25:05,428 WARNING:Column 'Top Peer 4 Updates' not found in the DataFrame. Filling with 0.0.
+2024-10-25 16:25:05,428 WARNING:Column 'Top Peer 5 Updates' not found in the DataFrame. Filling with 0.0.
+2024-10-25 16:25:05,428 WARNING:Column 'Top Prefix 1 Updates' not found in the DataFrame. Filling with 0.0.
+2024-10-25 16:25:05,429 WARNING:Column 'Top Prefix 2 Updates' not found in the DataFrame. Filling with 0.0.
+2024-10-25 16:25:05,429 WARNING:Column 'Top Prefix 3 Updates' not found in the DataFrame. Filling with 0.0.
+2024-10-25 16:25:05,430 WARNING:Column 'Top Prefix 4 Updates' not found in the DataFrame. Filling with 0.0.
+2024-10-25 16:25:05,430 WARNING:Column 'Top Prefix 5 Updates' not found in the DataFrame. Filling with 0.0.
+2024-10-25 16:25:05,459 INFO:Calculated 'Average Updates per Prefix' as Total Updates divided by Total Prefixes Announced.
+2024-10-25 16:25:05,459 DEBUG:Accumulated 0.0 updates for ASN 62567. Total so far: 0.0
+2024-10-25 16:25:05,459 DEBUG:Accumulated 0.0 updates for ASN 7575. Total so far: 0.0
+2024-10-25 16:25:05,459 DEBUG:Accumulated 0.0 updates for ASN 53364. Total so far: 0.0
+2024-10-25 16:25:05,459 DEBUG:Accumulated 0.0 updates for ASN 7018. Total so far: 0.0
+2024-10-25 16:25:05,459 DEBUG:Accumulated 0.0 updates for ASN 38880. Total so far: 0.0
+2024-10-25 16:25:05,459 DEBUG:Row 0: Top Prefixes: ['104.132.161.0/24', '64.9.224.0/24', '64.9.225.0/24', '64.9.228.0/23', '0']
+2024-10-25 16:25:05,460 DEBUG:Row 0: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,460 DEBUG:Accumulated 0.0 updates for Prefix 104.132.161.0/24. Total so far: 0.0
+2024-10-25 16:25:05,460 DEBUG:Accumulated 0.0 updates for Prefix 64.9.224.0/24. Total so far: 0.0
+2024-10-25 16:25:05,460 DEBUG:Accumulated 0.0 updates for Prefix 64.9.225.0/24. Total so far: 0.0
+2024-10-25 16:25:05,460 DEBUG:Accumulated 0.0 updates for Prefix 64.9.228.0/23. Total so far: 0.0
+2024-10-25 16:25:05,460 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,460 DEBUG:Row 0: Updates per prefix info added.
+2024-10-25 16:25:05,460 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,460 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,460 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=1.7916128329552332, threshold=2.0266340666915212
+2024-10-25 16:25:05,460 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=69, threshold=80.40000000000016
+2024-10-25 16:25:05,460 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,460 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=7, threshold=6.6000000000000085
+2024-10-25 16:25:05,460 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,460 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,460 DEBUG:Accumulated 0.0 updates for ASN 53364. Total so far: 0.0
+2024-10-25 16:25:05,460 DEBUG:Accumulated 0.0 updates for ASN 13030. Total so far: 0.0
+2024-10-25 16:25:05,460 DEBUG:Accumulated 0.0 updates for ASN 3257. Total so far: 0.0
+2024-10-25 16:25:05,460 DEBUG:Accumulated 0.0 updates for ASN 24441. Total so far: 0.0
+2024-10-25 16:25:05,460 DEBUG:Accumulated 0.0 updates for ASN 7660. Total so far: 0.0
+2024-10-25 16:25:05,461 DEBUG:Row 1: Top Prefixes: ['104.132.161.0/24', '0', '0', '0', '0']
+2024-10-25 16:25:05,461 DEBUG:Row 1: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,461 DEBUG:Accumulated 0.0 updates for Prefix 104.132.161.0/24. Total so far: 0.0
+2024-10-25 16:25:05,461 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,461 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,461 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,461 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,461 DEBUG:Row 1: Updates per prefix info added.
+2024-10-25 16:25:05,461 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,461 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=1, threshold=1.0
+2024-10-25 16:25:05,461 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=1.3158760035078154, threshold=2.0266340666915212
+2024-10-25 16:25:05,461 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=48, threshold=80.40000000000016
+2024-10-25 16:25:05,461 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,461 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,461 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=5, threshold=5.0
+2024-10-25 16:25:05,461 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,461 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,461 DEBUG:Accumulated 0.0 updates for ASN 63956. Total so far: 0.0
+2024-10-25 16:25:05,461 DEBUG:Accumulated 0.0 updates for ASN 4739. Total so far: 0.0
+2024-10-25 16:25:05,462 DEBUG:Accumulated 0.0 updates for ASN 38880. Total so far: 0.0
+2024-10-25 16:25:05,462 DEBUG:Accumulated 0.0 updates for ASN 7575. Total so far: 0.0
+2024-10-25 16:25:05,462 DEBUG:Accumulated 0.0 updates for ASN 7018. Total so far: 0.0
+2024-10-25 16:25:05,462 DEBUG:Row 2: Top Prefixes: ['104.132.161.0/24', '0', '0', '0', '0']
+2024-10-25 16:25:05,462 DEBUG:Row 2: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,462 DEBUG:Accumulated 0.0 updates for Prefix 104.132.161.0/24. Total so far: 0.0
+2024-10-25 16:25:05,462 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,462 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,462 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,462 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,462 DEBUG:Row 2: Updates per prefix info added.
+2024-10-25 16:25:05,462 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,462 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=1, threshold=1.0
+2024-10-25 16:25:05,462 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=1.288758958835685, threshold=2.0266340666915212
+2024-10-25 16:25:05,462 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=42, threshold=80.40000000000016
+2024-10-25 16:25:05,462 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,462 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=1, threshold=6.6000000000000085
+2024-10-25 16:25:05,462 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=4, threshold=5.0
+2024-10-25 16:25:05,462 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,462 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,462 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,463 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,463 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,463 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,463 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,463 DEBUG:Row 3: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,463 DEBUG:Row 3: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,463 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,463 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,463 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,463 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,463 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,463 DEBUG:Row 3: Updates per prefix info added.
+2024-10-25 16:25:05,463 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,463 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,463 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,463 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,463 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,463 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,463 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,463 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,463 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,464 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,464 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,464 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,464 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,464 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,464 DEBUG:Row 4: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,464 DEBUG:Row 4: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,464 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,464 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,464 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,464 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,464 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,464 DEBUG:Row 4: Updates per prefix info added.
+2024-10-25 16:25:05,464 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,464 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,464 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,464 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,464 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,464 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,464 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,464 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,464 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,465 DEBUG:Accumulated 0.0 updates for ASN 3130. Total so far: 0.0
+2024-10-25 16:25:05,465 DEBUG:Accumulated 0.0 updates for ASN 6539. Total so far: 0.0
+2024-10-25 16:25:05,465 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,465 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,465 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,465 DEBUG:Row 5: Top Prefixes: ['104.132.161.0/24', '0', '0', '0', '0']
+2024-10-25 16:25:05,465 DEBUG:Row 5: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,465 DEBUG:Accumulated 0.0 updates for Prefix 104.132.161.0/24. Total so far: 0.0
+2024-10-25 16:25:05,465 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,465 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,465 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,465 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,465 DEBUG:Row 5: Updates per prefix info added.
+2024-10-25 16:25:05,465 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,465 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,465 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,465 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=2, threshold=80.40000000000016
+2024-10-25 16:25:05,465 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,465 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,465 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=5, threshold=5.0
+2024-10-25 16:25:05,465 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,465 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,466 DEBUG:Accumulated 0.0 updates for ASN 62567. Total so far: 0.0
+2024-10-25 16:25:05,466 DEBUG:Accumulated 0.0 updates for ASN 393406. Total so far: 0.0
+2024-10-25 16:25:05,466 DEBUG:Accumulated 0.0 updates for ASN 6539. Total so far: 0.0
+2024-10-25 16:25:05,466 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,466 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,466 DEBUG:Row 6: Top Prefixes: ['64.9.224.0/24', '64.9.225.0/24', '64.9.228.0/23', '104.132.161.0/24', '0']
+2024-10-25 16:25:05,466 DEBUG:Row 6: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,466 DEBUG:Accumulated 0.0 updates for Prefix 64.9.224.0/24. Total so far: 0.0
+2024-10-25 16:25:05,466 DEBUG:Accumulated 0.0 updates for Prefix 64.9.225.0/24. Total so far: 0.0
+2024-10-25 16:25:05,466 DEBUG:Accumulated 0.0 updates for Prefix 64.9.228.0/23. Total so far: 0.0
+2024-10-25 16:25:05,466 DEBUG:Accumulated 0.0 updates for Prefix 104.132.161.0/24. Total so far: 0.0
+2024-10-25 16:25:05,466 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,466 DEBUG:Row 6: Updates per prefix info added.
+2024-10-25 16:25:05,466 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,466 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,466 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.9428090415820634, threshold=2.0266340666915212
+2024-10-25 16:25:05,466 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=7, threshold=80.40000000000016
+2024-10-25 16:25:05,466 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,466 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=6, threshold=6.6000000000000085
+2024-10-25 16:25:05,466 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=5, threshold=5.0
+2024-10-25 16:25:05,466 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,466 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,467 DEBUG:Accumulated 0.0 updates for ASN 3130. Total so far: 0.0
+2024-10-25 16:25:05,467 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,467 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,467 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,467 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,467 DEBUG:Row 7: Top Prefixes: ['104.132.161.0/24', '0', '0', '0', '0']
+2024-10-25 16:25:05,467 DEBUG:Row 7: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,467 DEBUG:Accumulated 0.0 updates for Prefix 104.132.161.0/24. Total so far: 0.0
+2024-10-25 16:25:05,467 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,467 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,467 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,467 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,467 DEBUG:Row 7: Updates per prefix info added.
+2024-10-25 16:25:05,467 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,467 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=1, threshold=1.0
+2024-10-25 16:25:05,467 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,467 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=1, threshold=80.40000000000016
+2024-10-25 16:25:05,467 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,467 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,467 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=5, threshold=5.0
+2024-10-25 16:25:05,467 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,467 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,468 DEBUG:Accumulated 0.0 updates for ASN 6539. Total so far: 0.0
+2024-10-25 16:25:05,468 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,468 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,468 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,468 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,468 DEBUG:Row 8: Top Prefixes: ['104.132.161.0/24', '0', '0', '0', '0']
+2024-10-25 16:25:05,468 DEBUG:Row 8: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,468 DEBUG:Accumulated 0.0 updates for Prefix 104.132.161.0/24. Total so far: 0.0
+2024-10-25 16:25:05,468 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,468 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,468 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,468 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,468 DEBUG:Row 8: Updates per prefix info added.
+2024-10-25 16:25:05,468 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,468 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=1, threshold=1.0
+2024-10-25 16:25:05,468 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,468 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=1, threshold=80.40000000000016
+2024-10-25 16:25:05,468 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,468 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,468 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=5, threshold=5.0
+2024-10-25 16:25:05,469 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,469 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,469 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,469 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,469 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,469 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,469 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,469 DEBUG:Row 9: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,469 DEBUG:Row 9: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,469 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,469 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,469 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,469 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,469 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,469 DEBUG:Row 9: Updates per prefix info added.
+2024-10-25 16:25:05,469 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,469 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,469 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,469 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,469 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,469 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,470 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,470 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,470 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,470 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,470 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,470 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,470 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,470 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,470 DEBUG:Row 10: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,470 DEBUG:Row 10: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,470 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,470 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,470 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,470 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,470 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,470 DEBUG:Row 10: Updates per prefix info added.
+2024-10-25 16:25:05,470 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,470 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,470 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,470 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,471 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,471 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,471 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,471 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,471 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,471 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,471 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,471 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,471 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,471 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,471 DEBUG:Row 11: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,471 DEBUG:Row 11: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,471 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,471 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,471 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,471 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,471 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,471 DEBUG:Row 11: Updates per prefix info added.
+2024-10-25 16:25:05,471 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,471 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,471 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,472 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,472 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,472 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,472 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,472 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,472 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,472 DEBUG:Accumulated 0.0 updates for ASN 62567. Total so far: 0.0
+2024-10-25 16:25:05,472 DEBUG:Accumulated 0.0 updates for ASN 393406. Total so far: 0.0
+2024-10-25 16:25:05,472 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,472 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,472 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,472 DEBUG:Row 12: Top Prefixes: ['64.9.224.0/24', '64.9.225.0/24', '64.9.228.0/23', '0', '0']
+2024-10-25 16:25:05,472 DEBUG:Row 12: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,472 DEBUG:Accumulated 0.0 updates for Prefix 64.9.224.0/24. Total so far: 0.0
+2024-10-25 16:25:05,472 DEBUG:Accumulated 0.0 updates for Prefix 64.9.225.0/24. Total so far: 0.0
+2024-10-25 16:25:05,472 DEBUG:Accumulated 0.0 updates for Prefix 64.9.228.0/23. Total so far: 0.0
+2024-10-25 16:25:05,472 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,472 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,472 DEBUG:Row 12: Updates per prefix info added.
+2024-10-25 16:25:05,472 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,472 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,473 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,473 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=6, threshold=80.40000000000016
+2024-10-25 16:25:05,473 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,473 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=6, threshold=6.6000000000000085
+2024-10-25 16:25:05,473 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=5, threshold=5.0
+2024-10-25 16:25:05,473 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,473 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,473 DEBUG:Accumulated 0.0 updates for ASN 53364. Total so far: 0.0
+2024-10-25 16:25:05,473 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,473 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,473 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,473 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,473 DEBUG:Row 13: Top Prefixes: ['104.132.161.0/24', '0', '0', '0', '0']
+2024-10-25 16:25:05,473 DEBUG:Row 13: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,473 DEBUG:Accumulated 0.0 updates for Prefix 104.132.161.0/24. Total so far: 0.0
+2024-10-25 16:25:05,473 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,473 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,473 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,473 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,473 DEBUG:Row 13: Updates per prefix info added.
+2024-10-25 16:25:05,473 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,474 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,474 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,474 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=1, threshold=80.40000000000016
+2024-10-25 16:25:05,474 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,474 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,474 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=5, threshold=5.0
+2024-10-25 16:25:05,474 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,474 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,474 DEBUG:Accumulated 0.0 updates for ASN 45896. Total so far: 0.0
+2024-10-25 16:25:05,474 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,474 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,474 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,474 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,474 DEBUG:Row 14: Top Prefixes: ['104.132.161.0/24', '0', '0', '0', '0']
+2024-10-25 16:25:05,474 DEBUG:Row 14: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,474 DEBUG:Accumulated 0.0 updates for Prefix 104.132.161.0/24. Total so far: 0.0
+2024-10-25 16:25:05,474 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,474 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,474 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,474 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,475 DEBUG:Row 14: Updates per prefix info added.
+2024-10-25 16:25:05,475 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,475 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=1, threshold=1.0
+2024-10-25 16:25:05,475 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,475 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=1, threshold=80.40000000000016
+2024-10-25 16:25:05,475 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,475 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,475 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=4, threshold=5.0
+2024-10-25 16:25:05,475 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,475 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,475 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,475 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,475 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,475 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,475 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,475 DEBUG:Row 15: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,475 DEBUG:Row 15: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,475 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,475 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,475 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,475 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,476 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,476 DEBUG:Row 15: Updates per prefix info added.
+2024-10-25 16:25:05,476 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,476 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,476 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,476 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,476 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,476 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,476 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,476 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,476 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,476 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,476 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,476 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,476 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,476 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,476 DEBUG:Row 16: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,476 DEBUG:Row 16: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,476 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,476 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,477 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,477 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,477 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,477 DEBUG:Row 16: Updates per prefix info added.
+2024-10-25 16:25:05,477 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,477 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,477 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,477 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,477 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,477 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,477 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,477 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,477 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,477 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,477 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,477 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,477 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,477 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,477 DEBUG:Row 17: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,477 DEBUG:Row 17: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,477 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,478 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,478 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,478 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,478 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,478 DEBUG:Row 17: Updates per prefix info added.
+2024-10-25 16:25:05,478 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,478 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,478 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,478 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,478 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,478 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,478 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,478 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,478 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,478 DEBUG:Accumulated 0.0 updates for ASN 62567. Total so far: 0.0
+2024-10-25 16:25:05,478 DEBUG:Accumulated 0.0 updates for ASN 393406. Total so far: 0.0
+2024-10-25 16:25:05,478 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,478 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,478 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,478 DEBUG:Row 18: Top Prefixes: ['64.9.224.0/24', '64.9.225.0/24', '64.9.228.0/23', '0', '0']
+2024-10-25 16:25:05,478 DEBUG:Row 18: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,479 DEBUG:Accumulated 0.0 updates for Prefix 64.9.224.0/24. Total so far: 0.0
+2024-10-25 16:25:05,479 DEBUG:Accumulated 0.0 updates for Prefix 64.9.225.0/24. Total so far: 0.0
+2024-10-25 16:25:05,479 DEBUG:Accumulated 0.0 updates for Prefix 64.9.228.0/23. Total so far: 0.0
+2024-10-25 16:25:05,479 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,479 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,479 DEBUG:Row 18: Updates per prefix info added.
+2024-10-25 16:25:05,479 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,479 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,479 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,479 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=6, threshold=80.40000000000016
+2024-10-25 16:25:05,479 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,479 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=6, threshold=6.6000000000000085
+2024-10-25 16:25:05,479 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=5, threshold=5.0
+2024-10-25 16:25:05,479 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,479 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,479 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,479 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,479 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,479 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,479 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,479 DEBUG:Row 19: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,480 DEBUG:Row 19: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,480 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,480 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,480 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,480 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,480 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,480 DEBUG:Row 19: Updates per prefix info added.
+2024-10-25 16:25:05,480 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,480 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,480 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,480 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,480 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,480 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,480 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,480 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,480 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,480 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,480 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,480 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,480 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,480 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,480 DEBUG:Row 20: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,481 DEBUG:Row 20: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,481 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,481 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,481 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,481 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,481 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,481 DEBUG:Row 20: Updates per prefix info added.
+2024-10-25 16:25:05,481 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,481 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,481 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,481 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,481 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,481 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,481 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,481 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,481 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,481 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,481 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,481 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,481 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,481 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,482 DEBUG:Row 21: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,482 DEBUG:Row 21: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,482 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,482 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,482 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,482 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,482 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,482 DEBUG:Row 21: Updates per prefix info added.
+2024-10-25 16:25:05,482 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,482 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,482 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,482 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,482 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,482 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,482 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,482 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,482 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,482 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,482 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,482 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,482 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,482 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,483 DEBUG:Row 22: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,483 DEBUG:Row 22: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,483 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,483 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,483 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,483 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,483 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,483 DEBUG:Row 22: Updates per prefix info added.
+2024-10-25 16:25:05,483 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,483 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,483 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,483 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,483 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,483 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,483 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,483 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,483 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,483 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,483 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,483 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,483 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,483 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,484 DEBUG:Row 23: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,484 DEBUG:Row 23: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,484 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,484 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,484 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,484 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,484 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,484 DEBUG:Row 23: Updates per prefix info added.
+2024-10-25 16:25:05,484 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,484 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,484 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,484 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,484 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,484 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,484 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,484 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,484 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,484 DEBUG:Accumulated 0.0 updates for ASN 62567. Total so far: 0.0
+2024-10-25 16:25:05,484 DEBUG:Accumulated 0.0 updates for ASN 393406. Total so far: 0.0
+2024-10-25 16:25:05,484 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,485 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,485 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,485 DEBUG:Row 24: Top Prefixes: ['64.9.224.0/24', '64.9.225.0/24', '64.9.228.0/23', '0', '0']
+2024-10-25 16:25:05,485 DEBUG:Row 24: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,485 DEBUG:Accumulated 0.0 updates for Prefix 64.9.224.0/24. Total so far: 0.0
+2024-10-25 16:25:05,485 DEBUG:Accumulated 0.0 updates for Prefix 64.9.225.0/24. Total so far: 0.0
+2024-10-25 16:25:05,485 DEBUG:Accumulated 0.0 updates for Prefix 64.9.228.0/23. Total so far: 0.0
+2024-10-25 16:25:05,485 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,485 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,485 DEBUG:Row 24: Updates per prefix info added.
+2024-10-25 16:25:05,485 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,485 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,485 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,485 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=6, threshold=80.40000000000016
+2024-10-25 16:25:05,485 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,485 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=6, threshold=6.6000000000000085
+2024-10-25 16:25:05,485 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=5, threshold=5.0
+2024-10-25 16:25:05,485 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,485 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,485 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,485 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,486 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,486 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,486 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,486 DEBUG:Row 25: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,486 DEBUG:Row 25: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,486 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,486 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,486 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,486 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,486 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,486 DEBUG:Row 25: Updates per prefix info added.
+2024-10-25 16:25:05,486 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,486 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,486 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,486 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,486 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,486 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,486 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,486 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,486 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,486 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,487 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,487 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,487 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,487 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,487 DEBUG:Row 26: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,487 DEBUG:Row 26: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,487 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,487 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,487 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,487 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,487 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,487 DEBUG:Row 26: Updates per prefix info added.
+2024-10-25 16:25:05,487 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,487 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,487 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,487 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,487 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,487 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,487 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,487 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,487 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,487 DEBUG:Accumulated 0.0 updates for ASN 200130. Total so far: 0.0
+2024-10-25 16:25:05,488 DEBUG:Accumulated 0.0 updates for ASN 202018. Total so far: 0.0
+2024-10-25 16:25:05,488 DEBUG:Accumulated 0.0 updates for ASN 3549. Total so far: 0.0
+2024-10-25 16:25:05,488 DEBUG:Accumulated 0.0 updates for ASN 13030. Total so far: 0.0
+2024-10-25 16:25:05,488 DEBUG:Accumulated 0.0 updates for ASN 47872. Total so far: 0.0
+2024-10-25 16:25:05,488 DEBUG:Row 27: Top Prefixes: ['209.85.234.0/24', '0', '0', '0', '0']
+2024-10-25 16:25:05,488 DEBUG:Row 27: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,488 DEBUG:Accumulated 0.0 updates for Prefix 209.85.234.0/24. Total so far: 0.0
+2024-10-25 16:25:05,488 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,488 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,488 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,488 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,488 DEBUG:Row 27: Updates per prefix info added.
+2024-10-25 16:25:05,488 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,488 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,488 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=2.2047403259511418, threshold=2.0266340666915212
+2024-10-25 16:25:05,488 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,488 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,488 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=2, threshold=5.0
+2024-10-25 16:25:05,488 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,488 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,488 DEBUG:Accumulated 0.0 updates for ASN 1836. Total so far: 0.0
+2024-10-25 16:25:05,489 DEBUG:Accumulated 0.0 updates for ASN 7018. Total so far: 0.0
+2024-10-25 16:25:05,489 DEBUG:Accumulated 0.0 updates for ASN 63956. Total so far: 0.0
+2024-10-25 16:25:05,489 DEBUG:Accumulated 0.0 updates for ASN 4739. Total so far: 0.0
+2024-10-25 16:25:05,489 DEBUG:Accumulated 0.0 updates for ASN 7575. Total so far: 0.0
+2024-10-25 16:25:05,489 DEBUG:Row 28: Top Prefixes: ['209.85.234.0/24', '0', '0', '0', '0']
+2024-10-25 16:25:05,489 DEBUG:Row 28: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,489 DEBUG:Accumulated 0.0 updates for Prefix 209.85.234.0/24. Total so far: 0.0
+2024-10-25 16:25:05,489 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,489 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,489 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,489 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,489 DEBUG:Row 28: Updates per prefix info added.
+2024-10-25 16:25:05,489 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,489 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,489 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=1.600781059358212, threshold=2.0266340666915212
+2024-10-25 16:25:05,489 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=36, threshold=80.40000000000016
+2024-10-25 16:25:05,489 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,489 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,489 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=2, threshold=5.0
+2024-10-25 16:25:05,489 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,489 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,490 DEBUG:Accumulated 0.0 updates for ASN 29608. Total so far: 0.0
+2024-10-25 16:25:05,490 DEBUG:Accumulated 0.0 updates for ASN 50300. Total so far: 0.0
+2024-10-25 16:25:05,490 DEBUG:Accumulated 0.0 updates for ASN 10026. Total so far: 0.0
+2024-10-25 16:25:05,490 DEBUG:Accumulated 0.0 updates for ASN 58511. Total so far: 0.0
+2024-10-25 16:25:05,490 DEBUG:Accumulated 0.0 updates for ASN 4608. Total so far: 0.0
+2024-10-25 16:25:05,490 DEBUG:Row 29: Top Prefixes: ['209.85.234.0/24', '0', '0', '0', '0']
+2024-10-25 16:25:05,490 DEBUG:Row 29: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,490 DEBUG:Accumulated 0.0 updates for Prefix 209.85.234.0/24. Total so far: 0.0
+2024-10-25 16:25:05,490 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,490 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,490 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,490 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,490 DEBUG:Row 29: Updates per prefix info added.
+2024-10-25 16:25:05,490 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,490 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=1, threshold=1.0
+2024-10-25 16:25:05,490 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.4898979485566356, threshold=2.0266340666915212
+2024-10-25 16:25:05,490 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=7, threshold=80.40000000000016
+2024-10-25 16:25:05,490 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,490 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,490 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=3, threshold=5.0
+2024-10-25 16:25:05,490 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,490 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,491 DEBUG:Accumulated 0.0 updates for ASN 62567. Total so far: 0.0
+2024-10-25 16:25:05,491 DEBUG:Accumulated 0.0 updates for ASN 393406. Total so far: 0.0
+2024-10-25 16:25:05,491 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,491 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,491 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,491 DEBUG:Row 30: Top Prefixes: ['64.9.224.0/24', '64.9.225.0/24', '64.9.228.0/23', '0', '0']
+2024-10-25 16:25:05,491 DEBUG:Row 30: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,491 DEBUG:Accumulated 0.0 updates for Prefix 64.9.224.0/24. Total so far: 0.0
+2024-10-25 16:25:05,491 DEBUG:Accumulated 0.0 updates for Prefix 64.9.225.0/24. Total so far: 0.0
+2024-10-25 16:25:05,491 DEBUG:Accumulated 0.0 updates for Prefix 64.9.228.0/23. Total so far: 0.0
+2024-10-25 16:25:05,491 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,491 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,491 DEBUG:Row 30: Updates per prefix info added.
+2024-10-25 16:25:05,491 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,491 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,491 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,491 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=6, threshold=80.40000000000016
+2024-10-25 16:25:05,491 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,491 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=6, threshold=6.6000000000000085
+2024-10-25 16:25:05,491 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=5, threshold=5.0
+2024-10-25 16:25:05,491 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,491 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,492 DEBUG:Accumulated 0.0 updates for ASN 1221. Total so far: 0.0
+2024-10-25 16:25:05,492 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,492 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,492 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,492 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,492 DEBUG:Row 31: Top Prefixes: ['104.132.150.0/24', '0', '0', '0', '0']
+2024-10-25 16:25:05,492 DEBUG:Row 31: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,492 DEBUG:Accumulated 0.0 updates for Prefix 104.132.150.0/24. Total so far: 0.0
+2024-10-25 16:25:05,492 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,492 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,492 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,492 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,492 DEBUG:Row 31: Updates per prefix info added.
+2024-10-25 16:25:05,492 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,492 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,492 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,492 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=1, threshold=80.40000000000016
+2024-10-25 16:25:05,492 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,492 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,492 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=4, threshold=5.0
+2024-10-25 16:25:05,492 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,492 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,493 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,493 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,493 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,493 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,493 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,493 DEBUG:Row 32: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,493 DEBUG:Row 32: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,493 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,493 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,493 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,493 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,493 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,493 DEBUG:Row 32: Updates per prefix info added.
+2024-10-25 16:25:05,493 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,493 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,493 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,493 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,493 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,493 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,493 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,493 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,493 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,494 DEBUG:Accumulated 0.0 updates for ASN 3303. Total so far: 0.0
+2024-10-25 16:25:05,494 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,494 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,494 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,494 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,494 DEBUG:Row 33: Top Prefixes: ['209.85.234.0/24', '0', '0', '0', '0']
+2024-10-25 16:25:05,494 DEBUG:Row 33: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,494 DEBUG:Accumulated 0.0 updates for Prefix 209.85.234.0/24. Total so far: 0.0
+2024-10-25 16:25:05,494 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,494 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,494 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,494 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,494 DEBUG:Row 33: Updates per prefix info added.
+2024-10-25 16:25:05,494 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,494 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,494 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,494 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=1, threshold=80.40000000000016
+2024-10-25 16:25:05,494 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,494 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,494 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=2, threshold=5.0
+2024-10-25 16:25:05,494 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,494 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,495 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,495 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,495 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,495 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,495 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,495 DEBUG:Row 34: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,495 DEBUG:Row 34: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,495 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,495 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,495 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,495 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,495 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,495 DEBUG:Row 34: Updates per prefix info added.
+2024-10-25 16:25:05,495 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,495 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,495 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,495 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,495 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,495 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,495 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,495 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,495 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,496 DEBUG:Accumulated 0.0 updates for ASN 29608. Total so far: 0.0
+2024-10-25 16:25:05,496 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,496 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,496 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,496 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,496 DEBUG:Row 35: Top Prefixes: ['209.85.234.0/24', '0', '0', '0', '0']
+2024-10-25 16:25:05,496 DEBUG:Row 35: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,496 DEBUG:Accumulated 0.0 updates for Prefix 209.85.234.0/24. Total so far: 0.0
+2024-10-25 16:25:05,496 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,496 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,496 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,496 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,496 DEBUG:Row 35: Updates per prefix info added.
+2024-10-25 16:25:05,496 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,496 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,496 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,496 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=1, threshold=80.40000000000016
+2024-10-25 16:25:05,496 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,496 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,496 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=3, threshold=5.0
+2024-10-25 16:25:05,496 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,497 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,497 DEBUG:Accumulated 0.0 updates for ASN 62567. Total so far: 0.0
+2024-10-25 16:25:05,497 DEBUG:Accumulated 0.0 updates for ASN 393406. Total so far: 0.0
+2024-10-25 16:25:05,497 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,497 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,497 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,497 DEBUG:Row 36: Top Prefixes: ['64.9.224.0/24', '64.9.225.0/24', '64.9.228.0/23', '0', '0']
+2024-10-25 16:25:05,497 DEBUG:Row 36: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,497 DEBUG:Accumulated 0.0 updates for Prefix 64.9.224.0/24. Total so far: 0.0
+2024-10-25 16:25:05,497 DEBUG:Accumulated 0.0 updates for Prefix 64.9.225.0/24. Total so far: 0.0
+2024-10-25 16:25:05,497 DEBUG:Accumulated 0.0 updates for Prefix 64.9.228.0/23. Total so far: 0.0
+2024-10-25 16:25:05,497 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,497 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,497 DEBUG:Row 36: Updates per prefix info added.
+2024-10-25 16:25:05,497 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,497 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,497 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,497 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=6, threshold=80.40000000000016
+2024-10-25 16:25:05,497 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,497 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=6, threshold=6.6000000000000085
+2024-10-25 16:25:05,498 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=5, threshold=5.0
+2024-10-25 16:25:05,498 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,498 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,498 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,498 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,498 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,498 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,498 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,498 DEBUG:Row 37: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,498 DEBUG:Row 37: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,498 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,498 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,498 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,498 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,498 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,498 DEBUG:Row 37: Updates per prefix info added.
+2024-10-25 16:25:05,498 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,498 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,498 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,498 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,498 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,499 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,499 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,499 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,499 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,499 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,499 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,499 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,499 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,499 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,499 DEBUG:Row 38: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,499 DEBUG:Row 38: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,499 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,499 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,499 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,499 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,499 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,499 DEBUG:Row 38: Updates per prefix info added.
+2024-10-25 16:25:05,499 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,499 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,499 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,499 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,499 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,500 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,500 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,500 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,500 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,500 DEBUG:Accumulated 0.0 updates for ASN 2497. Total so far: 0.0
+2024-10-25 16:25:05,500 DEBUG:Accumulated 0.0 updates for ASN 286. Total so far: 0.0
+2024-10-25 16:25:05,500 DEBUG:Accumulated 0.0 updates for ASN 701. Total so far: 0.0
+2024-10-25 16:25:05,500 DEBUG:Accumulated 0.0 updates for ASN 7660. Total so far: 0.0
+2024-10-25 16:25:05,500 DEBUG:Accumulated 0.0 updates for ASN 13030. Total so far: 0.0
+2024-10-25 16:25:05,500 DEBUG:Row 39: Top Prefixes: ['49.213.40.0/24', '203.215.68.0/22', '210.4.0.0/19', '121.96.211.0/24', '210.4.16.0/20']
+2024-10-25 16:25:05,500 DEBUG:Row 39: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,500 DEBUG:Accumulated 0.0 updates for Prefix 49.213.40.0/24. Total so far: 0.0
+2024-10-25 16:25:05,500 DEBUG:Accumulated 0.0 updates for Prefix 203.215.68.0/22. Total so far: 0.0
+2024-10-25 16:25:05,500 DEBUG:Accumulated 0.0 updates for Prefix 210.4.0.0/19. Total so far: 0.0
+2024-10-25 16:25:05,500 DEBUG:Accumulated 0.0 updates for Prefix 121.96.211.0/24. Total so far: 0.0
+2024-10-25 16:25:05,500 DEBUG:Accumulated 0.0 updates for Prefix 210.4.16.0/20. Total so far: 0.0
+2024-10-25 16:25:05,500 DEBUG:Row 39: Updates per prefix info added.
+2024-10-25 16:25:05,500 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,500 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,500 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=60252.00671929922, threshold=2.0266340666915212
+2024-10-25 16:25:05,500 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,501 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=20813, threshold=6.6000000000000085
+2024-10-25 16:25:05,501 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,501 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,501 DEBUG:Accumulated 0.0 updates for ASN 2497. Total so far: 0.0
+2024-10-25 16:25:05,501 DEBUG:Accumulated 0.0 updates for ASN 3333. Total so far: 0.0
+2024-10-25 16:25:05,501 DEBUG:Accumulated 0.0 updates for ASN 286. Total so far: 0.0
+2024-10-25 16:25:05,501 DEBUG:Accumulated 0.0 updates for ASN 7500. Total so far: 0.0
+2024-10-25 16:25:05,501 DEBUG:Accumulated 0.0 updates for ASN 8758. Total so far: 0.0
+2024-10-25 16:25:05,501 DEBUG:Row 40: Top Prefixes: ['46.249.96.0/24', '216.72.225.0/24', '209.88.90.0/23', '209.88.92.0/22', '83.141.144.0/22']
+2024-10-25 16:25:05,501 DEBUG:Row 40: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,501 DEBUG:Accumulated 0.0 updates for Prefix 46.249.96.0/24. Total so far: 0.0
+2024-10-25 16:25:05,501 DEBUG:Accumulated 0.0 updates for Prefix 216.72.225.0/24. Total so far: 0.0
+2024-10-25 16:25:05,501 DEBUG:Accumulated 0.0 updates for Prefix 209.88.90.0/23. Total so far: 0.0
+2024-10-25 16:25:05,501 DEBUG:Accumulated 0.0 updates for Prefix 209.88.92.0/22. Total so far: 0.0
+2024-10-25 16:25:05,501 DEBUG:Accumulated 0.0 updates for Prefix 83.141.144.0/22. Total so far: 0.0
+2024-10-25 16:25:05,501 DEBUG:Row 40: Updates per prefix info added.
+2024-10-25 16:25:05,501 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,501 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=87900, threshold=1.0
+2024-10-25 16:25:05,501 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=36118.1365302346, threshold=2.0266340666915212
+2024-10-25 16:25:05,501 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,502 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=43156, threshold=6.6000000000000085
+2024-10-25 16:25:05,502 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,502 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,502 DEBUG:Accumulated 0.0 updates for ASN 4777. Total so far: 0.0
+2024-10-25 16:25:05,502 DEBUG:Accumulated 0.0 updates for ASN 286. Total so far: 0.0
+2024-10-25 16:25:05,502 DEBUG:Accumulated 0.0 updates for ASN 2497. Total so far: 0.0
+2024-10-25 16:25:05,502 DEBUG:Accumulated 0.0 updates for ASN 7500. Total so far: 0.0
+2024-10-25 16:25:05,502 DEBUG:Accumulated 0.0 updates for ASN 8758. Total so far: 0.0
+2024-10-25 16:25:05,502 DEBUG:Row 41: Top Prefixes: ['209.88.92.0/22', '209.88.90.0/23', '216.72.225.0/24', '46.249.96.0/24', '49.202.247.0/24']
+2024-10-25 16:25:05,502 DEBUG:Row 41: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,502 DEBUG:Accumulated 0.0 updates for Prefix 209.88.92.0/22. Total so far: 0.0
+2024-10-25 16:25:05,502 DEBUG:Accumulated 0.0 updates for Prefix 209.88.90.0/23. Total so far: 0.0
+2024-10-25 16:25:05,502 DEBUG:Accumulated 0.0 updates for Prefix 216.72.225.0/24. Total so far: 0.0
+2024-10-25 16:25:05,502 DEBUG:Accumulated 0.0 updates for Prefix 46.249.96.0/24. Total so far: 0.0
+2024-10-25 16:25:05,502 DEBUG:Accumulated 0.0 updates for Prefix 49.202.247.0/24. Total so far: 0.0
+2024-10-25 16:25:05,502 DEBUG:Row 41: Updates per prefix info added.
+2024-10-25 16:25:05,502 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,502 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=83847, threshold=1.0
+2024-10-25 16:25:05,502 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=18688.407179025533, threshold=2.0266340666915212
+2024-10-25 16:25:05,502 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,503 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=17576, threshold=6.6000000000000085
+2024-10-25 16:25:05,503 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,503 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,503 DEBUG:Accumulated 0.0 updates for ASN 8758. Total so far: 0.0
+2024-10-25 16:25:05,503 DEBUG:Accumulated 0.0 updates for ASN 3333. Total so far: 0.0
+2024-10-25 16:25:05,503 DEBUG:Accumulated 0.0 updates for ASN 7500. Total so far: 0.0
+2024-10-25 16:25:05,503 DEBUG:Accumulated 0.0 updates for ASN 2497. Total so far: 0.0
+2024-10-25 16:25:05,503 DEBUG:Accumulated 0.0 updates for ASN 4777. Total so far: 0.0
+2024-10-25 16:25:05,503 DEBUG:Row 42: Top Prefixes: ['49.202.245.0/24', '49.202.246.0/24', '49.202.247.0/24', '177.55.229.0/24', '88.248.47.0/24']
+2024-10-25 16:25:05,503 DEBUG:Row 42: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,503 DEBUG:Accumulated 0.0 updates for Prefix 49.202.245.0/24. Total so far: 0.0
+2024-10-25 16:25:05,503 DEBUG:Accumulated 0.0 updates for Prefix 49.202.246.0/24. Total so far: 0.0
+2024-10-25 16:25:05,503 DEBUG:Accumulated 0.0 updates for Prefix 49.202.247.0/24. Total so far: 0.0
+2024-10-25 16:25:05,503 DEBUG:Accumulated 0.0 updates for Prefix 177.55.229.0/24. Total so far: 0.0
+2024-10-25 16:25:05,503 DEBUG:Accumulated 0.0 updates for Prefix 88.248.47.0/24. Total so far: 0.0
+2024-10-25 16:25:05,503 DEBUG:Row 42: Updates per prefix info added.
+2024-10-25 16:25:05,503 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,503 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=73201, threshold=1.0
+2024-10-25 16:25:05,503 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=24475.290289940574, threshold=2.0266340666915212
+2024-10-25 16:25:05,503 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,504 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=6912, threshold=6.6000000000000085
+2024-10-25 16:25:05,504 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,504 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,504 DEBUG:Accumulated 0.0 updates for ASN 7500. Total so far: 0.0
+2024-10-25 16:25:05,504 DEBUG:Accumulated 0.0 updates for ASN 8758. Total so far: 0.0
+2024-10-25 16:25:05,504 DEBUG:Accumulated 0.0 updates for ASN 3333. Total so far: 0.0
+2024-10-25 16:25:05,504 DEBUG:Accumulated 0.0 updates for ASN 286. Total so far: 0.0
+2024-10-25 16:25:05,504 DEBUG:Accumulated 0.0 updates for ASN 38880. Total so far: 0.0
+2024-10-25 16:25:05,504 DEBUG:Row 43: Top Prefixes: ['131.0.128.0/24', '153.162.132.0/24', '153.162.133.0/24', '153.162.134.0/24', '153.162.135.0/24']
+2024-10-25 16:25:05,504 DEBUG:Row 43: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,504 DEBUG:Accumulated 0.0 updates for Prefix 131.0.128.0/24. Total so far: 0.0
+2024-10-25 16:25:05,504 DEBUG:Accumulated 0.0 updates for Prefix 153.162.132.0/24. Total so far: 0.0
+2024-10-25 16:25:05,504 DEBUG:Accumulated 0.0 updates for Prefix 153.162.133.0/24. Total so far: 0.0
+2024-10-25 16:25:05,504 DEBUG:Accumulated 0.0 updates for Prefix 153.162.134.0/24. Total so far: 0.0
+2024-10-25 16:25:05,504 DEBUG:Accumulated 0.0 updates for Prefix 153.162.135.0/24. Total so far: 0.0
+2024-10-25 16:25:05,504 DEBUG:Row 43: Updates per prefix info added.
+2024-10-25 16:25:05,504 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,504 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=59746, threshold=1.0
+2024-10-25 16:25:05,504 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=20285.64086835809, threshold=2.0266340666915212
+2024-10-25 16:25:05,504 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,505 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=2470, threshold=6.6000000000000085
+2024-10-25 16:25:05,505 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,505 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,505 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,505 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,505 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,505 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,505 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,505 DEBUG:Row 44: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,505 DEBUG:Row 44: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,505 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,505 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,505 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,505 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,505 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,505 DEBUG:Row 44: Updates per prefix info added.
+2024-10-25 16:25:05,505 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,505 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,505 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,505 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,505 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,506 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,506 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,506 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,506 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,506 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,506 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,506 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,506 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,506 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,506 DEBUG:Row 45: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,506 DEBUG:Row 45: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,506 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,506 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,506 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,506 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,506 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,506 DEBUG:Row 45: Updates per prefix info added.
+2024-10-25 16:25:05,506 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,506 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,506 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,506 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,507 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,507 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,507 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,507 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,507 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,507 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,507 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,507 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,507 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,507 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,507 DEBUG:Row 46: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,507 DEBUG:Row 46: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,507 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,507 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,507 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,507 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,507 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,507 DEBUG:Row 46: Updates per prefix info added.
+2024-10-25 16:25:05,507 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,507 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,507 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,508 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,508 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,508 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,508 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,508 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,508 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,508 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,508 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,508 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,508 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,508 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,508 DEBUG:Row 47: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,508 DEBUG:Row 47: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,508 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,508 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,508 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,508 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,508 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,508 DEBUG:Row 47: Updates per prefix info added.
+2024-10-25 16:25:05,508 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,508 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,508 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,509 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,509 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,509 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,509 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,509 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,509 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,509 DEBUG:Accumulated 0.0 updates for ASN 62567. Total so far: 0.0
+2024-10-25 16:25:05,509 DEBUG:Accumulated 0.0 updates for ASN 393406. Total so far: 0.0
+2024-10-25 16:25:05,509 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,509 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,509 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,509 DEBUG:Row 48: Top Prefixes: ['64.9.224.0/24', '64.9.225.0/24', '64.9.228.0/23', '0', '0']
+2024-10-25 16:25:05,509 DEBUG:Row 48: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,509 DEBUG:Accumulated 0.0 updates for Prefix 64.9.224.0/24. Total so far: 0.0
+2024-10-25 16:25:05,509 DEBUG:Accumulated 0.0 updates for Prefix 64.9.225.0/24. Total so far: 0.0
+2024-10-25 16:25:05,509 DEBUG:Accumulated 0.0 updates for Prefix 64.9.228.0/23. Total so far: 0.0
+2024-10-25 16:25:05,509 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,509 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,509 DEBUG:Row 48: Updates per prefix info added.
+2024-10-25 16:25:05,509 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,509 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,510 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,510 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=6, threshold=80.40000000000016
+2024-10-25 16:25:05,510 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,510 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=6, threshold=6.6000000000000085
+2024-10-25 16:25:05,510 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=5, threshold=5.0
+2024-10-25 16:25:05,510 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,510 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,510 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,510 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,510 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,510 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,510 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,510 DEBUG:Row 49: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,510 DEBUG:Row 49: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,510 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,510 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,510 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,510 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,510 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,510 DEBUG:Row 49: Updates per prefix info added.
+2024-10-25 16:25:05,510 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,511 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,511 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,511 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,511 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,511 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,511 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,511 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,511 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,511 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,511 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,511 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,511 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,511 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,511 DEBUG:Row 50: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,511 DEBUG:Row 50: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,511 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,511 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,511 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,511 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,511 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,511 DEBUG:Row 50: Updates per prefix info added.
+2024-10-25 16:25:05,511 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,512 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,512 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,512 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,512 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,512 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,512 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,512 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,512 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,512 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,512 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,512 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,512 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,512 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,512 DEBUG:Row 51: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,512 DEBUG:Row 51: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,512 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,512 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,512 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,512 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,512 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,512 DEBUG:Row 51: Updates per prefix info added.
+2024-10-25 16:25:05,512 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,513 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,513 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,513 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,513 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,513 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,513 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,513 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,513 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,513 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,513 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,513 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,513 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,513 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,513 DEBUG:Row 52: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,513 DEBUG:Row 52: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,513 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,513 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,513 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,513 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,513 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,513 DEBUG:Row 52: Updates per prefix info added.
+2024-10-25 16:25:05,514 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,514 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,514 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,514 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,514 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,514 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,514 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,514 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,514 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,514 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,514 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,514 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,514 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,514 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,514 DEBUG:Row 53: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,514 DEBUG:Row 53: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,514 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,514 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,514 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,514 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,514 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,514 DEBUG:Row 53: Updates per prefix info added.
+2024-10-25 16:25:05,515 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,515 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,515 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,515 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,515 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,515 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,515 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,515 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,515 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,515 DEBUG:Accumulated 0.0 updates for ASN 62567. Total so far: 0.0
+2024-10-25 16:25:05,515 DEBUG:Accumulated 0.0 updates for ASN 393406. Total so far: 0.0
+2024-10-25 16:25:05,515 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,515 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,515 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,515 DEBUG:Row 54: Top Prefixes: ['64.9.224.0/24', '64.9.225.0/24', '64.9.228.0/23', '0', '0']
+2024-10-25 16:25:05,515 DEBUG:Row 54: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,515 DEBUG:Accumulated 0.0 updates for Prefix 64.9.224.0/24. Total so far: 0.0
+2024-10-25 16:25:05,515 DEBUG:Accumulated 0.0 updates for Prefix 64.9.225.0/24. Total so far: 0.0
+2024-10-25 16:25:05,515 DEBUG:Accumulated 0.0 updates for Prefix 64.9.228.0/23. Total so far: 0.0
+2024-10-25 16:25:05,515 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,515 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,516 DEBUG:Row 54: Updates per prefix info added.
+2024-10-25 16:25:05,516 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,516 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,516 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,516 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=6, threshold=80.40000000000016
+2024-10-25 16:25:05,516 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,516 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=6, threshold=6.6000000000000085
+2024-10-25 16:25:05,516 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=5, threshold=5.0
+2024-10-25 16:25:05,516 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,516 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,516 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,516 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,516 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,516 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,516 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,516 DEBUG:Row 55: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,516 DEBUG:Row 55: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,516 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,516 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,516 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,516 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,516 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,517 DEBUG:Row 55: Updates per prefix info added.
+2024-10-25 16:25:05,517 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,517 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,517 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,517 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,517 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,517 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,517 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,517 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,517 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,517 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,517 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,517 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,517 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,517 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,517 DEBUG:Row 56: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,517 DEBUG:Row 56: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,517 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,517 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,517 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,517 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,518 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,518 DEBUG:Row 56: Updates per prefix info added.
+2024-10-25 16:25:05,518 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,518 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,518 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,518 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,518 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,518 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,518 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,518 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,518 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,518 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,518 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,518 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,518 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,518 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,518 DEBUG:Row 57: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,518 DEBUG:Row 57: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,518 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,518 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,518 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,518 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,519 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,519 DEBUG:Row 57: Updates per prefix info added.
+2024-10-25 16:25:05,519 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,519 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,519 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,519 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,519 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,519 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,519 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,519 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,519 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,519 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,519 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,519 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,519 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,519 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,519 DEBUG:Row 58: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,519 DEBUG:Row 58: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,519 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,519 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,519 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,520 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,520 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,520 DEBUG:Row 58: Updates per prefix info added.
+2024-10-25 16:25:05,520 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,520 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,520 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,520 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,520 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,520 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,520 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,520 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,520 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,520 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,520 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,520 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,520 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,520 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,520 DEBUG:Row 59: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,520 DEBUG:Row 59: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,520 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,520 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,521 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,521 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,521 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,521 DEBUG:Row 59: Updates per prefix info added.
+2024-10-25 16:25:05,521 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,521 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,521 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,521 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,521 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,521 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,521 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,521 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,521 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,521 DEBUG:Accumulated 0.0 updates for ASN 62567. Total so far: 0.0
+2024-10-25 16:25:05,521 DEBUG:Accumulated 0.0 updates for ASN 393406. Total so far: 0.0
+2024-10-25 16:25:05,521 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,521 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,521 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,521 DEBUG:Row 60: Top Prefixes: ['64.9.224.0/24', '64.9.225.0/24', '64.9.228.0/23', '0', '0']
+2024-10-25 16:25:05,521 DEBUG:Row 60: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,521 DEBUG:Accumulated 0.0 updates for Prefix 64.9.224.0/24. Total so far: 0.0
+2024-10-25 16:25:05,522 DEBUG:Accumulated 0.0 updates for Prefix 64.9.225.0/24. Total so far: 0.0
+2024-10-25 16:25:05,522 DEBUG:Accumulated 0.0 updates for Prefix 64.9.228.0/23. Total so far: 0.0
+2024-10-25 16:25:05,522 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,522 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,522 DEBUG:Row 60: Updates per prefix info added.
+2024-10-25 16:25:05,522 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,522 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,522 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,522 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=6, threshold=80.40000000000016
+2024-10-25 16:25:05,522 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,522 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=6, threshold=6.6000000000000085
+2024-10-25 16:25:05,522 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=5, threshold=5.0
+2024-10-25 16:25:05,522 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,522 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,522 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,522 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,522 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,522 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,522 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,522 DEBUG:Row 61: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,522 DEBUG:Row 61: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,522 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,523 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,523 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,523 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,523 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,523 DEBUG:Row 61: Updates per prefix info added.
+2024-10-25 16:25:05,523 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,523 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,523 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,523 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,523 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,523 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,523 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,523 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,523 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,523 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,523 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,523 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,523 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,523 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,523 DEBUG:Row 62: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,523 DEBUG:Row 62: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,524 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,524 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,524 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,524 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,524 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,524 DEBUG:Row 62: Updates per prefix info added.
+2024-10-25 16:25:05,524 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,524 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,524 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,524 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,524 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,524 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,524 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,524 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,524 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,524 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,524 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,524 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,524 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,524 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,524 DEBUG:Row 63: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,524 DEBUG:Row 63: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,525 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,525 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,525 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,525 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,525 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,525 DEBUG:Row 63: Updates per prefix info added.
+2024-10-25 16:25:05,525 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,525 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,525 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,525 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,525 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,525 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,525 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,525 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,525 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,525 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,525 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,525 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,525 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,525 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,525 DEBUG:Row 64: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,526 DEBUG:Row 64: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,526 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,526 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,526 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,526 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,526 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,526 DEBUG:Row 64: Updates per prefix info added.
+2024-10-25 16:25:05,526 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,526 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,526 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,526 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,526 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,526 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,526 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,526 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,526 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,526 DEBUG:Accumulated 0.0 updates for ASN 202018. Total so far: 0.0
+2024-10-25 16:25:05,526 DEBUG:Accumulated 0.0 updates for ASN 3549. Total so far: 0.0
+2024-10-25 16:25:05,526 DEBUG:Accumulated 0.0 updates for ASN 1668. Total so far: 0.0
+2024-10-25 16:25:05,526 DEBUG:Accumulated 0.0 updates for ASN 200130. Total so far: 0.0
+2024-10-25 16:25:05,526 DEBUG:Accumulated 0.0 updates for ASN 62567. Total so far: 0.0
+2024-10-25 16:25:05,526 DEBUG:Row 65: Top Prefixes: ['104.132.125.0/24', '0', '0', '0', '0']
+2024-10-25 16:25:05,527 DEBUG:Row 65: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,527 DEBUG:Accumulated 0.0 updates for Prefix 104.132.125.0/24. Total so far: 0.0
+2024-10-25 16:25:05,527 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,527 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,527 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,527 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,527 DEBUG:Row 65: Updates per prefix info added.
+2024-10-25 16:25:05,527 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,527 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,527 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=3.792129601369161, threshold=2.0266340666915212
+2024-10-25 16:25:05,527 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,527 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=54, threshold=6.6000000000000085
+2024-10-25 16:25:05,527 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,527 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,527 DEBUG:Accumulated 0.0 updates for ASN 3549. Total so far: 0.0
+2024-10-25 16:25:05,527 DEBUG:Accumulated 0.0 updates for ASN 1836. Total so far: 0.0
+2024-10-25 16:25:05,527 DEBUG:Accumulated 0.0 updates for ASN 393406. Total so far: 0.0
+2024-10-25 16:25:05,527 DEBUG:Accumulated 0.0 updates for ASN 286. Total so far: 0.0
+2024-10-25 16:25:05,527 DEBUG:Accumulated 0.0 updates for ASN 62567. Total so far: 0.0
+2024-10-25 16:25:05,527 DEBUG:Row 66: Top Prefixes: ['104.132.125.0/24', '64.9.224.0/24', '64.9.225.0/24', '64.9.228.0/23', '0']
+2024-10-25 16:25:05,527 DEBUG:Row 66: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,528 DEBUG:Accumulated 0.0 updates for Prefix 104.132.125.0/24. Total so far: 0.0
+2024-10-25 16:25:05,528 DEBUG:Accumulated 0.0 updates for Prefix 64.9.224.0/24. Total so far: 0.0
+2024-10-25 16:25:05,528 DEBUG:Accumulated 0.0 updates for Prefix 64.9.225.0/24. Total so far: 0.0
+2024-10-25 16:25:05,528 DEBUG:Accumulated 0.0 updates for Prefix 64.9.228.0/23. Total so far: 0.0
+2024-10-25 16:25:05,528 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,528 DEBUG:Row 66: Updates per prefix info added.
+2024-10-25 16:25:05,528 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,528 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=1, threshold=1.0
+2024-10-25 16:25:05,528 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=2.1833148891823746, threshold=2.0266340666915212
+2024-10-25 16:25:05,528 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,528 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=40, threshold=6.6000000000000085
+2024-10-25 16:25:05,528 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,528 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,528 DEBUG:Accumulated 0.0 updates for ASN 3549. Total so far: 0.0
+2024-10-25 16:25:05,528 DEBUG:Accumulated 0.0 updates for ASN 7018. Total so far: 0.0
+2024-10-25 16:25:05,528 DEBUG:Accumulated 0.0 updates for ASN 3333. Total so far: 0.0
+2024-10-25 16:25:05,528 DEBUG:Accumulated 0.0 updates for ASN 7575. Total so far: 0.0
+2024-10-25 16:25:05,528 DEBUG:Accumulated 0.0 updates for ASN 8758. Total so far: 0.0
+2024-10-25 16:25:05,528 DEBUG:Row 67: Top Prefixes: ['104.132.125.0/24', '0', '0', '0', '0']
+2024-10-25 16:25:05,528 DEBUG:Row 67: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,528 DEBUG:Accumulated 0.0 updates for Prefix 104.132.125.0/24. Total so far: 0.0
+2024-10-25 16:25:05,529 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,529 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,529 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,529 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,529 DEBUG:Row 67: Updates per prefix info added.
+2024-10-25 16:25:05,529 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,529 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=1, threshold=1.0
+2024-10-25 16:25:05,529 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.4819216956208332, threshold=2.0266340666915212
+2024-10-25 16:25:05,529 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=31, threshold=80.40000000000016
+2024-10-25 16:25:05,529 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,529 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=1, threshold=6.6000000000000085
+2024-10-25 16:25:05,529 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=4, threshold=5.0
+2024-10-25 16:25:05,529 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,529 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,529 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,529 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,529 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,529 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,529 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,529 DEBUG:Row 68: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,529 DEBUG:Row 68: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,530 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,530 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,530 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,530 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,530 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,530 DEBUG:Row 68: Updates per prefix info added.
+2024-10-25 16:25:05,530 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,530 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,530 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,530 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,530 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,530 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,530 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,530 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,530 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,530 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,530 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,530 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,530 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,530 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,530 DEBUG:Row 69: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,531 DEBUG:Row 69: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,531 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,531 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,531 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,531 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,531 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,531 DEBUG:Row 69: Updates per prefix info added.
+2024-10-25 16:25:05,531 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,531 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,531 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,531 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,531 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,531 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,531 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,531 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,531 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,531 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,531 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,531 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,531 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,531 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,531 DEBUG:Row 70: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,532 DEBUG:Row 70: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,532 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,532 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,532 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,532 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,532 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,532 DEBUG:Row 70: Updates per prefix info added.
+2024-10-25 16:25:05,532 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,532 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,532 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,532 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,532 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,532 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,532 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,532 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,532 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,532 DEBUG:Accumulated 0.0 updates for ASN 6539. Total so far: 0.0
+2024-10-25 16:25:05,532 DEBUG:Accumulated 0.0 updates for ASN 3303. Total so far: 0.0
+2024-10-25 16:25:05,532 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,532 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,532 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,533 DEBUG:Row 71: Top Prefixes: ['104.132.125.0/24', '0', '0', '0', '0']
+2024-10-25 16:25:05,533 DEBUG:Row 71: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,533 DEBUG:Accumulated 0.0 updates for Prefix 104.132.125.0/24. Total so far: 0.0
+2024-10-25 16:25:05,533 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,533 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,533 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,533 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,533 DEBUG:Row 71: Updates per prefix info added.
+2024-10-25 16:25:05,533 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,533 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,533 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,533 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=2, threshold=80.40000000000016
+2024-10-25 16:25:05,533 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,533 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,533 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=3, threshold=5.0
+2024-10-25 16:25:05,533 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,533 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,533 DEBUG:Accumulated 0.0 updates for ASN 62567. Total so far: 0.0
+2024-10-25 16:25:05,533 DEBUG:Accumulated 0.0 updates for ASN 393406. Total so far: 0.0
+2024-10-25 16:25:05,533 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,533 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,533 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,534 DEBUG:Row 72: Top Prefixes: ['64.9.224.0/24', '64.9.225.0/24', '64.9.228.0/23', '0', '0']
+2024-10-25 16:25:05,534 DEBUG:Row 72: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,534 DEBUG:Accumulated 0.0 updates for Prefix 64.9.224.0/24. Total so far: 0.0
+2024-10-25 16:25:05,534 DEBUG:Accumulated 0.0 updates for Prefix 64.9.225.0/24. Total so far: 0.0
+2024-10-25 16:25:05,534 DEBUG:Accumulated 0.0 updates for Prefix 64.9.228.0/23. Total so far: 0.0
+2024-10-25 16:25:05,534 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,534 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,534 DEBUG:Row 72: Updates per prefix info added.
+2024-10-25 16:25:05,534 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,534 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,534 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,534 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=6, threshold=80.40000000000016
+2024-10-25 16:25:05,534 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,534 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=6, threshold=6.6000000000000085
+2024-10-25 16:25:05,534 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=5, threshold=5.0
+2024-10-25 16:25:05,534 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,534 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,534 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,534 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,534 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,534 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,535 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,535 DEBUG:Row 73: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,535 DEBUG:Row 73: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,535 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,535 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,535 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,535 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,535 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,535 DEBUG:Row 73: Updates per prefix info added.
+2024-10-25 16:25:05,535 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,535 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,535 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,535 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,535 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,535 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,535 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,535 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,535 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,535 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,535 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,535 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,535 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,536 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,536 DEBUG:Row 74: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,536 DEBUG:Row 74: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,536 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,536 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,536 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,536 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,536 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,536 DEBUG:Row 74: Updates per prefix info added.
+2024-10-25 16:25:05,536 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,536 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,536 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,536 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,536 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,536 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,536 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,536 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,536 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,536 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,536 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,536 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,537 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,537 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,537 DEBUG:Row 75: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,537 DEBUG:Row 75: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,537 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,537 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,537 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,537 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,537 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,537 DEBUG:Row 75: Updates per prefix info added.
+2024-10-25 16:25:05,537 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,537 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,537 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,537 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,537 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,537 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,537 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,537 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,537 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,537 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,537 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,538 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,538 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,538 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,538 DEBUG:Row 76: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,538 DEBUG:Row 76: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,538 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,538 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,538 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,538 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,538 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,538 DEBUG:Row 76: Updates per prefix info added.
+2024-10-25 16:25:05,538 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,538 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,538 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,538 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,538 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,538 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,538 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,538 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,538 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,538 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,539 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,539 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,539 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,539 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,539 DEBUG:Row 77: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,539 DEBUG:Row 77: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,539 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,539 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,539 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,539 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,539 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,539 DEBUG:Row 77: Updates per prefix info added.
+2024-10-25 16:25:05,539 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,539 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,539 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,539 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,539 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,539 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,539 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,539 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,539 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,539 DEBUG:Accumulated 0.0 updates for ASN 62567. Total so far: 0.0
+2024-10-25 16:25:05,540 DEBUG:Accumulated 0.0 updates for ASN 393406. Total so far: 0.0
+2024-10-25 16:25:05,540 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,540 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,540 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,540 DEBUG:Row 78: Top Prefixes: ['64.9.224.0/24', '64.9.225.0/24', '64.9.228.0/23', '0', '0']
+2024-10-25 16:25:05,540 DEBUG:Row 78: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,540 DEBUG:Accumulated 0.0 updates for Prefix 64.9.224.0/24. Total so far: 0.0
+2024-10-25 16:25:05,540 DEBUG:Accumulated 0.0 updates for Prefix 64.9.225.0/24. Total so far: 0.0
+2024-10-25 16:25:05,540 DEBUG:Accumulated 0.0 updates for Prefix 64.9.228.0/23. Total so far: 0.0
+2024-10-25 16:25:05,540 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,540 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,540 DEBUG:Row 78: Updates per prefix info added.
+2024-10-25 16:25:05,540 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,540 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,540 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,540 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=6, threshold=80.40000000000016
+2024-10-25 16:25:05,540 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,540 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=6, threshold=6.6000000000000085
+2024-10-25 16:25:05,540 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=5, threshold=5.0
+2024-10-25 16:25:05,540 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,540 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,540 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,541 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,541 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,541 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,541 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,541 DEBUG:Row 79: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,541 DEBUG:Row 79: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,541 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,541 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,541 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,541 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,541 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,541 DEBUG:Row 79: Updates per prefix info added.
+2024-10-25 16:25:05,541 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,541 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,541 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,541 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,541 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,541 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,541 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,541 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,541 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,542 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,542 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,542 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,542 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,542 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,542 DEBUG:Row 80: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,542 DEBUG:Row 80: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,542 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,542 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,542 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,542 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,542 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,542 DEBUG:Row 80: Updates per prefix info added.
+2024-10-25 16:25:05,542 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,542 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,542 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,542 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,542 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,542 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,542 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,542 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,542 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,543 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,543 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,543 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,543 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,543 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,543 DEBUG:Row 81: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,543 DEBUG:Row 81: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,543 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,543 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,543 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,543 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,543 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,543 DEBUG:Row 81: Updates per prefix info added.
+2024-10-25 16:25:05,543 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,543 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,543 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,543 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,543 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,543 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,543 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,543 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,543 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,544 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,544 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,544 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,544 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,544 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,544 DEBUG:Row 82: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,544 DEBUG:Row 82: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,544 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,544 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,544 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,544 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,544 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,544 DEBUG:Row 82: Updates per prefix info added.
+2024-10-25 16:25:05,544 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,544 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,544 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,544 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,544 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,544 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,544 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,544 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,544 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,545 DEBUG:Accumulated 0.0 updates for ASN 3549. Total so far: 0.0
+2024-10-25 16:25:05,545 DEBUG:Accumulated 0.0 updates for ASN 62567. Total so far: 0.0
+2024-10-25 16:25:05,545 DEBUG:Accumulated 0.0 updates for ASN 286. Total so far: 0.0
+2024-10-25 16:25:05,545 DEBUG:Accumulated 0.0 updates for ASN 200130. Total so far: 0.0
+2024-10-25 16:25:05,545 DEBUG:Accumulated 0.0 updates for ASN 1668. Total so far: 0.0
+2024-10-25 16:25:05,545 DEBUG:Row 83: Top Prefixes: ['104.132.126.0/24', '0', '0', '0', '0']
+2024-10-25 16:25:05,545 DEBUG:Row 83: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,545 DEBUG:Accumulated 0.0 updates for Prefix 104.132.126.0/24. Total so far: 0.0
+2024-10-25 16:25:05,545 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,545 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,545 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,545 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,545 DEBUG:Row 83: Updates per prefix info added.
+2024-10-25 16:25:05,545 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,545 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,545 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=3.3293623547839064, threshold=2.0266340666915212
+2024-10-25 16:25:05,545 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,545 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=62, threshold=6.6000000000000085
+2024-10-25 16:25:05,545 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,545 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,546 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,546 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,546 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,546 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,546 DEBUG:Accumulated 0.0 updates for ASN 0. Total so far: 0.0
+2024-10-25 16:25:05,546 DEBUG:Row 84: Top Prefixes: ['0', '0', '0', '0', '0']
+2024-10-25 16:25:05,546 DEBUG:Row 84: Top Prefixes Updates: [0.0, 0.0, 0.0, 0.0, 0.0]
+2024-10-25 16:25:05,546 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,546 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,546 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,546 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,546 DEBUG:Accumulated 0.0 updates for Prefix 0. Total so far: 0.0
+2024-10-25 16:25:05,546 DEBUG:Row 84: Updates per prefix info added.
+2024-10-25 16:25:05,546 DEBUG:Evaluating anomaly condition for feature 'Withdrawals': value=0, threshold=0.0
+2024-10-25 16:25:05,546 DEBUG:Evaluating anomaly condition for feature 'Route Changes': value=0, threshold=1.0
+2024-10-25 16:25:05,546 DEBUG:Evaluating anomaly condition for feature 'Std Dev of Updates': value=0.0, threshold=2.0266340666915212
+2024-10-25 16:25:05,546 DEBUG:Evaluating anomaly condition for feature 'Announcements': value=0, threshold=80.40000000000016
+2024-10-25 16:25:05,546 DEBUG:Evaluating anomaly condition for feature 'Count of Unexpected ASNs in Paths': value=0, threshold=0.0
+2024-10-25 16:25:05,546 DEBUG:Evaluating anomaly condition for feature 'AS Path Prepending': value=0, threshold=6.6000000000000085
+2024-10-25 16:25:05,546 DEBUG:Evaluating anomaly condition for feature 'Maximum Path Length': value=0, threshold=5.0
+2024-10-25 16:25:05,546 DEBUG:Evaluating anomaly condition for feature 'Average MED': value=0, threshold=0.0
+2024-10-25 16:25:05,546 DEBUG:Evaluating anomaly condition for feature 'Average Local Preference': value=0, threshold=0.0
+2024-10-25 16:25:05,552 INFO:AS Path Changes Summary Report generated at '/home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/test2/as_path_changes_summary.txt'.

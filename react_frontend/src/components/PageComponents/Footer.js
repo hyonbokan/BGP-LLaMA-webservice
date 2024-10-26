@@ -1,6 +1,7 @@
 import React from "react";
 import logo from '../../logo/logo.png';
-import { Box, Grid, Typography, Link, IconButton, } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
+import { Box, Grid, Typography, IconButton, Link as MUILink } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
@@ -50,15 +51,15 @@ const Footer = () => {
 
                 <Grid item xs={12} sm={2}>
                     <Typography variant="subtitle1" sx={ titleFontStyle } gutterBottom>Features</Typography>
-                    <Link to="/dataset" underline="hover" sx={ textFontStyle }>Dataset</Link><br />
-                    <Link to="/bgp_chat" underline="hover" sx={ textFontStyle }>BGP-LLaMA</Link><br />
-                    <Link href="https://github.com/hyonbokan/LLM-research/blob/main/finetune_main/finetuning_base/llama_bgpstream_finetune.ipynb" underline="hover" sx={ textFontStyle }>Fine-tuning</Link>
+                    <MUILink component={RouterLink} to="/dataset" underline="hover" sx={ textFontStyle }>Dataset</MUILink><br />
+                    <MUILink component={RouterLink} to="/bgp_chat" underline="hover" sx={ textFontStyle }>BGP-LLaMA</MUILink><br />
+                    <MUILink href="https://github.com/hyonbokan/LLM-research/blob/main/finetune_main/finetuning_base/llama_bgpstream_finetune.ipynb" underline="hover" sx={ textFontStyle }>Fine-tuning</MUILink>
                 </Grid>
 
                 <Grid item xs={12} sm={2}>
                     <Typography variant="subtitle1" sx={ titleFontStyle } gutterBottom>Learn</Typography>
-                    <Link href="https://ieeexplore.ieee.org/document/10583947/authors#authors" underline="hover" sx={ textFontStyle }>Paper</Link><br />
-                    <Link href="https://github.com/hyonbokan/LLM-research" underline="hover" sx={ textFontStyle }>Tutotial</Link>
+                    <MUILink href="https://ieeexplore.ieee.org/document/10583947/authors#authors" underline="hover" sx={ textFontStyle }>Paper</MUILink><br />
+                    <MUILink href="https://github.com/hyonbokan/LLM-research" underline="hover" sx={ textFontStyle }>Tutotial</MUILink>
                 </Grid>
 
                 <Grid item xs={12} sm={2}>

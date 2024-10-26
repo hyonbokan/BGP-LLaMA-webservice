@@ -1,9 +1,7 @@
 import os
 import pandas as pd
 import ast
-from collections import defaultdict, Counter
 import logging
-from .anomaly_config import anomaly_rules_config
 import operator
 
 def process_list_column(df, column_list, default_value):
@@ -16,8 +14,8 @@ def process_list_column(df, column_list, default_value):
             logging.warning(f"Column '{col}' not found in the DataFrame. Filling with default.")
             df[col] = [default_value for _ in range(len(df))]
 
-def generate_overall_summary(df, summary_metrics, total_updates_per_peer, top_n_peers):
-    overall_summary_text = "Overall Summary:\n\n"
+def generate_overall_summary(df, summary_metrics, total_updates_per_peer, total_updates_per_prefix, top_n_peers):
+    overall_summary_text = "BGP monitoring overview:\n\n"
     # Key statistics
     overall_summary_text += (
         f"During the observation period, Autonomous Systems reported various BGP metrics. "
@@ -47,11 +45,22 @@ def generate_overall_summary(df, summary_metrics, total_updates_per_peer, top_n_
     else:
         overall_summary_text += "No peer updates data available.\n"
 
-    overall_summary_text += "\n\n"
+    overall_summary_text += "\n"
+    
+    # Top prefixes
+    top_n_prefixes = 5  # Adjust as needed
+    overall_summary_text += f"Top {top_n_prefixes} Prefixes with the Highest Number of Updates:\n"
+    sorted_prefixes = sorted(total_updates_per_prefix.items(), key=lambda x: x[1], reverse=True)[:top_n_prefixes]
+    if sorted_prefixes:
+        for prefix, updates in sorted_prefixes:
+            overall_summary_text += f" - Prefix {prefix}\n"
+    else:
+        overall_summary_text += "No prefix updates data available.\n"
 
+    overall_summary_text += "\n"
+    
     # Policy-Related Metrics Summary
     overall_summary_text += "Policy-Related Metrics Summary:\n\n"
-
     # Local Preference Summary
     overall_summary_text += (
         f"Local Preference values ranged from {summary_metrics['Average Local Preference']['min']:.2f} to {summary_metrics['Average Local Preference']['max']:.2f}, "
@@ -148,7 +157,7 @@ def generate_data_point_log(row, timestamp, as_number):
     )
     return log_entry
 
-def collect_prefix_events(row, idx, timestamp, as_number, prefix_announcements, prefix_withdrawals):
+def collect_prefix_events(row, idx, timestamp, as_number, prefix_announcements, prefix_withdrawals, total_updates_per_prefix):
     # Announcements
     total_prefixes_announced = row.get('Total Prefixes Announced', 0)
     if total_prefixes_announced > 0:
@@ -160,7 +169,7 @@ def collect_prefix_events(row, idx, timestamp, as_number, prefix_announcements, 
                 f"Total prefixes announced: {int(total_prefixes_announced)}."
             )
             prefix_announcements.append(announcement)
-
+            total_updates_per_prefix[prefix] += 1
     # Withdrawals
     total_prefixes_withdrawn = row.get('Target Prefixes Withdrawn', 0)
     if total_prefixes_withdrawn > 0:
@@ -172,6 +181,7 @@ def collect_prefix_events(row, idx, timestamp, as_number, prefix_announcements, 
                 f"Total prefixes withdrawn: {int(total_prefixes_withdrawn)}."
             )
             prefix_withdrawals.append(withdrawal)
+            total_updates_per_prefix[prefix] += 1
             
 
 def parse_prefix_list(prefixes_str, idx, column_name):
@@ -194,30 +204,64 @@ def parse_prefix_list(prefixes_str, idx, column_name):
     return prefixes_list
 
 
+# def generate_updates_per_peer_info(row, timestamp, peer_asns):
+#     updates_info = f"At {timestamp}, updates per peer were as follows:\n"
+    
+#     if peer_asns:
+#         for peer_asn in peer_asns:
+#             if peer_asn.isdigit():
+#                 updates = row.get('Average Updates per Peer', 0.0)
+#                 updates_info += f"  - AS{peer_asn}: {updates} updates\n"
+#     else:
+#         updates_info += "  No peer updates were observed.\n"
+    
+#     return updates_info
+
 def generate_updates_per_peer_info(row, timestamp, peer_asns):
-    updates_info = f"At {timestamp}, updates per peer were as follows:\n"
+    # Retrieve the average updates per peer for all peers combined
+    avg_updates = row.get('Average Updates per Peer', 0.0)
+    updates_info = f"At {timestamp}, the average updates per peer were {avg_updates:.2f}, and the top peers are as follows:\n"
     
     if peer_asns:
         for peer_asn in peer_asns:
             if peer_asn.isdigit():
-                updates = row.get('Average Updates per Peer', 0.0)
-                updates_info += f"  - AS{peer_asn}: {updates} updates\n"
+                updates_info += f"  - AS{peer_asn}\n"
     else:
-        updates_info += "  No peer updates were observed.\n"
+        updates_info += "  No top peers were observed.\n"
     
     return updates_info
 
+# def generate_updates_per_prefix_info(timestamp, top_prefixes, prefix_updates):
+#     updates_info = f"At {timestamp}, updates per top prefix were as follows:\n"
+
+#     prefixes_present = False
+#     if top_prefixes:
+#         for prefix, updates in zip(top_prefixes, prefix_updates):
+#             if prefix:
+#                 updates_info += f"  - Prefix {prefix}\n"
+#                 prefixes_present = True
+#     if not prefixes_present:
+#         updates_info += "  - Prefix: None\n"
+
+#     return updates_info
+
 def generate_updates_per_prefix_info(timestamp, top_prefixes, prefix_updates):
     updates_info = f"At {timestamp}, updates per top prefix were as follows:\n"
-    
+
+    prefixes_present = False
     if top_prefixes:
         for prefix, updates in zip(top_prefixes, prefix_updates):
-            if prefix:
-                # updates_info += f"  - Prefix {prefix}: {updates:.2f} updates\n"
-                updates_info += f"  - Prefix {prefix}\n"
-    else:
-        updates_info += "  No prefix updates were observed.\n"
-    
+            # Check if the prefix is zero, and if so, display "None" instead
+            prefix_display = prefix if prefix != '0' else 'None'
+            if prefix_display != 'None':
+                updates_info += f"  - Prefix {prefix_display}\n"
+                prefixes_present = True
+            else:
+                updates_info += "  - Prefix: None\n"
+
+    if not prefixes_present:
+        updates_info += "  - Prefix: None\n"
+
     return updates_info
 
 
@@ -265,6 +309,8 @@ def detect_anomalies(row, anomaly_rules, require_all_conditions=False):
                 # If feature is missing, skip this condition
                 logging.warning(f"Feature '{feature}' not found in the data row. Skipping condition.")
                 continue
+            
+            logging.debug(f"Evaluating anomaly condition for feature '{feature}': value={feature_value}, threshold={threshold}")
 
             # Apply the operator to compare feature value and threshold
             if op_func(feature_value, threshold):

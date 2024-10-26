@@ -5,19 +5,19 @@ from collections import defaultdict, Counter
 import logging
 from .anomaly_config import anomaly_rules_config
 from .helper_functions import (
-    detect_anomalies,
-    generate_anomaly_log,
     generate_and_write_anomaly_summary,
-    generate_overall_summary,
     generate_data_point_log,
     collect_prefix_events,
-    generate_updates_per_peer_info,
-    generate_updates_per_prefix_info,
     collect_policy_info,
     generate_policy_log,
     write_logs_to_file,
     generate_policy_summary,
-    generate_as_path_changes_summary
+    generate_as_path_changes_summary,
+    generate_anomaly_log,
+    generate_updates_per_peer_info,
+    generate_updates_per_prefix_info,
+    detect_anomalies,
+    generate_overall_summary,
 )
 
 numeric_columns = [
@@ -34,6 +34,7 @@ numeric_columns = [
     'AS Path Prepending'
 ]
 
+
 def process_bgp(
     df,
     output_dir='processed_output',
@@ -47,8 +48,8 @@ def process_bgp(
     as_path_changes_summary_filename='as_path_changes_summary.txt',
     anomalies_filename='anomalies.txt',
     policy_summary_filename='policy_summary.txt',
-    top_n_peers=5,       # Number of top peers to include in the overall summary
-    percentile=90        # Percentile for high anomalies
+    top_n_peers=5,
+    percentile=90
 ):
     global numeric_columns
     # Create output directory if it doesn't exist
@@ -58,7 +59,7 @@ def process_bgp(
     log_file = os.path.join(output_dir, 'process_bgp.log')
     logging.basicConfig(
         filename=log_file,
-        level=logging.INFO,
+        level=logging.DEBUG,
         format='%(asctime)s %(levelname)s:%(message)s'
     ) 
 
@@ -152,11 +153,10 @@ def process_bgp(
         
     # Calculate total updates per peer
     total_updates_per_peer = defaultdict(float)
+    total_updates_per_prefix = defaultdict(float)
     
-        # Calculate 'Average Updates per Prefix' if not present
     if 'Average Updates per Prefix' not in df.columns:
         df['Average Updates per Prefix'] = df['Total Updates'] / df['Total Prefixes Announced']
-        # Handle division by zero or NaN values
         df['Average Updates per Prefix'] = df['Average Updates per Prefix'].fillna(0.0)
         logging.info("Calculated 'Average Updates per Prefix' as Total Updates divided by Total Prefixes Announced.")
 
@@ -180,37 +180,62 @@ def process_bgp(
             data_point_logs.append(log_entry + "\n")
 
             # Collect prefix announcements and withdrawals
-            collect_prefix_events(row, idx, timestamp, as_number, prefix_announcements, prefix_withdrawals)
+            collect_prefix_events(
+            row, idx, timestamp, as_number,
+            prefix_announcements, prefix_withdrawals,
+            total_updates_per_prefix,
+            )
             
             # Extract ASN values from Top Peer columns
-            peer_asns = [str(int(row[col])) for col in peer_columns if row[col] and str(row[col]).replace('.', '', 1).isdigit()]
+            # peer_asns = [str(int(row[col])) for col in peer_columns if row[col] and str(row[col]).replace('.', '', 1).isdigit()]
+            peer_asns = []
+            for col in peer_columns:
+                value = row.get(col, '')
+                if value and str(value).replace('.', '', 1).isdigit():
+                    try:
+                        peer_asns.append(str(int(float(value))))
+                    except ValueError:
+                        logging.warning(f"Invalid ASN value '{value}' in column '{col}' at row {idx}. Skipping.")
             
             # Extract corresponding update counts for peers
-            peer_updates = [row[col] for col in peer_update_columns]
-            logging.debug(f"Row {idx}: Top Peers Updates: {peer_updates}")
+            # peer_updates = [row[col] for col in peer_update_columns]
+            # logging.debug(f"Row {idx}: Top Peers Updates: {peer_updates}")
+            peer_updates = []
+            for col in peer_update_columns:
+                value = row.get(col, 0.0)
+                try:
+                    peer_updates.append(float(value))
+                except ValueError:
+                    logging.warning(f"Invalid update count '{value}' in column '{col}' at row {idx}. Using 0.0.")
+                    peer_updates.append(0.0)
             
             # Accumulate updates per peer
             for asn, updates in zip(peer_asns, peer_updates):
                 total_updates_per_peer[asn] += updates
                 logging.debug(f"Accumulated {updates} updates for ASN {asn}. Total so far: {total_updates_per_peer[asn]}")
-            
-            # Generate updates per peer information
-            updates_info = generate_updates_per_peer_info(row, timestamp, peer_asns)
-            updates_per_peer_info.append(updates_info + "\n")
 
             # Extract Top Prefixes
             top_prefixes = [row[col] for col in prefix_columns if row[col]]
             logging.debug(f"Row {idx}: Top Prefixes: {top_prefixes}")
-
             # Extract corresponding update counts for prefixes
             prefix_updates = [row[col] for col in prefix_update_columns]
             logging.debug(f"Row {idx}: Top Prefixes Updates: {prefix_updates}")
+            
+            # Accumulate updates per prefix
+            for prefix, updates in zip(top_prefixes, prefix_updates):
+                if prefix:
+                    total_updates_per_prefix[prefix] += updates
+                    logging.debug(f"Accumulated {updates} updates for Prefix {prefix}. Total so far: {total_updates_per_prefix[prefix]}")
             
             # Generate updates per prefix information
             updates_prefix_info = generate_updates_per_prefix_info(timestamp, top_prefixes, prefix_updates)
             updates_per_prefix_info.append(updates_prefix_info + "\n")
             logging.debug(f"Row {idx}: Updates per prefix info added.")
             
+            # Generate updates per peer information
+            updates_info = generate_updates_per_peer_info(row, timestamp, peer_asns)
+            updates_per_peer_info.append(updates_info + "\n")
+        
             # Detect and store anomalies
             anomalies_detected = detect_anomalies(row, anomaly_rules, require_all_conditions=False)
             if anomalies_detected:
@@ -242,8 +267,8 @@ def process_bgp(
     write_logs_to_file(updates_per_peer_info, output_dir, updates_per_peer_filename)
     write_logs_to_file(updates_per_prefix_info, output_dir, updates_per_prefix_filename)
     
-         # Generate Overall Summary
-    overall_summary_text = generate_overall_summary(df, summary_metrics, total_updates_per_peer, top_n_peers)
+    # Generate Overall Summary
+    overall_summary_text = generate_overall_summary(df, summary_metrics, total_updates_per_peer, total_updates_per_prefix, top_n_peers)
 
     # Write Overall Summary to File
     with open(os.path.join(output_dir, overall_summary_filename), 'w', encoding='utf-8') as f:

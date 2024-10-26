@@ -28,7 +28,18 @@ def initialize_temp_counts():
         "total_communities": 0,
         "unique_communities": set()
     }
-    
+
+def extract_collectors(query):
+    collectors_pattern = r'\b(?:route-views\.\w+|route-views[2-4]|rrc(?:[0-1]\d|2[0-6]))\b'
+
+    found_collectors = re.findall(collectors_pattern, query, re.IGNORECASE)
+
+    if not found_collectors:
+        found_collectors = ['rrc00']
+
+    return found_collectors
+
+
 def extract_asn(query):
     match = re.search(r'\bAS(\d+)\b', query, re.IGNORECASE)
     if match:
@@ -291,7 +302,7 @@ def extract_features(index, routes, old_routes_as, target_asn, target_prefixes=N
         "Average Local Preference": 0,
         "Total Communities": temp_counts.get("total_communities", 0),
         "Unique Communities": len(temp_counts.get("unique_communities", set())),
-        "Community Values": [],  # Added for policy analysis
+        "Community Values": [],
         "Total Updates": 0,
         "Average Updates per Peer": 0,
         "Max Updates from a Single Peer": 0,
@@ -321,7 +332,7 @@ def extract_features(index, routes, old_routes_as, target_asn, target_prefixes=N
         "Target Prefixes Announced": anomaly_data.get("target_prefixes_announced", 0),
         "AS Path Changes": anomaly_data.get("as_path_changes", 0),
         # Policy-related feature
-        "AS Path Prepending": temp_counts.get("as_path_prepending", 0),  # Added for policy analysis
+        "AS Path Prepending": temp_counts.get("as_path_prepending", 0),
     }
 
     routes_as = build_routes_as(routes, target_asn)
@@ -442,7 +453,7 @@ def extract_features(index, routes, old_routes_as, target_asn, target_prefixes=N
 
 
 def extract_bgp_data(from_time, until_time, target_asn, target_prefixes=None, 
-                     collectors=['rrc00', 'route-views2', 'route-views.sydney', 'route-views.wide']):
+                     collectors=['rrc00']):
     # Convert target_asn to string for consistency
     target_asn = str(target_asn)
 
@@ -662,7 +673,7 @@ def extract_bgp_data(from_time, until_time, target_asn, target_prefixes=None,
     # Return the path to the output directory
     return media_dir
 
-def collect_historical_data(from_time, target_asn, target_prefixes=None, until_time=None):
+def collect_historical_data(from_time, target_asn, collectors, target_prefixes=None, until_time=None):
     if target_asn is None or from_time is None:
         print("ASn or start time not provided. Exiting historical data collection.")
         return
@@ -675,7 +686,7 @@ def collect_historical_data(from_time, target_asn, target_prefixes=None, until_t
     if until_time is None:
         until_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-    return extract_bgp_data(from_time=from_time, until_time=until_time, target_asn=target_asn, target_prefixes=target_prefixes)
+    return extract_bgp_data(from_time=from_time, until_time=until_time, target_asn=target_asn, target_prefixes=target_prefixes, collectors=collectors)
 
 def convert_lists_to_tuples(df):
     for col in df.columns:
@@ -914,7 +925,7 @@ def run_real_time_bgpstream(asn, collection_period, target_prefixes, return_dict
             return_dict['features_df'] = features_df
 
 
-def collect_real_time_data(asn, target_prefixes, collection_period=timedelta(minutes=5)):
+def collect_real_time_data(asn, target_prefixes, collection_period=timedelta(minutes=3)):
     all_collected_data = []  # List to store all collected DataFrames
     features_df = pd.DataFrame()
 

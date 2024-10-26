@@ -1,0 +1,595 @@
+At 2017-08-25 00:00:00, the average updates per peer were 2.56, and the top peers are as follows:
+  - AS62567
+  - AS7575
+  - AS53364
+  - AS7018
+  - AS38880
+
+At 2017-08-25 00:05:00, the average updates per peer were 1.55, and the top peers are as follows:
+  - AS53364
+  - AS13030
+  - AS3257
+  - AS24441
+  - AS7660
+
+At 2017-08-25 00:10:00, the average updates per peer were 2.47, and the top peers are as follows:
+  - AS63956
+  - AS4739
+  - AS38880
+  - AS7575
+  - AS7018
+
+At 2017-08-25 00:15:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 00:20:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 00:25:00, the average updates per peer were 1.00, and the top peers are as follows:
+  - AS3130
+  - AS6539
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 00:30:00, the average updates per peer were 2.33, and the top peers are as follows:
+  - AS62567
+  - AS393406
+  - AS6539
+  - AS0
+  - AS0
+
+At 2017-08-25 00:35:00, the average updates per peer were 1.00, and the top peers are as follows:
+  - AS3130
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 00:40:00, the average updates per peer were 1.00, and the top peers are as follows:
+  - AS6539
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 00:45:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 00:50:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 00:55:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 01:00:00, the average updates per peer were 3.00, and the top peers are as follows:
+  - AS62567
+  - AS393406
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 01:05:00, the average updates per peer were 1.00, and the top peers are as follows:
+  - AS53364
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 01:10:00, the average updates per peer were 1.00, and the top peers are as follows:
+  - AS45896
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 01:15:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 01:20:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 01:25:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 01:30:00, the average updates per peer were 3.00, and the top peers are as follows:
+  - AS62567
+  - AS393406
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 01:35:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 01:40:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 01:45:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 01:50:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 01:55:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 02:00:00, the average updates per peer were 3.00, and the top peers are as follows:
+  - AS62567
+  - AS393406
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 02:05:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 02:10:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 02:15:00, the average updates per peer were 3.03, and the top peers are as follows:
+  - AS200130
+  - AS202018
+  - AS3549
+  - AS13030
+  - AS47872
+
+At 2017-08-25 02:20:00, the average updates per peer were 2.25, and the top peers are as follows:
+  - AS1836
+  - AS7018
+  - AS63956
+  - AS4739
+  - AS7575
+
+At 2017-08-25 02:25:00, the average updates per peer were 1.40, and the top peers are as follows:
+  - AS29608
+  - AS50300
+  - AS10026
+  - AS58511
+  - AS4608
+
+At 2017-08-25 02:30:00, the average updates per peer were 3.00, and the top peers are as follows:
+  - AS62567
+  - AS393406
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 02:35:00, the average updates per peer were 1.00, and the top peers are as follows:
+  - AS1221
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 02:40:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 02:45:00, the average updates per peer were 1.00, and the top peers are as follows:
+  - AS3303
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 02:50:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 02:55:00, the average updates per peer were 1.00, and the top peers are as follows:
+  - AS29608
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 03:00:00, the average updates per peer were 3.00, and the top peers are as follows:
+  - AS62567
+  - AS393406
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 03:05:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 03:10:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 03:15:00, the average updates per peer were 41514.55, and the top peers are as follows:
+  - AS2497
+  - AS286
+  - AS701
+  - AS7660
+  - AS13030
+
+At 2017-08-25 03:20:00, the average updates per peer were 21876.00, and the top peers are as follows:
+  - AS2497
+  - AS3333
+  - AS286
+  - AS7500
+  - AS8758
+
+At 2017-08-25 03:25:00, the average updates per peer were 10105.27, and the top peers are as follows:
+  - AS4777
+  - AS286
+  - AS2497
+  - AS7500
+  - AS8758
+
+At 2017-08-25 03:30:00, the average updates per peer were 16729.36, and the top peers are as follows:
+  - AS8758
+  - AS3333
+  - AS7500
+  - AS2497
+  - AS4777
+
+At 2017-08-25 03:35:00, the average updates per peer were 13424.40, and the top peers are as follows:
+  - AS7500
+  - AS8758
+  - AS3333
+  - AS286
+  - AS38880
+
+At 2017-08-25 03:40:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 03:45:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 03:50:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 03:55:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 04:00:00, the average updates per peer were 3.00, and the top peers are as follows:
+  - AS62567
+  - AS393406
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 04:05:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 04:10:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 04:15:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 04:20:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 04:25:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 04:30:00, the average updates per peer were 3.00, and the top peers are as follows:
+  - AS62567
+  - AS393406
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 04:35:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 04:40:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 04:45:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 04:50:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 04:55:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 05:00:00, the average updates per peer were 3.00, and the top peers are as follows:
+  - AS62567
+  - AS393406
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 05:05:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 05:10:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 05:15:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 05:20:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 05:25:00, the average updates per peer were 3.56, and the top peers are as follows:
+  - AS202018
+  - AS3549
+  - AS1668
+  - AS200130
+  - AS62567
+
+At 2017-08-25 05:30:00, the average updates per peer were 2.31, and the top peers are as follows:
+  - AS3549
+  - AS1836
+  - AS393406
+  - AS286
+  - AS62567
+
+At 2017-08-25 05:35:00, the average updates per peer were 1.19, and the top peers are as follows:
+  - AS3549
+  - AS7018
+  - AS3333
+  - AS7575
+  - AS8758
+
+At 2017-08-25 05:40:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 05:45:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 05:50:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 05:55:00, the average updates per peer were 1.00, and the top peers are as follows:
+  - AS6539
+  - AS3303
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 06:00:00, the average updates per peer were 3.00, and the top peers are as follows:
+  - AS62567
+  - AS393406
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 06:05:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 06:10:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 06:15:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 06:20:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 06:25:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 06:30:00, the average updates per peer were 3.00, and the top peers are as follows:
+  - AS62567
+  - AS393406
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 06:35:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 06:40:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 06:45:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 06:50:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2017-08-25 06:55:00, the average updates per peer were 2.98, and the top peers are as follows:
+  - AS3549
+  - AS62567
+  - AS286
+  - AS200130
+  - AS1668
+
+At 2017-08-25 07:00:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+

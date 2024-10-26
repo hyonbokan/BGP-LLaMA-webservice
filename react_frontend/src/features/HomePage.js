@@ -30,10 +30,21 @@ const HomePage = () => {
                 {/* Hero Section */}
                 <Container sx={{ py: 8, textAlign: 'center' }}>
                     <Typography variant="h3" gutterBottom>
-                    Welcome to BGP-LLaMA
+                      Welcome to BGP-LLaMA{' '}
+                      <Typography 
+                        component="span" 
+                        variant="h3" 
+                        sx={{ 
+                          fontFamily: 'Courier New, monospace',
+                          fontWeight: 'bold', 
+                          color: 'primary.main'
+                        }}
+                      >
+                        0.1
+                      </Typography>
                     </Typography>
                     <Typography variant="h6" color="textSecondary" paragraph>
-                    BGP-LLaMA is an instruction-finetuned, open-source LLM on BGP routing knowledge and analysis
+                      BGP-LLaMA is an instruction-finetuned, open-source LLM engineered for automating and scaling BGP routing data analysis, providing natural language reports and actionable insights.
                     </Typography>
                     <Button variant="contained" color="primary">
                       <Link to="/bgp_chat">

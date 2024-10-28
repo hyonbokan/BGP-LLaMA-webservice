@@ -923,7 +923,7 @@ def run_real_time_bgpstream(asn, collection_period, return_dict, target_prefixes
             return_dict['features_df'] = features_df
 
 
-def collect_real_time_data(asn, target_prefixes, collection_period=timedelta(minutes=3)):
+def collect_real_time_data(asn, target_prefixes=None, collection_period=timedelta(minutes=3)):
     all_collected_data = []  # List to store all collected DataFrames
     features_df = pd.DataFrame()
 

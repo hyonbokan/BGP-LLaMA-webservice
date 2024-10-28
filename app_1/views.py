@@ -10,7 +10,15 @@ import json
 from threading import Thread, Event
 import queue
 import os
-from .bgp_utils import extract_asn, extract_collectors, extract_target_prefixes, extract_times, collect_historical_data, collect_real_time_data, extract_real_time_span
+from .bgp_utils import (
+    extract_asn,
+    extract_collectors,
+    extract_target_prefixes,
+    extract_times,
+    collect_historical_data,
+    collect_real_time_data,
+    extract_real_time_span
+)
 from .model_loader import stream_bgp_query
 import re
 

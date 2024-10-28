@@ -181,6 +181,17 @@ const useChat = ({
             generatingMessageIndexRef.current = null; // Reset the index after message completion
             setOutputMessage(''); // Clear the output message
         }
+
+        if (data.status === 'error' && data.message) {
+            console.error('\nError event:', data.message);
+            setIsCollectingData(false);
+            setIsGenerating(false);
+            generatingMessageIndexRef.current = null; // Reset the index after message completion
+
+            const errorMessage = { text: `Error: ${data.message}`, sender: "system" };
+            updateChatTabs(errorMessage);
+        }
+
     };
     
     

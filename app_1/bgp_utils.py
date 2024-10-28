@@ -695,7 +695,7 @@ def convert_lists_to_tuples(df):
             df[col] = df[col].apply(lambda x: tuple(x) if isinstance(x, list) else x)
     return df
 
-def run_real_time_bgpstream(asn, collection_period, target_prefixes, return_dict):
+def run_real_time_bgpstream(asn, collection_period, return_dict, target_prefixes=None):
     all_features = []
     stream = pybgpstream.BGPStream(
         project="ris-live",
@@ -748,22 +748,20 @@ def run_real_time_bgpstream(asn, collection_period, target_prefixes, return_dict
                         process_update = True
 
                     # If target_prefixes are provided, check if the prefix is in target_prefixes
-                    for tgt_prefix in target_prefixes:
-                        try:
-                            tgt_net = ipaddress.ip_network(tgt_prefix)
-                            prefix_net = ipaddress.ip_network(prefix)
-                            
-                            # Only compare if both prefixes are of the same IP version
-                            if tgt_net.version == prefix_net.version:
-                                if prefix_net.subnet_of(tgt_net):
-                                    process_update = True
-                                    break
-                        except ValueError:
-                            logging.warning(f"Invalid prefix encountered: {tgt_prefix} or {prefix}")
-                            continue  # Invalid prefix, skip
-                    else:
-                        # If target_prefixes is None, we don't filter by prefixes
-                        pass
+                    if target_prefixes:
+                        for tgt_prefix in target_prefixes:
+                            try:
+                                tgt_net = ipaddress.ip_network(tgt_prefix)
+                                prefix_net = ipaddress.ip_network(prefix)
+                                
+                                # Only compare if both prefixes are of the same IP version
+                                if tgt_net.version == prefix_net.version:
+                                    if prefix_net.subnet_of(tgt_net):
+                                        process_update = True
+                                        break
+                            except ValueError:
+                                logging.warning(f"Invalid prefix encountered: {tgt_prefix} or {prefix}")
+                                continue  # Invalid prefix, skip
 
                     # If neither condition is met, skip this update
                     if not process_update:
@@ -925,7 +923,7 @@ def run_real_time_bgpstream(asn, collection_period, target_prefixes, return_dict
             return_dict['features_df'] = features_df
 
 
-def collect_real_time_data(asn, target_prefixes, collection_period=timedelta(minutes=3)):
+def collect_real_time_data(asn, target_prefixes=None, collection_period=timedelta(minutes=3)):
     all_collected_data = []  # List to store all collected DataFrames
     features_df = pd.DataFrame()
 
@@ -943,7 +941,7 @@ def collect_real_time_data(asn, target_prefixes, collection_period=timedelta(min
     
     p = multiprocessing.Process(
         target=run_real_time_bgpstream, 
-        args=(asn, collection_period, target_prefixes, return_dict)
+        args=(asn, collection_period, return_dict, target_prefixes)
     )
     p.start()
 
@@ -986,7 +984,7 @@ def collect_real_time_data(asn, target_prefixes, collection_period=timedelta(min
                     print(f"Restarting data collection for the remaining {int(remaining_time.total_seconds())} seconds...")
                     p = multiprocessing.Process(
                         target=run_real_time_bgpstream, 
-                        args=(asn, remaining_time, target_prefixes, return_dict)
+                        args=(asn, remaining_time, return_dict, target_prefixes)
                     )
                     p.start()
                     no_change_counter = 0  # Reset counter after restarting

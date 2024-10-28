@@ -21,6 +21,9 @@ from .bgp_utils import (
 )
 from .model_loader import stream_bgp_query
 import re
+import logging
+
+logger = logging.getLogger(__name__)
 
 status_update_event = Event()
 scenario = ""

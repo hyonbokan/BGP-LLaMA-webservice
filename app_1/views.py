@@ -45,10 +45,6 @@ def status_update_stream():
         status_update_event.clear()  # Clear the event after sending the update
 
 def get_current_status_message():
-    """
-    Returns the current status message to be sent to the frontend.
-    This could be collecting, querying, etc.
-    """
     if status_update_event.is_set():
         return "Data collection complete, ready for query."
     else:
@@ -70,7 +66,7 @@ def bgp_llama(request):
         session.save()
 
     session_id = session.session_key
-    print(f"Session ID for current request: {session_id}")
+    logger.info(f"Session ID for current request: {session_id}")
 
     try:
         response_stream = check_query(query, session)
@@ -86,7 +82,7 @@ def check_query(query, session):
     status_update_event.clear()
 
     asn = extract_asn(query)
-    print(asn)
+    logger.info(asn)
     target_prefixes = extract_target_prefixes(query)
     from_time, until_time = extract_times(query)
     real_time_span = extract_real_time_span(query)
@@ -107,49 +103,54 @@ def check_query(query, session):
 
     # Handle real-time data collection
     if "real-time" in query.lower():
-        print("\n Begin real-time collection and analysis")
+        logger.info("\n Begin real-time collection and analysis")
         yield 'data: {"status": "collecting", "message": "Collecting BGP messages..."}\n\n'
         Thread(target=collect_real_time_wrapper).start()
-
-        status_update_event.wait()
-        dir_path = dir_path_queue.get()
-        if dir_path:
-            # Update session in main thread
-            session['data_dir'] = dir_path
-            session.save()
-            print(f"\nSession updated data_dir in main thread: {session['data_dir']}\n")
-            for token in run_rag_query(query, directory_path=dir_path):
-                yield token
-        else:
-            yield 'data: {"status": "error", "message": "Real-time data collection failed"}\n\n'
+        while True:
+            if status_update_event.wait(timeout=5):
+                dir_path = dir_path_queue.get()
+                if dir_path:
+                    session['data_dir'] = dir_path
+                    session.save()
+                    for token in run_rag_query(query, directory_path=dir_path):
+                        yield token
+                    break
+                else:
+                    yield 'data: {"status": "error", "message": "Real-time data collection failed"}\n\n'
+                    break
+            else:
+                yield 'data: {"status": "error", "message": "Real-time data collection failed"}\n\n'
 
     # Handle historical data collection
     elif re.search(r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}', query):
-        print("\n Begin historical data collection and analysis")
+        logger.info("\n Begin historical data collection and analysis")
         yield 'data: {"status": "collecting", "message": "Collecting BGP messages..."}\n\n'
         Thread(target=collect_historical_wrapper).start()
-        status_update_event.wait()
-        dir_path = dir_path_queue.get()
-        if dir_path:
-            # Update session in main thread
-            session['data_dir'] = dir_path
-            session.save()
-            print(f"\nSession updated data_dir in main thread: {session['data_dir']}\n")
-            for token in run_rag_query(query, directory_path=dir_path):
-                yield token
-        else:
-            yield 'data: {"status": "error", "message": "Historical data collection failed"}\n\n'
+        while True:
+            if status_update_event.wait(timeout=5):
+                dir_path = dir_path_queue.get()
+                if dir_path:
+                    session['data_dir'] = dir_path
+                    session.save()
+                    for token in run_rag_query(query, directory_path=dir_path):
+                        yield token
+                    break
+                else:
+                    yield 'data: {"status": "error", "message": "Real-time data collection failed"}\n\n'
+                    break
+            else:
+                yield 'data: {"status": "error", "message": "Historical data collection failed"}\n\n'
 
     # Handle regular query
     else:
-        print(f"\nProcessing regular query...\n")
+        logger.info(f"\nProcessing regular query...\n")
         data_dir = session.get('data_dir')
-        print(f"Session data_dir retrieved: {data_dir}")
+        logger.info(f"Session data_dir retrieved: {data_dir}")
         if data_dir:
             for token in run_rag_query(query, directory_path=data_dir):
                 yield token
         else:
-            print("\nNo data directory found in session.\n")
+            logger.info("\nNo data directory found in session.\n")
             for token in run_rag_query(query, directory_path=None):
                 yield token
         status_update_event.set()
@@ -179,19 +180,19 @@ def download_file_with_query(request):
 
     # Normalize and build the full file path
     full_path = os.path.normpath(os.path.join(settings.MEDIA_ROOT, file_name))
-    print("Constructed file path:", full_path)
+    logger.info("Constructed file path:", full_path)
 
     # Check if the path starts with the MEDIA_ROOT directory
     if not full_path.startswith(os.path.abspath(settings.MEDIA_ROOT)):
-        print("Unauthorized access attempt:", full_path)
+        logger.info("Unauthorized access attempt:", full_path)
         raise Http404("Unauthorized access.")
 
     # Check if the file exists and is a file
     if os.path.exists(full_path) and os.path.isfile(full_path):
-        print("File found, returning response:", full_path)
+        logger.info("File found, returning response:", full_path)
         return FileResponse(open(full_path, 'rb'), as_attachment=True, filename=os.path.basename(full_path))
     else:
-        print("File not found:", full_path)
+        logger.info("File not found:", full_path)
         raise Http404("File not found.")
 
 

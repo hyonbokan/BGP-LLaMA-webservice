@@ -135,9 +135,7 @@ const useChat = ({
             generatingMessageIndexRef.current = null;  // Reset for a new message
         }
     
-        if (data.status === 'generating' && data.generated_text) {
-            console.log('\nGenerating output data event');
-        
+        if (data.status === 'generating' && data.generated_text) {        
             // Append to the current message being generated
             setChatTabs((prevTabs) => {
                 return prevTabs.map((tab, index) => {
@@ -182,15 +180,15 @@ const useChat = ({
             setOutputMessage(''); // Clear the output message
         }
 
-        if (data.status === 'error' && data.message) {
-            console.error('\nError event:', data.message);
-            setIsCollectingData(false);
-            setIsGenerating(false);
-            generatingMessageIndexRef.current = null; // Reset the index after message completion
+        // if (data.status === 'error' && data.message) {
+        //     console.error('\nError event:', data.message);
+        //     setIsCollectingData(false);
+        //     setIsGenerating(false);
+        //     generatingMessageIndexRef.current = null; // Reset the index after message completion
 
-            const errorMessage = { text: `Error: ${data.message}`, sender: "system" };
-            updateChatTabs(errorMessage);
-        }
+        //     const errorMessage = { text: `Error: ${data.message}`, sender: "system" };
+        //     updateChatTabs(errorMessage);
+        // }
 
     };
     

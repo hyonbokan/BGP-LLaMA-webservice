@@ -1,0 +1,20 @@
+On 2021-10-04 07:00:00, Autonomous System 32934 experienced an anomaly:
+  - Path Manipulation Anomaly detected (Unusual modifications to the AS path, such as excessive AS path prepending.)
+    Feature: AS Path Prepending
+    Value: 6
+
+On 2021-10-04 07:05:00, Autonomous System 32934 experienced an anomaly:
+  - Leak Anomaly detected (Excessive route withdrawals or unexpected route advertisements indicating possible route leaks.)
+    Feature: Route Changes
+    Value: 206
+
+On 2021-10-04 07:05:00, Autonomous System 32934 experienced an anomaly:
+  - Flapping Anomaly detected (Frequent changes in route announcements and withdrawals, indicating network instability.)
+    Feature: Std Dev of Updates
+    Value: 164.5
+
+On 2021-10-04 07:05:00, Autonomous System 32934 experienced an anomaly:
+  - Path Manipulation Anomaly detected (Unusual modifications to the AS path, such as excessive AS path prepending.)
+    Feature: Maximum Path Length
+    Value: 6
+

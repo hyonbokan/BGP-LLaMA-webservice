@@ -14,6 +14,9 @@ import ipaddress
 from .preprocessing_data import process_bgp
 import logging
 
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
+
 def initialize_temp_counts():
     return {
         "num_announcements": 0,
@@ -140,7 +143,7 @@ def extract_real_time_span(query):
         total_seconds = 300
     
     collection_period = timedelta(seconds=total_seconds)
-    print(f"\nParsed time span for real-time collection: {collection_period} (total seconds: {total_seconds})")
+    logger.info(f"\nParsed time span for real-time collection: {collection_period} (total seconds: {total_seconds})")
     return collection_period
 
 def build_routes_as(routes, target_asn):
@@ -466,16 +469,21 @@ def extract_bgp_data(from_time, until_time, target_asn, target_prefixes=None,
     
     # Check if the directory exists
     if not os.path.exists(media_dir):
-        raise OSError(f"Failed to create directory: {media_dir}")
-    print(f"\nDirectory created: {media_dir}")
+        logger.error(f"Failed to create directory: {media_dir}")
+        return None
+    logger.info(f"\nDirectory created: {media_dir}")
 
-    stream = pybgpstream.BGPStream(
-        from_time=from_time,
-        until_time=until_time,
-        record_type="updates",
-        collectors=collectors
-    )
-
+    try:
+        stream = pybgpstream.BGPStream(
+            from_time=from_time,
+            until_time=until_time,
+            record_type="updates",
+            collectors=collectors
+        )
+    except Exception as e:
+        logger.error(f"Error initializing BGPStream: {e}")
+        return None
+    
     all_features = []
     old_routes_as = {}
     routes = {}
@@ -496,192 +504,197 @@ def extract_bgp_data(from_time, until_time, target_asn, target_prefixes=None,
         "as_path_changes": 0,
         "unexpected_asns_in_paths": set()
     }
-    print(f"Starting BGP data extraction for ASN {target_asn} from {from_time} to {until_time}")
+    logger.info(f"Starting BGP data extraction for ASN {target_asn} from {from_time} to {until_time}")
 
     record_count = 0
     element_count = 0
 
-    for rec in stream.records():
-        record_count += 1
-        for elem in rec:
-            element_count += 1
-            update = elem.fields
-            elem_time = datetime.utcfromtimestamp(elem.time)
-
-            # If the time exceeds the 5-minute window, process the window and reset
-            if elem_time >= current_window_start + timedelta(minutes=5):
-                features, old_routes_as = extract_features(
-                    index, routes, old_routes_as, target_asn, target_prefixes,
-                    prefix_lengths, med_values, local_prefs, 
-                    communities_per_prefix, peer_updates, anomaly_data, temp_counts
-                )
-                features['Timestamp'] = current_window_start.strftime("%Y-%m-%d %H:%M:%S")
-                all_features.append(features)
-
-                # Move to the next 5-minute window
-                current_window_start += timedelta(minutes=5)
-                routes = {}  # Reset the routes for the next window
-                index += 1
-
-                # Reset temporary counts and data collections
-                temp_counts = initialize_temp_counts()
-                prefix_lengths = []
-                med_values = []
-                local_prefs = []
-                communities_per_prefix = {}
-                peer_updates = defaultdict(int)
-                anomaly_data = {
-                    "target_prefixes_withdrawn": 0,
-                    "target_prefixes_announced": 0,
-                    "as_path_changes": 0,
-                    "unexpected_asns_in_paths": set()
-                }
-
-            prefix = update.get("prefix")
-            if prefix is None:
-                continue
-
-            # Initialize process_update flag
-            process_update = False
-
-            # Check if target ASN is in the AS path
-            as_path_str = update.get('as-path', "")
-            as_path = [asn for asn in as_path_str.split() if '{' not in asn and '(' not in asn]
-            if target_asn in as_path:
-                process_update = True
-
-            # If target_prefixes are provided, check if the prefix is in target_prefixes
-            if target_prefixes:
-                if prefix in target_prefixes:
-                    process_update = True
-                else:
-                    # Optionally, check if the prefix is a subprefix of any target_prefix
-                    for tgt_prefix in target_prefixes:
-                        try:
-                            tgt_net = ipaddress.ip_network(tgt_prefix)
-                            prefix_net = ipaddress.ip_network(prefix)
-                            
-                            # Only compare if both prefixes are of the same IP version
-                            if tgt_net.version == prefix_net.version:
-                                if prefix_net.subnet_of(tgt_net):
-                                    process_update = True
-                                    break
-                        except ValueError:
-                            logging.warning(f"Invalid prefix encountered: {tgt_prefix} or {prefix}")
-                            continue  # Invalid prefix, skip
-            else:
-                # If target_prefixes is None, we don't filter by prefixes
-                pass
-
-            # If neither condition is met, skip this update
-            if not process_update:
-                continue
-
-            # Collect prefix length
+    try:
+        for rec in stream.records():
+            record_count += 1
             try:
-                network = ipaddress.ip_network(prefix, strict=False)
-                prefix_length = network.prefixlen
-            except ValueError:
-                continue  # Skip this prefix if invalid
-            prefix_lengths.append(prefix_length)
+                for elem in rec:
+                    element_count += 1
+                    update = elem.fields
+                    elem_time = datetime.utcfromtimestamp(elem.time)
 
-            # Check for bogon prefixes
-            if is_bogon_prefix(prefix):
-                temp_counts["bogon_prefixes"] += 1
-
-            peer_asn = elem.peer_asn
-            collector = rec.collector
-
-            # Count updates per peer
-            peer_updates[peer_asn] += 1
-
-            # Processing Announcements (A) and Withdrawals (W)
-            if elem.type == 'A':  # Announcement
-                if as_path:
-                    temp_counts["prefixes_announced"][prefix] = temp_counts["prefixes_announced"].get(prefix, 0) + 1
-                    temp_counts["num_announcements"] += 1
-                    # Initialize routes
-                    if prefix not in routes:
-                        routes[prefix] = {}
-                    if collector not in routes[prefix]:
-                        routes[prefix][collector] = {}
-
-                    routes[prefix][collector][peer_asn] = as_path
-
-                    # Collect MED and Local Preference
-                    med = update.get('med')
-                    if med is not None:
+                    # If the time exceeds the 5-minute window, process the window and reset
+                    if elem_time >= current_window_start + timedelta(minutes=5):
                         try:
-                            med_values.append(int(med))
-                        except ValueError:
-                            pass  # Handle non-integer MED values
-                    local_pref = update.get('local-pref')
-                    if local_pref is not None:
-                        try:
-                            local_prefs.append(int(local_pref))
-                        except ValueError:
-                            pass  # Handle non-integer Local Preference values
+                            features, old_routes_as = extract_features(
+                                index, routes, old_routes_as, target_asn, target_prefixes,
+                                prefix_lengths, med_values, local_prefs, 
+                                communities_per_prefix, peer_updates, anomaly_data, temp_counts
+                            )
+                            features['Timestamp'] = current_window_start.strftime("%Y-%m-%d %H:%M:%S")
+                            all_features.append(features)
+                        except Exception as e:
+                            logger.error(f"Error extracting features: {e}")
+                                
+                        # Move to the next 5-minute window
+                        current_window_start += timedelta(minutes=5)
+                        routes = {}  # Reset the routes for the next window
+                        index += 1
+                        temp_counts = initialize_temp_counts()
+                        prefix_lengths = []
+                        med_values = []
+                        local_prefs = []
+                        communities_per_prefix = {}
+                        peer_updates = defaultdict(int)
+                        anomaly_data = {
+                            "target_prefixes_withdrawn": 0,
+                            "target_prefixes_announced": 0,
+                            "as_path_changes": 0,
+                            "unexpected_asns_in_paths": set()
+                        }
 
-                    # Collect Communities
-                    communities = update.get('communities', [])
-                    if communities:
-                        temp_counts["total_communities"] += len(communities)
-                        temp_counts["unique_communities"].update(tuple(c) for c in communities)
-                        communities_per_prefix[prefix] = communities
+                    prefix = update.get("prefix")
+                    if prefix is None:
+                        continue
 
-                    # Check for AS Path Prepending
-                    if len(set(as_path)) < len(as_path):
-                        temp_counts["as_path_prepending"] += 1
+                    # Initialize process_update flag
+                    process_update = False
 
-                    # Anomaly detection for announcements
-                    if isinstance(target_prefixes, (list, set)) and prefix in target_prefixes:
-                        anomaly_data["target_prefixes_announced"] += 1
-                        # Check for unexpected ASNs in path to target prefixes
-                        if target_asn not in as_path:
-                            anomaly_data["unexpected_asns_in_paths"].update(set(as_path))
-            elif elem.type == 'W':  # Withdrawal
-                if prefix in routes and collector in routes[prefix]:
-                    if peer_asn in routes[prefix][collector]:
-                        routes[prefix][collector].pop(peer_asn, None)
-                        temp_counts["prefixes_withdrawn"][prefix] = temp_counts["prefixes_withdrawn"].get(prefix, 0) + 1
-                        temp_counts["num_withdrawals"] += 1
-                        
-                        # Anomaly detection for withdrawals
-                        if target_prefixes and prefix in target_prefixes:
-                            anomaly_data["target_prefixes_withdrawn"] += 1
+                    # Check if target ASN is in the AS path
+                    as_path_str = update.get('as-path', "")
+                    as_path = [asn for asn in as_path_str.split() if '{' not in asn and '(' not in asn]
+                    if target_asn in as_path:
+                        process_update = True
 
-    print(f"Total records processed: {record_count}")
-    print(f"Total elements processed: {element_count}")
+                    # If target_prefixes are provided, check if the prefix is in target_prefixes
+                    if target_prefixes:
+                        if prefix in target_prefixes:
+                            process_update = True
+                        else:
+                            for tgt_prefix in target_prefixes:
+                                try:
+                                    tgt_net = ipaddress.ip_network(tgt_prefix)
+                                    prefix_net = ipaddress.ip_network(prefix)
+                                    if tgt_net.version == prefix_net.version:
+                                        if prefix_net.subnet_of(tgt_net):
+                                            process_update = True
+                                            break
+                                except ValueError:
+                                    logging.warning(f"Invalid prefix encountered: {tgt_prefix} or {prefix}")
+                                    continue
+                    if not process_update:
+                        continue
 
-    # Process the final 5-minute window
-    features, old_routes_as = extract_features(
-        index, routes, old_routes_as, target_asn, target_prefixes,
-        prefix_lengths, med_values, local_prefs, 
-        communities_per_prefix, peer_updates, anomaly_data, temp_counts
-    )
-    features['Timestamp'] = current_window_start.strftime("%Y-%m-%d %H:%M:%S")
-    print(f"Features at index {index}: {features}")
-    all_features.append(features)
+                    try:
+                        network = ipaddress.ip_network(prefix, strict=False)
+                        prefix_length = network.prefixlen
+                        prefix_lengths.append(prefix_length)
+                    except ValueError:
+                        logger.warning(f"Invalid prefix skipped: {prefix}")
+                        continue
+
+                    # Check for bogon prefixes
+                    if is_bogon_prefix(prefix):
+                        temp_counts["bogon_prefixes"] += 1
+
+                    peer_asn = elem.peer_asn
+                    collector = rec.collector
+                    peer_updates[peer_asn] += 1
+
+                    # Processing Announcements (A) and Withdrawals (W)
+                    if elem.type == 'A':  # Announcement
+                        if as_path:
+                            temp_counts["prefixes_announced"][prefix] = temp_counts["prefixes_announced"].get(prefix, 0) + 1
+                            temp_counts["num_announcements"] += 1
+                            # Initialize routes
+                            if prefix not in routes:
+                                routes[prefix] = {}
+                            if collector not in routes[prefix]:
+                                routes[prefix][collector] = {}
+
+                            routes[prefix][collector][peer_asn] = as_path
+
+                            # Collect MED and Local Preference
+                            med = update.get('med')
+                            if med is not None:
+                                try:
+                                    med_values.append(int(med))
+                                except ValueError:
+                                    pass  # Handle non-integer MED values
+                            local_pref = update.get('local-pref')
+                            if local_pref is not None:
+                                try:
+                                    local_prefs.append(int(local_pref))
+                                except ValueError:
+                                    pass  # Handle non-integer Local Preference values
+
+                            # Collect Communities
+                            communities = update.get('communities', [])
+                            if communities:
+                                temp_counts["total_communities"] += len(communities)
+                                temp_counts["unique_communities"].update(tuple(c) for c in communities)
+                                communities_per_prefix[prefix] = communities
+
+                            # Check for AS Path Prepending
+                            if len(set(as_path)) < len(as_path):
+                                temp_counts["as_path_prepending"] += 1
+
+                            # Anomaly detection for announcements
+                            if isinstance(target_prefixes, (list, set)) and prefix in target_prefixes:
+                                anomaly_data["target_prefixes_announced"] += 1
+                                # Check for unexpected ASNs in path to target prefixes
+                                if target_asn not in as_path:
+                                    anomaly_data["unexpected_asns_in_paths"].update(set(as_path))
+                    elif elem.type == 'W':  # Withdrawal
+                        if prefix in routes and collector in routes[prefix]:
+                            if peer_asn in routes[prefix][collector]:
+                                routes[prefix][collector].pop(peer_asn, None)
+                                temp_counts["prefixes_withdrawn"][prefix] = temp_counts["prefixes_withdrawn"].get(prefix, 0) + 1
+                                temp_counts["num_withdrawals"] += 1
+                                
+                                # Anomaly detection for withdrawals
+                                if target_prefixes and prefix in target_prefixes:
+                                    anomaly_data["target_prefixes_withdrawn"] += 1
+            except Exception as e:
+                logger.error(f"Error processing element in record {record_count}: {e}")
+                continue
+            
+    except Exception as e:
+        logger.error(f"Streaming error encountered: {e}")
+        return None
     
-    # Convert collected features to a DataFrame
-    df_features = pd.json_normalize(all_features, sep='_').fillna(0)
-    print(df_features)
-    df_features.to_csv(f"/home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/knowledge/{target_asn}.csv")
-    process_bgp(df=df_features, output_dir=media_dir)
-    print(f"\nFinal data saved to {media_dir}\n")
-
-    # Return the path to the output directory
+    logger.info(f"Total records processed: {record_count}")
+    logger.info(f"Total elements processed: {element_count}")
+    
+    try:
+        # Process the final 5-minute window
+        features, old_routes_as = extract_features(
+            index, routes, old_routes_as, target_asn, target_prefixes,
+            prefix_lengths, med_values, local_prefs, 
+            communities_per_prefix, peer_updates, anomaly_data, temp_counts
+        )
+        features['Timestamp'] = current_window_start.strftime("%Y-%m-%d %H:%M:%S")
+        logger.info(f"Features at index {index}: {features}")
+        all_features.append(features)
+        
+        # Convert collected features to a DataFrame
+        df_features = pd.json_normalize(all_features, sep='_').fillna(0)
+        logger.info(df_features)
+        df_features.to_csv(f"/home/hb/django_react/BGP-LLaMA-webservice/media/csv_file/hist_{target_asn}.csv")
+        process_bgp(df=df_features, output_dir=media_dir)
+        logger.info(f"\nFinal data saved to {media_dir}\n")
+        
+    except Exception as e:
+        logger.error(f"Final data processing error: {e}")
+        return None
+    
     return media_dir
+
 
 def collect_historical_data(from_time, target_asn, collectors, target_prefixes=None, until_time=None):
     if target_asn is None or from_time is None:
-        print("ASn or start time not provided. Exiting historical data collection.")
+        logger.info("ASn or start time not provided. Exiting historical data collection.")
         return
     
     if target_prefixes is None:
-        print("\nTarget prefixes are not provided")
+        logger.info("\nTarget prefixes are not provided")
     else:
-        print(f"Target prefixes: {target_prefixes}")
+        logger.info(f"Target prefixes: {target_prefixes}")
         
     if until_time is None:
         until_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -729,7 +742,7 @@ def run_real_time_bgpstream(asn, collection_period, return_dict, target_prefixes
 
             # Check if the collection period has ended
             if time.time() - start_time >= collection_period.total_seconds():
-                print("Collection period ended. Processing data...")
+                logger.info("Collection period ended. Processing data...")
                 break
 
             try:
@@ -841,20 +854,20 @@ def run_real_time_bgpstream(asn, collection_period, return_dict, target_prefixes
                                     anomaly_data["target_prefixes_withdrawn"] += 1
 
             except KeyError as ke:
-                print(f"KeyError processing record: {ke}. Continuing with the next record.")
+                logger.info(f"KeyError processing record: {ke}. Continuing with the next record.")
                 continue
 
             except ValueError as ve:
-                print(f"ValueError processing record: {ve}. Continuing with the next record.")
+                logger.info(f"ValueError processing record: {ve}. Continuing with the next record.")
                 continue
 
             except Exception as e:
-                print(f"Unexpected error processing record: {e}. Continuing with the next record.")
+                logger.info(f"Unexpected error processing record: {e}. Continuing with the next record.")
                 continue
 
             # Time window check: aggregate and reset every 1 minute
             if current_time >= current_window_start + timedelta(minutes=1):
-                print(f"Reached time window: {current_window_start} to {current_time}")
+                logger.info(f"Reached time window: {current_window_start} to {current_time}")
 
                 # Extract features, including paths
                 features, old_routes_as = extract_features(
@@ -865,7 +878,7 @@ def run_real_time_bgpstream(asn, collection_period, return_dict, target_prefixes
                 # Check if features is non-empty
                 if features:
                     features['Timestamp'] = current_window_start.strftime('%Y-%m-%d %H:%M:%S')
-                    print(f"Features at index {index}: {features}")
+                    logger.info(f"Features at index {index}: {features}")
                     
                     all_features.append(features)
 
@@ -875,9 +888,9 @@ def run_real_time_bgpstream(asn, collection_period, return_dict, target_prefixes
                         # Update return_dict with the latest features
                         return_dict['features_df'] = features_df
                     except ValueError as ve:
-                        print(f"ValueError creating DataFrame from features: {ve}. Skipping this window.")
+                        logger.info(f"ValueError creating DataFrame from features: {ve}. Skipping this window.")
                 else:
-                    print(f"No features extracted for this window. Skipping DataFrame creation.")
+                    logger.info(f"No features extracted for this window. Skipping DataFrame creation.")
 
                 current_window_start = current_time.replace(second=0, microsecond=0)
                 routes = {}
@@ -910,13 +923,13 @@ def run_real_time_bgpstream(asn, collection_period, return_dict, target_prefixes
                     final_features_df = pd.DataFrame(all_features).dropna(axis=1, how='all')
                     return_dict['features_df'] = final_features_df
                 except ValueError as ve:
-                    print(f"ValueError creating final DataFrame from all_features: {ve}.")
+                    logger.info(f"ValueError creating final DataFrame from all_features: {ve}.")
             else:
-                print("No features extracted in the final aggregation window.")
+                logger.info("No features extracted in the final aggregation window.")
                 
     except Exception as e:
         error_message = f"An error occurred during real-time data collection for {asn}: {e}"
-        print(error_message)
+        logger.info(error_message)
         return_dict['error'] = error_message
         if all_features:
             features_df = pd.DataFrame(all_features).dropna(axis=1, how='all')
@@ -932,9 +945,9 @@ def collect_real_time_data(asn, target_prefixes=None, collection_period=timedelt
 
     media_dir = os.path.join(settings.MEDIA_ROOT, 'rag_bgp_data', f'realtime_AS{asn}_{data_uuid}')
     os.makedirs(media_dir, exist_ok=True)  # Ensure the directory exists
-    print(f"\nDirectory created: {media_dir}")
+    logger.info(f"\nDirectory created: {media_dir}")
 
-    print(f"\nCollecting data for ASN {asn} for {collection_period.total_seconds() // 60} minutes...")
+    logger.info(f"\nCollecting data for ASN {asn} for {collection_period.total_seconds() // 60} minutes...")
 
     manager = multiprocessing.Manager()
     return_dict = manager.dict()
@@ -954,14 +967,14 @@ def collect_real_time_data(asn, target_prefixes=None, collection_period=timedelt
 
     while time.time() < end_time + 5:
         if 'error' in return_dict:
-            print(f"Real-time data collection encountered an error: {return_dict['error']}")
+            logger.info(f"Real-time data collection encountered an error: {return_dict['error']}")
             features_df = return_dict.get('features_df', pd.DataFrame())
             break
 
         features_df = return_dict.get('features_df', pd.DataFrame())
 
         if not features_df.empty:
-            print(f"\nUpdated features_df at {datetime.utcnow()}:\n{features_df.tail(1)}\n")
+            logger.info(f"\nUpdated features_df at {datetime.utcnow()}:\n{features_df.tail(1)}\n")
 
             # Save the current features_df to the list
             all_collected_data.append(features_df.copy())
@@ -969,19 +982,19 @@ def collect_real_time_data(asn, target_prefixes=None, collection_period=timedelt
             if not last_features_df.empty and features_df.equals(last_features_df):
                 no_change_counter += 1
                 if no_change_counter >= max_no_change_iterations:
-                    print(f"No changes in data for the last {no_change_counter} intervals. Restarting data collection...")
+                    logger.info(f"No changes in data for the last {no_change_counter} intervals. Restarting data collection...")
                     # Calculate remaining time for the collection
                     elapsed_time = timedelta(seconds=time.time() - start_time)
                     remaining_time = collection_period - elapsed_time
                     if remaining_time.total_seconds() <= 0:
-                        print("No remaining time left for data collection. Exiting.")
+                        logger.info("No remaining time left for data collection. Exiting.")
                         break
 
                     # Restart the process with the remaining collection period
                     p.terminate()
                     p.join()
                     
-                    print(f"Restarting data collection for the remaining {int(remaining_time.total_seconds())} seconds...")
+                    logger.info(f"Restarting data collection for the remaining {int(remaining_time.total_seconds())} seconds...")
                     p = multiprocessing.Process(
                         target=run_real_time_bgpstream, 
                         args=(asn, remaining_time, return_dict, target_prefixes)
@@ -996,7 +1009,7 @@ def collect_real_time_data(asn, target_prefixes=None, collection_period=timedelt
         time.sleep(60)  # Sleep for 60 seconds to align with aggregation window
         
     if p.is_alive():
-        print("BGPStream collection timed out. Terminating process...")
+        logger.info("BGPStream collection timed out. Terminating process...")
         p.terminate()
         p.join()
 
@@ -1011,11 +1024,11 @@ def collect_real_time_data(asn, target_prefixes=None, collection_period=timedelt
 
     # Remove duplicates from the final DataFrame
     final_features_df = final_features_df.drop_duplicates()
-    print(final_features_df[['Top Peer 1 ASN', 'Top Peer 2 ASN', 'Top Prefix 1', 'Top Prefix 2']].head())
-    final_features_df.to_csv(f"/home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/knowledge/{asn}.csv")
+    logger.info(final_features_df[['Top Peer 1 ASN', 'Top Peer 2 ASN', 'Top Prefix 1', 'Top Prefix 2']].head())
+    final_features_df.to_csv(f"/home/hb/django_react/BGP-LLaMA-webservice/media/csv_file/real_time_{asn}.csv")
     # Save the final DataFrame to a CSV file
     process_bgp(df=final_features_df, output_dir=media_dir)
-    print(f"\nFinal data saved to {media_dir}\n")
+    logger.info(f"\nFinal data saved to {media_dir}\n")
     
     return media_dir
 

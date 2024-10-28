@@ -1,0 +1,23 @@
+On 2021-10-04 07:00:00, Autonomous System 32934 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 5
+  - AS Path Prepending observed 6 times
+
+On 2021-10-04 07:05:00, Autonomous System 32934 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 6
+
+On 2021-10-04 07:10:00, Autonomous System 32934 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 0
+
+
+Policy Summary:
+
+Local Preference values ranged from 0.00 to 0.00, with an average of 0.00.
+MED values ranged from 0.00 to 0.00, with an average of 0.00.
+AS Path Prepending was observed 6 times during the observation period.
+A total of 0 unique community values were observed.

@@ -1,0 +1,25 @@
+On 2024-10-29 04:25:00, Autonomous System 3356 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 12
+  - AS Path Prepending observed 25 times
+
+On 2024-10-29 04:26:00, Autonomous System 3356 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 17
+  - AS Path Prepending observed 1935 times
+
+On 2024-10-29 04:27:00, Autonomous System 3356 had the following policy-related observations:
+  - Average Local Preference: 0.00
+  - Average MED: 0.00
+  - Maximum AS Path Length: 19
+  - AS Path Prepending observed 1072 times
+
+
+Policy Summary:
+
+Local Preference values ranged from 0.00 to 0.00, with an average of 0.00.
+MED values ranged from 0.00 to 0.00, with an average of 0.00.
+AS Path Prepending was observed 3032 times during the observation period.
+A total of 0 unique community values were observed.

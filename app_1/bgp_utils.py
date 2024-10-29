@@ -13,6 +13,7 @@ from collections import defaultdict, Counter
 import ipaddress
 from .preprocessing_data import process_bgp
 import logging
+import signal
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -675,7 +676,7 @@ def extract_bgp_data(from_time, until_time, target_asn, target_prefixes=None,
         # Convert collected features to a DataFrame
         df_features = pd.json_normalize(all_features, sep='_').fillna(0)
         logger.info(df_features)
-        df_features.to_csv(f"/home/hb/django_react/BGP-LLaMA-webservice/media/csv_file/hist_{target_asn}.csv")
+        df_features.to_csv(f"{media_dir}/final_features.csv")
         process_bgp(df=df_features, output_dir=media_dir)
         logger.info(f"\nFinal data saved to {media_dir}\n")
         
@@ -742,7 +743,6 @@ def run_real_time_bgpstream(asn, collection_period, return_dict, target_prefixes
 
             # Check if the collection period has ended
             if time.time() - start_time >= collection_period.total_seconds():
-                logger.info("Collection period ended. Processing data...")
                 break
 
             try:
@@ -867,7 +867,7 @@ def run_real_time_bgpstream(asn, collection_period, return_dict, target_prefixes
 
             # Time window check: aggregate and reset every 1 minute
             if current_time >= current_window_start + timedelta(minutes=1):
-                logger.info(f"Reached time window: {current_window_start} to {current_time}")
+                # logger.info(f"Reached time window: {current_window_start} to {current_time}")
 
                 # Extract features, including paths
                 features, old_routes_as = extract_features(
@@ -878,7 +878,7 @@ def run_real_time_bgpstream(asn, collection_period, return_dict, target_prefixes
                 # Check if features is non-empty
                 if features:
                     features['Timestamp'] = current_window_start.strftime('%Y-%m-%d %H:%M:%S')
-                    logger.info(f"Features at index {index}: {features}")
+                    # logger.info(f"Features at index {index}: {features}")
                     
                     all_features.append(features)
 
@@ -909,40 +909,141 @@ def run_real_time_bgpstream(asn, collection_period, return_dict, target_prefixes
                     "as_path_changes": 0,
                     "unexpected_asns_in_paths": set()
                 }
-                
-        if routes:
-            features, old_routes_as = extract_features(
-                index, routes, old_routes_as, asn, target_prefixes,
-                prefix_lengths, med_values, local_prefs, 
-                communities_per_prefix, peer_updates, anomaly_data, temp_counts
-            )
-            if features:
-                features['Timestamp'] = current_window_start.strftime('%Y-%m-%d %H:%M:%S')
-                all_features.append(features)
-                try:
-                    final_features_df = pd.DataFrame(all_features).dropna(axis=1, how='all')
-                    return_dict['features_df'] = final_features_df
-                except ValueError as ve:
-                    logger.info(f"ValueError creating final DataFrame from all_features: {ve}.")
-            else:
-                logger.info("No features extracted in the final aggregation window.")
+        try:        
+            if routes:
+                features, old_routes_as = extract_features(
+                    index, routes, old_routes_as, asn, target_prefixes,
+                    prefix_lengths, med_values, local_prefs, 
+                    communities_per_prefix, peer_updates, anomaly_data, temp_counts
+                )
+                if features:
+                    features['Timestamp'] = current_window_start.strftime('%Y-%m-%d %H:%M:%S')
+                    all_features.append(features)
+                    logger.info(f"\nreal-time data collection finished...\n")
+                    try:
+                        final_features_df = pd.DataFrame(all_features).dropna(axis=1, how='all')
+                        return_dict['features_df'] = final_features_df
+                    except ValueError as ve:
+                        logger.info(f"ValueError creating final DataFrame from all_features: {ve}.")
+                else:
+                    logger.info("No features extracted in the final aggregation window.")
+
+        except Exception as e:
+            error_message = f"An error occurred during real-time data collection for {asn}: {e}"
+            logger.info(error_message)
+            return_dict['error'] = error_message
+            if all_features:
+                features_df = pd.DataFrame(all_features).dropna(axis=1, how='all')
+                return_dict['features_df'] = features_df
                 
     except Exception as e:
-        error_message = f"An error occurred during real-time data collection for {asn}: {e}"
-        logger.info(error_message)
-        return_dict['error'] = error_message
-        if all_features:
-            features_df = pd.DataFrame(all_features).dropna(axis=1, how='all')
-            return_dict['features_df'] = features_df
+        # This is the suggested try-except block to wrap the entire data collection logic
+        logger.error(f"BGPStream collection failed: {e}")
+        return_dict['error'] = str(e)
 
 
-def collect_real_time_data(asn, target_prefixes=None, collection_period=timedelta(minutes=3)):
+# def collect_real_time_data(asn, target_prefixes=None, collection_period=timedelta(minutes=3)):
+#     all_collected_data = []  # List to store all collected DataFrames
+#     features_df = pd.DataFrame()
+
+#     # Generate a unique UUID for the real-time data session
+#     data_uuid = uuid.uuid4()
+
+#     media_dir = os.path.join(settings.MEDIA_ROOT, 'rag_bgp_data', f'realtime_AS{asn}_{data_uuid}')
+#     os.makedirs(media_dir, exist_ok=True)  # Ensure the directory exists
+#     logger.info(f"\nDirectory created: {media_dir}")
+
+#     logger.info(f"\nCollecting data for ASN {asn} for {collection_period.total_seconds() // 60} minutes...")
+
+#     manager = multiprocessing.Manager()
+#     return_dict = manager.dict()
+    
+#     p = multiprocessing.Process(
+#         target=run_real_time_bgpstream, 
+#         args=(asn, collection_period, return_dict, target_prefixes)
+#     )
+#     p.start()
+
+#     start_time = time.time()
+#     end_time = start_time + collection_period.total_seconds()
+#     last_features_df = pd.DataFrame()
+
+#     no_change_counter = 0
+#     max_no_change_iterations = 2  # Adjust as needed
+
+#     while time.time() < end_time + 5:
+#         if 'error' in return_dict:
+#             logger.info(f"Real-time data collection encountered an error: {return_dict['error']}")
+#             features_df = return_dict.get('features_df', pd.DataFrame())
+#             break
+
+#         features_df = return_dict.get('features_df', pd.DataFrame())
+
+#         if not features_df.empty:
+#             logger.info(f"\nUpdated features_df at {datetime.utcnow()}:\n{features_df.tail(1)}\n")
+
+#             # Save the current features_df to the list
+#             all_collected_data.append(features_df.copy())
+
+#             if not last_features_df.empty and features_df.equals(last_features_df):
+#                 no_change_counter += 1
+#                 if no_change_counter >= max_no_change_iterations:
+#                     logger.info(f"No changes in data for the last {no_change_counter} intervals. Restarting data collection...")
+#                     # Calculate remaining time for the collection
+#                     elapsed_time = timedelta(seconds=time.time() - start_time)
+#                     remaining_time = collection_period - elapsed_time
+#                     if remaining_time.total_seconds() <= 0:
+#                         logger.info("No remaining time left for data collection. Exiting.")
+#                         break
+
+#                     # Restart the process with the remaining collection period
+#                     p.terminate()
+#                     p.join()
+                    
+#                     logger.info(f"Restarting data collection for the remaining {int(remaining_time.total_seconds())} seconds...")
+#                     p = multiprocessing.Process(
+#                         target=run_real_time_bgpstream, 
+#                         args=(asn, remaining_time, return_dict, target_prefixes)
+#                     )
+#                     p.start()
+#                     no_change_counter = 0
+#             else:
+#                 no_change_counter = 0
+
+#             last_features_df = features_df.copy()
+
+#         time.sleep(62)
+        
+#     if p.is_alive():
+#         logger.info("BGPStream collection timed out. Terminating process...")
+#         p.terminate()
+#         p.join()
+
+#     # Concatenate all collected DataFrames into one final DataFrame
+#     if all_collected_data:
+#         final_features_df = pd.concat(all_collected_data, ignore_index=True)
+#     else:
+#         final_features_df = features_df
+
+#     # Convert list columns to tuples before removing duplicates
+#     final_features_df = convert_lists_to_tuples(final_features_df)
+
+#     # Remove duplicates from the final DataFrame
+#     final_features_df = final_features_df.drop_duplicates()
+#     logger.info(final_features_df[['Top Peer 1 ASN', 'Top Peer 2 ASN', 'Top Prefix 1', 'Top Prefix 2']].head())
+#     final_features_df.to_csv(f"/home/hb/django_react/BGP-LLaMA-webservice/media/csv_file/real_time_{asn}.csv")
+#     # Save the final DataFrame to a CSV file
+#     process_bgp(df=final_features_df, output_dir=media_dir)
+#     logger.info(f"\nFinal data saved to {media_dir}\n")
+    
+#     return media_dir
+
+def collect_real_time_data(asn, target_prefixes=None, collection_period=timedelta(minutes=5)):
     all_collected_data = []  # List to store all collected DataFrames
     features_df = pd.DataFrame()
 
     # Generate a unique UUID for the real-time data session
     data_uuid = uuid.uuid4()
-
     media_dir = os.path.join(settings.MEDIA_ROOT, 'rag_bgp_data', f'realtime_AS{asn}_{data_uuid}')
     os.makedirs(media_dir, exist_ok=True)  # Ensure the directory exists
     logger.info(f"\nDirectory created: {media_dir}")
@@ -951,88 +1052,77 @@ def collect_real_time_data(asn, target_prefixes=None, collection_period=timedelt
 
     manager = multiprocessing.Manager()
     return_dict = manager.dict()
-    
-    p = multiprocessing.Process(
-        target=run_real_time_bgpstream, 
-        args=(asn, collection_period, return_dict, target_prefixes)
-    )
-    p.start()
+
+    def start_collection_process(current_period):
+        """Helper function to start a new BGPStream process with the remaining time."""
+        process = multiprocessing.Process(
+            target=run_real_time_bgpstream,
+            args=(asn, current_period, return_dict, target_prefixes)
+        )
+        process.start()
+        return process
+
+    remaining_time = collection_period
+    p = start_collection_process(remaining_time)
 
     start_time = time.time()
-    end_time = start_time + collection_period.total_seconds()
     last_features_df = pd.DataFrame()
-
     no_change_counter = 0
-    max_no_change_iterations = 2  # Adjust as needed
+    max_no_change_iterations = 1
 
-    while time.time() < end_time + 5:
+    while remaining_time.total_seconds() > 0:
+        # Check for errors or completed data collection in the return_dict
         if 'error' in return_dict:
             logger.info(f"Real-time data collection encountered an error: {return_dict['error']}")
-            features_df = return_dict.get('features_df', pd.DataFrame())
             break
 
+        # Check for updated data and store in all_collected_data
         features_df = return_dict.get('features_df', pd.DataFrame())
-
         if not features_df.empty:
             logger.info(f"\nUpdated features_df at {datetime.utcnow()}:\n{features_df.tail(1)}\n")
-
-            # Save the current features_df to the list
             all_collected_data.append(features_df.copy())
 
+            # Check if there’s no change in data over the past intervals
             if not last_features_df.empty and features_df.equals(last_features_df):
                 no_change_counter += 1
                 if no_change_counter >= max_no_change_iterations:
-                    logger.info(f"No changes in data for the last {no_change_counter} intervals. Restarting data collection...")
-                    # Calculate remaining time for the collection
                     elapsed_time = timedelta(seconds=time.time() - start_time)
                     remaining_time = collection_period - elapsed_time
                     if remaining_time.total_seconds() <= 0:
                         logger.info("No remaining time left for data collection. Exiting.")
                         break
 
-                    # Restart the process with the remaining collection period
+                    # Restart the process with the updated remaining time
                     p.terminate()
                     p.join()
-                    
-                    logger.info(f"Restarting data collection for the remaining {int(remaining_time.total_seconds())} seconds...")
-                    p = multiprocessing.Process(
-                        target=run_real_time_bgpstream, 
-                        args=(asn, remaining_time, return_dict, target_prefixes)
-                    )
-                    p.start()
-                    no_change_counter = 0  # Reset counter after restarting
+                    logger.info(f"Restarting data collection for remaining {int(remaining_time.total_seconds())} seconds...")
+                    return_dict.clear()  # Clear any previous errors or data
+                    p = start_collection_process(remaining_time)
+                    no_change_counter = 0
             else:
-                no_change_counter = 0  # Reset counter if data has changed
+                no_change_counter = 0
 
             last_features_df = features_df.copy()
 
-        time.sleep(60)  # Sleep for 60 seconds to align with aggregation window
-        
+        time.sleep(60)
+
+    # Ensure process is terminated after the collection period
     if p.is_alive():
-        logger.info("BGPStream collection timed out. Terminating process...")
+        logger.info("Final termination: BGPStream collection timed out. Terminating process...")
         p.terminate()
         p.join()
 
-    # Concatenate all collected DataFrames into one final DataFrame
-    if all_collected_data:
-        final_features_df = pd.concat(all_collected_data, ignore_index=True)
-    else:
-        final_features_df = features_df
-
-    # Convert list columns to tuples before removing duplicates
-    final_features_df = convert_lists_to_tuples(final_features_df)
-
-    # Remove duplicates from the final DataFrame
-    final_features_df = final_features_df.drop_duplicates()
-    logger.info(final_features_df[['Top Peer 1 ASN', 'Top Peer 2 ASN', 'Top Prefix 1', 'Top Prefix 2']].head())
+    # Aggregate collected DataFrames
+    final_features_df = pd.concat(all_collected_data, ignore_index=True) if all_collected_data else features_df
+    final_features_df = convert_lists_to_tuples(final_features_df).drop_duplicates()
+    logger.info(final_features_df.head())
     final_features_df.to_csv(f"/home/hb/django_react/BGP-LLaMA-webservice/media/csv_file/real_time_{asn}.csv")
-    # Save the final DataFrame to a CSV file
+
+    # Save processed data
     process_bgp(df=final_features_df, output_dir=media_dir)
     logger.info(f"\nFinal data saved to {media_dir}\n")
     
     return media_dir
-
-
 
 def split_dataframe(df, split_size=10):
     """

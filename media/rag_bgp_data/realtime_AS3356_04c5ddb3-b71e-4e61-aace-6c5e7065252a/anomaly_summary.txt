@@ -1,0 +1,15 @@
+Anomaly Summary:
+
+A total of 5 anomalies were detected during the observation period.
+
+Flapping Anomaly: 2 occurrences
+  - At 2024-10-29 04:26:00, AS3356 had triggered Std Dev of Updates.
+  - At 2024-10-29 04:27:00, AS3356 had triggered Announcements.
+
+Path Manipulation Anomaly: 2 occurrences
+  - At 2024-10-29 04:26:00, AS3356 had triggered AS Path Prepending.
+  - At 2024-10-29 04:27:00, AS3356 had triggered Maximum Path Length.
+
+Leak Anomaly: 1 occurrences
+  - At 2024-10-29 04:27:00, AS3356 had triggered Route Changes.
+

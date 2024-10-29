@@ -1,0 +1,20 @@
+On 2024-10-29 06:36:00, Autonomous System 3356 experienced an anomaly:
+  - Flapping Anomaly detected (Frequent changes in route announcements and withdrawals, indicating network instability.)
+    Feature: Std Dev of Updates
+    Value: 38.809780381424915
+
+On 2024-10-29 06:37:00, Autonomous System 3356 experienced an anomaly:
+  - Leak Anomaly detected (Excessive route withdrawals or unexpected route advertisements indicating possible route leaks.)
+    Feature: Route Changes
+    Value: 170
+
+On 2024-10-29 06:37:00, Autonomous System 3356 experienced an anomaly:
+  - Flapping Anomaly detected (Frequent changes in route announcements and withdrawals, indicating network instability.)
+    Feature: Announcements
+    Value: 3191
+
+On 2024-10-29 06:37:00, Autonomous System 3356 experienced an anomaly:
+  - Path Manipulation Anomaly detected (Unusual modifications to the AS path, such as excessive AS path prepending.)
+    Feature: AS Path Prepending
+    Value: 782
+

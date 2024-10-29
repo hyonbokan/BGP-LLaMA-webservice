@@ -136,6 +136,28 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'debug.log',
+        },
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'app_1': {
+            'handlers': ['file', 'console'],  # Avoid attaching the same handler multiple times
+            'level': 'DEBUG',
+            'propagate': False,  # Prevent propagation to the root logger
+        },
+    },
+}
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 

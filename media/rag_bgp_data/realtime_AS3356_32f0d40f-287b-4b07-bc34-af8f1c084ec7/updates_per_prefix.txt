@@ -1,0 +1,14 @@
+At 2024-10-29 06:18:00, updates per top prefix were as follows:
+  - Prefix 169.145.140.0/23
+  - Prefix 2a02:ac80:c0::/48
+  - Prefix 2a02:ac80:e0::/48
+  - Prefix 2a02:ac80:e000::/48
+  - Prefix 2a02:ac80:10::/48
+
+At 2024-10-29 06:19:00, updates per top prefix were as follows:
+  - Prefix 169.145.140.0/23
+  - Prefix 38.146.198.0/23
+  - Prefix 179.49.193.0/24
+  - Prefix 2804:fdc::/32
+  - Prefix 2a02:ac80::/32
+

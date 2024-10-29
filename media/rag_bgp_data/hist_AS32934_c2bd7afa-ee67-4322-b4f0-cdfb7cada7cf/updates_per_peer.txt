@@ -1,0 +1,49 @@
+At 2021-10-04 07:00:00, the average updates per peer were 222.00, and the top peers are as follows:
+  - AS34968
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2021-10-04 07:05:00, the average updates per peer were 148.00, and the top peers are as follows:
+  - AS34968
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2021-10-04 07:10:00, the average updates per peer were 148.00, and the top peers are as follows:
+  - AS34968
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2021-10-04 07:15:00, the average updates per peer were 185.00, and the top peers are as follows:
+  - AS34968
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2021-10-04 07:20:00, the average updates per peer were 111.00, and the top peers are as follows:
+  - AS34968
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+
+At 2021-10-04 07:25:00, the average updates per peer were 38.12, and the top peers are as follows:
+  - AS34968
+  - AS1103
+  - AS38880
+  - AS12859
+  - AS58511
+
+At 2021-10-04 07:30:00, the average updates per peer were 0.00, and the top peers are as follows:
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+  - AS0
+

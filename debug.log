@@ -1,0 +1,1120 @@
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+ Begin real-time collection and analysis
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_eaad93ad-748d-4121-9fb2-aa3644feed0d
+
+Collecting data for ASN 3356 for 5.0 minutes...
+Reached time window: 2024-10-29 03:08:00 to 2024-10-29 03:09:00.022726
+
+Updated features_df at 2024-10-29 03:09:39.831026:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 03:08:00  ...                 71
+
+[1 rows x 43 columns]
+
+Reached time window: 2024-10-29 03:09:00 to 2024-10-29 03:10:00.169343
+
+Updated features_df at 2024-10-29 03:10:41.963765:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 03:09:00  ...                913
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 03:11:44.087191:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 03:09:00  ...                913
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 03:12:46.214884:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 03:09:00  ...                913
+
+[1 rows x 43 columns]
+
+BGPStream collection failed: Could not get next record (is the stream started?)
+Restarting data collection for remaining 51 seconds...
+Reached time window: 2024-10-29 03:12:00 to 2024-10-29 03:13:00.059232
+Collection period ended. Processing data...
+
+real-time data collection finished...
+
+
+Updated features_df at 2024-10-29 03:13:48.471862:
+             Timestamp  ... AS Path Prepending
+1  2024-10-29 03:13:00  ...                407
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 03:14:50.556654:
+             Timestamp  ... AS Path Prepending
+1  2024-10-29 03:13:00  ...                407
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 03:15:52.682472:
+             Timestamp  ... AS Path Prepending
+1  2024-10-29 03:13:00  ...                407
+
+[1 rows x 43 columns]
+
+No remaining time left for data collection. Exiting.
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 03:08:00  ...                 71
+1  2024-10-29 03:09:00  ...                913
+4  2024-10-29 03:12:00  ...                 88
+5  2024-10-29 03:13:00  ...                407
+
+[4 rows x 43 columns]
+
+Final data saved to /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_eaad93ad-748d-4121-9fb2-aa3644feed0d
+
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_eaad93ad-748d-4121-9fb2-aa3644feed0d
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+ Begin real-time collection and analysis
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_31b45c8a-cdc0-4a2c-b8b0-dcc76292e42f
+
+Collecting data for ASN 3356 for 5.0 minutes...
+Reached time window: 2024-10-29 03:17:00 to 2024-10-29 03:18:00.126097
+
+Updated features_df at 2024-10-29 03:18:37.619419:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 03:17:00  ...                614
+
+[1 rows x 43 columns]
+
+BGPStream collection failed: Could not get next record (is the stream started?)
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+ Begin real-time collection and analysis
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_84b22f55-3782-4a87-9091-53b88d311d2d
+
+Collecting data for ASN 3356 for 5.0 minutes...
+Reached time window: 2024-10-29 03:21:00 to 2024-10-29 03:22:00.136768
+
+Updated features_df at 2024-10-29 03:22:43.685764:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 03:21:00  ...                 90
+
+[1 rows x 43 columns]
+
+Reached time window: 2024-10-29 03:22:00 to 2024-10-29 03:23:00.095812
+
+Updated features_df at 2024-10-29 03:23:45.774706:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 03:22:00  ...                946
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 03:24:47.900803:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 03:22:00  ...                946
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 03:25:50.027532:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 03:22:00  ...                946
+
+[1 rows x 43 columns]
+
+BGPStream collection failed: Could not get next record (is the stream started?)
+Restarting data collection for remaining 51 seconds...
+Reached time window: 2024-10-29 03:25:00 to 2024-10-29 03:26:00.043672
+Collection period ended. Processing data...
+
+real-time data collection finished...
+
+
+Updated features_df at 2024-10-29 03:26:52.296025:
+             Timestamp  ... AS Path Prepending
+1  2024-10-29 03:26:00  ...                264
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 03:27:54.410418:
+             Timestamp  ... AS Path Prepending
+1  2024-10-29 03:26:00  ...                264
+
+[1 rows x 43 columns]
+
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+ Begin real-time collection and analysis
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_a2f04922-8670-4d47-b00e-bb82cd6e939a
+
+Collecting data for ASN 3356 for 5.0 minutes...
+Reached time window: 2024-10-29 03:31:00 to 2024-10-29 03:32:00.061205
+
+Updated features_df at 2024-10-29 03:32:58.134932:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 03:31:00  ...                  4
+
+[1 rows x 41 columns]
+
+Reached time window: 2024-10-29 03:32:00 to 2024-10-29 03:33:00.068926
+Reached time window: 2024-10-29 03:33:00 to 2024-10-29 03:34:00.090352
+
+Updated features_df at 2024-10-29 03:34:00.264894:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 03:33:00  ...                775
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 03:35:02.388973:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 03:33:00  ...                775
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 03:36:04.514971:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 03:33:00  ...                775
+
+[1 rows x 43 columns]
+
+BGPStream collection failed: Could not get next record (is the stream started?)
+Restarting data collection for remaining 51 seconds...
+Collection period ended. Processing data...
+
+real-time data collection finished...
+
+
+Updated features_df at 2024-10-29 03:37:06.778563:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 03:36:00  ...                541
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 03:38:08.903731:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 03:36:00  ...                541
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 03:39:11.031237:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 03:36:00  ...                541
+
+[1 rows x 43 columns]
+
+No remaining time left for data collection. Exiting.
+             Timestamp Autonomous System Number  ...  Top Peer 4 ASN  Top Peer 5 ASN
+0  2024-10-29 03:31:00                     3356  ...             NaN             NaN
+1  2024-10-29 03:33:00                     3356  ...         47692.0         48362.0
+4  2024-10-29 03:36:00                     3356  ...          6453.0         35369.0
+
+[3 rows x 43 columns]
+
+Final data saved to /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_a2f04922-8670-4d47-b00e-bb82cd6e939a
+
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+ Begin real-time collection and analysis
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_57c4ebb6-01e3-401d-820a-7e170ba84fe3
+
+Collecting data for ASN 3356 for 5.0 minutes...
+Reached time window: 2024-10-29 03:41:00 to 2024-10-29 03:42:00.036272
+
+Updated features_df at 2024-10-29 03:42:21.947072:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 03:41:00  ...                379
+
+[1 rows x 43 columns]
+
+Reached time window: 2024-10-29 03:42:00 to 2024-10-29 03:43:00.198419
+
+Updated features_df at 2024-10-29 03:43:24.079093:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 03:42:00  ...                701
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 03:44:26.202329:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 03:42:00  ...                701
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 03:45:28.271017:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 03:42:00  ...                701
+
+[1 rows x 43 columns]
+
+BGPStream collection failed: Could not get next record (is the stream started?)
+Restarting data collection for remaining 51 seconds...
+Reached time window: 2024-10-29 03:45:00 to 2024-10-29 03:46:00.197677
+
+real-time data collection finished...
+
+
+Updated features_df at 2024-10-29 03:46:30.521478:
+             Timestamp  ... AS Path Prepending
+1  2024-10-29 03:46:00  ...                246
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 03:47:32.642327:
+             Timestamp  ... AS Path Prepending
+1  2024-10-29 03:46:00  ...                246
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 03:48:34.759039:
+             Timestamp  ... AS Path Prepending
+1  2024-10-29 03:46:00  ...                246
+
+[1 rows x 43 columns]
+
+No remaining time left for data collection. Exiting.
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 03:41:00  ...                379
+1  2024-10-29 03:42:00  ...                701
+4  2024-10-29 03:45:00  ...                163
+5  2024-10-29 03:46:00  ...                246
+
+[4 rows x 43 columns]
+
+Final data saved to /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_57c4ebb6-01e3-401d-820a-7e170ba84fe3
+
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_57c4ebb6-01e3-401d-820a-7e170ba84fe3
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:03:00 (total seconds: 180)
+
+ Begin real-time collection and analysis
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_40658d26-fc68-4127-b18a-3f08b67c2a9c
+
+Collecting data for ASN 3356 for 3.0 minutes...
+
+Updated features_df at 2024-10-29 03:51:14.804047:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 03:50:00  ...                830
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 03:52:16.922482:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 03:51:00  ...                431
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 03:53:19.046482:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 03:51:00  ...                431
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 03:54:21.169669:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 03:51:00  ...                431
+
+[1 rows x 43 columns]
+
+No remaining time left for data collection. Exiting.
+Final termination: BGPStream collection timed out. Terminating process...
+BGPStream collection failed: Could not get next record (is the stream started?)
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 03:50:00  ...                830
+1  2024-10-29 03:51:00  ...                431
+
+[2 rows x 43 columns]
+
+Final data saved to /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_40658d26-fc68-4127-b18a-3f08b67c2a9c
+
+Running RAG query with collected data...
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_40658d26-fc68-4127-b18a-3f08b67c2a9c
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+None
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+Processing regular query...
+
+Session data_dir retrieved: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_40658d26-fc68-4127-b18a-3f08b67c2a9c
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_40658d26-fc68-4127-b18a-3f08b67c2a9c
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:03:00 (total seconds: 180)
+
+ Begin real-time collection and analysis
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_8a0852f0-ed3d-4a8c-b22e-1345a01cd8fc
+
+Collecting data for ASN 3356 for 3.0 minutes...
+
+Updated features_df at 2024-10-29 03:58:28.317771:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 03:57:00  ...                148
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 03:59:28.450036:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 03:58:00  ...                893
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 04:00:28.574309:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 03:58:00  ...                893
+
+[1 rows x 43 columns]
+
+BGPStream collection timed out. Terminating process...
+BGPStream collection failed: Could not get next record (is the stream started?)
+   Top Peer 1 ASN  Top Peer 2 ASN      Top Prefix 1         Top Prefix 2
+0           21282           47692  169.145.140.0/23  2a06:9f81:2907::/48
+1            3549           49544  169.145.140.0/23      2804:fe0:2::/48
+
+Final data saved to /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_8a0852f0-ed3d-4a8c-b22e-1345a01cd8fc
+
+Running RAG query with collected data...
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_8a0852f0-ed3d-4a8c-b22e-1345a01cd8fc
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:03:00 (total seconds: 180)
+
+ Begin real-time collection and analysis
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_a5e33816-e095-43dd-be80-00a80242da25
+
+Collecting data for ASN 3356 for 3.0 minutes...
+
+Updated features_df at 2024-10-29 04:05:03.784886:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 04:04:00  ...               1453
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 04:06:03.910346:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 04:04:00  ...               1453
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 04:07:04.036247:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 04:04:00  ...               1453
+
+[1 rows x 43 columns]
+
+No changes in data for the last 2 intervals. Restarting data collection...
+No remaining time left for data collection. Exiting.
+BGPStream collection timed out. Terminating process...
+BGPStream collection failed: Could not get next record (is the stream started?)
+   Top Peer 1 ASN  Top Peer 2 ASN     Top Prefix 1    Top Prefix 2
+0           19151            5392  38.146.198.0/23  202.45.88.0/24
+
+Final data saved to /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_a5e33816-e095-43dd-be80-00a80242da25
+
+Running RAG query with collected data...
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_a5e33816-e095-43dd-be80-00a80242da25
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:03:00 (total seconds: 180)
+
+ Begin real-time collection and analysis
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_79f19e9f-0faa-457c-bf1f-79e10fd87d43
+
+Collecting data for ASN 3356 for 3.0 minutes...
+
+Updated features_df at 2024-10-29 04:10:10.531340:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 04:09:00  ...                379
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 04:11:12.664446:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 04:10:00  ...                872
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 04:12:14.747481:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 04:10:00  ...                872
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 04:13:16.812562:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 04:10:00  ...                872
+
+[1 rows x 43 columns]
+
+No remaining time left for data collection. Exiting.
+Final termination: BGPStream collection timed out. Terminating process...
+BGPStream collection failed: Could not get next record (is the stream started?)
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 04:09:00  ...                379
+1  2024-10-29 04:10:00  ...                872
+
+[2 rows x 43 columns]
+
+Final data saved to /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_79f19e9f-0faa-457c-bf1f-79e10fd87d43
+
+Running RAG query with collected data...
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_79f19e9f-0faa-457c-bf1f-79e10fd87d43
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:03:00 (total seconds: 180)
+
+ Begin real-time collection and analysis
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_aa5fd570-9c0e-44a3-ad02-6c58fe189e33
+
+Collecting data for ASN 3356 for 3.0 minutes...
+
+Updated features_df at 2024-10-29 04:19:22.374889:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 04:18:00  ...                202
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 04:20:24.510546:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 04:19:00  ...                590
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 04:21:26.638016:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 04:19:00  ...                590
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 04:22:28.729457:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 04:19:00  ...                590
+
+[1 rows x 43 columns]
+
+No remaining time left for data collection. Exiting.
+Final termination: BGPStream collection timed out. Terminating process...
+BGPStream collection failed: Could not get next record (is the stream started?)
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 04:18:00  ...                202
+1  2024-10-29 04:19:00  ...                590
+
+[2 rows x 43 columns]
+
+Final data saved to /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_aa5fd570-9c0e-44a3-ad02-6c58fe189e33
+
+Running RAG query with collected data...
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_aa5fd570-9c0e-44a3-ad02-6c58fe189e33
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:03:00 (total seconds: 180)
+
+ Begin real-time collection and analysis
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_04c5ddb3-b71e-4e61-aace-6c5e7065252a
+
+Collecting data for ASN 3356 for 3.0 minutes...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+
+Updated features_df at 2024-10-29 04:26:55.512552:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 04:25:00  ...                 25
+
+[1 rows x 43 columns]
+
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+
+Updated features_df at 2024-10-29 04:27:55.625425:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 04:26:00  ...               1935
+
+[1 rows x 43 columns]
+
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+
+Updated features_df at 2024-10-29 04:28:55.747560:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 04:27:00  ...               1072
+
+[1 rows x 43 columns]
+
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+Waiting for data collection to complete...
+
+Updated features_df at 2024-10-29 04:29:55.868631:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 04:27:00  ...               1072
+
+[1 rows x 43 columns]
+
+No remaining time left for data collection. Exiting.
+Final termination: BGPStream collection timed out. Terminating process...
+BGPStream collection failed: Could not get next record (is the stream started?)
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 04:25:00  ...                 25
+1  2024-10-29 04:26:00  ...               1935
+2  2024-10-29 04:27:00  ...               1072
+
+[3 rows x 43 columns]
+
+Final data saved to /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_04c5ddb3-b71e-4e61-aace-6c5e7065252a
+
+Running RAG query with collected data...
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_04c5ddb3-b71e-4e61-aace-6c5e7065252a
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:03:00 (total seconds: 180)
+
+ Begin real-time collection and analysis
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_06c8f677-7e85-4bee-a1d4-643629854210
+
+Collecting data for ASN 3356 for 3.0 minutes...
+
+Updated features_df at 2024-10-29 06:07:43.448174:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 06:06:00  ...                 28
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 06:08:43.578068:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 06:07:00  ...                235
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 06:09:43.700820:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 06:07:00  ...                235
+
+[1 rows x 43 columns]
+
+No remaining time left for data collection. Exiting.
+Final termination: BGPStream collection timed out. Terminating process...
+BGPStream collection failed: Could not get next record (is the stream started?)
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 06:06:00  ...                 28
+1  2024-10-29 06:07:00  ...                235
+
+[2 rows x 43 columns]
+
+Final data saved to /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_06c8f677-7e85-4bee-a1d4-643629854210
+
+Running RAG query with collected data...
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_06c8f677-7e85-4bee-a1d4-643629854210
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+None
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+Processing regular query...
+
+Session data_dir retrieved: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_06c8f677-7e85-4bee-a1d4-643629854210
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_06c8f677-7e85-4bee-a1d4-643629854210
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:03:00 (total seconds: 180)
+
+ Begin real-time collection and analysis
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_b1dd6323-0148-4fca-9881-27764a71c55b
+
+Collecting data for ASN 3356 for 3.0 minutes...
+
+Updated features_df at 2024-10-29 06:16:47.963963:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 06:15:00  ...                  9
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 06:17:48.097729:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 06:16:00  ...                695
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 06:18:48.218437:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 06:16:00  ...                695
+
+[1 rows x 43 columns]
+
+No remaining time left for data collection. Exiting.
+Final termination: BGPStream collection timed out. Terminating process...
+BGPStream collection failed: Could not get next record (is the stream started?)
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 06:15:00  ...                  9
+1  2024-10-29 06:16:00  ...                695
+
+[2 rows x 43 columns]
+
+Final data saved to /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_b1dd6323-0148-4fca-9881-27764a71c55b
+
+Running RAG query with collected data...
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_b1dd6323-0148-4fca-9881-27764a71c55b
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:03:00 (total seconds: 180)
+
+ Begin real-time collection and analysis
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:03:00 (total seconds: 180)
+
+ Begin real-time collection and analysis
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_32f0d40f-287b-4b07-bc34-af8f1c084ec7
+
+Collecting data for ASN 3356 for 3.0 minutes...
+
+Updated features_df at 2024-10-29 06:19:51.986164:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 06:18:00  ...                 47
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 06:20:52.114718:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 06:19:00  ...                823
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 06:21:52.236498:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 06:19:00  ...                823
+
+[1 rows x 43 columns]
+
+No remaining time left for data collection. Exiting.
+Final termination: BGPStream collection timed out. Terminating process...
+BGPStream collection failed: Could not get next record (is the stream started?)
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 06:18:00  ...                 47
+1  2024-10-29 06:19:00  ...                823
+
+[2 rows x 43 columns]
+
+Final data saved to /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_32f0d40f-287b-4b07-bc34-af8f1c084ec7
+
+Running RAG query with collected data...
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_32f0d40f-287b-4b07-bc34-af8f1c084ec7
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:03:00 (total seconds: 180)
+
+ Begin real-time collection and analysis
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:03:00 (total seconds: 180)
+
+ Begin real-time collection and analysis
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_6ff60b54-5cf7-423c-bcc8-5f1ea010cca6
+
+Collecting data for ASN 3356 for 3.0 minutes...
+
+Updated features_df at 2024-10-29 06:22:53.898047:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 06:21:00  ...                  9
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 06:23:54.022397:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 06:22:00  ...                719
+
+[1 rows x 43 columns]
+
+BGPStream collection failed: Could not get next record (is the stream started?)
+Real-time data collection encountered an error: Could not get next record (is the stream started?)
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 06:21:00  ...                  9
+1  2024-10-29 06:22:00  ...                719
+
+[2 rows x 43 columns]
+
+Final data saved to /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_6ff60b54-5cf7-423c-bcc8-5f1ea010cca6
+
+Running RAG query with collected data...
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_6ff60b54-5cf7-423c-bcc8-5f1ea010cca6
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:03:00 (total seconds: 180)
+
+ Begin real-time collection and analysis
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_b1d2e3a8-0378-46ae-aa13-344cb6f7f76f
+
+Collecting data for ASN 3356 for 3.0 minutes...
+Collection in progress...
+Collection in progress...
+Collection in progress...
+Collection in progress...
+Collection in progress...
+Collection in progress...
+Collection in progress...
+Collection in progress...
+Collection in progress...
+Collection in progress...
+Collection in progress...
+BGPStream collection failed: Could not get next record (is the stream started?)
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:03:00 (total seconds: 180)
+
+ Begin real-time collection and analysis
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_88a02271-493d-4d40-b8ef-372b7e9a75e6
+
+Collecting data for ASN 3356 for 3.0 minutes...
+Collection in progress...
+Collection in progress...
+Collection in progress...
+Collection in progress...
+Collection in progress...
+Collection in progress...
+Collection in progress...
+Collection in progress...
+Collection in progress...
+Collection in progress...
+Collection in progress...
+Collection in progress...
+
+Updated features_df at 2024-10-29 06:31:53.293789:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 06:30:00  ...                 15
+
+[1 rows x 42 columns]
+
+Collection in progress...
+Collection in progress...
+Collection in progress...
+Collection in progress...
+Collection in progress...
+Collection in progress...
+Collection in progress...
+Collection in progress...
+Collection in progress...
+Collection in progress...
+Collection in progress...
+BGPStream collection failed: Could not get next record (is the stream started?)
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:03:00 (total seconds: 180)
+
+ Begin real-time collection and analysis
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_a16aa460-9141-40ea-9df3-c60d7ca38ccb
+
+Collecting data for ASN 3356 for 3.0 minutes...
+
+Updated features_df at 2024-10-29 06:37:20.834048:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 06:36:00  ...                603
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 06:38:20.942716:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 06:37:00  ...                782
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 06:39:21.064906:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 06:37:00  ...                782
+
+[1 rows x 43 columns]
+
+No remaining time left for data collection. Exiting.
+Final termination: BGPStream collection timed out. Terminating process...
+BGPStream collection failed: Could not get next record (is the stream started?)
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 06:36:00  ...                603
+1  2024-10-29 06:37:00  ...                782
+
+[2 rows x 43 columns]
+
+Final data saved to /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_a16aa460-9141-40ea-9df3-c60d7ca38ccb
+
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:03:00 (total seconds: 180)
+
+ Begin real-time collection and analysis
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_1f2cef28-bfe0-4f74-a8f7-5eb1875dc952
+
+Collecting data for ASN 3356 for 3.0 minutes...
+BGPStream collection failed: Could not get next record (is the stream started?)
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:02:00 (total seconds: 120)
+
+ Begin real-time collection and analysis
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_26f391ef-d923-409b-afed-e5334be7f5ab
+
+Collecting data for ASN 3356 for 2.0 minutes...
+BGPStream collection failed: Could not get next record (is the stream started?)
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:02:00 (total seconds: 120)
+
+ Begin real-time collection and analysis
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_4922ebba-eb14-4696-ab71-e0d9587610d9
+
+Collecting data for ASN 3356 for 2.0 minutes...
+
+Updated features_df at 2024-10-29 06:51:59.706896:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 06:50:00  ...                  0
+
+[1 rows x 33 columns]
+
+
+real-time data collection finished...
+
+
+Updated features_df at 2024-10-29 06:52:59.825295:
+             Timestamp  ... AS Path Prepending
+2  2024-10-29 06:52:00  ...                827
+
+[1 rows x 43 columns]
+
+
+Updated features_df at 2024-10-29 06:53:59.904411:
+             Timestamp  ... AS Path Prepending
+2  2024-10-29 06:52:00  ...                827
+
+[1 rows x 43 columns]
+
+No remaining time left for data collection. Exiting.
+             Timestamp  ...         Top Prefix 5
+0  2024-10-29 06:50:00  ...                  NaN
+2  2024-10-29 06:51:00  ...  2a02:ac80:7370::/48
+3  2024-10-29 06:52:00  ...  2a13:a5c6:6500::/40
+
+[3 rows x 43 columns]
+
+Final data saved to /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_4922ebba-eb14-4696-ab71-e0d9587610d9
+
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+None
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+Processing regular query...
+
+Session data_dir retrieved: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_6ff60b54-5cf7-423c-bcc8-5f1ea010cca6
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_6ff60b54-5cf7-423c-bcc8-5f1ea010cca6
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+32934
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+ Begin historical data collection and analysis
+Target prefixes: ['129.134.30.0/24', '129.134.30.0/23']
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/hist_AS32934_c2bd7afa-ee67-4322-b4f0-cdfb7cada7cf
+Starting BGP data extraction for ASN 32934 from 2021-10-04 07:00:00 to 2021-10-04 07:30:00
+Total records processed: 1095173
+Total elements processed: 2282678
+Features at index 6: {'Timestamp': '2021-10-04 07:30:00', 'Autonomous System Number': '32934', 'Total Routes': 0, 'New Routes': 0, 'Withdrawals': 0, 'Origin Changes': 0, 'Route Changes': 0, 'Maximum Path Length': 0, 'Average Path Length': 0.0, 'Maximum Edit Distance': 0, 'Average Edit Distance': 0, 'Announcements': 0, 'Unique Prefixes Announced': 0, 'Average MED': 0, 'Average Local Preference': 0, 'Total Communities': 0, 'Unique Communities': 0, 'Community Values': [], 'Total Updates': 0, 'Average Updates per Peer': 0, 'Max Updates from a Single Peer': 0, 'Min Updates from a Single Peer': 0, 'Std Dev of Updates': 0, 'Top Peer 1 ASN': None, 'Top Peer 2 ASN': None, 'Top Peer 3 ASN': None, 'Top Peer 4 ASN': None, 'Top Peer 5 ASN': None, 'Total Prefixes Announced': 0, 'Average Announcements per Prefix': 0, 'Max Announcements for a Single Prefix': 0, 'Min Announcements for a Single Prefix': 0, 'Std Dev of Announcements': 0, 'Top Prefix 1': None, 'Top Prefix 2': None, 'Top Prefix 3': None, 'Top Prefix 4': None, 'Top Prefix 5': None, 'Count of Unexpected ASNs in Paths': 0, 'Unexpected ASN 1': None, 'Unexpected ASN 2': None, 'Unexpected ASN 3': None, 'Target Prefixes Withdrawn': 0, 'Target Prefixes Announced': 0, 'AS Path Changes': 0, 'AS Path Prepending': 0}
+             Timestamp  ... Min Prefix Length
+0  2021-10-04 07:00:00  ...              32.0
+1  2021-10-04 07:05:00  ...              32.0
+2  2021-10-04 07:10:00  ...              32.0
+3  2021-10-04 07:15:00  ...              32.0
+4  2021-10-04 07:20:00  ...              32.0
+5  2021-10-04 07:25:00  ...              24.0
+6  2021-10-04 07:30:00  ...               0.0
+
+[7 rows x 49 columns]
+
+Final data saved to /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/hist_AS32934_c2bd7afa-ee67-4322-b4f0-cdfb7cada7cf
+
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/hist_AS32934_c2bd7afa-ee67-4322-b4f0-cdfb7cada7cf
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:02:00 (total seconds: 120)
+
+ Begin real-time collection and analysis
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_317f4e4c-42b4-4700-8312-0f85da4b65e0
+
+Collecting data for ASN 3356 for 2.0 minutes...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-29 07:03:23.430479:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 07:02:00  ...                173
+
+[1 rows x 43 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-29 07:04:23.557892:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 07:03:00  ...                671
+
+[1 rows x 43 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-29 07:05:23.641860:
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 07:03:00  ...                671
+
+[1 rows x 43 columns]
+
+No remaining time left for data collection. Exiting.
+Final termination: BGPStream collection timed out. Terminating process...
+BGPStream collection failed: Could not get next record (is the stream started?)
+             Timestamp  ... AS Path Prepending
+0  2024-10-29 07:02:00  ...                173
+1  2024-10-29 07:03:00  ...                671
+
+[2 rows x 43 columns]
+
+Final data saved to /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_317f4e4c-42b4-4700-8312-0f85da4b65e0
+
+Running RAG query with collected data...
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_317f4e4c-42b4-4700-8312-0f85da4b65e0

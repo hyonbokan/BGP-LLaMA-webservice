@@ -1,0 +1,14 @@
+At 2024-10-29 07:02:00, updates per top prefix were as follows:
+  - Prefix 169.145.140.0/23
+  - Prefix 2a0e:97c4:ad47::/48
+  - Prefix 45.228.175.0/24
+  - Prefix 197.216.52.0/24
+  - Prefix 38.146.198.0/23
+
+At 2024-10-29 07:03:00, updates per top prefix were as follows:
+  - Prefix 169.145.140.0/23
+  - Prefix 2a0e:97c4:ad47::/48
+  - Prefix 198.71.76.0/24
+  - Prefix 197.216.52.0/24
+  - Prefix 198.71.79.0/24
+

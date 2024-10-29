@@ -1,0 +1,17 @@
+At 2024-10-29 06:50:00, the average updates per peer were 0.00, and the top peers are as follows:
+  No top peers were observed.
+
+At 2024-10-29 06:51:00, the average updates per peer were 15.48, and the top peers are as follows:
+  - AS49544
+  - AS6908
+  - AS47692
+  - AS2914
+  - AS35280
+
+At 2024-10-29 06:52:00, the average updates per peer were 20.53, and the top peers are as follows:
+  - AS49544
+  - AS48362
+  - AS14840
+  - AS199524
+  - AS62167
+

@@ -22,6 +22,7 @@ from .bgp_utils import (
 from .model_loader import stream_bgp_query
 import re
 import logging
+import time
 
 logger = logging.getLogger(__name__)
 
@@ -56,10 +57,7 @@ def bgp_llama(request):
     session = request.session
 
     if not query:
-        return StreamingHttpResponse(
-            json.dumps({"status": "error", "message": "No query provided"}), 
-            content_type="application/json"
-        )
+        return JsonResponse({"status": "error", "message": "No query provided"}, status=400)
 
     # Ensure the session is saved and has a session_key
     if not session.session_key:
@@ -72,6 +70,8 @@ def bgp_llama(request):
         response_stream = check_query(query, session)
         response = StreamingHttpResponse(response_stream, content_type="text/event-stream")
         response['X-Accel-Buffering'] = 'no'  # Disable Nginx buffering
+        response['Cache-Control'] = 'no-cache'
+        response['Connection'] = 'keep-alive'
         return response
     except Exception as e:
         logger.error(f"Error in bgp_llama view: {str(e)}")
@@ -100,26 +100,39 @@ def check_query(query, session):
         dir_path = collect_real_time_data(asn=asn, target_prefixes=target_prefixes, collection_period=real_time_span)
         dir_path_queue.put(dir_path)
         status_update_event.set()
-
-    # Handle real-time data collection
     if "real-time" in query.lower():
         logger.info("\n Begin real-time collection and analysis")
         yield 'data: {"status": "collecting", "message": "Collecting BGP messages..."}\n\n'
+
+        # Start data collection process
         Thread(target=collect_real_time_wrapper).start()
+
         while True:
-            if status_update_event.wait(timeout=5):
-                dir_path = dir_path_queue.get()
-                if dir_path:
-                    session['data_dir'] = dir_path
-                    session.save()
-                    for token in run_rag_query(query, directory_path=dir_path):
-                        yield token
-                    break
-                else:
-                    yield 'data: {"status": "error", "message": "Real-time data collection failed"}\n\n'
-                    break
+            if status_update_event.wait(timeout=10):
+                try:
+                    # Retrieve directory path once data collection is done
+                    dir_path = dir_path_queue.get_nowait()
+                    if dir_path:
+                        session['data_dir'] = dir_path
+                        session.save()
+                        logger.info("Running RAG query with collected data...")
+                        for token in run_rag_query(query, directory_path=dir_path):
+                            yield token
+                        yield 'data: {"status": "complete"}\n\n'
+                        break
+                    else:
+                        # If no directory path, the collection failed
+                        yield 'data: {"status": "error", "message": "Data collection failed."}\n\n'
+                        break
+                except queue.Empty:
+                    # Log and yield "still collecting" if directory path isn't ready
+                    yield 'data: {"status": "in progress", "message": "Still collecting BGP messages..."}\n\n'
+                    logger.info("Still collecting data, checking again...")
+                    continue
             else:
-                yield 'data: {"status": "error", "message": "Real-time data collection failed"}\n\n'
+                # Log and yield "in progress" if still within timeout but collection not yet completed
+                yield 'data: {"status": "in progress", "message": "Still collecting BGP messages..."}\n\n'
+                logger.info("Collection in progress, continuing to wait...")
 
     # Handle historical data collection
     elif re.search(r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}', query):
@@ -127,7 +140,7 @@ def check_query(query, session):
         yield 'data: {"status": "collecting", "message": "Collecting BGP messages..."}\n\n'
         Thread(target=collect_historical_wrapper).start()
         while True:
-            if status_update_event.wait(timeout=5):
+            if status_update_event.wait(timeout=10):
                 dir_path = dir_path_queue.get()
                 if dir_path:
                     session['data_dir'] = dir_path

@@ -1,7 +1,0 @@
-Anomaly Summary:
-
-A total of 1 anomalies were detected during the observation period.
-
-Flapping Anomaly: 1 occurrences
-  - At 2021-10-04 07:25:00, AS32934 had triggered Std Dev of Updates.
-

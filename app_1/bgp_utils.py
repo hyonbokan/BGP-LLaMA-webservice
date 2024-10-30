@@ -13,7 +13,6 @@ from collections import defaultdict, Counter
 import ipaddress
 from .preprocessing_data import process_bgp
 import logging
-import signal
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -30,8 +29,14 @@ def initialize_temp_counts():
         "as_path_prepending": 0,
         "bogon_prefixes": 0,
         "total_communities": 0,
-        "unique_communities": set()
+        "unique_communities": set(),
+        # New counts
+        "all_peers": set(),
+        "all_paths": set(),
+        "all_prefixes_announced_list": set(),
+        "all_prefixes_withdrawn_list": set(),
     }
+
 
 def extract_collectors(query):
     collectors_pattern = r'\b(?:route-views\.\w+|route-views[2-4]|rrc(?:[0-1]\d|2[0-6]))\b'
@@ -223,14 +228,14 @@ def summarize_peer_updates(peer_updates):
             "Min Updates from a Single Peer": 0,
             "Std Dev of Updates": 0
         }
-    
+
     total_updates = sum(peer_updates.values())
     num_peers = len(peer_updates)
     avg_updates = total_updates / num_peers if num_peers else 0
     max_updates = max(peer_updates.values()) if peer_updates else 0
     min_updates = min(peer_updates.values()) if peer_updates else 0
     std_dev_updates = (sum((x - avg_updates) ** 2 for x in peer_updates.values()) / num_peers) ** 0.5 if num_peers else 0
-    
+
     return {
         "Total Updates": total_updates,
         "Average Updates per Peer": avg_updates,
@@ -239,10 +244,36 @@ def summarize_peer_updates(peer_updates):
         "Std Dev of Updates": std_dev_updates
     }
 
-def top_n_peer_updates(peer_updates, n=5):
-    sorted_peers = sorted(peer_updates.items(), key=lambda item: item[1], reverse=True)
-    top_peers = sorted_peers[:n]
-    return {f"Top Peer {i+1} ASN": peer for i, (peer, _) in enumerate(top_peers)}
+def summarize_prefix_announcements(prefix_announced):
+    if not prefix_announced:
+        return {
+            "Total Prefixes Announced": 0,
+            "Average Announcements per Prefix": 0,
+            "Max Announcements for a Single Prefix": 0,
+            "Min Announcements for a Single Prefix": 0,
+            "Std Dev of Announcements": 0
+        }
+
+    total_announcements = sum(prefix_announced.values())
+    num_prefixes = len(prefix_announced)
+    avg_announcements = total_announcements / num_prefixes if num_prefixes else 0
+    max_announcements = max(prefix_announced.values()) if prefix_announced else 0
+    min_announcements = min(prefix_announced.values()) if prefix_announced else 0
+    std_dev_announcements = (sum((x - avg_announcements) ** 2 for x in prefix_announced.values()) / num_prefixes) ** 0.5 if num_prefixes else 0
+
+    return {
+        "Total Prefixes Announced": num_prefixes,
+        "Average Announcements per Prefix": avg_announcements,
+        "Max Announcements for a Single Prefix": max_announcements,
+        "Min Announcements for a Single Prefix": min_announcements,
+        "Std Dev of Announcements": std_dev_announcements
+    }
+
+def summarize_unexpected_asns(unexpected_asns):
+    counter = Counter(unexpected_asns)
+    top_unexpected = counter.most_common(3)  # Top 3 unexpected ASNs
+    summary = {f"Unexpected ASN {i+1}": asn for i, (asn, _) in enumerate(top_unexpected)}
+    return summary
 
 def summarize_prefix_announcements(prefix_announced):
     if not prefix_announced:
@@ -269,16 +300,6 @@ def summarize_prefix_announcements(prefix_announced):
         "Std Dev of Announcements": std_dev_announcements
     }
 
-def top_n_prefix_announcements(prefix_announced, n=5):
-    sorted_prefixes = sorted(prefix_announced.items(), key=lambda item: item[1], reverse=True)
-    top_prefixes = sorted_prefixes[:n]
-    return {f"Top Prefix {i+1}": prefix for i, (prefix, _) in enumerate(top_prefixes)}
-
-def summarize_unexpected_asns(unexpected_asns):
-    counter = Counter(unexpected_asns)
-    top_unexpected = counter.most_common(3)  # Top 3 unexpected ASNs
-    summary = {f"Unexpected ASN {i+1}": asn for i, (asn, _) in enumerate(top_unexpected)}
-    return summary
 
 def extract_features(index, routes, old_routes_as, target_asn, target_prefixes=None,
                     prefix_lengths=[], med_values=[], local_prefs=[], 
@@ -312,21 +333,11 @@ def extract_features(index, routes, old_routes_as, target_asn, target_prefixes=N
         "Max Updates from a Single Peer": 0,
         "Min Updates from a Single Peer": 0,
         "Std Dev of Updates": 0,
-        "Top Peer 1 ASN": None,
-        "Top Peer 2 ASN": None,
-        "Top Peer 3 ASN": None,
-        "Top Peer 4 ASN": None,
-        "Top Peer 5 ASN": None,
         "Total Prefixes Announced": 0,
         "Average Announcements per Prefix": 0,
         "Max Announcements for a Single Prefix": 0,
         "Min Announcements for a Single Prefix": 0,
         "Std Dev of Announcements": 0,
-        "Top Prefix 1": None,
-        "Top Prefix 2": None,
-        "Top Prefix 3": None,
-        "Top Prefix 4": None,
-        "Top Prefix 5": None,
         "Count of Unexpected ASNs in Paths": 0,
         "Unexpected ASN 1": None,
         "Unexpected ASN 2": None,
@@ -337,6 +348,15 @@ def extract_features(index, routes, old_routes_as, target_asn, target_prefixes=N
         "AS Path Changes": anomaly_data.get("as_path_changes", 0),
         # Policy-related feature
         "AS Path Prepending": temp_counts.get("as_path_prepending", 0),
+        # New list and count features
+        "All Peers": [],
+        "Total Peers": 0,
+        "All Paths": [],
+        "Total Paths": 0,
+        "All Prefixes Announced": [],
+        "Total Prefixes Announced List": 0,
+        "All Prefixes Withdrawn": [],
+        "Total Prefixes Withdrawn List": 0,
     }
 
     routes_as = build_routes_as(routes, target_asn)
@@ -353,8 +373,13 @@ def extract_features(index, routes, old_routes_as, target_asn, target_prefixes=N
 
         for prefix in routes_as.get(target_asn, {}).keys():
             path = routes_as[target_asn][prefix]
+            path_str = ','.join(map(str, path))  # Convert path to string for storage
+            temp_counts["all_paths"].add(path_str)
+
             if target_asn in old_routes_as and prefix in old_routes_as[target_asn]:
                 path_old = old_routes_as[target_asn][prefix]
+                path_old_str = ','.join(map(str, path_old))
+                temp_counts["all_paths"].add(path_old_str)
 
                 if path != path_old:
                     route_changes += 1
@@ -427,10 +452,10 @@ def extract_features(index, routes, old_routes_as, target_asn, target_prefixes=N
         features["Min Updates from a Single Peer"] = peer_update_summary["Min Updates from a Single Peer"]
         features["Std Dev of Updates"] = peer_update_summary["Std Dev of Updates"]
 
-        # Add Top 5 Peers
-        top_peers = top_n_peer_updates(peer_updates, n=5)
-        for key in top_peers:
-            features[key] = top_peers[key]
+        # Removed Top 5 Peers
+        # Instead, add all peers and their count
+        features["All Peers"] = list(peer_updates.keys())
+        features["Total Peers"] = len(peer_updates)
 
         # Summarize and integrate prefix announcements
         prefix_announcement_summary = summarize_prefix_announcements(temp_counts["prefixes_announced"])
@@ -440,18 +465,37 @@ def extract_features(index, routes, old_routes_as, target_asn, target_prefixes=N
         features["Min Announcements for a Single Prefix"] = prefix_announcement_summary["Min Announcements for a Single Prefix"]
         features["Std Dev of Announcements"] = prefix_announcement_summary["Std Dev of Announcements"]
 
-        # Add Top 5 Prefixes
-        top_prefixes = top_n_prefix_announcements(temp_counts["prefixes_announced"], n=5)
-        for key in top_prefixes:
-            features[key] = top_prefixes[key]
+        # Removed Top 5 Prefixes
+        # Instead, add all prefixes announced and their count
+        features["All Prefixes Announced"] = list(temp_counts["prefixes_announced"].keys())
+        features["Total Prefixes Announced List"] = len(temp_counts["prefixes_announced"])
+
+        # Similarly, add all prefixes withdrawn and their count
+        features["All Prefixes Withdrawn"] = list(temp_counts["prefixes_withdrawn"].keys())
+        features["Total Prefixes Withdrawn List"] = len(temp_counts["prefixes_withdrawn"])
 
         # Summarize unexpected ASNs in paths
         unexpected_asns = anomaly_data.get("unexpected_asns_in_paths", [])
         unexpected_asn_summary = summarize_unexpected_asns(unexpected_asns)
         features["Count of Unexpected ASNs in Paths"] = len(unexpected_asns)
         features.update(unexpected_asn_summary)
+        
+    # Check if any significant data was collected
+    significant_data = any([
+        features["New Routes"] > 0,
+        features["Origin Changes"] > 0,
+        features["Route Changes"] > 0,
+        features["Announcements"] > 0,
+        features["Total Updates"] > 0,
+    ])
 
+    if not significant_data:
+        return None, old_routes_as
+    
     features["Unique Prefixes Announced"] = len(routes_as.get(target_asn, {}))
+    # Add lists to features
+    features["All Paths"] = list(temp_counts["all_paths"])
+    features["Total Paths"] = len(temp_counts["all_paths"])
 
     return features, routes_as
 
@@ -509,7 +553,7 @@ def extract_bgp_data(from_time, until_time, target_asn, target_prefixes=None,
 
     record_count = 0
     element_count = 0
-
+    
     try:
         for rec in stream.records():
             record_count += 1
@@ -527,8 +571,9 @@ def extract_bgp_data(from_time, until_time, target_asn, target_prefixes=None,
                                 prefix_lengths, med_values, local_prefs, 
                                 communities_per_prefix, peer_updates, anomaly_data, temp_counts
                             )
-                            features['Timestamp'] = current_window_start.strftime("%Y-%m-%d %H:%M:%S")
-                            all_features.append(features)
+                            if features:
+                                features['Timestamp'] = current_window_start.strftime("%Y-%m-%d %H:%M:%S")
+                                all_features.append(features)
                         except Exception as e:
                             logger.error(f"Error extracting features: {e}")
                                 
@@ -537,6 +582,7 @@ def extract_bgp_data(from_time, until_time, target_asn, target_prefixes=None,
                         routes = {}  # Reset the routes for the next window
                         index += 1
                         temp_counts = initialize_temp_counts()
+                        temp_counts['as_path_prepending'] = 0
                         prefix_lengths = []
                         med_values = []
                         local_prefs = []
@@ -576,7 +622,7 @@ def extract_bgp_data(from_time, until_time, target_asn, target_prefixes=None,
                                             process_update = True
                                             break
                                 except ValueError:
-                                    logging.warning(f"Invalid prefix encountered: {tgt_prefix} or {prefix}")
+                                    logger.warning(f"Invalid prefix encountered: {tgt_prefix} or {prefix}")
                                     continue
                     if not process_update:
                         continue
@@ -596,12 +642,15 @@ def extract_bgp_data(from_time, until_time, target_asn, target_prefixes=None,
                     peer_asn = elem.peer_asn
                     collector = rec.collector
                     peer_updates[peer_asn] += 1
+                    temp_counts["all_peers"].add(peer_asn)
 
                     # Processing Announcements (A) and Withdrawals (W)
                     if elem.type == 'A':  # Announcement
                         if as_path:
                             temp_counts["prefixes_announced"][prefix] = temp_counts["prefixes_announced"].get(prefix, 0) + 1
                             temp_counts["num_announcements"] += 1
+                            temp_counts["all_prefixes_announced_list"].add(prefix)
+
                             # Initialize routes
                             if prefix not in routes:
                                 routes[prefix] = {}
@@ -647,6 +696,7 @@ def extract_bgp_data(from_time, until_time, target_asn, target_prefixes=None,
                                 routes[prefix][collector].pop(peer_asn, None)
                                 temp_counts["prefixes_withdrawn"][prefix] = temp_counts["prefixes_withdrawn"].get(prefix, 0) + 1
                                 temp_counts["num_withdrawals"] += 1
+                                temp_counts["all_prefixes_withdrawn_list"].add(prefix)
                                 
                                 # Anomaly detection for withdrawals
                                 if target_prefixes and prefix in target_prefixes:
@@ -669,17 +719,22 @@ def extract_bgp_data(from_time, until_time, target_asn, target_prefixes=None,
             prefix_lengths, med_values, local_prefs, 
             communities_per_prefix, peer_updates, anomaly_data, temp_counts
         )
-        features['Timestamp'] = current_window_start.strftime("%Y-%m-%d %H:%M:%S")
-        logger.info(f"Features at index {index}: {features}")
-        all_features.append(features)
+        if features:
+            features['Timestamp'] = current_window_start.strftime("%Y-%m-%d %H:%M:%S")
+            logger.info(f"Features at index {index}: {features}")
+            all_features.append(features)
         
-        # Convert collected features to a DataFrame
-        df_features = pd.json_normalize(all_features, sep='_').fillna(0)
-        logger.info(df_features)
-        df_features.to_csv(f"{media_dir}/final_features.csv")
-        process_bgp(df=df_features, output_dir=media_dir)
-        logger.info(f"\nFinal data saved to {media_dir}\n")
-        
+        if all_features:
+            # Convert collected features to a DataFrame
+            df_features = pd.json_normalize(all_features, sep='_').fillna(0)
+            logger.info(df_features)
+            df_features.to_csv(f"{media_dir}/final_features.csv", index=False)
+            df = pd.read_csv(f"{media_dir}/final_features.csv", index_col=False)
+            process_bgp(df=df, output_dir=media_dir)
+            logger.info(f"\nFinal data saved to {media_dir}\n")
+        else:
+            logger.warning("No features collected. CSV will not be created.")
+            
     except Exception as e:
         logger.error(f"Final data processing error: {e}")
         return None
@@ -708,6 +763,14 @@ def convert_lists_to_tuples(df):
         if df[col].apply(lambda x: isinstance(x, list)).any():
             df[col] = df[col].apply(lambda x: tuple(x) if isinstance(x, list) else x)
     return df
+
+def convert_tuples_to_lists(df):
+    for col in df.columns:
+        # Check if any element in the column is a tuple
+        if df[col].apply(lambda x: isinstance(x, tuple)).any():
+            df[col] = df[col].apply(lambda x: list(x) if isinstance(x, tuple) else x)
+    return df
+
 
 def run_real_time_bgpstream(asn, collection_period, return_dict, target_prefixes=None):
     all_features = []
@@ -794,6 +857,7 @@ def run_real_time_bgpstream(asn, collection_period, return_dict, target_prefixes
                         temp_counts["prefixes_announced"][prefix] = temp_counts["prefixes_announced"].get(prefix, 0) + 1
                         temp_counts["num_announcements"] += 1
                         peer_updates[peer_asn] += 1
+                        temp_counts["all_peers"].add(peer_asn)
 
                         # Check if it's a new route
                         if peer_asn not in routes[prefix][collector]:
@@ -848,6 +912,7 @@ def run_real_time_bgpstream(asn, collection_period, return_dict, target_prefixes
                                 temp_counts["prefixes_withdrawn"][prefix] = temp_counts["prefixes_withdrawn"].get(prefix, 0) + 1
                                 temp_counts["num_withdrawals"] += 1
                                 peer_updates[peer_asn] += 1
+                                temp_counts["all_peers"].add(peer_asn)
                                 
                                 # Anomaly detection for withdrawals
                                 if target_prefixes and prefix in target_prefixes:
@@ -942,102 +1007,6 @@ def run_real_time_bgpstream(asn, collection_period, return_dict, target_prefixes
         return_dict['error'] = str(e)
 
 
-# def collect_real_time_data(asn, target_prefixes=None, collection_period=timedelta(minutes=3)):
-#     all_collected_data = []  # List to store all collected DataFrames
-#     features_df = pd.DataFrame()
-
-#     # Generate a unique UUID for the real-time data session
-#     data_uuid = uuid.uuid4()
-
-#     media_dir = os.path.join(settings.MEDIA_ROOT, 'rag_bgp_data', f'realtime_AS{asn}_{data_uuid}')
-#     os.makedirs(media_dir, exist_ok=True)  # Ensure the directory exists
-#     logger.info(f"\nDirectory created: {media_dir}")
-
-#     logger.info(f"\nCollecting data for ASN {asn} for {collection_period.total_seconds() // 60} minutes...")
-
-#     manager = multiprocessing.Manager()
-#     return_dict = manager.dict()
-    
-#     p = multiprocessing.Process(
-#         target=run_real_time_bgpstream, 
-#         args=(asn, collection_period, return_dict, target_prefixes)
-#     )
-#     p.start()
-
-#     start_time = time.time()
-#     end_time = start_time + collection_period.total_seconds()
-#     last_features_df = pd.DataFrame()
-
-#     no_change_counter = 0
-#     max_no_change_iterations = 2  # Adjust as needed
-
-#     while time.time() < end_time + 5:
-#         if 'error' in return_dict:
-#             logger.info(f"Real-time data collection encountered an error: {return_dict['error']}")
-#             features_df = return_dict.get('features_df', pd.DataFrame())
-#             break
-
-#         features_df = return_dict.get('features_df', pd.DataFrame())
-
-#         if not features_df.empty:
-#             logger.info(f"\nUpdated features_df at {datetime.utcnow()}:\n{features_df.tail(1)}\n")
-
-#             # Save the current features_df to the list
-#             all_collected_data.append(features_df.copy())
-
-#             if not last_features_df.empty and features_df.equals(last_features_df):
-#                 no_change_counter += 1
-#                 if no_change_counter >= max_no_change_iterations:
-#                     logger.info(f"No changes in data for the last {no_change_counter} intervals. Restarting data collection...")
-#                     # Calculate remaining time for the collection
-#                     elapsed_time = timedelta(seconds=time.time() - start_time)
-#                     remaining_time = collection_period - elapsed_time
-#                     if remaining_time.total_seconds() <= 0:
-#                         logger.info("No remaining time left for data collection. Exiting.")
-#                         break
-
-#                     # Restart the process with the remaining collection period
-#                     p.terminate()
-#                     p.join()
-                    
-#                     logger.info(f"Restarting data collection for the remaining {int(remaining_time.total_seconds())} seconds...")
-#                     p = multiprocessing.Process(
-#                         target=run_real_time_bgpstream, 
-#                         args=(asn, remaining_time, return_dict, target_prefixes)
-#                     )
-#                     p.start()
-#                     no_change_counter = 0
-#             else:
-#                 no_change_counter = 0
-
-#             last_features_df = features_df.copy()
-
-#         time.sleep(62)
-        
-#     if p.is_alive():
-#         logger.info("BGPStream collection timed out. Terminating process...")
-#         p.terminate()
-#         p.join()
-
-#     # Concatenate all collected DataFrames into one final DataFrame
-#     if all_collected_data:
-#         final_features_df = pd.concat(all_collected_data, ignore_index=True)
-#     else:
-#         final_features_df = features_df
-
-#     # Convert list columns to tuples before removing duplicates
-#     final_features_df = convert_lists_to_tuples(final_features_df)
-
-#     # Remove duplicates from the final DataFrame
-#     final_features_df = final_features_df.drop_duplicates()
-#     logger.info(final_features_df[['Top Peer 1 ASN', 'Top Peer 2 ASN', 'Top Prefix 1', 'Top Prefix 2']].head())
-#     final_features_df.to_csv(f"/home/hb/django_react/BGP-LLaMA-webservice/media/csv_file/real_time_{asn}.csv")
-#     # Save the final DataFrame to a CSV file
-#     process_bgp(df=final_features_df, output_dir=media_dir)
-#     logger.info(f"\nFinal data saved to {media_dir}\n")
-    
-#     return media_dir
-
 def collect_real_time_data(asn, target_prefixes=None, collection_period=timedelta(minutes=5)):
     all_collected_data = []  # List to store all collected DataFrames
     features_df = pd.DataFrame()
@@ -1113,13 +1082,27 @@ def collect_real_time_data(asn, target_prefixes=None, collection_period=timedelt
         p.join()
 
     # Aggregate collected DataFrames
-    final_features_df = pd.concat(all_collected_data, ignore_index=True) if all_collected_data else features_df
-    final_features_df = convert_lists_to_tuples(final_features_df).drop_duplicates()
+    # Concatenate all collected DataFrames into one final DataFrame
+    if all_collected_data:
+        final_features_df = pd.concat(all_collected_data, ignore_index=True)
+    else:
+        final_features_df = features_df
+        
+    # Convert list columns to tuples before removing duplicates
+    final_features_df = convert_lists_to_tuples(final_features_df)
+
+    # Remove duplicates from the final DataFrame
+    final_features_df = final_features_df.drop_duplicates()
+    logger.info("Removed duplicate rows from the DataFrame.")
+    
+    final_features_df = convert_tuples_to_lists(final_features_df)
     logger.info(final_features_df.head())
-    final_features_df.to_csv(f"/home/hb/django_react/BGP-LLaMA-webservice/media/csv_file/real_time_{asn}.csv")
+    final_features_df.to_csv(f"{media_dir}/{asn}_real_time.csv", index=False)
+    
+    df = pd.read_csv(f"{media_dir}/{asn}_real_time.csv", index_col=False)
 
     # Save processed data
-    process_bgp(df=final_features_df, output_dir=media_dir)
+    process_bgp(df=df, output_dir=media_dir)
     logger.info(f"\nFinal data saved to {media_dir}\n")
     
     return media_dir

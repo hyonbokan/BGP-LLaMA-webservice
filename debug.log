@@ -1325,3 +1325,2410 @@ Session data_dir retrieved: None
 No data directory found in session.
 
 Running RAG query with default documents.
+Session ID for current request: 0cl5bmc1aycaas1k9vvejosq3swzyvw3
+32934
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+ Begin historical data collection and analysis
+Target prefixes: ['129.134.30.0/24', '129.134.30.0/23']
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/hist_AS32934_222efb8c-4e33-49e8-a44d-d7536c300974
+Starting BGP data extraction for ASN 32934 from 2021-10-04 07:00:00 to 2021-10-04 07:30:00
+Total records processed: 1095173
+Total elements processed: 2282678
+Features at index 6: {'Timestamp': '2021-10-04 07:30:00', 'Autonomous System Number': '32934', 'Total Routes': 0, 'New Routes': 0, 'Withdrawals': 0, 'Origin Changes': 0, 'Route Changes': 0, 'Maximum Path Length': 0, 'Average Path Length': 0.0, 'Maximum Edit Distance': 0, 'Average Edit Distance': 0, 'Announcements': 0, 'Unique Prefixes Announced': 0, 'Average MED': 0, 'Average Local Preference': 0, 'Total Communities': 0, 'Unique Communities': 0, 'Community Values': [], 'Total Updates': 0, 'Average Updates per Peer': 0, 'Max Updates from a Single Peer': 0, 'Min Updates from a Single Peer': 0, 'Std Dev of Updates': 0, 'Top Peer 1 ASN': None, 'Top Peer 2 ASN': None, 'Top Peer 3 ASN': None, 'Top Peer 4 ASN': None, 'Top Peer 5 ASN': None, 'Total Prefixes Announced': 0, 'Average Announcements per Prefix': 0, 'Max Announcements for a Single Prefix': 0, 'Min Announcements for a Single Prefix': 0, 'Std Dev of Announcements': 0, 'Top Prefix 1': None, 'Top Prefix 2': None, 'Top Prefix 3': None, 'Top Prefix 4': None, 'Top Prefix 5': None, 'Count of Unexpected ASNs in Paths': 0, 'Unexpected ASN 1': None, 'Unexpected ASN 2': None, 'Unexpected ASN 3': None, 'Target Prefixes Withdrawn': 0, 'Target Prefixes Announced': 0, 'AS Path Changes': 0, 'AS Path Prepending': 0}
+             Timestamp  ... Min Prefix Length
+0  2021-10-04 07:00:00  ...              32.0
+1  2021-10-04 07:05:00  ...              32.0
+2  2021-10-04 07:10:00  ...              32.0
+3  2021-10-04 07:15:00  ...              32.0
+4  2021-10-04 07:20:00  ...              32.0
+5  2021-10-04 07:25:00  ...              24.0
+6  2021-10-04 07:30:00  ...               0.0
+
+[7 rows x 49 columns]
+
+Final data saved to /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/hist_AS32934_222efb8c-4e33-49e8-a44d-d7536c300974
+
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/hist_AS32934_222efb8c-4e33-49e8-a44d-d7536c300974
+Session ID for current request: 0cl5bmc1aycaas1k9vvejosq3swzyvw3
+32934
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+Processing regular query...
+
+Session data_dir retrieved: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/hist_AS32934_222efb8c-4e33-49e8-a44d-d7536c300974
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/hist_AS32934_222efb8c-4e33-49e8-a44d-d7536c300974
+Session ID for current request: 0cl5bmc1aycaas1k9vvejosq3swzyvw3
+32934
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+Processing regular query...
+
+Session data_dir retrieved: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/hist_AS32934_222efb8c-4e33-49e8-a44d-d7536c300974
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/hist_AS32934_222efb8c-4e33-49e8-a44d-d7536c300974
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+32934
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+ Begin historical data collection and analysis
+
+Target prefixes are not provided
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/hist_AS32934_f2396498-6ed1-4c9f-a9e1-a6e8a0d3d936
+Starting BGP data extraction for ASN 32934 from 2021-10-04 07:00:00 to 2021-10-04 07:15:00
+Total records processed: 521397
+Total elements processed: 1111516
+             Timestamp  ... Min Prefix Length
+0  2021-10-04 07:00:00  ...                32
+1  2021-10-04 07:05:00  ...                32
+2  2021-10-04 07:10:00  ...                32
+
+[3 rows x 47 columns]
+
+Final data saved to /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/hist_AS32934_f2396498-6ed1-4c9f-a9e1-a6e8a0d3d936
+
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/hist_AS32934_f2396498-6ed1-4c9f-a9e1-a6e8a0d3d936
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:03:00 (total seconds: 180)
+
+ Begin real-time collection and analysis
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_1abacf7f-958d-475f-8418-519e1245a14b
+
+Collecting data for ASN 3356 for 3.0 minutes...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 04:12:06.344752:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 04:11:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 04:13:06.474064:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 04:12:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 04:14:06.557091:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 04:12:00  ...                             0
+
+[1 rows x 41 columns]
+
+No remaining time left for data collection. Exiting.
+Final termination: BGPStream collection timed out. Terminating process...
+BGPStream collection failed: Could not get next record (is the stream started?)
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 04:11:00  ...                             0
+1  2024-10-30 04:12:00  ...                             0
+
+[2 rows x 41 columns]
+
+Final data saved to /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_1abacf7f-958d-475f-8418-519e1245a14b
+
+Running RAG query with collected data...
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_1abacf7f-958d-475f-8418-519e1245a14b
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+None
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+Processing regular query...
+
+Session data_dir retrieved: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_1abacf7f-958d-475f-8418-519e1245a14b
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_1abacf7f-958d-475f-8418-519e1245a14b
+All numeric features in 'features' are correctly included in 'numeric_columns'.
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+None
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+Processing regular query...
+
+Session data_dir retrieved: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_1abacf7f-958d-475f-8418-519e1245a14b
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_1abacf7f-958d-475f-8418-519e1245a14b
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+Processing regular query...
+
+Session data_dir retrieved: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_1abacf7f-958d-475f-8418-519e1245a14b
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_1abacf7f-958d-475f-8418-519e1245a14b
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+None
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+Processing regular query...
+
+Session data_dir retrieved: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_1abacf7f-958d-475f-8418-519e1245a14b
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_1abacf7f-958d-475f-8418-519e1245a14b
+All numeric features in 'features' are correctly included in 'numeric_columns'.
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:10:00 (total seconds: 600)
+
+ Begin real-time collection and analysis
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_150d74c8-8ef2-4f2d-983f-9e9b70fdacae
+
+Collecting data for ASN 3356 for 10.0 minutes...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 04:28:02.750206:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 04:27:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 04:29:02.828023:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 04:28:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 04:30:02.906768:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 04:28:00  ...                             0
+
+[1 rows x 41 columns]
+
+BGPStream collection failed: Could not get next record (is the stream started?)
+Restarting data collection for remaining 419 seconds...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 04:31:03.114891:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 04:30:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 04:32:03.238210:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 04:31:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 04:33:03.358709:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 04:31:00  ...                             0
+
+[1 rows x 41 columns]
+
+BGPStream collection failed: Could not get next record (is the stream started?)
+Restarting data collection for remaining 239 seconds...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 04:34:03.596020:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 04:33:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 04:35:03.717968:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 04:33:00  ...                             0
+
+[1 rows x 41 columns]
+
+BGPStream collection failed: Could not get next record (is the stream started?)
+Restarting data collection for remaining 118 seconds...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 04:36:03.966761:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 04:35:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 04:37:04.090511:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 04:36:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 04:38:04.213524:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 04:36:00  ...                             0
+
+[1 rows x 41 columns]
+
+No remaining time left for data collection. Exiting.
+Final termination: BGPStream collection timed out. Terminating process...
+BGPStream collection failed: Could not get next record (is the stream started?)
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 04:27:00  ...                             0
+1  2024-10-30 04:28:00  ...                             0
+3  2024-10-30 04:30:00  ...                             0
+4  2024-10-30 04:31:00  ...                             0
+6  2024-10-30 04:33:00  ...                             0
+
+[5 rows x 41 columns]
+Converted column 'Total Routes' to numeric.
+Converted column 'New Routes' to numeric.
+Converted column 'Withdrawals' to numeric.
+Converted column 'Origin Changes' to numeric.
+Converted column 'Route Changes' to numeric.
+Converted column 'Maximum Path Length' to numeric.
+Converted column 'Average Path Length' to numeric.
+Converted column 'Maximum Edit Distance' to numeric.
+Converted column 'Average Edit Distance' to numeric.
+Converted column 'Announcements' to numeric.
+Converted column 'Unique Prefixes Announced' to numeric.
+Converted column 'Average MED' to numeric.
+Converted column 'Average Local Preference' to numeric.
+Converted column 'Total Communities' to numeric.
+Converted column 'Unique Communities' to numeric.
+Converted column 'Total Updates' to numeric.
+Converted column 'Average Updates per Peer' to numeric.
+Converted column 'Max Updates from a Single Peer' to numeric.
+Converted column 'Min Updates from a Single Peer' to numeric.
+Converted column 'Std Dev of Updates' to numeric.
+Converted column 'Total Prefixes Announced' to numeric.
+Converted column 'Average Announcements per Prefix' to numeric.
+Converted column 'Max Announcements for a Single Prefix' to numeric.
+Converted column 'Min Announcements for a Single Prefix' to numeric.
+Converted column 'Std Dev of Announcements' to numeric.
+Converted column 'Count of Unexpected ASNs in Paths' to numeric.
+Converted column 'Target Prefixes Withdrawn' to numeric.
+Converted column 'Target Prefixes Announced' to numeric.
+Converted column 'AS Path Changes' to numeric.
+Column 'Average Prefix Length' not found in the DataFrame. Filling with 0.0.
+Column 'Max Prefix Length' not found in the DataFrame. Filling with 0.0.
+Column 'Min Prefix Length' not found in the DataFrame. Filling with 0.0.
+Converted column 'AS Path Prepending' to numeric.
+Converted column 'Total Peers' to numeric.
+Converted column 'Total Paths' to numeric.
+Converted column 'Total Prefixes Announced List' to numeric.
+Converted column 'Total Prefixes Withdrawn List' to numeric.
+Set threshold for feature 'Withdrawals' to 0.0 for anomaly 'Leak Anomaly'.
+Set threshold for feature 'Route Changes' to 254.20000000000005 for anomaly 'Leak Anomaly'.
+Set threshold for feature 'Std Dev of Updates' to 73.40832508755034 for anomaly 'Flapping Anomaly'.
+Set threshold for feature 'Announcements' to 6360.000000000002 for anomaly 'Flapping Anomaly'.
+Set threshold for feature 'Count of Unexpected ASNs in Paths' to 0.0 for anomaly 'Hijack Anomaly'.
+Set threshold for feature 'AS Path Prepending' to 4932.4000000000015 for anomaly 'Path Manipulation Anomaly'.
+Set threshold for feature 'Maximum Path Length' to 19.0 for anomaly 'Path Manipulation Anomaly'.
+Set threshold for feature 'Average MED' to 0.0 for anomaly 'Policy-Related Anomaly'.
+Set threshold for feature 'Average Local Preference' to 0.0 for anomaly 'Policy-Related Anomaly'.
+Defined 5 anomaly rules.
+Row 0: Top Prefixes: []
+Row 0: Prefix Updates: []
+Row 0: Updates per prefix info added.
+Row 0: Policy info added.
+Row 1: Top Prefixes: []
+Row 1: Prefix Updates: []
+Row 1: Updates per prefix info added.
+Row 1: Policy info added.
+Row 3: Top Prefixes: []
+Row 3: Prefix Updates: []
+Row 3: Updates per prefix info added.
+Row 3: Policy info added.
+Row 4: Top Prefixes: []
+Row 4: Prefix Updates: []
+Row 4: Updates per prefix info added.
+Row 4: Policy info added.
+Row 6: Top Prefixes: []
+Row 6: Prefix Updates: []
+Row 6: Updates per prefix info added.
+Row 6: Policy info added.
+Row 8: Top Prefixes: []
+Row 8: Prefix Updates: []
+Row 8: Updates per prefix info added.
+Row 8: Policy info added.
+Row 9: Top Prefixes: []
+Row 9: Prefix Updates: []
+Row 9: Updates per prefix info added.
+Row 9: Policy info added.
+
+Final data saved to /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_150d74c8-8ef2-4f2d-983f-9e9b70fdacae
+
+Running RAG query with collected data...
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_150d74c8-8ef2-4f2d-983f-9e9b70fdacae
+All numeric features in 'features' are correctly included in 'numeric_columns'.
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:10:00 (total seconds: 600)
+
+ Begin real-time collection and analysis
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_dc1743c0-b3fd-4404-ac9b-0dec30b4d115
+
+Collecting data for ASN 3356 for 10.0 minutes...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 06:17:21.903388:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 06:16:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 06:18:21.974969:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 06:17:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 06:19:22.057347:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 06:17:00  ...                             0
+
+[1 rows x 41 columns]
+
+BGPStream collection failed: Could not get next record (is the stream started?)
+Restarting data collection for remaining 419 seconds...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 06:20:22.276391:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 06:19:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 06:21:22.387304:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 06:20:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 06:22:22.489533:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 06:20:00  ...                             0
+
+[1 rows x 41 columns]
+
+BGPStream collection failed: Could not get next record (is the stream started?)
+Restarting data collection for remaining 239 seconds...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 06:23:22.742195:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 06:22:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 06:24:22.869666:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 06:23:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 06:25:22.988221:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 06:23:00  ...                             0
+
+[1 rows x 41 columns]
+
+BGPStream collection failed: Could not get next record (is the stream started?)
+Restarting data collection for remaining 58 seconds...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+real-time data collection finished...
+
+
+Updated features_df at 2024-10-30 06:26:23.231228:
+             Timestamp  ... Total Prefixes Withdrawn List
+1  2024-10-30 06:26:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 06:27:23.353146:
+             Timestamp  ... Total Prefixes Withdrawn List
+1  2024-10-30 06:26:00  ...                             0
+
+[1 rows x 41 columns]
+
+No remaining time left for data collection. Exiting.
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 06:16:00  ...                             0
+1  2024-10-30 06:17:00  ...                             0
+3  2024-10-30 06:19:00  ...                             0
+4  2024-10-30 06:20:00  ...                             0
+6  2024-10-30 06:22:00  ...                             0
+
+[5 rows x 41 columns]
+Parsed column 'All Peers' as lists.
+Parsed column 'All Paths' as lists.
+Parsed column 'Community Values' as lists.
+Parsed column 'All Prefixes Announced' as lists.
+Parsed column 'All Prefixes Withdrawn' as lists.
+Converted column 'Total Routes' to numeric.
+Converted column 'New Routes' to numeric.
+Converted column 'Withdrawals' to numeric.
+Converted column 'Origin Changes' to numeric.
+Converted column 'Route Changes' to numeric.
+Converted column 'Maximum Path Length' to numeric.
+Converted column 'Average Path Length' to numeric.
+Converted column 'Maximum Edit Distance' to numeric.
+Converted column 'Average Edit Distance' to numeric.
+Converted column 'Announcements' to numeric.
+Converted column 'Unique Prefixes Announced' to numeric.
+Converted column 'Average MED' to numeric.
+Converted column 'Average Local Preference' to numeric.
+Converted column 'Total Communities' to numeric.
+Converted column 'Unique Communities' to numeric.
+Converted column 'Total Updates' to numeric.
+Converted column 'Average Updates per Peer' to numeric.
+Converted column 'Max Updates from a Single Peer' to numeric.
+Converted column 'Min Updates from a Single Peer' to numeric.
+Converted column 'Std Dev of Updates' to numeric.
+Converted column 'Total Prefixes Announced' to numeric.
+Converted column 'Average Announcements per Prefix' to numeric.
+Converted column 'Max Announcements for a Single Prefix' to numeric.
+Converted column 'Min Announcements for a Single Prefix' to numeric.
+Converted column 'Std Dev of Announcements' to numeric.
+Converted column 'Count of Unexpected ASNs in Paths' to numeric.
+Converted column 'Target Prefixes Withdrawn' to numeric.
+Converted column 'Target Prefixes Announced' to numeric.
+Converted column 'AS Path Changes' to numeric.
+Column 'Average Prefix Length' not found in the DataFrame. Filling with 0.0.
+Column 'Max Prefix Length' not found in the DataFrame. Filling with 0.0.
+Column 'Min Prefix Length' not found in the DataFrame. Filling with 0.0.
+Converted column 'AS Path Prepending' to numeric.
+Converted column 'Total Peers' to numeric.
+Converted column 'Total Paths' to numeric.
+Converted column 'Total Prefixes Announced List' to numeric.
+Converted column 'Total Prefixes Withdrawn List' to numeric.
+Set threshold for feature 'Withdrawals' to 0.0 for anomaly 'Leak Anomaly'.
+Set threshold for feature 'Route Changes' to 220.4 for anomaly 'Leak Anomaly'.
+Set threshold for feature 'Std Dev of Updates' to 56.0001234182508 for anomaly 'Flapping Anomaly'.
+Set threshold for feature 'Announcements' to 6018.3 for anomaly 'Flapping Anomaly'.
+Set threshold for feature 'Count of Unexpected ASNs in Paths' to 0.0 for anomaly 'Hijack Anomaly'.
+Set threshold for feature 'AS Path Prepending' to 1005.3 for anomaly 'Path Manipulation Anomaly'.
+Set threshold for feature 'Maximum Path Length' to 16.3 for anomaly 'Path Manipulation Anomaly'.
+Set threshold for feature 'Average MED' to 0.0 for anomaly 'Policy-Related Anomaly'.
+Set threshold for feature 'Average Local Preference' to 0.0 for anomaly 'Policy-Related Anomaly'.
+Defined 5 anomaly rules.
+Calculated 'Average Updates per Prefix'.
+Row 0: Data point log added.
+Row 0: Prefixes Announced: []
+Row 0: No peers found to update.
+Row 0: Policy info added.
+Row 1: Data point log added.
+Row 1: Prefixes Announced: []
+Row 1: No peers found to update.
+Row 1: Policy info added.
+Row 3: Data point log added.
+Row 3: Prefixes Announced: []
+Row 3: No peers found to update.
+Row 3: Policy info added.
+Row 4: Data point log added.
+Row 4: Prefixes Announced: []
+Row 4: No peers found to update.
+Row 4: Anomaly detected: {'timestamp': '2024-10-30 06:20:00', 'as_number': '3356', 'type': 'Flapping Anomaly', 'description': 'Frequent changes in route announcements and withdrawals, indicating network instability.', 'features_triggered': ['Std Dev of Updates', 'Announcements'], 'details': {'Std Dev of Updates': 61.11269402773224, 'Announcements': 6929}}
+Row 4: Policy info added.
+Row 6: Data point log added.
+Row 6: Prefixes Announced: []
+Row 6: No peers found to update.
+Row 6: Policy info added.
+Row 7: Data point log added.
+Row 7: Prefixes Announced: []
+Row 7: No peers found to update.
+Row 7: Policy info added.
+Row 9: Data point log added.
+Row 9: Prefixes Announced: []
+Row 9: No peers found to update.
+Row 9: Policy info added.
+Row 10: Data point log added.
+Row 10: Prefixes Announced: []
+Row 10: No peers found to update.
+Row 10: Policy info added.
+
+Final data saved to /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_dc1743c0-b3fd-4404-ac9b-0dec30b4d115
+
+Running RAG query with collected data...
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_dc1743c0-b3fd-4404-ac9b-0dec30b4d115
+All numeric features in 'features' are correctly included in 'numeric_columns'.
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:10:00 (total seconds: 600)
+
+ Begin real-time collection and analysis
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_e1329404-89ad-488f-9fc1-38bae2ba22e8
+
+Collecting data for ASN 3356 for 10.0 minutes...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 06:35:57.697432:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 06:34:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 06:36:57.828888:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 06:35:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 06:37:57.952245:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 06:36:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 06:38:58.073887:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 06:36:00  ...                             0
+
+[1 rows x 41 columns]
+
+BGPStream collection failed: Could not get next record (is the stream started?)
+Restarting data collection for remaining 359 seconds...
+No features extracted for this window. Skipping DataFrame creation.
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 06:40:58.335758:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 06:39:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 06:41:58.405450:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 06:39:00  ...                             0
+
+[1 rows x 41 columns]
+
+BGPStream collection failed: Could not get next record (is the stream started?)
+Restarting data collection for remaining 179 seconds...
+No features extracted for this window. Skipping DataFrame creation.
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 06:43:58.699565:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 06:42:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 06:44:58.823775:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 06:43:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 06:45:58.943703:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 06:43:00  ...                             0
+
+[1 rows x 41 columns]
+
+No remaining time left for data collection. Exiting.
+Final termination: BGPStream collection timed out. Terminating process...
+BGPStream collection failed: Could not get next record (is the stream started?)
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 06:34:00  ...                             0
+1  2024-10-30 06:35:00  ...                             0
+2  2024-10-30 06:36:00  ...                             0
+4  2024-10-30 06:39:00  ...                             0
+6  2024-10-30 06:42:00  ...                             0
+
+[5 rows x 41 columns]
+Parsed column 'All Peers' as lists.
+Parsed column 'All Paths' as lists.
+Parsed column 'Community Values' as lists.
+Parsed column 'All Prefixes Announced' as lists.
+Parsed column 'All Prefixes Withdrawn' as lists.
+Converted column 'Total Routes' to numeric.
+Converted column 'New Routes' to numeric.
+Converted column 'Withdrawals' to numeric.
+Converted column 'Origin Changes' to numeric.
+Converted column 'Route Changes' to numeric.
+Converted column 'Maximum Path Length' to numeric.
+Converted column 'Average Path Length' to numeric.
+Converted column 'Maximum Edit Distance' to numeric.
+Converted column 'Average Edit Distance' to numeric.
+Converted column 'Announcements' to numeric.
+Converted column 'Unique Prefixes Announced' to numeric.
+Converted column 'Average MED' to numeric.
+Converted column 'Average Local Preference' to numeric.
+Converted column 'Total Communities' to numeric.
+Converted column 'Unique Communities' to numeric.
+Converted column 'Total Updates' to numeric.
+Converted column 'Average Updates per Peer' to numeric.
+Converted column 'Max Updates from a Single Peer' to numeric.
+Converted column 'Min Updates from a Single Peer' to numeric.
+Converted column 'Std Dev of Updates' to numeric.
+Converted column 'Total Prefixes Announced' to numeric.
+Converted column 'Average Announcements per Prefix' to numeric.
+Converted column 'Max Announcements for a Single Prefix' to numeric.
+Converted column 'Min Announcements for a Single Prefix' to numeric.
+Converted column 'Std Dev of Announcements' to numeric.
+Converted column 'Count of Unexpected ASNs in Paths' to numeric.
+Converted column 'Target Prefixes Withdrawn' to numeric.
+Converted column 'Target Prefixes Announced' to numeric.
+Converted column 'AS Path Changes' to numeric.
+Column 'Average Prefix Length' not found in the DataFrame. Filling with 0.0.
+Column 'Max Prefix Length' not found in the DataFrame. Filling with 0.0.
+Column 'Min Prefix Length' not found in the DataFrame. Filling with 0.0.
+Converted column 'AS Path Prepending' to numeric.
+Converted column 'Total Peers' to numeric.
+Converted column 'Total Paths' to numeric.
+Converted column 'Total Prefixes Announced List' to numeric.
+Converted column 'Total Prefixes Withdrawn List' to numeric.
+Set threshold for feature 'Withdrawals' to 0.0 for anomaly 'Leak Anomaly'.
+Set threshold for feature 'Route Changes' to 298.0 for anomaly 'Leak Anomaly'.
+Set threshold for feature 'Std Dev of Updates' to 40.2162988171291 for anomaly 'Flapping Anomaly'.
+Set threshold for feature 'Announcements' to 4221.0 for anomaly 'Flapping Anomaly'.
+Set threshold for feature 'Count of Unexpected ASNs in Paths' to 0.0 for anomaly 'Hijack Anomaly'.
+Set threshold for feature 'AS Path Prepending' to 1080.0 for anomaly 'Path Manipulation Anomaly'.
+Set threshold for feature 'Maximum Path Length' to 17.5 for anomaly 'Path Manipulation Anomaly'.
+Set threshold for feature 'Average MED' to 0.0 for anomaly 'Policy-Related Anomaly'.
+Set threshold for feature 'Average Local Preference' to 0.0 for anomaly 'Policy-Related Anomaly'.
+Defined 5 anomaly rules.
+Calculated 'Average Updates per Prefix'.
+Row 0: Data point log added.
+Row 0: Prefixes Announced: []
+Row 0: No peers found to update.
+Row 0: Policy info added.
+Row 1: Data point log added.
+Row 1: Prefixes Announced: []
+Row 1: No peers found to update.
+Row 1: Anomaly detected: {'timestamp': '2024-10-30 06:35:00', 'as_number': '3356', 'type': 'Flapping Anomaly', 'description': 'Frequent changes in route announcements and withdrawals, indicating network instability.', 'features_triggered': ['Std Dev of Updates', 'Announcements'], 'details': {'Std Dev of Updates': 46.00950699766561, 'Announcements': 4597}}
+Row 1: Policy info added.
+Row 2: Data point log added.
+Row 2: Prefixes Announced: []
+Row 2: No peers found to update.
+Row 2: Policy info added.
+Row 4: Data point log added.
+Row 4: Prefixes Announced: []
+Row 4: No peers found to update.
+Row 4: Policy info added.
+Row 6: Data point log added.
+Row 6: Prefixes Announced: []
+Row 6: No peers found to update.
+Row 6: Policy info added.
+Row 7: Data point log added.
+Row 7: Prefixes Announced: []
+Row 7: No peers found to update.
+Row 7: Policy info added.
+
+Final data saved to /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_e1329404-89ad-488f-9fc1-38bae2ba22e8
+
+Running RAG query with collected data...
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_e1329404-89ad-488f-9fc1-38bae2ba22e8
+All numeric features in 'features' are correctly included in 'numeric_columns'.
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:10:00 (total seconds: 600)
+
+ Begin real-time collection and analysis
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_5a5a6eab-2301-455c-a199-9034a7ecab73
+
+Collecting data for ASN 3356 for 10.0 minutes...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 06:54:15.287155:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 06:53:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 06:55:15.416690:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 06:54:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 06:56:15.538569:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 06:54:00  ...                             0
+
+[1 rows x 41 columns]
+
+BGPStream collection failed: Could not get next record (is the stream started?)
+Restarting data collection for remaining 419 seconds...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 06:57:15.780700:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 06:56:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 06:58:15.905664:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 06:57:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 06:59:16.005005:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 06:57:00  ...                             0
+
+[1 rows x 41 columns]
+
+BGPStream collection failed: Could not get next record (is the stream started?)
+Restarting data collection for remaining 239 seconds...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 07:00:16.240652:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 06:59:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 07:01:16.367305:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 07:00:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 07:02:16.493597:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 07:00:00  ...                             0
+
+[1 rows x 41 columns]
+
+BGPStream collection failed: Could not get next record (is the stream started?)
+Restarting data collection for remaining 58 seconds...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+real-time data collection finished...
+
+
+Updated features_df at 2024-10-30 07:03:16.731206:
+             Timestamp  ... Total Prefixes Withdrawn List
+1  2024-10-30 07:03:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 07:04:16.850994:
+             Timestamp  ... Total Prefixes Withdrawn List
+1  2024-10-30 07:03:00  ...                             0
+
+[1 rows x 41 columns]
+
+No remaining time left for data collection. Exiting.
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 06:53:00  ...                             0
+1  2024-10-30 06:54:00  ...                             0
+3  2024-10-30 06:56:00  ...                             0
+4  2024-10-30 06:57:00  ...                             0
+6  2024-10-30 06:59:00  ...                             0
+
+[5 rows x 41 columns]
+Parsed column 'All Peers' as lists.
+Parsed column 'All Paths' as lists.
+Parsed column 'Community Values' as lists.
+Parsed column 'All Prefixes Announced' as lists.
+Parsed column 'All Prefixes Withdrawn' as lists.
+Converted column 'Total Routes' to numeric.
+Converted column 'New Routes' to numeric.
+Converted column 'Withdrawals' to numeric.
+Converted column 'Origin Changes' to numeric.
+Converted column 'Route Changes' to numeric.
+Converted column 'Maximum Path Length' to numeric.
+Converted column 'Average Path Length' to numeric.
+Converted column 'Maximum Edit Distance' to numeric.
+Converted column 'Average Edit Distance' to numeric.
+Converted column 'Announcements' to numeric.
+Converted column 'Unique Prefixes Announced' to numeric.
+Converted column 'Average MED' to numeric.
+Converted column 'Average Local Preference' to numeric.
+Converted column 'Total Communities' to numeric.
+Converted column 'Unique Communities' to numeric.
+Converted column 'Total Updates' to numeric.
+Converted column 'Average Updates per Peer' to numeric.
+Converted column 'Max Updates from a Single Peer' to numeric.
+Converted column 'Min Updates from a Single Peer' to numeric.
+Converted column 'Std Dev of Updates' to numeric.
+Converted column 'Total Prefixes Announced' to numeric.
+Converted column 'Average Announcements per Prefix' to numeric.
+Converted column 'Max Announcements for a Single Prefix' to numeric.
+Converted column 'Min Announcements for a Single Prefix' to numeric.
+Converted column 'Std Dev of Announcements' to numeric.
+Converted column 'Count of Unexpected ASNs in Paths' to numeric.
+Converted column 'Target Prefixes Withdrawn' to numeric.
+Converted column 'Target Prefixes Announced' to numeric.
+Converted column 'AS Path Changes' to numeric.
+Column 'Average Prefix Length' not found in the DataFrame. Filling with 0.0.
+Column 'Max Prefix Length' not found in the DataFrame. Filling with 0.0.
+Column 'Min Prefix Length' not found in the DataFrame. Filling with 0.0.
+Converted column 'AS Path Prepending' to numeric.
+Converted column 'Total Peers' to numeric.
+Converted column 'Total Paths' to numeric.
+Converted column 'Total Prefixes Announced List' to numeric.
+Converted column 'Total Prefixes Withdrawn List' to numeric.
+Set threshold for feature 'Withdrawals' to 0.0 for anomaly 'Leak Anomaly'.
+Set threshold for feature 'Route Changes' to 204.79999999999998 for anomaly 'Leak Anomaly'.
+Set threshold for feature 'Std Dev of Updates' to 215.93611482356403 for anomaly 'Flapping Anomaly'.
+Set threshold for feature 'Announcements' to 5621.2 for anomaly 'Flapping Anomaly'.
+Set threshold for feature 'Count of Unexpected ASNs in Paths' to 0.0 for anomaly 'Hijack Anomaly'.
+Set threshold for feature 'AS Path Prepending' to 1076.2 for anomaly 'Path Manipulation Anomaly'.
+Set threshold for feature 'Maximum Path Length' to 21.9 for anomaly 'Path Manipulation Anomaly'.
+Set threshold for feature 'Average MED' to 0.0 for anomaly 'Policy-Related Anomaly'.
+Set threshold for feature 'Average Local Preference' to 0.0 for anomaly 'Policy-Related Anomaly'.
+Defined 5 anomaly rules.
+Calculated 'Average Updates per Prefix'.
+Row 0: Data point log added.
+Row 0: Prefixes Announced: []
+Row 0: No peers found to update.
+Row 0: Updates per peer info added.
+Row 0: Top Prefixes: []
+Row 0: Prefix Updates List: []
+Row 0: Updates per prefix info added.
+Row 0: Policy info added.
+Row 1: Data point log added.
+Row 1: Prefixes Announced: []
+Row 1: No peers found to update.
+Row 1: Updates per peer info added.
+Row 1: Top Prefixes: []
+Row 1: Prefix Updates List: []
+Row 1: Updates per prefix info added.
+Row 1: Anomaly detected: {'timestamp': '2024-10-30 06:54:00', 'as_number': '3356', 'type': 'Path Manipulation Anomaly', 'description': 'Unusual modifications to the AS path, such as excessive AS path prepending.', 'features_triggered': ['AS Path Prepending', 'Maximum Path Length'], 'details': {'AS Path Prepending': 1107, 'Maximum Path Length': 24}}
+Row 1: Policy info added.
+Row 3: Data point log added.
+Row 3: Prefixes Announced: []
+Row 3: No peers found to update.
+Row 3: Updates per peer info added.
+Row 3: Top Prefixes: []
+Row 3: Prefix Updates List: []
+Row 3: Updates per prefix info added.
+Row 3: Policy info added.
+Row 4: Data point log added.
+Row 4: Prefixes Announced: []
+Row 4: No peers found to update.
+Row 4: Updates per peer info added.
+Row 4: Top Prefixes: []
+Row 4: Prefix Updates List: []
+Row 4: Updates per prefix info added.
+Row 4: Policy info added.
+Row 6: Data point log added.
+Row 6: Prefixes Announced: []
+Row 6: No peers found to update.
+Row 6: Updates per peer info added.
+Row 6: Top Prefixes: []
+Row 6: Prefix Updates List: []
+Row 6: Updates per prefix info added.
+Row 6: Policy info added.
+Row 7: Data point log added.
+Row 7: Prefixes Announced: []
+Row 7: No peers found to update.
+Row 7: Updates per peer info added.
+Row 7: Top Prefixes: []
+Row 7: Prefix Updates List: []
+Row 7: Updates per prefix info added.
+Row 7: Anomaly detected: {'timestamp': '2024-10-30 07:00:00', 'as_number': '3356', 'type': 'Flapping Anomaly', 'description': 'Frequent changes in route announcements and withdrawals, indicating network instability.', 'features_triggered': ['Std Dev of Updates', 'Announcements'], 'details': {'Std Dev of Updates': 243.5339778816858, 'Announcements': 6478}}
+Row 7: Policy info added.
+Row 9: Data point log added.
+Row 9: Prefixes Announced: []
+Row 9: No peers found to update.
+Row 9: Updates per peer info added.
+Row 9: Top Prefixes: []
+Row 9: Prefix Updates List: []
+Row 9: Updates per prefix info added.
+Row 9: Policy info added.
+Row 10: Data point log added.
+Row 10: Prefixes Announced: []
+Row 10: No peers found to update.
+Row 10: Updates per peer info added.
+Row 10: Top Prefixes: []
+Row 10: Prefix Updates List: []
+Row 10: Updates per prefix info added.
+Row 10: Policy info added.
+Finished writing logs to files.
+Total Updates per Prefix:
+Wrote overall summary to 'overall_summary.txt'.
+Wrote detailed anomalies to 'anomalies.txt'.
+Wrote anomaly summary to 'anomaly_summary.txt'.
+Wrote AS path changes summary to 'as_path_changes_summary.txt'.
+Wrote policy summary to 'policy_summary.txt'.
+
+Final data saved to /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_5a5a6eab-2301-455c-a199-9034a7ecab73
+
+Running RAG query with collected data...
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_5a5a6eab-2301-455c-a199-9034a7ecab73
+All numeric features in 'features' are correctly included in 'numeric_columns'.
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:10:00 (total seconds: 600)
+
+ Begin real-time collection and analysis
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_4727b453-d5b1-41dc-a2de-7ae230ea6763
+
+Collecting data for ASN 3356 for 10.0 minutes...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 07:13:58.859636:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 07:12:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 07:14:58.966226:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 07:13:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 07:15:59.061625:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 07:13:00  ...                             0
+
+[1 rows x 41 columns]
+
+BGPStream collection failed: Could not get next record (is the stream started?)
+Restarting data collection for remaining 419 seconds...
+No features extracted for this window. Skipping DataFrame creation.
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 07:17:59.324975:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 07:16:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 07:18:59.449786:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 07:16:00  ...                             0
+
+[1 rows x 41 columns]
+
+BGPStream collection failed: Could not get next record (is the stream started?)
+Restarting data collection for remaining 239 seconds...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 07:19:59.718587:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 07:18:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 07:20:59.842228:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 07:19:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 07:21:59.968928:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 07:19:00  ...                             0
+
+[1 rows x 41 columns]
+
+BGPStream collection failed: Could not get next record (is the stream started?)
+Restarting data collection for remaining 58 seconds...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+real-time data collection finished...
+
+
+Updated features_df at 2024-10-30 07:23:00.191698:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 07:22:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 07:24:00.316163:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 07:22:00  ...                             0
+
+[1 rows x 41 columns]
+
+No remaining time left for data collection. Exiting.
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 07:12:00  ...                             0
+1  2024-10-30 07:13:00  ...                             0
+3  2024-10-30 07:16:00  ...                             0
+5  2024-10-30 07:18:00  ...                             0
+6  2024-10-30 07:19:00  ...                             0
+
+[5 rows x 41 columns]
+Parsed column 'All Peers' as lists.
+Parsed column 'All Paths' as lists.
+Parsed column 'Community Values' as lists.
+Parsed column 'All Prefixes Announced' as lists.
+Parsed column 'All Prefixes Withdrawn' as lists.
+Converted column 'Total Routes' to numeric.
+Converted column 'New Routes' to numeric.
+Converted column 'Withdrawals' to numeric.
+Converted column 'Origin Changes' to numeric.
+Converted column 'Route Changes' to numeric.
+Converted column 'Maximum Path Length' to numeric.
+Converted column 'Average Path Length' to numeric.
+Converted column 'Maximum Edit Distance' to numeric.
+Converted column 'Average Edit Distance' to numeric.
+Converted column 'Announcements' to numeric.
+Converted column 'Unique Prefixes Announced' to numeric.
+Converted column 'Average MED' to numeric.
+Converted column 'Average Local Preference' to numeric.
+Converted column 'Total Communities' to numeric.
+Converted column 'Unique Communities' to numeric.
+Converted column 'Total Updates' to numeric.
+Converted column 'Average Updates per Peer' to numeric.
+Converted column 'Max Updates from a Single Peer' to numeric.
+Converted column 'Min Updates from a Single Peer' to numeric.
+Converted column 'Std Dev of Updates' to numeric.
+Converted column 'Total Prefixes Announced' to numeric.
+Converted column 'Average Announcements per Prefix' to numeric.
+Converted column 'Max Announcements for a Single Prefix' to numeric.
+Converted column 'Min Announcements for a Single Prefix' to numeric.
+Converted column 'Std Dev of Announcements' to numeric.
+Converted column 'Count of Unexpected ASNs in Paths' to numeric.
+Converted column 'Target Prefixes Withdrawn' to numeric.
+Converted column 'Target Prefixes Announced' to numeric.
+Converted column 'AS Path Changes' to numeric.
+Column 'Average Prefix Length' not found in the DataFrame. Filling with 0.0.
+Column 'Max Prefix Length' not found in the DataFrame. Filling with 0.0.
+Column 'Min Prefix Length' not found in the DataFrame. Filling with 0.0.
+Converted column 'AS Path Prepending' to numeric.
+Converted column 'Total Peers' to numeric.
+Converted column 'Total Paths' to numeric.
+Converted column 'Total Prefixes Announced List' to numeric.
+Converted column 'Total Prefixes Withdrawn List' to numeric.
+Set threshold for feature 'Withdrawals' to 0.0 for anomaly 'Leak Anomaly'.
+Set threshold for feature 'Route Changes' to 0.5 for anomaly 'Leak Anomaly'.
+Set threshold for feature 'Std Dev of Updates' to 50.50284364007078 for anomaly 'Flapping Anomaly'.
+Set threshold for feature 'Announcements' to 3541.0 for anomaly 'Flapping Anomaly'.
+Set threshold for feature 'Count of Unexpected ASNs in Paths' to 0.0 for anomaly 'Hijack Anomaly'.
+Set threshold for feature 'AS Path Prepending' to 1537.5 for anomaly 'Path Manipulation Anomaly'.
+Set threshold for feature 'Maximum Path Length' to 17.5 for anomaly 'Path Manipulation Anomaly'.
+Set threshold for feature 'Average MED' to 0.0 for anomaly 'Policy-Related Anomaly'.
+Set threshold for feature 'Average Local Preference' to 0.0 for anomaly 'Policy-Related Anomaly'.
+Defined 5 anomaly rules.
+Calculated 'Average Updates per Prefix'.
+Row 0: Data point log added.
+Row 0: Prefixes Announced: []
+Row 0: No peers found to update.
+Row 0: Updates per peer info added.
+Row 0: Top Prefixes: []
+Row 0: Prefix Updates List: []
+Row 0: Updates per prefix info added.
+Row 0: Policy info added.
+Row 1: Data point log added.
+Row 1: Prefixes Announced: []
+Row 1: No peers found to update.
+Row 1: Updates per peer info added.
+Row 1: Top Prefixes: []
+Row 1: Prefix Updates List: []
+Row 1: Updates per prefix info added.
+Row 1: Policy info added.
+Row 3: Data point log added.
+Row 3: Prefixes Announced: []
+Row 3: No peers found to update.
+Row 3: Updates per peer info added.
+Row 3: Top Prefixes: []
+Row 3: Prefix Updates List: []
+Row 3: Updates per prefix info added.
+Row 3: Anomaly detected: {'timestamp': '2024-10-30 07:16:00', 'as_number': '3356', 'type': 'Flapping Anomaly', 'description': 'Frequent changes in route announcements and withdrawals, indicating network instability.', 'features_triggered': ['Std Dev of Updates', 'Announcements'], 'details': {'Std Dev of Updates': 55.022903549882614, 'Announcements': 3667}}
+Row 3: Anomaly detected: {'timestamp': '2024-10-30 07:16:00', 'as_number': '3356', 'type': 'Path Manipulation Anomaly', 'description': 'Unusual modifications to the AS path, such as excessive AS path prepending.', 'features_triggered': ['AS Path Prepending', 'Maximum Path Length'], 'details': {'AS Path Prepending': 2155, 'Maximum Path Length': 19}}
+Row 3: Policy info added.
+Row 5: Data point log added.
+Row 5: Prefixes Announced: []
+Row 5: No peers found to update.
+Row 5: Updates per peer info added.
+Row 5: Top Prefixes: []
+Row 5: Prefix Updates List: []
+Row 5: Updates per prefix info added.
+Row 5: Policy info added.
+Row 6: Data point log added.
+Row 6: Prefixes Announced: []
+Row 6: No peers found to update.
+Row 6: Updates per peer info added.
+Row 6: Top Prefixes: []
+Row 6: Prefix Updates List: []
+Row 6: Updates per prefix info added.
+Row 6: Policy info added.
+Row 8: Data point log added.
+Row 8: Prefixes Announced: []
+Row 8: No peers found to update.
+Row 8: Updates per peer info added.
+Row 8: Top Prefixes: []
+Row 8: Prefix Updates List: []
+Row 8: Updates per prefix info added.
+Row 8: Policy info added.
+Finished writing logs to files.
+Total Updates per Prefix:
+Wrote overall summary to 'overall_summary.txt'.
+Wrote detailed anomalies to 'anomalies.txt'.
+Wrote anomaly summary to 'anomaly_summary.txt'.
+Wrote AS path changes summary to 'as_path_changes_summary.txt'.
+Wrote policy summary to 'policy_summary.txt'.
+
+Final data saved to /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_4727b453-d5b1-41dc-a2de-7ae230ea6763
+
+Running RAG query with collected data...
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_4727b453-d5b1-41dc-a2de-7ae230ea6763
+All numeric features in 'features' are correctly included in 'numeric_columns'.
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:03:00 (total seconds: 180)
+
+ Begin real-time collection and analysis
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:03:00 (total seconds: 180)
+
+ Begin real-time collection and analysis
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_7a54b5af-eb6b-4913-b186-95095d95b466
+
+Collecting data for ASN 3356 for 3.0 minutes...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 07:34:47.626779:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 07:33:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 07:35:47.758045:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 07:34:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 07:36:47.879531:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 07:34:00  ...                             0
+
+[1 rows x 41 columns]
+
+No remaining time left for data collection. Exiting.
+Final termination: BGPStream collection timed out. Terminating process...
+BGPStream collection failed: Could not get next record (is the stream started?)
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 07:33:00  ...                             0
+1  2024-10-30 07:34:00  ...                             0
+
+[2 rows x 41 columns]
+Parsed column 'All Peers' as lists.
+Parsed column 'All Paths' as lists.
+Parsed column 'Community Values' as lists.
+Parsed column 'All Prefixes Announced' as lists.
+Parsed column 'All Prefixes Withdrawn' as lists.
+Converted column 'Total Routes' to numeric.
+Converted column 'New Routes' to numeric.
+Converted column 'Withdrawals' to numeric.
+Converted column 'Origin Changes' to numeric.
+Converted column 'Route Changes' to numeric.
+Converted column 'Maximum Path Length' to numeric.
+Converted column 'Average Path Length' to numeric.
+Converted column 'Maximum Edit Distance' to numeric.
+Converted column 'Average Edit Distance' to numeric.
+Converted column 'Announcements' to numeric.
+Converted column 'Unique Prefixes Announced' to numeric.
+Converted column 'Average MED' to numeric.
+Converted column 'Average Local Preference' to numeric.
+Converted column 'Total Communities' to numeric.
+Converted column 'Unique Communities' to numeric.
+Converted column 'Total Updates' to numeric.
+Converted column 'Average Updates per Peer' to numeric.
+Converted column 'Max Updates from a Single Peer' to numeric.
+Converted column 'Min Updates from a Single Peer' to numeric.
+Converted column 'Std Dev of Updates' to numeric.
+Converted column 'Total Prefixes Announced' to numeric.
+Converted column 'Average Announcements per Prefix' to numeric.
+Converted column 'Max Announcements for a Single Prefix' to numeric.
+Converted column 'Min Announcements for a Single Prefix' to numeric.
+Converted column 'Std Dev of Announcements' to numeric.
+Converted column 'Count of Unexpected ASNs in Paths' to numeric.
+Converted column 'Target Prefixes Withdrawn' to numeric.
+Converted column 'Target Prefixes Announced' to numeric.
+Converted column 'AS Path Changes' to numeric.
+Column 'Average Prefix Length' not found in the DataFrame. Filling with 0.0.
+Column 'Max Prefix Length' not found in the DataFrame. Filling with 0.0.
+Column 'Min Prefix Length' not found in the DataFrame. Filling with 0.0.
+Converted column 'AS Path Prepending' to numeric.
+Converted column 'Total Peers' to numeric.
+Converted column 'Total Paths' to numeric.
+Converted column 'Total Prefixes Announced List' to numeric.
+Converted column 'Total Prefixes Withdrawn List' to numeric.
+Set threshold for feature 'Withdrawals' to 0.0 for anomaly 'Leak Anomaly'.
+Set threshold for feature 'Route Changes' to 40.5 for anomaly 'Leak Anomaly'.
+Set threshold for feature 'Std Dev of Updates' to 74.57757644540665 for anomaly 'Flapping Anomaly'.
+Set threshold for feature 'Announcements' to 3092.2 for anomaly 'Flapping Anomaly'.
+Set threshold for feature 'Count of Unexpected ASNs in Paths' to 0.0 for anomaly 'Hijack Anomaly'.
+Set threshold for feature 'AS Path Prepending' to 866.8000000000001 for anomaly 'Path Manipulation Anomaly'.
+Set threshold for feature 'Maximum Path Length' to 16.6 for anomaly 'Path Manipulation Anomaly'.
+Set threshold for feature 'Average MED' to 0.0 for anomaly 'Policy-Related Anomaly'.
+Set threshold for feature 'Average Local Preference' to 0.0 for anomaly 'Policy-Related Anomaly'.
+Defined 5 anomaly rules.
+Calculated 'Average Updates per Prefix'.
+Row 0: Data point log added.
+Row 0: Prefixes Announced: []
+Row 0: No peers found to update.
+Row 0: Updates per peer info added.
+Row 0: Top Prefixes: []
+Row 0: Prefix Updates List: []
+Row 0: Updates per prefix info added.
+Row 0: Policy info added.
+Row 1: Data point log added.
+Row 1: Prefixes Announced: []
+Row 1: No peers found to update.
+Row 1: Updates per peer info added.
+Row 1: Top Prefixes: []
+Row 1: Prefix Updates List: []
+Row 1: Updates per prefix info added.
+Row 1: Anomaly detected: {'timestamp': '2024-10-30 07:34:00', 'as_number': '3356', 'type': 'Flapping Anomaly', 'description': 'Frequent changes in route announcements and withdrawals, indicating network instability.', 'features_triggered': ['Std Dev of Updates', 'Announcements'], 'details': {'Std Dev of Updates': 81.86766160469269, 'Announcements': 3412}}
+Row 1: Anomaly detected: {'timestamp': '2024-10-30 07:34:00', 'as_number': '3356', 'type': 'Path Manipulation Anomaly', 'description': 'Unusual modifications to the AS path, such as excessive AS path prepending.', 'features_triggered': ['AS Path Prepending', 'Maximum Path Length'], 'details': {'AS Path Prepending': 957, 'Maximum Path Length': 17}}
+Row 1: Policy info added.
+Finished writing logs to files.
+Total Updates per Prefix:
+Wrote overall summary to 'overall_summary.txt'.
+Wrote detailed anomalies to 'anomalies.txt'.
+Wrote anomaly summary to 'anomaly_summary.txt'.
+Wrote AS path changes summary to 'as_path_changes_summary.txt'.
+Wrote policy summary to 'policy_summary.txt'.
+
+Final data saved to /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_7a54b5af-eb6b-4913-b186-95095d95b466
+
+Running RAG query with collected data...
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_7a54b5af-eb6b-4913-b186-95095d95b466
+All numeric features in 'features' are correctly included in 'numeric_columns'.
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:01:00 (total seconds: 60)
+
+ Begin real-time collection and analysis
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_8405d6ea-154a-402e-b561-e0feedb34442
+
+Collecting data for ASN 3356 for 1.0 minutes...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+real-time data collection finished...
+
+
+Updated features_df at 2024-10-30 07:43:57.599656:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 07:42:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 07:44:57.713006:
+             Timestamp  ... Total Prefixes Withdrawn List
+1  2024-10-30 07:43:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 07:45:57.833185:
+             Timestamp  ... Total Prefixes Withdrawn List
+1  2024-10-30 07:43:00  ...                             0
+
+[1 rows x 41 columns]
+
+No remaining time left for data collection. Exiting.
+Removed duplicate rows from the DataFrame.
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 07:42:00  ...                             0
+2  2024-10-30 07:43:00  ...                             0
+
+[2 rows x 41 columns]
+Parsed column 'All Peers' as lists.
+Parsed column 'All Paths' as lists.
+Parsed column 'Community Values' as lists.
+Parsed column 'All Prefixes Announced' as lists.
+Parsed column 'All Prefixes Withdrawn' as lists.
+Converted column 'Total Routes' to numeric.
+Converted column 'New Routes' to numeric.
+Converted column 'Withdrawals' to numeric.
+Converted column 'Origin Changes' to numeric.
+Converted column 'Route Changes' to numeric.
+Converted column 'Maximum Path Length' to numeric.
+Converted column 'Average Path Length' to numeric.
+Converted column 'Maximum Edit Distance' to numeric.
+Converted column 'Average Edit Distance' to numeric.
+Converted column 'Announcements' to numeric.
+Converted column 'Unique Prefixes Announced' to numeric.
+Converted column 'Average MED' to numeric.
+Converted column 'Average Local Preference' to numeric.
+Converted column 'Total Communities' to numeric.
+Converted column 'Unique Communities' to numeric.
+Converted column 'Total Updates' to numeric.
+Converted column 'Average Updates per Peer' to numeric.
+Converted column 'Max Updates from a Single Peer' to numeric.
+Converted column 'Min Updates from a Single Peer' to numeric.
+Converted column 'Std Dev of Updates' to numeric.
+Converted column 'Total Prefixes Announced' to numeric.
+Converted column 'Average Announcements per Prefix' to numeric.
+Converted column 'Max Announcements for a Single Prefix' to numeric.
+Converted column 'Min Announcements for a Single Prefix' to numeric.
+Converted column 'Std Dev of Announcements' to numeric.
+Converted column 'Count of Unexpected ASNs in Paths' to numeric.
+Converted column 'Target Prefixes Withdrawn' to numeric.
+Converted column 'Target Prefixes Announced' to numeric.
+Converted column 'AS Path Changes' to numeric.
+Column 'Average Prefix Length' not found in the DataFrame. Filling with 0.0.
+Column 'Max Prefix Length' not found in the DataFrame. Filling with 0.0.
+Column 'Min Prefix Length' not found in the DataFrame. Filling with 0.0.
+Converted column 'AS Path Prepending' to numeric.
+Converted column 'Total Peers' to numeric.
+Converted column 'Total Paths' to numeric.
+Converted column 'Total Prefixes Announced List' to numeric.
+Converted column 'Total Prefixes Withdrawn List' to numeric.
+Set threshold for feature 'Withdrawals' to 0.0 for anomaly 'Leak Anomaly'.
+Set threshold for feature 'Route Changes' to 16.2 for anomaly 'Leak Anomaly'.
+Set threshold for feature 'Std Dev of Updates' to 26.79281228806322 for anomaly 'Flapping Anomaly'.
+Set threshold for feature 'Announcements' to 2865.6 for anomaly 'Flapping Anomaly'.
+Set threshold for feature 'Count of Unexpected ASNs in Paths' to 0.0 for anomaly 'Hijack Anomaly'.
+Set threshold for feature 'AS Path Prepending' to 1038.6 for anomaly 'Path Manipulation Anomaly'.
+Set threshold for feature 'Maximum Path Length' to 13.9 for anomaly 'Path Manipulation Anomaly'.
+Set threshold for feature 'Average MED' to 0.0 for anomaly 'Policy-Related Anomaly'.
+Set threshold for feature 'Average Local Preference' to 0.0 for anomaly 'Policy-Related Anomaly'.
+Defined 5 anomaly rules.
+Calculated 'Average Updates per Prefix'.
+Row 0: Data point log added.
+Row 0: Prefixes Announced: []
+Row 0: No peers found to update.
+Row 0: Updates per peer info added.
+Row 0: Top Prefixes: []
+Row 0: Prefix Updates List: []
+Row 0: Updates per prefix info added.
+Row 0: Policy info added.
+Row 2: Data point log added.
+Row 2: Prefixes Announced: []
+Row 2: No peers found to update.
+Row 2: Updates per peer info added.
+Row 2: Top Prefixes: []
+Row 2: Prefix Updates List: []
+Row 2: Updates per prefix info added.
+Row 2: Anomaly detected: {'timestamp': '2024-10-30 07:43:00', 'as_number': '3356', 'type': 'Flapping Anomaly', 'description': 'Frequent changes in route announcements and withdrawals, indicating network instability.', 'features_triggered': ['Std Dev of Updates', 'Announcements'], 'details': {'Std Dev of Updates': 29.769791431181357, 'Announcements': 3182}}
+Row 2: Anomaly detected: {'timestamp': '2024-10-30 07:43:00', 'as_number': '3356', 'type': 'Path Manipulation Anomaly', 'description': 'Unusual modifications to the AS path, such as excessive AS path prepending.', 'features_triggered': ['AS Path Prepending', 'Maximum Path Length'], 'details': {'AS Path Prepending': 1154, 'Maximum Path Length': 15}}
+Row 2: Policy info added.
+Finished writing logs to files.
+Total Updates per Prefix:
+Wrote overall summary to 'overall_summary.txt'.
+Wrote detailed anomalies to 'anomalies.txt'.
+Wrote anomaly summary to 'anomaly_summary.txt'.
+Wrote AS path changes summary to 'as_path_changes_summary.txt'.
+Wrote policy summary to 'policy_summary.txt'.
+
+Final data saved to /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_8405d6ea-154a-402e-b561-e0feedb34442
+
+Running RAG query with collected data...
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_8405d6ea-154a-402e-b561-e0feedb34442
+All numeric features in 'features' are correctly included in 'numeric_columns'.
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:01:00 (total seconds: 60)
+
+ Begin real-time collection and analysis
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_690720c3-5264-41d8-8ce3-5e8673311fd8
+
+Collecting data for ASN 3356 for 1.0 minutes...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+real-time data collection finished...
+
+
+Updated features_df at 2024-10-30 07:54:00.852397:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 07:53:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 07:55:00.980374:
+             Timestamp  ... Total Prefixes Withdrawn List
+1  2024-10-30 07:54:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 07:56:01.100607:
+             Timestamp  ... Total Prefixes Withdrawn List
+1  2024-10-30 07:54:00  ...                             0
+
+[1 rows x 41 columns]
+
+No remaining time left for data collection. Exiting.
+Removed duplicate rows from the DataFrame.
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 07:53:00  ...                             0
+2  2024-10-30 07:54:00  ...                             0
+
+[2 rows x 41 columns]
+Parsed column 'All Peers' as lists.
+Parsed column 'All Paths' as lists.
+Parsed column 'Community Values' as lists.
+Parsed column 'All Prefixes Announced' as lists.
+Parsed column 'All Prefixes Withdrawn' as lists.
+Converted column 'Total Routes' to numeric.
+Converted column 'New Routes' to numeric.
+Converted column 'Withdrawals' to numeric.
+Converted column 'Origin Changes' to numeric.
+Converted column 'Route Changes' to numeric.
+Converted column 'Maximum Path Length' to numeric.
+Converted column 'Average Path Length' to numeric.
+Converted column 'Maximum Edit Distance' to numeric.
+Converted column 'Average Edit Distance' to numeric.
+Converted column 'Announcements' to numeric.
+Converted column 'Unique Prefixes Announced' to numeric.
+Converted column 'Average MED' to numeric.
+Converted column 'Average Local Preference' to numeric.
+Converted column 'Total Communities' to numeric.
+Converted column 'Unique Communities' to numeric.
+Converted column 'Total Updates' to numeric.
+Converted column 'Average Updates per Peer' to numeric.
+Converted column 'Max Updates from a Single Peer' to numeric.
+Converted column 'Min Updates from a Single Peer' to numeric.
+Converted column 'Std Dev of Updates' to numeric.
+Converted column 'Total Prefixes Announced' to numeric.
+Converted column 'Average Announcements per Prefix' to numeric.
+Converted column 'Max Announcements for a Single Prefix' to numeric.
+Converted column 'Min Announcements for a Single Prefix' to numeric.
+Converted column 'Std Dev of Announcements' to numeric.
+Converted column 'Count of Unexpected ASNs in Paths' to numeric.
+Converted column 'Target Prefixes Withdrawn' to numeric.
+Converted column 'Target Prefixes Announced' to numeric.
+Converted column 'AS Path Changes' to numeric.
+Column 'Average Prefix Length' not found in the DataFrame. Filling with 0.0.
+Column 'Max Prefix Length' not found in the DataFrame. Filling with 0.0.
+Column 'Min Prefix Length' not found in the DataFrame. Filling with 0.0.
+Converted column 'AS Path Prepending' to numeric.
+Converted column 'Total Peers' to numeric.
+Converted column 'Total Paths' to numeric.
+Converted column 'Total Prefixes Announced List' to numeric.
+Converted column 'Total Prefixes Withdrawn List' to numeric.
+Set threshold for feature 'Withdrawals' to 0.0 for anomaly 'Leak Anomaly'.
+Set threshold for feature 'Route Changes' to 53.1 for anomaly 'Leak Anomaly'.
+Set threshold for feature 'Std Dev of Updates' to 31.5490749551853 for anomaly 'Flapping Anomaly'.
+Set threshold for feature 'Announcements' to 3674.1 for anomaly 'Flapping Anomaly'.
+Set threshold for feature 'Count of Unexpected ASNs in Paths' to 0.0 for anomaly 'Hijack Anomaly'.
+Set threshold for feature 'AS Path Prepending' to 491.5 for anomaly 'Path Manipulation Anomaly'.
+Set threshold for feature 'Maximum Path Length' to 17.2 for anomaly 'Path Manipulation Anomaly'.
+Set threshold for feature 'Average MED' to 0.0 for anomaly 'Policy-Related Anomaly'.
+Set threshold for feature 'Average Local Preference' to 0.0 for anomaly 'Policy-Related Anomaly'.
+Defined 5 anomaly rules.
+Calculated 'Average Updates per Prefix'.
+Row 0: Data point log added.
+Row 0: Prefixes Announced: []
+Row 0: No peers found to update.
+Row 0: Updates per peer info added.
+Row 0: Top Prefixes: []
+Row 0: Prefix Updates List: []
+Row 0: Updates per prefix info added.
+Row 0: Anomaly detected: {'timestamp': '2024-10-30 07:53:00', 'as_number': '3356', 'type': 'Flapping Anomaly', 'description': 'Frequent changes in route announcements and withdrawals, indicating network instability.', 'features_triggered': ['Std Dev of Updates', 'Announcements'], 'details': {'Std Dev of Updates': 33.9228602431206, 'Announcements': 4072}}
+Row 0: Anomaly detected: {'timestamp': '2024-10-30 07:53:00', 'as_number': '3356', 'type': 'Path Manipulation Anomaly', 'description': 'Unusual modifications to the AS path, such as excessive AS path prepending.', 'features_triggered': ['AS Path Prepending', 'Maximum Path Length'], 'details': {'AS Path Prepending': 545, 'Maximum Path Length': 18}}
+Row 0: Policy info added.
+Row 2: Data point log added.
+Row 2: Prefixes Announced: []
+Row 2: No peers found to update.
+Row 2: Updates per peer info added.
+Row 2: Top Prefixes: []
+Row 2: Prefix Updates List: []
+Row 2: Updates per prefix info added.
+Row 2: Policy info added.
+Finished writing logs to files.
+Total Updates per Prefix:
+Wrote overall summary to 'overall_summary.txt'.
+Wrote detailed anomalies to 'anomalies.txt'.
+Wrote anomaly summary to 'anomaly_summary.txt'.
+Wrote AS path changes summary to 'as_path_changes_summary.txt'.
+Wrote policy summary to 'policy_summary.txt'.
+
+Final data saved to /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_690720c3-5264-41d8-8ce3-5e8673311fd8
+
+Running RAG query with collected data...
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_690720c3-5264-41d8-8ce3-5e8673311fd8
+All numeric features in 'features' are correctly included in 'numeric_columns'.
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+3356
+
+Parsed time span for real-time collection: 0:01:00 (total seconds: 60)
+
+ Begin real-time collection and analysis
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_30359efd-c264-424c-8092-dee5821f51c8
+
+Collecting data for ASN 3356 for 1.0 minutes...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+real-time data collection finished...
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 08:02:00.223005:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 08:00:00  ...                             0
+
+[1 rows x 41 columns]
+
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+Collection in progress, continuing to wait...
+
+Updated features_df at 2024-10-30 08:03:00.354673:
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 08:00:00  ...                             0
+
+[1 rows x 41 columns]
+
+No remaining time left for data collection. Exiting.
+Removed duplicate rows from the DataFrame.
+             Timestamp  ... Total Prefixes Withdrawn List
+0  2024-10-30 08:00:00  ...                             0
+
+[1 rows x 41 columns]
+Parsed column 'All Peers' as lists.
+Parsed column 'All Paths' as lists.
+Parsed column 'Community Values' as lists.
+Parsed column 'All Prefixes Announced' as lists.
+Parsed column 'All Prefixes Withdrawn' as lists.
+Converted column 'Total Routes' to numeric.
+Converted column 'New Routes' to numeric.
+Converted column 'Withdrawals' to numeric.
+Converted column 'Origin Changes' to numeric.
+Converted column 'Route Changes' to numeric.
+Converted column 'Maximum Path Length' to numeric.
+Converted column 'Average Path Length' to numeric.
+Converted column 'Maximum Edit Distance' to numeric.
+Converted column 'Average Edit Distance' to numeric.
+Converted column 'Announcements' to numeric.
+Converted column 'Unique Prefixes Announced' to numeric.
+Converted column 'Average MED' to numeric.
+Converted column 'Average Local Preference' to numeric.
+Converted column 'Total Communities' to numeric.
+Converted column 'Unique Communities' to numeric.
+Converted column 'Total Updates' to numeric.
+Converted column 'Average Updates per Peer' to numeric.
+Converted column 'Max Updates from a Single Peer' to numeric.
+Converted column 'Min Updates from a Single Peer' to numeric.
+Converted column 'Std Dev of Updates' to numeric.
+Converted column 'Total Prefixes Announced' to numeric.
+Converted column 'Average Announcements per Prefix' to numeric.
+Converted column 'Max Announcements for a Single Prefix' to numeric.
+Converted column 'Min Announcements for a Single Prefix' to numeric.
+Converted column 'Std Dev of Announcements' to numeric.
+Converted column 'Count of Unexpected ASNs in Paths' to numeric.
+Converted column 'Target Prefixes Withdrawn' to numeric.
+Converted column 'Target Prefixes Announced' to numeric.
+Converted column 'AS Path Changes' to numeric.
+Column 'Average Prefix Length' not found in the DataFrame. Filling with 0.0.
+Column 'Max Prefix Length' not found in the DataFrame. Filling with 0.0.
+Column 'Min Prefix Length' not found in the DataFrame. Filling with 0.0.
+Converted column 'AS Path Prepending' to numeric.
+Converted column 'Total Peers' to numeric.
+Converted column 'Total Paths' to numeric.
+Converted column 'Total Prefixes Announced List' to numeric.
+Converted column 'Total Prefixes Withdrawn List' to numeric.
+Set threshold for feature 'Withdrawals' to 0.0 for anomaly 'Leak Anomaly'.
+Set threshold for feature 'Route Changes' to 0.0 for anomaly 'Leak Anomaly'.
+Set threshold for feature 'Std Dev of Updates' to 9.653365361623845 for anomaly 'Flapping Anomaly'.
+Set threshold for feature 'Announcements' to 561.0 for anomaly 'Flapping Anomaly'.
+Set threshold for feature 'Count of Unexpected ASNs in Paths' to 0.0 for anomaly 'Hijack Anomaly'.
+Set threshold for feature 'AS Path Prepending' to 168.0 for anomaly 'Path Manipulation Anomaly'.
+Set threshold for feature 'Maximum Path Length' to 16.0 for anomaly 'Path Manipulation Anomaly'.
+Set threshold for feature 'Average MED' to 0.0 for anomaly 'Policy-Related Anomaly'.
+Set threshold for feature 'Average Local Preference' to 0.0 for anomaly 'Policy-Related Anomaly'.
+Defined 5 anomaly rules.
+Calculated 'Average Updates per Prefix'.
+Row 0: Data point log added.
+Row 0: Prefixes Announced: []
+Row 0: Incremented AS8218 updates by 1. Total now: 1
+Row 0: Incremented AS6830 updates by 1. Total now: 1
+Row 0: Incremented AS48362 updates by 1. Total now: 1
+Row 0: Incremented AS20514 updates by 1. Total now: 1
+Row 0: Incremented AS15547 updates by 1. Total now: 1
+Row 0: Incremented AS6939 updates by 1. Total now: 1
+Row 0: Incremented AS15692 updates by 1. Total now: 1
+Row 0: Incremented AS13237 updates by 1. Total now: 1
+Row 0: Incremented AS199524 updates by 1. Total now: 1
+Row 0: Incremented AS47147 updates by 1. Total now: 1
+Row 0: Incremented AS52320 updates by 1. Total now: 1
+Row 0: Incremented AS13830 updates by 1. Total now: 1
+Row 0: Incremented AS14907 updates by 1. Total now: 1
+Row 0: Incremented AS1403 updates by 1. Total now: 1
+Row 0: Incremented AS20080 updates by 1. Total now: 1
+Row 0: Incremented AS202032 updates by 1. Total now: 1
+Row 0: Incremented AS24482 updates by 1. Total now: 1
+Row 0: Incremented AS20612 updates by 1. Total now: 1
+Row 0: Incremented AS7575 updates by 1. Total now: 1
+Row 0: Incremented AS35280 updates by 1. Total now: 1
+Row 0: Incremented AS6667 updates by 1. Total now: 1
+Row 0: Incremented AS56430 updates by 1. Total now: 1
+Row 0: Incremented AS57381 updates by 1. Total now: 1
+Row 0: Incremented AS34927 updates by 1. Total now: 1
+Row 0: Incremented AS213151 updates by 1. Total now: 1
+Row 0: Incremented AS9002 updates by 1. Total now: 1
+Row 0: Incremented AS1828 updates by 1. Total now: 1
+Row 0: Incremented AS2914 updates by 1. Total now: 1
+Row 0: Incremented AS42473 updates by 1. Total now: 1
+Row 0: Incremented AS212271 updates by 1. Total now: 1
+Row 0: Incremented AS40994 updates by 1. Total now: 1
+Row 0: Incremented AS31554 updates by 1. Total now: 1
+Row 0: Incremented AS6762 updates by 1. Total now: 1
+Row 0: Incremented AS57821 updates by 1. Total now: 1
+Row 0: Incremented AS213241 updates by 1. Total now: 1
+Row 0: Incremented AS3170 updates by 1. Total now: 1
+Row 0: Incremented AS58057 updates by 1. Total now: 1
+Row 0: Incremented AS198249 updates by 1. Total now: 1
+Row 0: Incremented AS51786 updates by 1. Total now: 1
+Row 0: Incremented AS210937 updates by 1. Total now: 1
+Row 0: Incremented AS6894 updates by 1. Total now: 1
+Row 0: Incremented AS206271 updates by 1. Total now: 1
+Row 0: Incremented AS1299 updates by 1. Total now: 1
+Row 0: Incremented AS8455 updates by 1. Total now: 1
+Row 0: Incremented AS212123 updates by 1. Total now: 1
+Row 0: Incremented AS396998 updates by 1. Total now: 1
+Row 0: Incremented AS3257 updates by 1. Total now: 1
+Row 0: Incremented AS394414 updates by 1. Total now: 1
+Row 0: Incremented AS207841 updates by 1. Total now: 1
+Row 0: Incremented AS56457 updates by 1. Total now: 1
+Row 0: Incremented AS138195 updates by 1. Total now: 1
+Row 0: Incremented AS35710 updates by 1. Total now: 1
+Row 0: Incremented AS14630 updates by 1. Total now: 1
+Row 0: Incremented AS25160 updates by 1. Total now: 1
+Row 0: Incremented AS6461 updates by 1. Total now: 1
+Row 0: Incremented AS199938 updates by 1. Total now: 1
+Row 0: Incremented AS3214 updates by 1. Total now: 1
+Row 0: Incremented AS6908 updates by 1. Total now: 1
+Row 0: Incremented AS29075 updates by 1. Total now: 1
+Row 0: Incremented AS62167 updates by 1. Total now: 1
+Row 0: Incremented AS6233 updates by 1. Total now: 1
+Row 0: Incremented AS6424 updates by 1. Total now: 1
+Row 0: Incremented AS29140 updates by 1. Total now: 1
+Row 0: Incremented AS24961 updates by 1. Total now: 1
+Row 0: Incremented AS12307 updates by 1. Total now: 1
+Row 0: Incremented AS35600 updates by 1. Total now: 1
+Row 0: Incremented AS209650 updates by 1. Total now: 1
+Row 0: Incremented AS200612 updates by 1. Total now: 1
+Row 0: Incremented AS49544 updates by 1. Total now: 1
+Row 0: Incremented AS211509 updates by 1. Total now: 1
+Row 0: Incremented AS31027 updates by 1. Total now: 1
+Row 0: AS8218 made 561 announcements. Total now: 561
+Row 0: AS6830 made 561 announcements. Total now: 561
+Row 0: AS48362 made 561 announcements. Total now: 561
+Row 0: AS20514 made 561 announcements. Total now: 561
+Row 0: AS15547 made 561 announcements. Total now: 561
+Row 0: AS6939 made 561 announcements. Total now: 561
+Row 0: AS15692 made 561 announcements. Total now: 561
+Row 0: AS13237 made 561 announcements. Total now: 561
+Row 0: AS199524 made 561 announcements. Total now: 561
+Row 0: AS47147 made 561 announcements. Total now: 561
+Row 0: AS52320 made 561 announcements. Total now: 561
+Row 0: AS13830 made 561 announcements. Total now: 561
+Row 0: AS14907 made 561 announcements. Total now: 561
+Row 0: AS1403 made 561 announcements. Total now: 561
+Row 0: AS20080 made 561 announcements. Total now: 561
+Row 0: AS202032 made 561 announcements. Total now: 561
+Row 0: AS24482 made 561 announcements. Total now: 561
+Row 0: AS20612 made 561 announcements. Total now: 561
+Row 0: AS7575 made 561 announcements. Total now: 561
+Row 0: AS35280 made 561 announcements. Total now: 561
+Row 0: AS6667 made 561 announcements. Total now: 561
+Row 0: AS56430 made 561 announcements. Total now: 561
+Row 0: AS57381 made 561 announcements. Total now: 561
+Row 0: AS34927 made 561 announcements. Total now: 561
+Row 0: AS213151 made 561 announcements. Total now: 561
+Row 0: AS9002 made 561 announcements. Total now: 561
+Row 0: AS1828 made 561 announcements. Total now: 561
+Row 0: AS2914 made 561 announcements. Total now: 561
+Row 0: AS42473 made 561 announcements. Total now: 561
+Row 0: AS212271 made 561 announcements. Total now: 561
+Row 0: AS40994 made 561 announcements. Total now: 561
+Row 0: AS31554 made 561 announcements. Total now: 561
+Row 0: AS6762 made 561 announcements. Total now: 561
+Row 0: AS57821 made 561 announcements. Total now: 561
+Row 0: AS213241 made 561 announcements. Total now: 561
+Row 0: AS3170 made 561 announcements. Total now: 561
+Row 0: AS58057 made 561 announcements. Total now: 561
+Row 0: AS198249 made 561 announcements. Total now: 561
+Row 0: AS51786 made 561 announcements. Total now: 561
+Row 0: AS210937 made 561 announcements. Total now: 561
+Row 0: AS6894 made 561 announcements. Total now: 561
+Row 0: AS206271 made 561 announcements. Total now: 561
+Row 0: AS1299 made 561 announcements. Total now: 561
+Row 0: AS8455 made 561 announcements. Total now: 561
+Row 0: AS212123 made 561 announcements. Total now: 561
+Row 0: AS396998 made 561 announcements. Total now: 561
+Row 0: AS3257 made 561 announcements. Total now: 561
+Row 0: AS394414 made 561 announcements. Total now: 561
+Row 0: AS207841 made 561 announcements. Total now: 561
+Row 0: AS56457 made 561 announcements. Total now: 561
+Row 0: AS138195 made 561 announcements. Total now: 561
+Row 0: AS35710 made 561 announcements. Total now: 561
+Row 0: AS14630 made 561 announcements. Total now: 561
+Row 0: AS25160 made 561 announcements. Total now: 561
+Row 0: AS6461 made 561 announcements. Total now: 561
+Row 0: AS199938 made 561 announcements. Total now: 561
+Row 0: AS3214 made 561 announcements. Total now: 561
+Row 0: AS6908 made 561 announcements. Total now: 561
+Row 0: AS29075 made 561 announcements. Total now: 561
+Row 0: AS62167 made 561 announcements. Total now: 561
+Row 0: AS6233 made 561 announcements. Total now: 561
+Row 0: AS6424 made 561 announcements. Total now: 561
+Row 0: AS29140 made 561 announcements. Total now: 561
+Row 0: AS24961 made 561 announcements. Total now: 561
+Row 0: AS12307 made 561 announcements. Total now: 561
+Row 0: AS35600 made 561 announcements. Total now: 561
+Row 0: AS209650 made 561 announcements. Total now: 561
+Row 0: AS200612 made 561 announcements. Total now: 561
+Row 0: AS49544 made 561 announcements. Total now: 561
+Row 0: AS211509 made 561 announcements. Total now: 561
+Row 0: AS31027 made 561 announcements. Total now: 561
+Row 0: Updates per peer info added.
+Row 0: Top Prefixes: ['169.145.140.0/23', '2804:1070:1::/48', '2804:1070:4000::/36', '2a02:ac80::/32', '154.0.152.0/23', '116.93.110.0/24', '185.32.70.0/24', '189.39.138.0/23', '189.39.134.0/23', '189.39.132.0/23', '189.39.130.0/23', '189.39.128.0/23', '213.204.86.0/24', '89.46.34.0/24', '45.129.17.0/24', '178.49.152.0/24', '211.43.158.0/24', '103.177.87.0/24', '103.177.86.0/24', '45.175.156.0/22', '2a02:ac81::/32', '2a02:ac80:b000::/48', '2804:1070::/32', '168.187.171.0/24', '189.39.216.0/24', '38.146.198.0/23', '80.211.126.0/24', '154.0.152.0/22', '112.79.45.0/24', '66.244.16.0/24', '201.71.207.0/24', '192.19.220.0/24', '190.93.184.0/22', '190.93.186.0/23', '190.93.184.0/23', '113.23.173.0/24', '2001:7fb:fe0d::/48', '2a02:ac87:ac87::/48', '2a02:ac87:5900::/48', '2a02:ac82::/32', '2a02:ac80:f000::/48', '2a02:ac87:59cb::/48', '2a02:ac83::/32', '168.232.200.0/24', '168.232.202.0/24', '168.232.203.0/24', '2804:14d:d600::/40', '2a06:8e40::/29', '2a02:16c8::/35', '83.222.24.0/22', '45.172.92.0/22', '45.89.237.0/24', '45.89.236.0/24', '45.89.239.0/24', '2a06:de01:94c::/48', '2403:e240::/32', '2a0c:b641:302::/47', '2a02:ac80:200::/48', '2a02:ac80:a0::/48', '2a02:ac80:60::/48', '2a06:de01:8d9::/48', '2a06:de01:ad5::/48', '2a06:de01:861::/48', '2a06:de01:88c::/48', '2804:1e10:ffff::/48', '2a06:de05:625e::/48', '2804:fdc::/32', '2600:d07::/34', '2804:1e10::/32', '2605:9cc0:c13::/48', '2605:9cc0:c0c::/48', '2400:b0a0::/32', '2a06:de05:62a0::/48', '2400:c700:3001::/48', '2606:6e00:8000::/35', '124.195.190.0/24', '190.12.156.0/22', '2a06:de05:632b::/48', '2a10:ccc7:93d6::/48', '2a10:ccc7:938c::/48', '2a10:ccc7:93e4::/48', '2605:9cc0:c02::/48', '2a06:de01:876::/48', '2a06:de01:8d5::/48', '2a06:de01:977::/48', '2402:e580:73f9::/48', '93.175.153.0/24', '84.205.75.0/24', '2001:7fb:ee03::/48', '2a02:ac80::/29', '2801:80:1a10::/48', '2804:76a4::/32', '2606:6e00::/32', '2606:6e00:4000::/35', '2001:7fb:fe04::/48', '2402:e580:744d::/48', '2001:7fb:fe0e::/48', '2001:7fb:fe20::/48', '203.145.74.0/24', '203.145.78.0/24', '202.45.88.0/24', '2.189.255.0/24', '2.189.254.0/23', '2.189.254.0/24', '5.122.192.0/18', '5.122.64.0/18', '5.122.0.0/18', '5.121.128.0/18', '5.122.64.0/20', '5.121.16.0/20', '5.121.192.0/18', '5.122.128.0/18', '5.121.64.0/20', '5.121.32.0/20', '5.121.80.0/20', '49.14.184.0/24', '49.14.187.0/24', '49.14.182.0/24', '49.14.183.0/24', '49.14.181.0/24', '49.14.186.0/24', '49.14.180.0/24', '49.14.185.0/24', '223.196.68.0/24', '197.138.236.0/24', '2.183.48.0/21', '185.213.11.0/24', '27.97.122.0/24', '27.97.121.0/24', '27.97.127.0/24', '27.97.124.0/24', '27.97.125.0/24', '27.97.123.0/24', '27.97.120.0/24', '27.97.126.0/24', '103.223.2.0/24', '102.177.7.0/24', '138.99.97.0/24', '45.235.212.0/24', '179.42.32.0/22', '212.86.67.0/24', '212.86.72.0/24', '212.86.74.0/24', '212.86.80.0/24', '212.86.93.0/24', '212.86.94.0/24', '212.86.70.0/24', '212.86.95.0/24', '212.86.86.0/24', '212.86.84.0/24', '212.86.88.0/24', '212.86.81.0/24', '185.213.9.0/24', '185.213.8.0/24', '103.175.85.0/24', '2400:c700:200::/48', '177.11.213.0/24', '177.11.215.0/24', '177.11.212.0/24', '177.11.214.0/24', '36.255.200.0/24', '23.199.236.0/22', '130.137.230.0/24', '2001:7fb:fe14::/48', '84.205.70.0/24', '2001:7fb:fe0b::/48', '2001:7fb:ee04::/48', '2001:7fb:fe0f::/48', '2001:7fb:fe17::/48', '2001:7fb:ee02::/48', '2001:7fb:ee00::/48', '190.12.158.0/24', '190.12.156.0/24', '190.12.157.0/24', '143.255.59.0/24', '2a02:ac80:500::/48', '2a02:ac80:e00::/48', '2a02:ac80:f00::/48', '2a02:ac80:b00::/48', '2a02:ac80:c000::/48', '2a0a:280:1770::/44', '2a13:a5c6:6500::/40', '2a12:dd47:f010::/44', '2a0a:280:1780::/44', '2a04:5340:4::/48', '213.204.81.0/24', '2001:7fb:fe0c::/48', '2001:7fb:fe07::/48', '2608:183:1::/48', '205.157.225.0/24', '130.137.150.0/24', '2606:ab40:100::/48', '2a03:74c0::/32', '207.119.104.0/22']
+Row 0: Prefix Updates List: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Row 0: Prefix 169.145.140.0/23 announced. Total announcements: 1
+Row 0: Prefix 2804:1070:1::/48 announced. Total announcements: 1
+Row 0: Prefix 2804:1070:4000::/36 announced. Total announcements: 1
+Row 0: Prefix 2a02:ac80::/32 announced. Total announcements: 1
+Row 0: Prefix 154.0.152.0/23 announced. Total announcements: 1
+Row 0: Prefix 116.93.110.0/24 announced. Total announcements: 1
+Row 0: Prefix 185.32.70.0/24 announced. Total announcements: 1
+Row 0: Prefix 189.39.138.0/23 announced. Total announcements: 1
+Row 0: Prefix 189.39.134.0/23 announced. Total announcements: 1
+Row 0: Prefix 189.39.132.0/23 announced. Total announcements: 1
+Row 0: Prefix 189.39.130.0/23 announced. Total announcements: 1
+Row 0: Prefix 189.39.128.0/23 announced. Total announcements: 1
+Row 0: Prefix 213.204.86.0/24 announced. Total announcements: 1
+Row 0: Prefix 89.46.34.0/24 announced. Total announcements: 1
+Row 0: Prefix 45.129.17.0/24 announced. Total announcements: 1
+Row 0: Prefix 178.49.152.0/24 announced. Total announcements: 1
+Row 0: Prefix 211.43.158.0/24 announced. Total announcements: 1
+Row 0: Prefix 103.177.87.0/24 announced. Total announcements: 1
+Row 0: Prefix 103.177.86.0/24 announced. Total announcements: 1
+Row 0: Prefix 45.175.156.0/22 announced. Total announcements: 1
+Row 0: Prefix 2a02:ac81::/32 announced. Total announcements: 1
+Row 0: Prefix 2a02:ac80:b000::/48 announced. Total announcements: 1
+Row 0: Prefix 2804:1070::/32 announced. Total announcements: 1
+Row 0: Prefix 168.187.171.0/24 announced. Total announcements: 1
+Row 0: Prefix 189.39.216.0/24 announced. Total announcements: 1
+Row 0: Prefix 38.146.198.0/23 announced. Total announcements: 1
+Row 0: Prefix 80.211.126.0/24 announced. Total announcements: 1
+Row 0: Prefix 154.0.152.0/22 announced. Total announcements: 1
+Row 0: Prefix 112.79.45.0/24 announced. Total announcements: 1
+Row 0: Prefix 66.244.16.0/24 announced. Total announcements: 1
+Row 0: Prefix 201.71.207.0/24 announced. Total announcements: 1
+Row 0: Prefix 192.19.220.0/24 announced. Total announcements: 1
+Row 0: Prefix 190.93.184.0/22 announced. Total announcements: 1
+Row 0: Prefix 190.93.186.0/23 announced. Total announcements: 1
+Row 0: Prefix 190.93.184.0/23 announced. Total announcements: 1
+Row 0: Prefix 113.23.173.0/24 announced. Total announcements: 1
+Row 0: Prefix 2001:7fb:fe0d::/48 announced. Total announcements: 1
+Row 0: Prefix 2a02:ac87:ac87::/48 announced. Total announcements: 1
+Row 0: Prefix 2a02:ac87:5900::/48 announced. Total announcements: 1
+Row 0: Prefix 2a02:ac82::/32 announced. Total announcements: 1
+Row 0: Prefix 2a02:ac80:f000::/48 announced. Total announcements: 1
+Row 0: Prefix 2a02:ac87:59cb::/48 announced. Total announcements: 1
+Row 0: Prefix 2a02:ac83::/32 announced. Total announcements: 1
+Row 0: Prefix 168.232.200.0/24 announced. Total announcements: 1
+Row 0: Prefix 168.232.202.0/24 announced. Total announcements: 1
+Row 0: Prefix 168.232.203.0/24 announced. Total announcements: 1
+Row 0: Prefix 2804:14d:d600::/40 announced. Total announcements: 1
+Row 0: Prefix 2a06:8e40::/29 announced. Total announcements: 1
+Row 0: Prefix 2a02:16c8::/35 announced. Total announcements: 1
+Row 0: Prefix 83.222.24.0/22 announced. Total announcements: 1
+Row 0: Prefix 45.172.92.0/22 announced. Total announcements: 1
+Row 0: Prefix 45.89.237.0/24 announced. Total announcements: 1
+Row 0: Prefix 45.89.236.0/24 announced. Total announcements: 1
+Row 0: Prefix 45.89.239.0/24 announced. Total announcements: 1
+Row 0: Prefix 2a06:de01:94c::/48 announced. Total announcements: 1
+Row 0: Prefix 2403:e240::/32 announced. Total announcements: 1
+Row 0: Prefix 2a0c:b641:302::/47 announced. Total announcements: 1
+Row 0: Prefix 2a02:ac80:200::/48 announced. Total announcements: 1
+Row 0: Prefix 2a02:ac80:a0::/48 announced. Total announcements: 1
+Row 0: Prefix 2a02:ac80:60::/48 announced. Total announcements: 1
+Row 0: Prefix 2a06:de01:8d9::/48 announced. Total announcements: 1
+Row 0: Prefix 2a06:de01:ad5::/48 announced. Total announcements: 1
+Row 0: Prefix 2a06:de01:861::/48 announced. Total announcements: 1
+Row 0: Prefix 2a06:de01:88c::/48 announced. Total announcements: 1
+Row 0: Prefix 2804:1e10:ffff::/48 announced. Total announcements: 1
+Row 0: Prefix 2a06:de05:625e::/48 announced. Total announcements: 1
+Row 0: Prefix 2804:fdc::/32 announced. Total announcements: 1
+Row 0: Prefix 2600:d07::/34 announced. Total announcements: 1
+Row 0: Prefix 2804:1e10::/32 announced. Total announcements: 1
+Row 0: Prefix 2605:9cc0:c13::/48 announced. Total announcements: 1
+Row 0: Prefix 2605:9cc0:c0c::/48 announced. Total announcements: 1
+Row 0: Prefix 2400:b0a0::/32 announced. Total announcements: 1
+Row 0: Prefix 2a06:de05:62a0::/48 announced. Total announcements: 1
+Row 0: Prefix 2400:c700:3001::/48 announced. Total announcements: 1
+Row 0: Prefix 2606:6e00:8000::/35 announced. Total announcements: 1
+Row 0: Prefix 124.195.190.0/24 announced. Total announcements: 1
+Row 0: Prefix 190.12.156.0/22 announced. Total announcements: 1
+Row 0: Prefix 2a06:de05:632b::/48 announced. Total announcements: 1
+Row 0: Prefix 2a10:ccc7:93d6::/48 announced. Total announcements: 1
+Row 0: Prefix 2a10:ccc7:938c::/48 announced. Total announcements: 1
+Row 0: Prefix 2a10:ccc7:93e4::/48 announced. Total announcements: 1
+Row 0: Prefix 2605:9cc0:c02::/48 announced. Total announcements: 1
+Row 0: Prefix 2a06:de01:876::/48 announced. Total announcements: 1
+Row 0: Prefix 2a06:de01:8d5::/48 announced. Total announcements: 1
+Row 0: Prefix 2a06:de01:977::/48 announced. Total announcements: 1
+Row 0: Prefix 2402:e580:73f9::/48 announced. Total announcements: 1
+Row 0: Prefix 93.175.153.0/24 announced. Total announcements: 1
+Row 0: Prefix 84.205.75.0/24 announced. Total announcements: 1
+Row 0: Prefix 2001:7fb:ee03::/48 announced. Total announcements: 1
+Row 0: Prefix 2a02:ac80::/29 announced. Total announcements: 1
+Row 0: Prefix 2801:80:1a10::/48 announced. Total announcements: 1
+Row 0: Prefix 2804:76a4::/32 announced. Total announcements: 1
+Row 0: Prefix 2606:6e00::/32 announced. Total announcements: 1
+Row 0: Prefix 2606:6e00:4000::/35 announced. Total announcements: 1
+Row 0: Prefix 2001:7fb:fe04::/48 announced. Total announcements: 1
+Row 0: Prefix 2402:e580:744d::/48 announced. Total announcements: 1
+Row 0: Prefix 2001:7fb:fe0e::/48 announced. Total announcements: 1
+Row 0: Prefix 2001:7fb:fe20::/48 announced. Total announcements: 1
+Row 0: Prefix 203.145.74.0/24 announced. Total announcements: 1
+Row 0: Prefix 203.145.78.0/24 announced. Total announcements: 1
+Row 0: Prefix 202.45.88.0/24 announced. Total announcements: 1
+Row 0: Prefix 2.189.255.0/24 announced. Total announcements: 1
+Row 0: Prefix 2.189.254.0/23 announced. Total announcements: 1
+Row 0: Prefix 2.189.254.0/24 announced. Total announcements: 1
+Row 0: Prefix 5.122.192.0/18 announced. Total announcements: 1
+Row 0: Prefix 5.122.64.0/18 announced. Total announcements: 1
+Row 0: Prefix 5.122.0.0/18 announced. Total announcements: 1
+Row 0: Prefix 5.121.128.0/18 announced. Total announcements: 1
+Row 0: Prefix 5.122.64.0/20 announced. Total announcements: 1
+Row 0: Prefix 5.121.16.0/20 announced. Total announcements: 1
+Row 0: Prefix 5.121.192.0/18 announced. Total announcements: 1
+Row 0: Prefix 5.122.128.0/18 announced. Total announcements: 1
+Row 0: Prefix 5.121.64.0/20 announced. Total announcements: 1
+Row 0: Prefix 5.121.32.0/20 announced. Total announcements: 1
+Row 0: Prefix 5.121.80.0/20 announced. Total announcements: 1
+Row 0: Prefix 49.14.184.0/24 announced. Total announcements: 1
+Row 0: Prefix 49.14.187.0/24 announced. Total announcements: 1
+Row 0: Prefix 49.14.182.0/24 announced. Total announcements: 1
+Row 0: Prefix 49.14.183.0/24 announced. Total announcements: 1
+Row 0: Prefix 49.14.181.0/24 announced. Total announcements: 1
+Row 0: Prefix 49.14.186.0/24 announced. Total announcements: 1
+Row 0: Prefix 49.14.180.0/24 announced. Total announcements: 1
+Row 0: Prefix 49.14.185.0/24 announced. Total announcements: 1
+Row 0: Prefix 223.196.68.0/24 announced. Total announcements: 1
+Row 0: Prefix 197.138.236.0/24 announced. Total announcements: 1
+Row 0: Prefix 2.183.48.0/21 announced. Total announcements: 1
+Row 0: Prefix 185.213.11.0/24 announced. Total announcements: 1
+Row 0: Prefix 27.97.122.0/24 announced. Total announcements: 1
+Row 0: Prefix 27.97.121.0/24 announced. Total announcements: 1
+Row 0: Prefix 27.97.127.0/24 announced. Total announcements: 1
+Row 0: Prefix 27.97.124.0/24 announced. Total announcements: 1
+Row 0: Prefix 27.97.125.0/24 announced. Total announcements: 1
+Row 0: Prefix 27.97.123.0/24 announced. Total announcements: 1
+Row 0: Prefix 27.97.120.0/24 announced. Total announcements: 1
+Row 0: Prefix 27.97.126.0/24 announced. Total announcements: 1
+Row 0: Prefix 103.223.2.0/24 announced. Total announcements: 1
+Row 0: Prefix 102.177.7.0/24 announced. Total announcements: 1
+Row 0: Prefix 138.99.97.0/24 announced. Total announcements: 1
+Row 0: Prefix 45.235.212.0/24 announced. Total announcements: 1
+Row 0: Prefix 179.42.32.0/22 announced. Total announcements: 1
+Row 0: Prefix 212.86.67.0/24 announced. Total announcements: 1
+Row 0: Prefix 212.86.72.0/24 announced. Total announcements: 1
+Row 0: Prefix 212.86.74.0/24 announced. Total announcements: 1
+Row 0: Prefix 212.86.80.0/24 announced. Total announcements: 1
+Row 0: Prefix 212.86.93.0/24 announced. Total announcements: 1
+Row 0: Prefix 212.86.94.0/24 announced. Total announcements: 1
+Row 0: Prefix 212.86.70.0/24 announced. Total announcements: 1
+Row 0: Prefix 212.86.95.0/24 announced. Total announcements: 1
+Row 0: Prefix 212.86.86.0/24 announced. Total announcements: 1
+Row 0: Prefix 212.86.84.0/24 announced. Total announcements: 1
+Row 0: Prefix 212.86.88.0/24 announced. Total announcements: 1
+Row 0: Prefix 212.86.81.0/24 announced. Total announcements: 1
+Row 0: Prefix 185.213.9.0/24 announced. Total announcements: 1
+Row 0: Prefix 185.213.8.0/24 announced. Total announcements: 1
+Row 0: Prefix 103.175.85.0/24 announced. Total announcements: 1
+Row 0: Prefix 2400:c700:200::/48 announced. Total announcements: 1
+Row 0: Prefix 177.11.213.0/24 announced. Total announcements: 1
+Row 0: Prefix 177.11.215.0/24 announced. Total announcements: 1
+Row 0: Prefix 177.11.212.0/24 announced. Total announcements: 1
+Row 0: Prefix 177.11.214.0/24 announced. Total announcements: 1
+Row 0: Prefix 36.255.200.0/24 announced. Total announcements: 1
+Row 0: Prefix 23.199.236.0/22 announced. Total announcements: 1
+Row 0: Prefix 130.137.230.0/24 announced. Total announcements: 1
+Row 0: Prefix 2001:7fb:fe14::/48 announced. Total announcements: 1
+Row 0: Prefix 84.205.70.0/24 announced. Total announcements: 1
+Row 0: Prefix 2001:7fb:fe0b::/48 announced. Total announcements: 1
+Row 0: Prefix 2001:7fb:ee04::/48 announced. Total announcements: 1
+Row 0: Prefix 2001:7fb:fe0f::/48 announced. Total announcements: 1
+Row 0: Prefix 2001:7fb:fe17::/48 announced. Total announcements: 1
+Row 0: Prefix 2001:7fb:ee02::/48 announced. Total announcements: 1
+Row 0: Prefix 2001:7fb:ee00::/48 announced. Total announcements: 1
+Row 0: Prefix 190.12.158.0/24 announced. Total announcements: 1
+Row 0: Prefix 190.12.156.0/24 announced. Total announcements: 1
+Row 0: Prefix 190.12.157.0/24 announced. Total announcements: 1
+Row 0: Prefix 143.255.59.0/24 announced. Total announcements: 1
+Row 0: Prefix 2a02:ac80:500::/48 announced. Total announcements: 1
+Row 0: Prefix 2a02:ac80:e00::/48 announced. Total announcements: 1
+Row 0: Prefix 2a02:ac80:f00::/48 announced. Total announcements: 1
+Row 0: Prefix 2a02:ac80:b00::/48 announced. Total announcements: 1
+Row 0: Prefix 2a02:ac80:c000::/48 announced. Total announcements: 1
+Row 0: Prefix 2a0a:280:1770::/44 announced. Total announcements: 1
+Row 0: Prefix 2a13:a5c6:6500::/40 announced. Total announcements: 1
+Row 0: Prefix 2a12:dd47:f010::/44 announced. Total announcements: 1
+Row 0: Prefix 2a0a:280:1780::/44 announced. Total announcements: 1
+Row 0: Prefix 2a04:5340:4::/48 announced. Total announcements: 1
+Row 0: Prefix 213.204.81.0/24 announced. Total announcements: 1
+Row 0: Prefix 2001:7fb:fe0c::/48 announced. Total announcements: 1
+Row 0: Prefix 2001:7fb:fe07::/48 announced. Total announcements: 1
+Row 0: Prefix 2608:183:1::/48 announced. Total announcements: 1
+Row 0: Prefix 205.157.225.0/24 announced. Total announcements: 1
+Row 0: Prefix 130.137.150.0/24 announced. Total announcements: 1
+Row 0: Prefix 2606:ab40:100::/48 announced. Total announcements: 1
+Row 0: Prefix 2a03:74c0::/32 announced. Total announcements: 1
+Row 0: Prefix 207.119.104.0/22 announced. Total announcements: 1
+Row 0: Updates per prefix info added.
+Row 0: Policy info added.
+Finished writing logs to files.
+Total Updates per Prefix:
+Wrote overall summary to 'overall_summary.txt'.
+Wrote detailed anomalies to 'anomalies.txt'.
+Wrote anomaly summary to 'anomaly_summary.txt'.
+Wrote AS path changes summary to 'as_path_changes_summary.txt'.
+Wrote policy summary to 'policy_summary.txt'.
+
+Final data saved to /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_30359efd-c264-424c-8092-dee5821f51c8
+
+Running RAG query with collected data...
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_30359efd-c264-424c-8092-dee5821f51c8
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+None
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+Processing regular query...
+
+Session data_dir retrieved: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_30359efd-c264-424c-8092-dee5821f51c8
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_30359efd-c264-424c-8092-dee5821f51c8

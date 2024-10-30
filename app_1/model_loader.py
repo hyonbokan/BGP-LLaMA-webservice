@@ -134,7 +134,7 @@ def stream_bgp_query(query, directory_path=None):
         # Perform the query and yield response tokens
         response = query_engine.query(query)
         
-        stop_tokens = ["</s>", "[/INST]"]
+        stop_tokens = ["<s>", "[INST]", "</s>", "[/INST]"]
 
         # Stream the generated response tokens
         generated_text = ""

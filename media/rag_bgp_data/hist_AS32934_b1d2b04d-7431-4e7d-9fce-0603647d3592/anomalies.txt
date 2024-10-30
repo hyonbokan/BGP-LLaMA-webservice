@@ -1,5 +1,0 @@
-On 2021-10-04 07:25:00, Autonomous System 32934 experienced an anomaly:
-  - Flapping Anomaly detected (Frequent changes in route announcements and withdrawals, indicating network instability.)
-    Feature: Std Dev of Updates
-    Value: 86.20098244799766
-

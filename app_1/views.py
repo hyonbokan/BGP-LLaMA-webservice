@@ -69,7 +69,7 @@ def bgp_llama(request):
     try:
         response_stream = check_query(query, session)
         response = StreamingHttpResponse(response_stream, content_type="text/event-stream")
-        response['X-Accel-Buffering'] = 'no'  # Disable Nginx buffering
+        response['X-Accel-Buffering'] = 'no'
         response['Cache-Control'] = 'no-cache'
         response['Connection'] = 'keep-alive'
         return response

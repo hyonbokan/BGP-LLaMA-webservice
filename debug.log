@@ -1118,3 +1118,210 @@ Final data saved to /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_dat
 
 Running RAG query with collected data...
 Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_317f4e4c-42b4-4700-8312-0f85da4b65e0
+Session ID for current request: ehijfll5fayg6pibgfaw06lhveg5ja12
+None
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+Processing regular query...
+
+Session data_dir retrieved: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/hist_AS32934_8f79f4e6-6249-4d14-a142-8d63df52d25b
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/hist_AS32934_8f79f4e6-6249-4d14-a142-8d63df52d25b
+Session ID for current request: ehijfll5fayg6pibgfaw06lhveg5ja12
+None
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+Processing regular query...
+
+Session data_dir retrieved: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/hist_AS32934_8f79f4e6-6249-4d14-a142-8d63df52d25b
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/hist_AS32934_8f79f4e6-6249-4d14-a142-8d63df52d25b
+Session ID for current request: ehijfll5fayg6pibgfaw06lhveg5ja12
+None
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+Processing regular query...
+
+Session data_dir retrieved: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/hist_AS32934_8f79f4e6-6249-4d14-a142-8d63df52d25b
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/hist_AS32934_8f79f4e6-6249-4d14-a142-8d63df52d25b
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+None
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+Processing regular query...
+
+Session data_dir retrieved: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_317f4e4c-42b4-4700-8312-0f85da4b65e0
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_317f4e4c-42b4-4700-8312-0f85da4b65e0
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+None
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+Processing regular query...
+
+Session data_dir retrieved: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_317f4e4c-42b4-4700-8312-0f85da4b65e0
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_317f4e4c-42b4-4700-8312-0f85da4b65e0
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+None
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+Processing regular query...
+
+Session data_dir retrieved: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_317f4e4c-42b4-4700-8312-0f85da4b65e0
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_317f4e4c-42b4-4700-8312-0f85da4b65e0
+Session ID for current request: ehijfll5fayg6pibgfaw06lhveg5ja12
+None
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+Processing regular query...
+
+Session data_dir retrieved: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/hist_AS32934_8f79f4e6-6249-4d14-a142-8d63df52d25b
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/hist_AS32934_8f79f4e6-6249-4d14-a142-8d63df52d25b
+Session ID for current request: qos9s7rokcmgq2bgybcs7t0zntvsycit
+None
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+Processing regular query...
+
+Session data_dir retrieved: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_317f4e4c-42b4-4700-8312-0f85da4b65e0
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_317f4e4c-42b4-4700-8312-0f85da4b65e0
+Session ID for current request: ehijfll5fayg6pibgfaw06lhveg5ja12
+None
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+Processing regular query...
+
+Session data_dir retrieved: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/hist_AS32934_8f79f4e6-6249-4d14-a142-8d63df52d25b
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/hist_AS32934_8f79f4e6-6249-4d14-a142-8d63df52d25b
+Session ID for current request: 0cl5bmc1aycaas1k9vvejosq3swzyvw3
+32934
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+ Begin historical data collection and analysis
+Target prefixes: ['129.134.30.0/24', '129.134.30.0/23']
+
+Directory created: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/hist_AS32934_b1d2b04d-7431-4e7d-9fce-0603647d3592
+Starting BGP data extraction for ASN 32934 from 2021-10-04 07:00:00 to 2021-10-04 07:30:00
+Total records processed: 1095173
+Total elements processed: 2282678
+Features at index 6: {'Timestamp': '2021-10-04 07:30:00', 'Autonomous System Number': '32934', 'Total Routes': 0, 'New Routes': 0, 'Withdrawals': 0, 'Origin Changes': 0, 'Route Changes': 0, 'Maximum Path Length': 0, 'Average Path Length': 0.0, 'Maximum Edit Distance': 0, 'Average Edit Distance': 0, 'Announcements': 0, 'Unique Prefixes Announced': 0, 'Average MED': 0, 'Average Local Preference': 0, 'Total Communities': 0, 'Unique Communities': 0, 'Community Values': [], 'Total Updates': 0, 'Average Updates per Peer': 0, 'Max Updates from a Single Peer': 0, 'Min Updates from a Single Peer': 0, 'Std Dev of Updates': 0, 'Top Peer 1 ASN': None, 'Top Peer 2 ASN': None, 'Top Peer 3 ASN': None, 'Top Peer 4 ASN': None, 'Top Peer 5 ASN': None, 'Total Prefixes Announced': 0, 'Average Announcements per Prefix': 0, 'Max Announcements for a Single Prefix': 0, 'Min Announcements for a Single Prefix': 0, 'Std Dev of Announcements': 0, 'Top Prefix 1': None, 'Top Prefix 2': None, 'Top Prefix 3': None, 'Top Prefix 4': None, 'Top Prefix 5': None, 'Count of Unexpected ASNs in Paths': 0, 'Unexpected ASN 1': None, 'Unexpected ASN 2': None, 'Unexpected ASN 3': None, 'Target Prefixes Withdrawn': 0, 'Target Prefixes Announced': 0, 'AS Path Changes': 0, 'AS Path Prepending': 0}
+             Timestamp  ... Min Prefix Length
+0  2021-10-04 07:00:00  ...              32.0
+1  2021-10-04 07:05:00  ...              32.0
+2  2021-10-04 07:10:00  ...              32.0
+3  2021-10-04 07:15:00  ...              32.0
+4  2021-10-04 07:20:00  ...              32.0
+5  2021-10-04 07:25:00  ...              24.0
+6  2021-10-04 07:30:00  ...               0.0
+
+[7 rows x 49 columns]
+
+Final data saved to /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/hist_AS32934_b1d2b04d-7431-4e7d-9fce-0603647d3592
+
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/hist_AS32934_b1d2b04d-7431-4e7d-9fce-0603647d3592
+Session ID for current request: 0cl5bmc1aycaas1k9vvejosq3swzyvw3
+None
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+Processing regular query...
+
+Session data_dir retrieved: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/hist_AS32934_b1d2b04d-7431-4e7d-9fce-0603647d3592
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/hist_AS32934_b1d2b04d-7431-4e7d-9fce-0603647d3592
+Session ID for current request: 0cl5bmc1aycaas1k9vvejosq3swzyvw3
+None
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+Processing regular query...
+
+Session data_dir retrieved: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/hist_AS32934_b1d2b04d-7431-4e7d-9fce-0603647d3592
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/hist_AS32934_b1d2b04d-7431-4e7d-9fce-0603647d3592
+Session ID for current request: 0cl5bmc1aycaas1k9vvejosq3swzyvw3
+32934
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+Processing regular query...
+
+Session data_dir retrieved: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/hist_AS32934_b1d2b04d-7431-4e7d-9fce-0603647d3592
+Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/hist_AS32934_b1d2b04d-7431-4e7d-9fce-0603647d3592
+Session ID for current request: oa2iiqrx1z06v2j6zd9e9jow7mu4wpmw
+None
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+Processing regular query...
+
+Session data_dir retrieved: None
+
+No data directory found in session.
+
+Running RAG query with default documents.
+Session ID for current request: mg4920iq0r5b7we0kipg32h2y42gn4e1
+18298
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+Processing regular query...
+
+Session data_dir retrieved: None
+
+No data directory found in session.
+
+Running RAG query with default documents.
+Session ID for current request: mg4920iq0r5b7we0kipg32h2y42gn4e1
+None
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+Processing regular query...
+
+Session data_dir retrieved: None
+
+No data directory found in session.
+
+Running RAG query with default documents.
+Session ID for current request: mg4920iq0r5b7we0kipg32h2y42gn4e1
+None
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+Processing regular query...
+
+Session data_dir retrieved: None
+
+No data directory found in session.
+
+Running RAG query with default documents.
+Session ID for current request: mg4920iq0r5b7we0kipg32h2y42gn4e1
+None
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+Processing regular query...
+
+Session data_dir retrieved: None
+
+No data directory found in session.
+
+Running RAG query with default documents.
+Session ID for current request: mg4920iq0r5b7we0kipg32h2y42gn4e1
+None
+
+Parsed time span for real-time collection: 0:05:00 (total seconds: 300)
+
+Processing regular query...
+
+Session data_dir retrieved: None
+
+No data directory found in session.
+
+Running RAG query with default documents.

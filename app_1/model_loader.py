@@ -2,7 +2,7 @@
 import logging
 import sys
 import torch
-# import os
+import os
 from django.conf import settings
 from llama_index.llms.huggingface import HuggingFaceLLM
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
@@ -96,9 +96,13 @@ def stream_bgp_query(query, directory_path=None):
 
         # Determine the directory path to use
         if directory_path:
-            directory_to_use = directory_path
+            if os.path.exists(directory_path):
+                directory_to_use = directory_path
+            else:
+                logger.warning(f"Directory {directory_path} does not exist. Using default directory instead.")
+                directory_to_use = "/home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/default"
         else:
-            # Use default directory path
+            # Use default directory path if none provided
             directory_to_use = "/home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/default"
 
         # Check if index is already cached

@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { Box, CircularProgress } from '@mui/material';
 import BGPChatTutorial from '../components/BGPChatTutorial';
 
-const useChat = ({
+const useBGPChat = ({
     currentMessage,
     setCurrentMessage,
     setIsGenerating,
@@ -265,4 +265,4 @@ const useChat = ({
     };
 };
 
-export default useChat;
+export default useBGPChat;

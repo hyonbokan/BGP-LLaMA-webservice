@@ -101,9 +101,11 @@ def stream_bgp_query(query, directory_path=None):
             else:
                 logger.warning(f"Directory {directory_path} does not exist. Using default directory instead.")
                 directory_to_use = "/home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/default"
+                # directory_to_use = "/home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/csv"
         else:
             # Use default directory path if none provided
             directory_to_use = "/home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/default"
+            # directory_to_use = "/home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/csv"
 
         # Check if index is already cached
         with index_lock:

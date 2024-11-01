@@ -9,9 +9,9 @@ import Navbar from '../components/PageComponents/Navbar';
 import ChatTabs from '../components/BGPChatComponents/ChatTabs';
 import ChatMessage from '../components/BGPChatComponents/ChatMessage';
 import ChatInputField from '../components/BGPChatComponents/ChatInputField';
-import useBGPchat from '../hooks/useBGPchat';
+import useChatGPT from '../hooks/useChatGPT';
 
-const BGPchat = () => {
+const BGPchatGPT = () => {
     const [currentMessage, setCurrentMessage] = useState('');
     const [eventSource, setEventSource] = useState(null);
     const [outputMessage, setOutputMessage] = useState('');
@@ -35,7 +35,7 @@ const BGPchat = () => {
         menuAnchorEl,
         renameValue,
         setRenameValue,
-    } = useBGPchat({
+    } = useChatGPT({
         currentMessage,
         setCurrentMessage,
         setIsGenerating,
@@ -170,4 +170,4 @@ const BGPchat = () => {
       );
     };
     
-export default BGPchat;
+export default BGPchatGPT;

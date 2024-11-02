@@ -10,7 +10,6 @@ import DatasetPage from './features/DatasetPage';
 import DetailPage from './features/DetailPage';
 import NotFoundPage from './features/NotFoundPage';
 import BGPchat from './features/BGPchat';
-import BGPchatGPT from './features/BGPchatGPT';
 import FineTuningPage from './features/FineTuningPage';
 
 function App() {
@@ -28,7 +27,6 @@ function App() {
             {/* <Route path='/bgp_llama' element={<BGPLLaMA />} /> */}
             <Route path='/dataset/:sectionId/:datasetId' element={<DetailPage />} />
             <Route path='/bgp_chat' element={<BGPchat />} />
-            <Route path='/bgp_chat_gpt' element={<BGPchatGPT />} />
             <Route path='/finetuning' element={<FineTuningPage/>} />
             {/* Catch-All Route */}
             <Route path='*' element={<NotFoundPage />} />

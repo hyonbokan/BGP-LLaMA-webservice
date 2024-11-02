@@ -1,4 +1,4 @@
-# from transformers import AutoModelForCausalLM, AutoTokenizer, AutoConfig, TextIteratorStreamer
+from transformers import AutoModelForCausalLM, AutoTokenizer, AutoConfig, TextIteratorStreamer
 import logging
 import sys
 import torch
@@ -15,188 +15,307 @@ logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logger = logging.getLogger()
 logger.addHandler(logging.StreamHandler(stream=sys.stdout))
 
-model_lock = Lock()
-index_cache = {}
-index_lock = Lock()
+# model_lock = Lock()
+# index_cache = {}
+# index_lock = Lock()
 
-# LLM models
+# # LLM models
 LLAMA3_8B_INSTRUCT = "meta-llama/Meta-Llama-3.1-8B-Instruct"
-CUSTOM_MODEL = "hyonbokan/bgp-llama-knowledge-5k"
+CUSTOM_MODEL = "hyonbokan/BGPStream13-10k-cutoff-1024-max-2048"
 
-# Embed models
-BGE_SMALL = "BAAI/bge-small-en-v1.5"
-BGE_ICL = "BAAI/bge-en-icl"
-BGE_M3 = "BAAI/bge-m3"
+# # Embed models
+# BGE_SMALL = "BAAI/bge-small-en-v1.5"
+# BGE_ICL = "BAAI/bge-en-icl"
+# BGE_M3 = "BAAI/bge-m3"
 
-SYSTEM_PROMPT = """
-You are an AI BGP analysist assistant that answers questions in a friendly manner, based on the given BGP data. Here are some rules you always follow:
-- Generate only the requested output, don't include any other language before or after the requested output.
-- Your answers should be clear, including relevant timestamps and values when analyzing BGP data features.
-- If the prompt includes the word 'collect' related to BGP data, just state that data has been collected and ask the user to input query.
-- Never say thank you, that you are happy to help, that you are an AI agent, and additional suggestions.
-- Never include file paths, refer to the data content instead
-"""
+# SYSTEM_PROMPT = """
+# You are an AI BGP analysist assistant that answers questions in a friendly manner, based on the given BGP data. Here are some rules you always follow:
+# - Generate only the requested output, don't include any other language before or after the requested output.
+# - Your answers should be clear, including relevant timestamps and values when analyzing BGP data features.
+# - If the prompt includes the word 'collect' related to BGP data, just state that data has been collected and ask the user to input query.
+# - Never say thank you, that you are happy to help, that you are an AI agent, and additional suggestions.
+# - Never include file paths, refer to the data content instead
+# """
 
-# Prompt template
-query_wrapper_prompt = PromptTemplate(
-    "<s>[INST] " + SYSTEM_PROMPT + "\n\n{query_str} [/INST]</s>"
+# # Prompt template
+# query_wrapper_prompt = PromptTemplate(
+#     "<s>[INST] " + SYSTEM_PROMPT + "\n\n{query_str} [/INST]</s>"
+# )
+
+# def initialize_models():
+#     with model_lock:
+#          if not hasattr(settings, 'llm') or not hasattr(settings, 'embed_model'):
+#             try:
+#                 llm = HuggingFaceLLM(
+#                 context_window=4096,
+#                 max_new_tokens=756,
+#                 generate_kwargs={
+#                     "temperature": 0.7,
+#                     "do_sample": True,
+#                     "repetition_penalty": 1.1
+#                 },
+#                 query_wrapper_prompt=query_wrapper_prompt,
+#                 tokenizer_name=LLAMA3_8B_INSTRUCT,
+#                 model_name=LLAMA3_8B_INSTRUCT,
+#                 device_map="auto",
+#                 model_kwargs={"torch_dtype": torch.float32,
+#                               "load_in_8bit": False},
+#                 )
+
+#                 embed_model = HuggingFaceEmbedding(model_name=BGE_SMALL)
+
+#                 settings.llm = llm
+#                 settings.embed_model = embed_model
+                
+#                 logger.info("Models loaded and set globally.")
+#             except Exception as e:
+#                 logger.error(f"Error initializing models: {str(e)}")
+#                 raise e
+# # Load documents from directory
+# def load_documents(directory_path):
+#     reader = SimpleDirectoryReader(directory_path)
+#     documents = reader.load_data()
+#     return documents
+
+# # Create vector store index
+# def create_index(documents):
+#     service_context = ServiceContext.from_defaults(llm=settings.llm, embed_model=settings.embed_model)
+#     index = VectorStoreIndex.from_documents(documents, service_context=service_context)
+#     return index
+
+# def stream_bgp_query(query, directory_path=None):
+#     try:
+#         global index_cache
+#         # Ensure models are initialized only if they haven't been set already
+#         with model_lock:
+#             if not hasattr(settings, "llm") or not hasattr(settings, "embed_model"):
+#                 logger.info("Models not found in Settings. Initializing...")
+#                 initialize_models()
+        
+#         index = None
+
+#         # Determine the directory path to use
+#         if directory_path:
+#             if os.path.exists(directory_path):
+#                 directory_to_use = directory_path
+#             else:
+#                 logger.warning(f"Directory {directory_path} does not exist. Using default directory instead.")
+#                 directory_to_use = "/home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/default"
+#                 # directory_to_use = "/home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/csv"
+#         else:
+#             # Use default directory path if none provided
+#             directory_to_use = "/home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/default"
+#             # directory_to_use = "/home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/csv"
+
+#         # Check if index is already cached
+#         with index_lock:
+#             if directory_to_use in index_cache:
+#                 logger.info(f"Using cached index for directory: {directory_to_use}")
+#                 index = index_cache[directory_to_use]
+#             else:
+#                 logger.info(f"Loading documents from {directory_to_use} for RAG.")
+#                 documents = load_documents(directory_to_use)
+#                 if documents:
+#                     index = create_index(documents)
+#                     index_cache[directory_to_use] = index
+#                     logger.info(f"Index created and cached for directory: {directory_to_use}")
+#                 else:
+#                     logger.warning(f"No documents found in directory: {directory_to_use}. Proceeding with LLM response without augmentation.")
+#                     index = None  # Handle as per your requirements
+
+#         if index is None:
+#             logger.warning("No index available. Proceeding with LLM response without augmentation.")
+#             # Implement logic to handle queries without an index, if needed
+#             return
+
+#         logger.info(f"\nUser query: {query}\n")
+        
+#         # Create the query engine
+#         query_engine = index.as_query_engine(streaming=True)
+
+#         # Perform the query and yield response tokens
+#         response = query_engine.query(query)
+        
+#         stop_tokens = ["<s>", "[INST]", "</s>", "[/INST]"]
+
+#         # Stream the generated response tokens
+#         generated_text = ""
+#         for token in response.response_gen:
+#             generated_text += token
+#             # Check if any of the stop tokens are in the token
+#             if any(stop_token in token for stop_token in stop_tokens):
+#                 logger.info(f"Stop token encountered. Stopping generation.")
+#                 break
+#             yield token
+
+#         logger.info("Query completed.")
+#     except Exception as e:
+#         logger.error(f"Error in stream_bgp_query: {str(e)}")
+#         yield f"Error: {str(e)}"
+
+
+model = None
+tokenizer = None
+streamer = None
+model_lock = Lock()
+
+def load_model():
+    global model, tokenizer, streamer
+    with model_lock:
+        if model is None or tokenizer is None or streamer is None:
+            try:
+                model_id = CUSTOM_MODEL
+                # model_id = 'hyonbokan/BGPStream13-10k-cutoff-1024-max-2048'
+                hf_auth = os.environ.get('hf_token')
+
+                model_config = AutoConfig.from_pretrained(
+                    model_id,
+                    use_auth_token=hf_auth
+                )
+                model = AutoModelForCausalLM.from_pretrained(
+                    model_id,
+                    trust_remote_code=True,
+                    config=model_config,
+                    device_map='auto',
+                    use_auth_token=hf_auth
+                )
+                tokenizer = AutoTokenizer.from_pretrained(
+                    model_id,
+                    use_auth_token=hf_auth
+                )
+                
+                # Set padding token
+                if tokenizer.pad_token is None:
+                    tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+
+                tokenizer.padding_side = "right"
+
+                # Resize model embeddings if new tokens are added
+                model.resize_token_embeddings(len(tokenizer))
+
+                streamer = TextIteratorStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
+                # transformers.logging.set_verbosity(transformers.logging.CRITICAL)
+
+                logging.info("Model loaded successfully")
+            except Exception as e:
+                logging.error(f"Failed to load the model: {str(e)}")
+                raise
+
+    return model, tokenizer, streamer
+
+
+GPT_SYSTEM_PROMPT = """
+You are tasked with generating Python scripts that perform various BGP analysis tasks using the pybgpstream library. Please adhere to the following guidelines when writing the code:
+
+- Main Loop Processing:
+Do not use any filter attributes like stream.add_filter() or set filter parameters when initializing BGPStream.
+All filtering and processing should occur within the main loop where you iterate over records and elements.
+
+- Script Structure:
+Start by importing necessary libraries, including pybgpstream and any others required for the task (e.g., datetime, collections).
+Define a main function or functions that encapsulate the core logic.
+Include a __main__ block or a usage example to demonstrate how to run the script.
+
+- Key Processing Guidelines:
+* Time Format: Define the time range as strings in the following format: from_time = "YYYY-MM-DD HH:MM:SS"
+until_time = "YYYY-MM-DD HH:MM:SS"
+
+* Stream Initialization: Use these time parameters during BGPStream initialization:
+stream = pybgpstream.BGPStream(
+    from_time=from_time,
+    until_time=until_time,
+    record_type="updates",
+    collectors=collectors
 )
 
-def initialize_models():
-    with model_lock:
-         if not hasattr(settings, 'llm') or not hasattr(settings, 'embed_model'):
-            try:
-                llm = HuggingFaceLLM(
-                context_window=4096,
-                max_new_tokens=756,
-                generate_kwargs={
-                    "temperature": 0.7,
-                    "do_sample": True,
-                    "repetition_penalty": 1.1
-                },
-                query_wrapper_prompt=query_wrapper_prompt,
-                tokenizer_name=LLAMA3_8B_INSTRUCT,
-                model_name=LLAMA3_8B_INSTRUCT,
-                device_map="auto",
-                model_kwargs={"torch_dtype": torch.float32,
-                              "load_in_8bit": False},
-                )
+* Iterating Over Records and Elements:
+for rec in stream.records(): for elem in rec: Processing logic goes here
 
-                embed_model = HuggingFaceEmbedding(model_name=BGE_SMALL)
+* Accessing Element Attributes:
+Timestamp: elem_time = datetime.utcfromtimestamp(elem.time)
 
-                settings.llm = llm
-                settings.embed_model = embed_model
-                
-                logger.info("Models loaded and set globally.")
-            except Exception as e:
-                logger.error(f"Error initializing models: {str(e)}")
-                raise e
-# Load documents from directory
-def load_documents(directory_path):
-    reader = SimpleDirectoryReader(directory_path)
-    documents = reader.load_data()
-    return documents
+Element Type (Announcement or Withdrawal): elem_type = elem.type 'A' for announcements, 'W' for withdrawals
 
-# Create vector store index
-def create_index(documents):
-    service_context = ServiceContext.from_defaults(llm=settings.llm, embed_model=settings.embed_model)
-    index = VectorStoreIndex.from_documents(documents, service_context=service_context)
-    return index
+Fields Dictionary: fields = elem.fields
 
-def stream_bgp_query(query, directory_path=None):
-    try:
-        global index_cache
-        # Ensure models are initialized only if they haven't been set already
-        with model_lock:
-            if not hasattr(settings, "llm") or not hasattr(settings, "embed_model"):
-                logger.info("Models not found in Settings. Initializing...")
-                initialize_models()
-        
-        index = None
+Prefix: prefix = fields.get("prefix") if prefix is None: continue
 
-        # Determine the directory path to use
-        if directory_path:
-            if os.path.exists(directory_path):
-                directory_to_use = directory_path
-            else:
-                logger.warning(f"Directory {directory_path} does not exist. Using default directory instead.")
-                directory_to_use = "/home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/default"
-                # directory_to_use = "/home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/csv"
-        else:
-            # Use default directory path if none provided
-            directory_to_use = "/home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/default"
-            # directory_to_use = "/home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/csv"
+AS Path: as_path_str = fields.get('as-path', "") as_path = as_path_str.split()
 
-        # Check if index is already cached
-        with index_lock:
-            if directory_to_use in index_cache:
-                logger.info(f"Using cached index for directory: {directory_to_use}")
-                index = index_cache[directory_to_use]
-            else:
-                logger.info(f"Loading documents from {directory_to_use} for RAG.")
-                documents = load_documents(directory_to_use)
-                if documents:
-                    index = create_index(documents)
-                    index_cache[directory_to_use] = index
-                    logger.info(f"Index created and cached for directory: {directory_to_use}")
-                else:
-                    logger.warning(f"No documents found in directory: {directory_to_use}. Proceeding with LLM response without augmentation.")
-                    index = None  # Handle as per your requirements
+Peer ASN and Collector: peer_asn = elem.peer_asn collector = rec.collector
 
-        if index is None:
-            logger.warning("No index available. Proceeding with LLM response without augmentation.")
-            # Implement logic to handle queries without an index, if needed
-            return
+Communities: communities = fields.get('communities', [])
 
-        logger.info(f"\nUser query: {query}\n")
-        
-        # Create the query engine
-        query_engine = index.as_query_engine(streaming=True)
+* Filtering Logic Within the Loop:
+Filtering for a Specific ASN in AS Path: target_asn = '64500' if target_asn not in as_path: continue
 
-        # Perform the query and yield response tokens
-        response = query_engine.query(query)
-        
-        stop_tokens = ["<s>", "[INST]", "</s>", "[/INST]"]
+Filtering for Specific Prefixes: target_prefixes = ['192.0.2.0/24', '198.51.100.0/24'] if prefix not in target_prefixes: continue
 
-        # Stream the generated response tokens
-        generated_text = ""
-        for token in response.response_gen:
-            generated_text += token
-            # Check if any of the stop tokens are in the token
-            if any(stop_token in token for stop_token in stop_tokens):
-                logger.info(f"Stop token encountered. Stopping generation.")
-                break
-            yield token
+* Processing Key Values and Attributes:
+Counting Announcements and Withdrawals: if elem_type == 'A': announcements[prefix] += 1 elif elem_type == 'W': withdrawals[prefix] += 1
 
-        logger.info("Query completed.")
-    except Exception as e:
-        logger.error(f"Error in stream_bgp_query: {str(e)}")
-        yield f"Error: {str(e)}"
+Detecting AS Path Changes: if prefix in prefix_as_paths: if as_path != prefix_as_paths[prefix]: # AS path has changed prefix_as_paths[prefix] = as_path else: prefix_as_paths[prefix] = as_path
 
+Analyzing Community Attributes: for community in communities: community_str = f"{community[0]}:{community[1]}" community_counts[community_str] += 1
 
-# model = None
-# tokenizer = None
-# streamer = None
+Calculating Statistics (e.g., Average MED): med = fields.get('med') if med is not None: try: med_values.append(int(med)) except ValueError: pass
 
-# def load_model():
-#     global model, tokenizer, streamer
-#     with model_lock:
-#         if model is None or tokenizer is None or streamer is None:
-#             try:
-#                 model_id = 'meta-llama/Llama-2-7b-chat-hf'
-#                 # model_id = 'hyonbokan/bgp-llama-knowledge-5k'
-#                 hf_auth = os.environ.get('hf_token')
+* Detecting Hijacks: Compare the observed origin AS with the expected origin AS for target prefixes:
+expected_origins = {'192.0.2.0/24': '64500', '198.51.100.0/24': '64501'}
+if prefix in expected_origins:
+    observed_origin = as_path[-1] if as_path else None
+    expected_origin = expected_origins[prefix]
+    if observed_origin != expected_origin:
+        # Potential hijack detected
+        print(f"Possible hijack detected for {prefix}: expected {expected_origin}, observed {observed_origin}")
 
-#                 model_config = AutoConfig.from_pretrained(
-#                     model_id,
-#                     use_auth_token=hf_auth
-#                 )
-#                 model = AutoModelForCausalLM.from_pretrained(
-#                     model_id,
-#                     trust_remote_code=True,
-#                     config=model_config,
-#                     device_map='auto',
-#                     use_auth_token=hf_auth
-#                 )
-#                 tokenizer = AutoTokenizer.from_pretrained(
-#                     model_id,
-#                     use_auth_token=hf_auth
-#                 )
+* Detecting Outages:
+* Monitor for withdrawals of prefixes without re-announcements:
+Keep track of withdrawn prefixes and their timestamps
+if elem_type == 'W':
+    withdrawals[prefix] = elem_time
+elif elem_type == 'A':
+    # Remove from withdrawals if re-announced
+    if prefix in withdrawals:
+        del withdrawals[prefix]
+Check if prefix remains withdrawn for a certain period (e.g., 30 minutes)
+for prefix, withdrawal_time in list(withdrawals.items()):
+    if elem_time - withdrawal_time > timedelta(minutes=30):
+        # Outage detected for prefix
+        print(f"Outage detected for {prefix} starting at {withdrawal_time}")
+        del withdrawals[prefix]
 
-#                 tokenizer.pad_token = tokenizer.eos_token
-#                 tokenizer.pad_token_id = tokenizer.eos_token_id
-#                 tokenizer.padding_side = "right"
+* Detecting MOAS (Multiple Origin AS) Conflicts: Monitor prefixes announced by multiple origin ASNs
+origin_asn = as_path[-1] if as_path else None
+if origin_asn:
+    if prefix not in prefix_origins:
+        prefix_origins[prefix] = set()
+    prefix_origins[prefix].add(origin_asn)
+    if len(prefix_origins[prefix]) > 1:
+        # MOAS conflict detected
+        origins = ', '.join(prefix_origins[prefix])
+        print(f"MOAS conflict for {prefix}: announced by ASNs {origins}")
 
-#                 streamer = TextIteratorStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
-#                 # transformers.logging.set_verbosity(transformers.logging.CRITICAL)
+* Analyzing AS Path Prepending: Detect AS path prepending by identifying consecutive repeated ASNs in the AS path:
+last_asn = None
+consecutive_count = 1
+for asn in as_path:
+    if asn == last_asn:
+        consecutive_count += 1
+    else:
+        if consecutive_count > 1:
+            prepending_counts[last_asn] += consecutive_count - 1
+        consecutive_count = 1
+    last_asn = asn
+Check for prepending at the end of the path
+if consecutive_count > 1 and last_asn:
+    prepending_counts[last_asn] += consecutive_count - 1
+    
+* Handling IP Addresses and Prefixes:
+Validating and Parsing IP Prefixes: import ipaddress try: network = ipaddress.ip_network(prefix) except ValueError: continue
 
-#                 logging.info("Model loaded successfully")
-#             except Exception as e:
-#                 logging.error(f"Failed to load the model: {str(e)}")
-#                 raise
-
-#     return model, tokenizer, streamer
-
+Here is your tasks:\n
+"""
 
 # @csrf_exempt
 # def finetune_model(request):

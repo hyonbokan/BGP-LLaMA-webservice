@@ -3810,3 +3810,17 @@ Processing regular query...
 Session data_dir retrieved: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_30359efd-c264-424c-8092-dee5821f51c8
 Running RAG query with data from: /home/hb/django_react/BGP-LLaMA-webservice/media/rag_bgp_data/realtime_AS3356_30359efd-c264-424c-8092-dee5821f51c8
 All numeric features in 'features' are correctly included in 'numeric_columns'.
+All numeric features in 'features' are correctly included in 'numeric_columns'.
+Session ID for current request: oa2iiqrx1z06v2j6zd9e9jow7mu4wpmw
+Error generating LLM response: too many values to unpack (expected 2)
+Session ID for current request: oa2iiqrx1z06v2j6zd9e9jow7mu4wpmw
+User query: generate pybgpstream code
+Error generating LLM response: too many values to unpack (expected 2)
+Session ID for current request: oa2iiqrx1z06v2j6zd9e9jow7mu4wpmw
+User query: generate pybgpstream code
+Session ID for current request: oa2iiqrx1z06v2j6zd9e9jow7mu4wpmw
+User query: generate pybgpstream code
+Session ID for current request: oa2iiqrx1z06v2j6zd9e9jow7mu4wpmw
+User query: generate pybgpstream code
+Session ID for current request: oa2iiqrx1z06v2j6zd9e9jow7mu4wpmw
+User query: generate pybgpstream code

@@ -10,24 +10,114 @@ import json
 from threading import Thread, Event
 import queue
 import os
-from .bgp_utils import (
-    extract_asn,
-    extract_collectors,
-    extract_target_prefixes,
-    extract_times,
-    collect_historical_data,
-    collect_real_time_data,
-    extract_real_time_span
-)
-from .model_loader import stream_bgp_query
+# from .bgp_utils import (
+#     extract_asn,
+#     extract_collectors,
+#     extract_target_prefixes,
+#     extract_times,
+#     collect_historical_data,
+#     collect_real_time_data,
+#     extract_real_time_span
+# )
+# from .model_loader import stream_bgp_query
+from .model_loader import load_model, GPT_SYSTEM_PROMPT
 import re
 import logging
 import time
+import traceback
+import openai
+import sys
+import io
+from contextlib import redirect_stdout
 
 logger = logging.getLogger(__name__)
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 status_update_event = Event()
-scenario = ""
+
+def get_gpt4_output(prompt):
+    response = openai.chat.completions.create(
+        model='gpt-4o-mini',
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": prompt}
+        ],
+        max_tokens=2000,
+        temperature=0.7
+    )
+
+    assistant_reply_content = response['choices'][0]['message']['content']
+    return assistant_reply_content
+
+def extract_code_from_reply(assistant_reply_content):
+    code_pattern = r"```python\s*\n(.*?)```"
+    match = re.search(code_pattern, assistant_reply_content, re.DOTALL)
+    if match:
+        code = match.group(1)
+        return code
+    else:
+        # No code block found
+        return None
+
+@csrf_exempt
+def gpt_4o_mini(request):
+    if request.method == 'GET':
+        query = request.GET.get('query', '')
+    elif request.method == 'POST':
+        data = json.loads(request.body)
+        query = data.get('query', '')
+    else:
+        return JsonResponse({"status": "error", "message": "Invalid request method"}, status=400)
+
+    if not query:
+        return JsonResponse({"status": "error", "message": "No query provided"}, status=400)
+
+    try:
+        # Get assistant's reply
+        input_query = GPT_SYSTEM_PROMPT + query
+        logger.info(input_query)
+        output = get_gpt4_output(input_query)
+
+        # Extract code from the assistant's reply
+        code = extract_code_from_reply(output)
+
+        # Initialize a string to capture outputs
+        output_capture = io.StringIO()
+
+        # If code is present, run it and capture outputs
+        if code:
+            # Run the code and capture print statements
+            try:
+                # Redirect stdout to capture print statements
+                with redirect_stdout(output_capture):
+                    # Prepare a local namespace for the exec
+                    local_namespace = {}
+                    # WARNING: Using exec can be dangerous. Proceed with caution.
+                    exec(code, {}, local_namespace)
+            except Exception as e:
+                # If an error occurs, capture the traceback
+                error_output = traceback.format_exc()
+                output_capture.write("\nError while executing the code:\n")
+                output_capture.write(error_output)
+
+            # Get the captured outputs
+            code_output = output_capture.getvalue()
+        else:
+            code_output = "No code block found in the assistant's reply."
+
+        # Return the assistant's reply, code, and code outputs
+        response_data = {
+            "status": "success",
+            "assistant_reply": output,
+            "code": code,
+            "code_output": code_output,
+        }
+        return JsonResponse(response_data)
+
+    except Exception as e:
+        logger.error(f"Error in gpt_4o_mini view: {str(e)}")
+        return JsonResponse({"status": "error", "message": str(e)}, status=500)
+
 
 @require_http_methods(["GET"])
 def get_csrf_token(request):
@@ -51,6 +141,137 @@ def get_current_status_message():
     else:
         return "Data is being collected..."
     
+# @csrf_exempt
+# def bgp_llama(request):
+#     query = request.GET.get('query', '')
+#     session = request.session
+
+#     if not query:
+#         return JsonResponse({"status": "error", "message": "No query provided"}, status=400)
+
+#     # Ensure the session is saved and has a session_key
+#     if not session.session_key:
+#         session.save()
+
+#     session_id = session.session_key
+#     logger.info(f"Session ID for current request: {session_id}")
+
+#     try:
+#         response_stream = check_query(query, session)
+#         response = StreamingHttpResponse(response_stream, content_type="text/event-stream")
+#         response['X-Accel-Buffering'] = 'no'
+#         response['Cache-Control'] = 'no-cache'
+#         response['Connection'] = 'keep-alive'
+#         return response
+#     except Exception as e:
+#         logger.error(f"Error in bgp_llama view: {str(e)}")
+#         return JsonResponse({"status": "error", "message": str(e)}, status=500)
+
+# def check_query(query, session):
+#     global status_update_event
+#     status_update_event.clear()
+
+#     asn = extract_asn(query)
+#     logger.info(asn)
+#     target_prefixes = extract_target_prefixes(query)
+#     from_time, until_time = extract_times(query)
+#     real_time_span = extract_real_time_span(query)
+#     collectors = extract_collectors(query)
+
+#     # Queue to communicate the directory path from the thread
+#     dir_path_queue = queue.Queue()
+
+#     def collect_historical_wrapper():
+#         dir_path = collect_historical_data(from_time=from_time, until_time=until_time, target_asn=asn, collectors=collectors, target_prefixes=target_prefixes)
+#         dir_path_queue.put(dir_path)
+#         status_update_event.set()
+
+#     def collect_real_time_wrapper():
+#         dir_path = collect_real_time_data(asn=asn, target_prefixes=target_prefixes, collection_period=real_time_span)
+#         dir_path_queue.put(dir_path)
+#         status_update_event.set()
+#     if "real-time" in query.lower():
+#         logger.info("\n Begin real-time collection and analysis")
+#         yield 'data: {"status": "collecting", "message": "Collecting BGP messages..."}\n\n'
+
+#         # Start data collection process
+#         Thread(target=collect_real_time_wrapper).start()
+
+#         while True:
+#             if status_update_event.wait(timeout=10):
+#                 try:
+#                     # Retrieve directory path once data collection is done
+#                     dir_path = dir_path_queue.get_nowait()
+#                     if dir_path:
+#                         session['data_dir'] = dir_path
+#                         session.save()
+#                         logger.info("Running RAG query with collected data...")
+#                         for token in run_rag_query(query, directory_path=dir_path):
+#                             yield token
+#                         yield 'data: {"status": "complete"}\n\n'
+#                         break
+#                     else:
+#                         # If no directory path, the collection failed
+#                         yield 'data: {"status": "error", "message": "Data collection failed."}\n\n'
+#                         break
+#                 except queue.Empty:
+#                     # Log and yield "still collecting" if directory path isn't ready
+#                     yield 'data: {"status": "in progress", "message": "Still collecting BGP messages..."}\n\n'
+#                     logger.info("Still collecting data, checking again...")
+#                     continue
+#             else:
+#                 # Log and yield "in progress" if still within timeout but collection not yet completed
+#                 yield 'data: {"status": "in progress", "message": "Still collecting BGP messages..."}\n\n'
+#                 logger.info("Collection in progress, continuing to wait...")
+
+#     # Handle historical data collection
+#     elif re.search(r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}', query):
+#         logger.info("\n Begin historical data collection and analysis")
+#         yield 'data: {"status": "collecting", "message": "Collecting BGP messages..."}\n\n'
+#         Thread(target=collect_historical_wrapper).start()
+#         while True:
+#             if status_update_event.wait(timeout=10):
+#                 dir_path = dir_path_queue.get()
+#                 if dir_path:
+#                     session['data_dir'] = dir_path
+#                     session.save()
+#                     for token in run_rag_query(query, directory_path=dir_path):
+#                         yield token
+#                     break
+#                 else:
+#                     yield 'data: {"status": "error", "message": "Real-time data collection failed"}\n\n'
+#                     break
+#             else:
+#                 yield 'data: {"status": "error", "message": "Historical data collection failed"}\n\n'
+
+#     # Handle regular query
+#     else:
+#         logger.info(f"\nProcessing regular query...\n")
+#         data_dir = session.get('data_dir')
+#         logger.info(f"Session data_dir retrieved: {data_dir}")
+#         if data_dir:
+#             for token in run_rag_query(query, directory_path=data_dir):
+#                 yield token
+#         else:
+#             logger.info("\nNo data directory found in session.\n")
+#             for token in run_rag_query(query, directory_path=None):
+#                 yield token
+#         status_update_event.set()
+
+# def run_rag_query(query, directory_path):
+#     try:
+#         if directory_path:
+#             logger.info(f"Running RAG query with data from: {directory_path}")
+#         else:
+#             logger.info("Running RAG query with default documents.")
+
+#         # Stream query with the collected BGP data or default documents
+#         for token in stream_bgp_query(query, directory_path):
+#             yield f'data: {json.dumps({"status": "generating", "generated_text": token})}\n\n'
+#     except Exception as e:
+#         logger.error(f"RAG query failed: {str(e)}")
+#         yield f'data: {json.dumps({"status": "error", "message": str(e)})}\n\n'
+
 @csrf_exempt
 def bgp_llama(request):
     query = request.GET.get('query', '')
@@ -67,7 +288,8 @@ def bgp_llama(request):
     logger.info(f"Session ID for current request: {session_id}")
 
     try:
-        response_stream = check_query(query, session)
+        # Directly generate the response stream from the LLM
+        response_stream = generate_llm_response(query)
         response = StreamingHttpResponse(response_stream, content_type="text/event-stream")
         response['X-Accel-Buffering'] = 'no'
         response['Cache-Control'] = 'no-cache'
@@ -77,111 +299,60 @@ def bgp_llama(request):
         logger.error(f"Error in bgp_llama view: {str(e)}")
         return JsonResponse({"status": "error", "message": str(e)}, status=500)
 
-def check_query(query, session):
-    global status_update_event
-    status_update_event.clear()
-
-    asn = extract_asn(query)
-    logger.info(asn)
-    target_prefixes = extract_target_prefixes(query)
-    from_time, until_time = extract_times(query)
-    real_time_span = extract_real_time_span(query)
-    collectors = extract_collectors(query)
-
-    # Queue to communicate the directory path from the thread
-    dir_path_queue = queue.Queue()
-
-    def collect_historical_wrapper():
-        dir_path = collect_historical_data(from_time=from_time, until_time=until_time, target_asn=asn, collectors=collectors, target_prefixes=target_prefixes)
-        dir_path_queue.put(dir_path)
-        status_update_event.set()
-
-    def collect_real_time_wrapper():
-        dir_path = collect_real_time_data(asn=asn, target_prefixes=target_prefixes, collection_period=real_time_span)
-        dir_path_queue.put(dir_path)
-        status_update_event.set()
-    if "real-time" in query.lower():
-        logger.info("\n Begin real-time collection and analysis")
-        yield 'data: {"status": "collecting", "message": "Collecting BGP messages..."}\n\n'
-
-        # Start data collection process
-        Thread(target=collect_real_time_wrapper).start()
-
-        while True:
-            if status_update_event.wait(timeout=10):
-                try:
-                    # Retrieve directory path once data collection is done
-                    dir_path = dir_path_queue.get_nowait()
-                    if dir_path:
-                        session['data_dir'] = dir_path
-                        session.save()
-                        logger.info("Running RAG query with collected data...")
-                        for token in run_rag_query(query, directory_path=dir_path):
-                            yield token
-                        yield 'data: {"status": "complete"}\n\n'
-                        break
-                    else:
-                        # If no directory path, the collection failed
-                        yield 'data: {"status": "error", "message": "Data collection failed."}\n\n'
-                        break
-                except queue.Empty:
-                    # Log and yield "still collecting" if directory path isn't ready
-                    yield 'data: {"status": "in progress", "message": "Still collecting BGP messages..."}\n\n'
-                    logger.info("Still collecting data, checking again...")
-                    continue
-            else:
-                # Log and yield "in progress" if still within timeout but collection not yet completed
-                yield 'data: {"status": "in progress", "message": "Still collecting BGP messages..."}\n\n'
-                logger.info("Collection in progress, continuing to wait...")
-
-    # Handle historical data collection
-    elif re.search(r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}', query):
-        logger.info("\n Begin historical data collection and analysis")
-        yield 'data: {"status": "collecting", "message": "Collecting BGP messages..."}\n\n'
-        Thread(target=collect_historical_wrapper).start()
-        while True:
-            if status_update_event.wait(timeout=10):
-                dir_path = dir_path_queue.get()
-                if dir_path:
-                    session['data_dir'] = dir_path
-                    session.save()
-                    for token in run_rag_query(query, directory_path=dir_path):
-                        yield token
-                    break
-                else:
-                    yield 'data: {"status": "error", "message": "Real-time data collection failed"}\n\n'
-                    break
-            else:
-                yield 'data: {"status": "error", "message": "Historical data collection failed"}\n\n'
-
-    # Handle regular query
-    else:
-        logger.info(f"\nProcessing regular query...\n")
-        data_dir = session.get('data_dir')
-        logger.info(f"Session data_dir retrieved: {data_dir}")
-        if data_dir:
-            for token in run_rag_query(query, directory_path=data_dir):
-                yield token
-        else:
-            logger.info("\nNo data directory found in session.\n")
-            for token in run_rag_query(query, directory_path=None):
-                yield token
-        status_update_event.set()
-
-def run_rag_query(query, directory_path):
+def generate_llm_response(query):
+    logger.info(f"User query: {query}")
     try:
-        if directory_path:
-            logger.info(f"Running RAG query with data from: {directory_path}")
-        else:
-            logger.info("Running RAG query with default documents.")
+        # Load the model and tokenizer
+        model, tokenizer, streamer = load_model()
 
-        # Stream query with the collected BGP data or default documents
-        for token in stream_bgp_query(query, directory_path):
-            yield f'data: {json.dumps({"status": "generating", "generated_text": token})}\n\n'
+        # Tokenize the input query with attention mask
+        inputs = tokenizer(
+            query,
+            return_tensors='pt',
+            padding=True,
+            truncation=True,
+            max_length=1024
+        )
+
+        input_ids = inputs.input_ids.to(model.device)
+        attention_mask = inputs.attention_mask.to(model.device)
+        
+        # Start the generation in a separate thread
+        generation_kwargs = dict(
+            input_ids=input_ids,
+            attention_mask=attention_mask,
+            streamer=streamer,
+            max_new_tokens=1024,
+            do_sample=True,
+            temperature=0.1,
+            top_p=0.9,
+            top_k=50,
+            repetition_penalty=1.1,
+            eos_token_id=tokenizer.eos_token_id,
+            pad_token_id=tokenizer.pad_token_id,
+        )
+        def generate():
+            model.generate(**generation_kwargs)
+
+        generation_thread = Thread(target=generate)
+        generation_thread.start()
+
+        # Stream the tokens as they are generated
+        for new_text in streamer:
+            # Yield the token to the client in the SSE format
+            data = json.dumps({"status": "generating", "generated_text": new_text})
+            yield f'data: {data}\n\n'
+
+        # Wait for the generation thread to finish
+        generation_thread.join()
+
+        # Indicate completion
+        yield 'data: {"status": "complete"}\n\n'
+
     except Exception as e:
-        logger.error(f"RAG query failed: {str(e)}")
-        yield f'data: {json.dumps({"status": "error", "message": str(e)})}\n\n'
-
+        logger.error(f"Error generating LLM response: {str(e)}")
+        data = json.dumps({"status": "error", "message": str(e)})
+        yield f'data: {data}\n\n'
 
 def download_file_with_query(request):
     file_name = request.GET.get('file')

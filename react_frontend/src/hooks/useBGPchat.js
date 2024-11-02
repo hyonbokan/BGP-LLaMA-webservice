@@ -1,6 +1,7 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Box, CircularProgress } from '@mui/material';
 import BGPChatTutorial from '../components/BGPChatTutorial';
+import GPTChatTutorial from '../components/GPTChatTutorial';
 
 const useBGPChat = ({
     currentMessage,
@@ -16,12 +17,7 @@ const useBGPChat = ({
         { 
             id: 1, 
             label: 'Chat 1', 
-            messages: [
-                { 
-                    text: <BGPChatTutorial />,
-                    sender: "system" 
-                }
-            ] 
+            messages: [] 
         }
     ]);
     const [currentTab, setCurrentTab] = useState(0);
@@ -29,6 +25,7 @@ const useBGPChat = ({
     const [renameDialogOpen, setRenameDialogOpen] = useState(false);
     const [renameValue, setRenameValue] = useState('');
     const [tabToEdit, setTabToEdit] = useState(null);
+    const [selectedModel, setSelectedModel] = useState('gpt_4o_mini')
 
     // Use refs for indices
     const generatingMessageIndexRef = useRef(null);
@@ -36,16 +33,38 @@ const useBGPChat = ({
     // useEffect(() => {
     //     console.log('Updated chatTabs:', chatTabs);
     // }, [chatTabs]);
+    useEffect(() => {
+        const tutorialMessage = {
+            text: selectedModel === 'bgp_llama' ? <BGPChatTutorial /> : <GPTChatTutorial />,
+            sender: "system"
+        };
+    
+        setChatTabs((prevTabs) => 
+            prevTabs.map((tab, index) => {
+                if (index === currentTab) {
+                    const messages = [...tab.messages];
+                    if (messages.length > 0 && messages[0].sender === 'system') {
+                        messages[0] = tutorialMessage; // Replace existing tutorial
+                    } else {
+                        messages.unshift(tutorialMessage); // Add new tutorial
+                    }
+                    return { ...tab, messages };
+                }
+                return tab;
+            })
+        );
+    }, [selectedModel, currentTab]);
 
     const handleNewChat = () => {
         const newChatId = chatTabs.length + 1;
+        const tutorialMessage = {
+            text: selectedModel === 'bgp_llama' ? <BGPChatTutorial /> : <GPTChatTutorial />,
+            sender: "system"
+        };
         setChatTabs([...chatTabs, { 
             id: newChatId, 
             label: `Chat ${newChatId}`, 
-            messages: [{ 
-                text: "Welcome to BGP-LLaMA Chat!", 
-                sender: "system" 
-            }] 
+            messages: [tutorialMessage] 
         }]);
         setCurrentTab(newChatId - 1);
         if (eventSource) {
@@ -223,8 +242,10 @@ const useBGPChat = ({
         if (eventSource) {
             eventSource.close();
         }
-    
-        const url = `https://llama.cnu.ac.kr/api/bgp_llama?query=${encodeURIComponent(currentMessage)}`;
+        const baseUrl = 'https://llama.cnu.ac.kr/api';
+        const endpoint = selectedModel === 'bgp_llama' ? 'bgp_llama' : 'gpt_4o_mini';
+        const url = `${baseUrl}/${endpoint}?query=${encodeURIComponent(currentMessage)}`;
+
         const newEventSource = new EventSource(url);
     
         newEventSource.onmessage = function(event) {
@@ -262,6 +283,8 @@ const useBGPChat = ({
         tabToEdit,
         renameValue,
         setRenameValue,
+        selectedModel,
+        setSelectedModel,
     };
 };
 

@@ -37,7 +37,6 @@ const Navbar = () => {
   const navLinks = [
     { title: 'Dataset', path: '/dataset' },
     { title: 'BGP-LLaMA', path: '/bgp_chat' },
-    { title: 'BGP-GPT', path: '/bgp_chat_gpt' },
     { title: 'Fine-tuning', path: '/finetuning' },
   ];
 

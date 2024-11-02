@@ -3,13 +3,22 @@ import {
     Box, Button, Typography, Paper, List, Menu, MenuItem, Dialog,
     DialogTitle, DialogContent, DialogContentText, DialogActions,
     TextField, useTheme, useMediaQuery,
-    Drawer,
+    Drawer, ToggleButton, ToggleButtonGroup,
     } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import Navbar from '../components/PageComponents/Navbar';
 import ChatTabs from '../components/BGPChatComponents/ChatTabs';
 import ChatMessage from '../components/BGPChatComponents/ChatMessage';
 import ChatInputField from '../components/BGPChatComponents/ChatInputField';
 import useBGPchat from '../hooks/useBGPchat';
+
+const RoundToggleButton = styled(ToggleButton)(({ theme }) => ({
+  width: '100px',
+  height: '40px',
+  minWidth: '40px',
+  minHeight: '40px',
+  padding: '0',
+}));
 
 const BGPchat = () => {
     const [currentMessage, setCurrentMessage] = useState('');
@@ -35,6 +44,8 @@ const BGPchat = () => {
         menuAnchorEl,
         renameValue,
         setRenameValue,
+        selectedModel,
+        setSelectedModel
     } = useBGPchat({
         currentMessage,
         setCurrentMessage,
@@ -46,6 +57,11 @@ const BGPchat = () => {
         outputMessage,
     });
 
+    const handleModelChange = (event, newModel) => {
+      if (newModel !== null) {
+          setSelectedModel(newModel);
+      }
+    };
     const handleKeyPress = (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
@@ -115,6 +131,25 @@ const BGPchat = () => {
               {drawerContent}
             </Drawer>
             <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', bgcolor: '#ffffff' }}>
+
+              {/* Model switch button */}
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: 1 }}>
+                <ToggleButtonGroup
+                    value={selectedModel}
+                    exclusive
+                    onChange={handleModelChange}
+                    aria-label="Model selection"
+                >
+                    <RoundToggleButton value="gpt_4o_mini" aria-label="GPT-4o-mini">
+                        <Typography variant="caption" fontFamily='monospace' fontWeight={700}>GPT-4o-mini</Typography>
+                    </RoundToggleButton>
+                    <RoundToggleButton value="bgp_llama" aria-label="BGP LLaMA">
+                      <Typography variant="caption" fontFamily='monospace' fontWeight={700}>BGP-LLaMA</Typography>
+                    </RoundToggleButton>
+                </ToggleButtonGroup>
+            </Box>
+
+            {/* Chat Messages */}
               <Paper sx={{ flex: 1, overflow: 'auto', p: 2 }}>
                 <List sx={{ padding: 0 }}>
                   {chatTabs[currentTab].messages.map((message, index) => (
@@ -133,7 +168,7 @@ const BGPchat = () => {
               />
             </Box>
           </Box>
-    
+          {/* Menu and dialog code */}
           <Menu
             anchorEl={menuAnchorEl}
             open={Boolean(menuAnchorEl)}

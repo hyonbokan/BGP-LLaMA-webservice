@@ -1,7 +1,0 @@
-
-Policy Summary:
-
-Local Preference values ranged from 0.00 to 0.00, with an average of 0.00.
-MED values ranged from 0.00 to 0.00, with an average of 0.00.
-AS Path Prepending was observed 168 times during the observation period.
-A total of 326 unique community values were observed.

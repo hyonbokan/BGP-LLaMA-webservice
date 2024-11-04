@@ -7,7 +7,7 @@ const useBGPChat = ({
     currentMessage,
     setCurrentMessage,
     setIsGenerating,
-    setIsCollectingData,
+    setIsRunningCode,
     eventSource,
     setEventSource,
     setOutputMessage,
@@ -30,9 +30,6 @@ const useBGPChat = ({
     // Use refs for indices
     const generatingMessageIndexRef = useRef(null);
 
-    // useEffect(() => {
-    //     console.log('Updated chatTabs:', chatTabs);
-    // }, [chatTabs]);
     useEffect(() => {
         const tutorialMessage = {
             text: selectedModel === 'bgp_llama' ? <BGPChatTutorial /> : <GPTChatTutorial />,
@@ -103,7 +100,6 @@ const useBGPChat = ({
         }
         generatingMessageIndexRef.current = null;
     };
-    
 
     const handleRenameTab = () => {
         setRenameDialogOpen(true);
@@ -133,34 +129,14 @@ const useBGPChat = ({
         );
     };
 
-    const handleEventSourceMessage = (data) => {
-        if (data.status === "collecting") {
-            console.log("\nCollecting data event");
-            setIsCollectingData(true);
-    
-            const collectingMessage = {
-                text: (
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        Collecting BGP messages
-                        <Box sx={{ width: '8px' }} /> {/* Adding space */}
-                        <CircularProgress size={16} sx={{ mr: 1 }} />
-                    </Box>
-                ),
-                sender: "system"
-            };
-    
-            // Add the new collecting message and reset generating index
-            updateChatTabs(collectingMessage);
-            generatingMessageIndexRef.current = null;  // Reset for a new message
-        }
-    
+    const handleEventSourceMessage = (data) => {    
         if (data.status === 'generating' && data.generated_text) {        
             // Append to the current message being generated
             setChatTabs((prevTabs) => {
                 return prevTabs.map((tab, index) => {
                     if (index === currentTab) {
                         let messages = [...tab.messages];
-    
+
                         // If no ongoing message, start a new one
                         if (generatingMessageIndexRef.current === null) {
                             const assistantMessage = {
@@ -182,7 +158,6 @@ const useBGPChat = ({
                                 }
                             });
                         }
-    
                         return { ...tab, messages };
                     } else {
                         return tab;
@@ -190,74 +165,109 @@ const useBGPChat = ({
                 });
             });
         }
-    
-        if (data.status === 'complete') {
-            console.log('\nCompleted output data event');
-            setIsCollectingData(false);
-            setIsGenerating(false);
-            generatingMessageIndexRef.current = null; // Reset the index after message completion
-            setOutputMessage(''); // Clear the output message
+
+        // Handle 'running_code' status
+        if (data.status === "running_code") {
+            console.log("\nRunning Code");
+            setIsRunningCode(true);
+
+            const runningCodeMessage = {
+                text: (
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        Running code 
+                        <Box sx={{ width: '8px' }} /> {/* Adding space */}
+                        <CircularProgress size={16} sx={{ mr: 1 }} />
+                    </Box>
+                ),
+                sender: "system"
+            };
+
+            // Add the new collecting message and reset generating index
+            updateChatTabs(runningCodeMessage);
+            generatingMessageIndexRef.current = null;
         }
 
-        // if (data.status === 'error' && data.message) {
-        //     console.error('\nError event:', data.message);
-        //     setIsCollectingData(false);
-        //     setIsGenerating(false);
-        //     generatingMessageIndexRef.current = null; // Reset the index after message completion
+        // Handle 'code_output' status
+        if (data.status === 'code_output' && data.code_output) {
+            console.log(`\nReceived code output: ${data.code_output}`);
+            setIsRunningCode(false);
 
-        //     const errorMessage = { text: `Error: ${data.message}`, sender: "system" };
-        //     updateChatTabs(errorMessage);
-        // }
+            const codeOutputMessage = {
+                text: data.code_output.includes("Error") ? `⚠️ ${data.code_output}` : data.code_output,
+                sender: "system",
+            };
 
+            updateChatTabs(codeOutputMessage);
+        }
+
+        // Handle 'keep_alive' status (optional: you can log or ignore)
+        if (data.status === 'keep_alive') {
+            console.log("Received keep_alive event.");
+            return;
+        }
+
+        // Handle 'error' status
+        if (data.status === 'error' && data.message) {
+            console.error('\nError event:', data.message);
+            setIsRunningCode(false);
+            setIsGenerating(false);
+            generatingMessageIndexRef.current = null; // Reset the index after message completion
+
+            const errorMessage = { text: `⚠️ Error: ${data.message}`, sender: "system" };
+            updateChatTabs(errorMessage);
+        }
+
+        if (data.status === 'complete') {
+            console.log('\nCompleted output data event');
+            setIsRunningCode(false);
+            setIsGenerating(false);
+            generatingMessageIndexRef.current = null;
+            setOutputMessage(''); // Clear the output message
+        }
     };
     
-    
-    const handleEventSourceError = (eventSource) => {
-        console.error('EventSource failed:', eventSource);
-        eventSource.close();
+    const handleEventSourceError = (eventSourceInstance) => {
+        console.error('EventSource failed:', eventSourceInstance);
+        eventSourceInstance.close();
         setIsGenerating(false);
-        setIsCollectingData(false);
+        setIsRunningCode(false);
         generatingMessageIndexRef.current = null;
     };
     
-    const handleEventSourceClose = () => {
-        setOutputMessage('');
-        setIsGenerating(false);
-        setIsCollectingData(false);
-        generatingMessageIndexRef.current = null;
-    };
-    
+    // Removed handleEventSourceClose since EventSource does not have an 'onclose' event
+
     const handleSendMessage = async () => {
         if (currentMessage.trim() === '') return;
-    
+
         setIsGenerating(true);
-        setIsCollectingData(false);
-    
+        setIsRunningCode(false);
+
         const userMessage = { text: currentMessage, sender: "user" };
         updateChatTabs(userMessage);
-    
+
         setCurrentMessage('');
         setOutputMessage('');
-    
+
         if (eventSource) {
             eventSource.close();
         }
-        const baseUrl = 'https://llama.cnu.ac.kr/api';
+        const baseUrl = 'https://llama.cnu.ac.kr/api'; // Ensure this is correct
         const endpoint = selectedModel === 'bgp_llama' ? 'bgp_llama' : 'gpt_4o_mini';
         const url = `${baseUrl}/${endpoint}?query=${encodeURIComponent(currentMessage)}`;
-
+        // console.log(`Request URL: ${url}`)
         const newEventSource = new EventSource(url);
-    
+
         newEventSource.onmessage = function(event) {
-            const data = JSON.parse(event.data);
-            console.log(data);
-            handleEventSourceMessage(data);
+            try {
+                const data = JSON.parse(event.data);
+                handleEventSourceMessage(data);
+            } catch (err) {
+                console.error("Failed to parse event data:", err);
+            }
         };
-    
+
         newEventSource.onerror = () => handleEventSourceError(newEventSource);
-    
-        newEventSource.onclose = handleEventSourceClose;
-    
+
         setEventSource(newEventSource);
     };
     

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ListItem, Card, CardContent, Typography } from '@mui/material';
+import { ListItem, Card, CardContent, Typography, Box } from '@mui/material';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
@@ -11,6 +11,7 @@ const ChatMessage = ({ message }) => (
     sx={{
       display: 'flex',
       flexDirection: message.sender === "user" ? 'row-reverse' : 'row',
+      padding: '8px 0', // Add vertical padding between messages
     }}
   >
     <Card
@@ -18,9 +19,16 @@ const ChatMessage = ({ message }) => (
         bgcolor: message.sender === "user" ? '#90d3ff' : '#ededed',
         borderRadius: 2,
         maxWidth: '70%',
+        wordBreak: 'break-word', // Break long words to prevent overflow
+        overflowWrap: 'anywhere', // Allow wrapping of long URLs or strings
+        boxShadow: 'none', // Optional: Remove shadow for a cleaner look
       }}
     >
-      <CardContent>
+      <CardContent
+        sx={{
+          padding: '12px',
+        }}
+      >
         {typeof message.text === 'string' ? (
           <ReactMarkdown
             children={message.text}
@@ -42,26 +50,36 @@ const ChatMessage = ({ message }) => (
                       backgroundColor: '#f5f5f5',
                       padding: '2px 4px',
                       borderRadius: '4px',
+                      fontFamily: 'monospace',
                     }}
                     {...props}
                   >
                     {children}
                   </code>
                 ) : (
-                  <pre
-                    style={{
+                  <Box
+                    component="pre"
+                    sx={{
                       backgroundColor: '#f5f5f5',
                       padding: '10px',
                       borderRadius: '4px',
-                      overflow: 'auto',
+                      overflow: 'auto', // Enable scrolling for long code blocks
+                      maxHeight: '900px',
                     }}
                   >
                     <code className={className} {...props}>
                       {children}
                     </code>
-                  </pre>
+                  </Box>
                 );
               },
+              a: ({ node, ...props }) => (
+                <Typography
+                  component="a"
+                  sx={{ color: 'primary.main', textDecoration: 'underline' }}
+                  {...props}
+                />
+              ),
             }}
           />
         ) : (
@@ -74,37 +92,3 @@ const ChatMessage = ({ message }) => (
 );
 
 export default ChatMessage;
-
-// const ChatMessage = ({ message }) => (
-//     <ListItem
-//         alignItems="flex-start"
-//         sx={{
-//             display: 'flex',
-//             flexDirection: message.sender === "user" ? 'row-reverse' : 'row',
-//         }}
-//     >
-//         <Card
-//             sx={{
-//                 bgcolor: message.sender === "user" ? '#90d3ff' : '#ededed',
-//                 borderRadius: 2,
-//                 maxWidth: '70%',
-//             }}
-//         >
-//             <CardContent>
-//                 <Typography
-//                     sx={{
-//                         fontFamily: 'monospace',
-//                         fontWeight: 'medium',
-//                         color: 'black',
-//                         textAlign: 'justify',
-//                         whiteSpace: 'pre-line',
-//                     }}
-//                 >
-//                     {message.text}
-//                 </Typography>
-//             </CardContent>
-//         </Card>
-//     </ListItem>
-// );
-
-// export default ChatMessage;

@@ -10,44 +10,48 @@ import json
 from threading import Thread, Event
 import queue
 import os
-# from .bgp_utils import (
-#     extract_asn,
-#     extract_collectors,
-#     extract_target_prefixes,
-#     extract_times,
-#     collect_historical_data,
-#     collect_real_time_data,
-#     extract_real_time_span
-# )
-# from .model_loader import stream_bgp_query
-from .model_loader import load_model, GPT_SYSTEM_PROMPT
+from .model_loader import load_model, GPT_HIST_SYSTEM_PROMPT, GPT_REAL_TIME_SYSTEM_PROMPT, LLAMA_SYSTEM_PROMPT
 import re
 import logging
 import time
 import traceback
-import openai
+from openai import OpenAI
 import sys
 import io
 from contextlib import redirect_stdout
+import signal
+import pandas as pd
+import pybgpstream
+import datetime
+import ast
 
 logger = logging.getLogger(__name__)
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI()
+client.api_key = os.getenv("OPENAI_API_KEY")
 
 status_update_event = Event()
 
-def get_gpt4_output(prompt):
-    response = openai.chat.completions.create(
-        model='gpt-4o-mini',
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": prompt}
-        ],
-        max_tokens=2000,
-        temperature=0.7
-    )
+def get_gpt4_output(query):
+    if "real-time" in query.lower():
+        system_prompt = GPT_REAL_TIME_SYSTEM_PROMPT
+    else:
+        system_prompt = GPT_HIST_SYSTEM_PROMPT
 
-    assistant_reply_content = response['choices'][0]['message']['content']
-    return assistant_reply_content
+    try:
+        response = client.chat.completions.create(
+            model='gpt-4o-mini',
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": query}
+            ],
+            max_tokens=2000,
+            temperature=0.7,
+            stream=True,
+        )
+        return response
+    except Exception as e:
+        logger.error(f"Error during API call: {e}")
+        return None
 
 def extract_code_from_reply(assistant_reply_content):
     code_pattern = r"```python\s*\n(.*?)```"
@@ -58,6 +62,42 @@ def extract_code_from_reply(assistant_reply_content):
     else:
         # No code block found
         return None
+import ast
+
+def is_code_safe(code, safe_globals_keys):
+    try:
+        tree = ast.parse(code)
+        defined_vars = set()
+        undefined_vars = set()
+
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Assign):
+                for target in node.targets:
+                    if isinstance(target, ast.Name):
+                        defined_vars.add(target.id)
+            elif isinstance(node, ast.Name):
+                if isinstance(node.ctx, ast.Load):
+                    if node.id not in defined_vars and node.id not in safe_globals_keys:
+                        undefined_vars.add(node.id)
+
+        if undefined_vars:
+            logger.warning(f"Undefined variables detected: {undefined_vars}")
+            return False
+        return True
+    except Exception as e:
+        logger.error(f"Error parsing code for undefined variables: {e}")
+        return False
+
+
+def restricted_import(name, globals=None, locals=None, fromlist=(), level=0):
+    allowed_modules = {'pandas', 'pybgpstream', 'datetime'}
+    logger.info(f"Attempting to import module: {name}")
+    if name in allowed_modules:
+        logger.info(f"Importing '{name}' is allowed.")
+        return __import__(name, globals, locals, fromlist, level)
+    else:
+        logger.warning(f"Importing '{name}' is not allowed.")
+        raise ImportError(f"Importing '{name}' is not allowed.")
 
 @csrf_exempt
 def gpt_4o_mini(request):
@@ -72,51 +112,94 @@ def gpt_4o_mini(request):
     if not query:
         return JsonResponse({"status": "error", "message": "No query provided"}, status=400)
 
-    try:
-        # Get assistant's reply
-        input_query = GPT_SYSTEM_PROMPT + query
-        logger.info(input_query)
-        output = get_gpt4_output(input_query)
+    def event_stream():
+        try:
+            # Send 'generating_started' status
+            yield f"data: {json.dumps({'status': 'generating_started'})}\n\n"
 
-        # Extract code from the assistant's reply
-        code = extract_code_from_reply(output)
+            response = get_gpt4_output(query)
+            if response is None:
+                raise Exception("Failed to get assistant's reply.")
 
-        # Initialize a string to capture outputs
-        output_capture = io.StringIO()
+            assistant_reply_content = ''
 
-        # If code is present, run it and capture outputs
-        if code:
-            # Run the code and capture print statements
-            try:
-                # Redirect stdout to capture print statements
-                with redirect_stdout(output_capture):
-                    # Prepare a local namespace for the exec
-                    local_namespace = {}
-                    # WARNING: Using exec can be dangerous. Proceed with caution.
-                    exec(code, {}, local_namespace)
-            except Exception as e:
-                # If an error occurs, capture the traceback
-                error_output = traceback.format_exc()
-                output_capture.write("\nError while executing the code:\n")
-                output_capture.write(error_output)
+            # Stream the assistant's reply to the frontend
+            for chunk in response:
+                if hasattr(chunk, 'choices') and len(chunk.choices) > 0:
+                    choice = chunk.choices[0]
+                    if hasattr(choice, 'delta'):
+                        delta = choice.delta
+                        if hasattr(delta, 'content') and delta.content:
+                            content = delta.content
+                            assistant_reply_content += content
+                            yield f"data: {json.dumps({'status': 'generating', 'generated_text': content})}\n\n"
 
-            # Get the captured outputs
-            code_output = output_capture.getvalue()
-        else:
-            code_output = "No code block found in the assistant's reply."
+            logger.info(f"Assistant's full reply:\n{assistant_reply_content}")
 
-        # Return the assistant's reply, code, and code outputs
-        response_data = {
-            "status": "success",
-            "assistant_reply": output,
-            "code": code,
-            "code_output": code_output,
-        }
-        return JsonResponse(response_data)
+            # Extract code from the assistant's reply
+            code = extract_code_from_reply(assistant_reply_content)
+            logger.info(f"Generated code to execute:\n{code}")
 
-    except Exception as e:
-        logger.error(f"Error in gpt_4o_mini view: {str(e)}")
-        return JsonResponse({"status": "error", "message": str(e)}, status=500)
+            # Send 'running_code' status
+            yield f"data: {json.dumps({'status': 'running_code'})}\n\n"
+
+            # Initialize a queue to receive code execution output
+            output_queue = queue.Queue()
+
+            def run_code():
+                output_capture = io.StringIO()
+                try:
+                    with redirect_stdout(output_capture):
+                        # Prepare a local namespace for exec
+                        safe_globals = {
+                            "__builtins__": __builtins__,
+                            "pybgpstream": pybgpstream,
+                            "datetime": datetime,
+                            "__name__": "__main__",
+                        }
+                        exec(code, safe_globals)
+                        logger.info("Code execution completed successfully.")
+                except Exception as e:
+                    # Capture the traceback if an error occurs
+                    error_output = traceback.format_exc()
+                    output_capture.write("\nError while executing the code:\n")
+                    output_capture.write(error_output)
+                    logger.error(f"Error during code execution: {e}")
+                # Put the captured output into the queue
+                output = output_capture.getvalue()
+                logger.info(f"Captured code output: {output}")
+                output_queue.put(output)
+
+            # Start the code execution in a separate thread
+            code_thread = Thread(target=run_code)
+            code_thread.start()
+
+            # Periodically send keep-alive messages while code is executing
+            while code_thread.is_alive():
+                time.sleep(30)  # Send keep-alive every 30 seconds
+                yield f"data: {json.dumps({'status': 'keep_alive'})}\n\n"
+
+            # Retrieve the output
+            if not output_queue.empty():
+                code_output = output_queue.get()
+                logger.info(f"Code output:\n{code_output}")
+                # Send 'code_output' status with the output
+                yield f"data: {json.dumps({'status': 'code_output', 'code_output': code_output})}\n\n"
+            else:
+                yield f"data: {json.dumps({'status': 'code_output', 'code_output': 'No output captured.'})}\n\n"
+
+            # Send 'complete' status
+            yield f"data: {json.dumps({'status': 'complete'})}\n\n"
+
+        except Exception as e:
+            logger.error(f"Error in gpt_4o_mini view: {str(e)}")
+            error_message = str(e)
+            yield f"data: {json.dumps({'status': 'error', 'message': error_message})}\n\n"
+
+    # Return a StreamingHttpResponse with the event_stream generator
+    response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
+    response['Cache-Control'] = 'no-cache'
+    return response
 
 
 @require_http_methods(["GET"])
@@ -289,7 +372,8 @@ def bgp_llama(request):
 
     try:
         # Directly generate the response stream from the LLM
-        response_stream = generate_llm_response(query)
+        input = LLAMA_SYSTEM_PROMPT + query
+        response_stream = generate_llm_response(input)
         response = StreamingHttpResponse(response_stream, content_type="text/event-stream")
         response['X-Accel-Buffering'] = 'no'
         response['Cache-Control'] = 'no-cache'
@@ -322,7 +406,7 @@ def generate_llm_response(query):
             input_ids=input_ids,
             attention_mask=attention_mask,
             streamer=streamer,
-            max_new_tokens=1024,
+            max_new_tokens=600,
             do_sample=True,
             temperature=0.1,
             top_p=0.9,

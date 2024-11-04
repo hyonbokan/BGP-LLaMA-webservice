@@ -25,7 +25,7 @@ const BGPchat = () => {
     const [eventSource, setEventSource] = useState(null);
     const [outputMessage, setOutputMessage] = useState('');
     const [isGenerating, setIsGenerating] = useState(false);
-    const [isCollectingData, setIsCollectingData] = useState(false);
+    const [isRunningCode, setIsRunningCode] = useState(false);
 
     const {
         chatTabs,
@@ -50,7 +50,7 @@ const BGPchat = () => {
         currentMessage,
         setCurrentMessage,
         setIsGenerating,
-        setIsCollectingData,
+        setIsRunningCode,
         eventSource,
         setEventSource,
         setOutputMessage,
@@ -164,7 +164,7 @@ const BGPchat = () => {
                 handleSendMessage={handleSendMessage}
                 handleKeyPress={handleKeyPress}
                 isGenerating={isGenerating}
-                isCollectingData={isCollectingData}
+                isRunningCode={isRunningCode}
               />
             </Box>
           </Box>

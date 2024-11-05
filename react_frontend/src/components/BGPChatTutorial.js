@@ -5,12 +5,10 @@ const BGPChatTutorial = () => (
     <Typography variant="h5" gutterBottom>
       Welcome to BGP-LLaMA Chat!
     </Typography>
-
+{/* 
     <Typography variant="body1" paragraph>
       Please note that the system is currently in its early stages, and user commands must be formatted correctly for optimal performance.
     </Typography>
-
-    {/* Highlighted Message about 30-Minute Limitation */}
     <Typography variant="body1" color="error.main" paragraph>
       <strong>Important:</strong> Due to system limitations, data collection should not exceed <strong>30 minutes</strong>. 
       To demonstrate the full capabilities of BGP-LLaMA and work around this limitation, a <strong>default dataset</strong> has been implemented to allow for more comprehensive interaction and exploration.
@@ -49,7 +47,7 @@ const BGPChatTutorial = () => (
     </Typography>
     <Typography variant="body1" paragraph>
       After data collection, you can query the system to gain insights or detect anomalies in the collected BGP data.
-    </Typography>
+    </Typography> */}
   </Box>
 );
 

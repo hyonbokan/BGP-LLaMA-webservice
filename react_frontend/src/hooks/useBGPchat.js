@@ -30,9 +30,20 @@ const useBGPChat = ({
     // Use refs for indices
     const generatingMessageIndexRef = useRef(null);
 
+    const getTutorialMessage = (selectedModel) => {
+        switch (selectedModel) {
+            case 'bgp_llama':
+                return <BGPChatTutorial />;
+            case 'gpt_4o_mini':
+                return <GPTChatTutorial />;
+            default:
+                return <BGPChatTutorial />;
+        }
+    };
+    
     useEffect(() => {
         const tutorialMessage = {
-            text: selectedModel === 'bgp_llama' ? <BGPChatTutorial /> : <GPTChatTutorial />,
+            text: getTutorialMessage(selectedModel),
             sender: "system"
         };
     
@@ -252,9 +263,22 @@ const useBGPChat = ({
             eventSource.close();
         }
         const baseUrl = 'https://llama.cnu.ac.kr/api'; // Ensure this is correct
-        const endpoint = selectedModel === 'bgp_llama' ? 'bgp_llama' : 'gpt_4o_mini';
+        let endpoint;
+        
+        // Determine the endpoint based on the selected model
+        switch(selectedModel) {
+            case 'bgp_llama':
+                endpoint = 'bgp_llama';
+                break;
+            case 'model_3':
+                endpoint = 'model_3';
+                break;
+            default:
+                endpoint = 'gpt_4o_mini';
+        }
+
         const url = `${baseUrl}/${endpoint}?query=${encodeURIComponent(currentMessage)}`;
-        // console.log(`Request URL: ${url}`)
+        console.log(`Request URL: ${url}`)
         const newEventSource = new EventSource(url);
 
         newEventSource.onmessage = function(event) {

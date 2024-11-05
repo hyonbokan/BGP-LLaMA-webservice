@@ -10,7 +10,8 @@ import json
 from threading import Thread, Event
 import queue
 import os
-from .model_loader import load_model, GPT_HIST_SYSTEM_PROMPT, GPT_REAL_TIME_SYSTEM_PROMPT, LLAMA_SYSTEM_PROMPT
+from .model_loader import load_model
+from .prompt_utils import GPT_HIST_SYSTEM_PROMPT, GPT_REAL_TIME_SYSTEM_PROMPT, LLAMA_SYSTEM_PROMPT, LLAMA_REAL_TIME_SYSTEM_PROMPT
 import re
 import logging
 import time
@@ -224,6 +225,123 @@ def get_current_status_message():
     else:
         return "Data is being collected..."
     
+@csrf_exempt
+def bgp_llama(request):
+    query = request.GET.get('query', '')
+    session = request.session
+
+    if not query:
+        return JsonResponse({"status": "error", "message": "No query provided"}, status=400)
+
+    # Ensure the session is saved and has a session_key
+    if not session.session_key:
+        session.save()
+
+    session_id = session.session_key
+    logger.info(f"Session ID for current request: {session_id}")
+
+    try:
+        # Directly generate the response stream from the LLM
+        if "real-time" in query.lower():
+            system_prompt = LLAMA_REAL_TIME_SYSTEM_PROMPT
+        else:
+            system_prompt = LLAMA_SYSTEM_PROMPT
+        input = system_prompt + query
+        response_stream = generate_llm_response(input)
+        response = StreamingHttpResponse(response_stream, content_type="text/event-stream")
+        response['X-Accel-Buffering'] = 'no'
+        response['Cache-Control'] = 'no-cache'
+        response['Connection'] = 'keep-alive'
+        return response
+    except Exception as e:
+        logger.error(f"Error in bgp_llama view: {str(e)}")
+        return JsonResponse({"status": "error", "message": str(e)}, status=500)
+
+def generate_llm_response(query):
+    logger.info(f"User query: {query}")
+    try:
+        # Load the model and tokenizer
+        model, tokenizer, streamer = load_model()
+
+        # Tokenize the input query with attention mask
+        inputs = tokenizer(
+            query,
+            return_tensors='pt',
+            padding=True,
+            truncation=True,
+            max_length=1500
+        )
+
+        input_ids = inputs.input_ids.to(model.device)
+        attention_mask = inputs.attention_mask.to(model.device)
+        
+        # Start the generation in a separate thread
+        generation_kwargs = dict(
+            input_ids=input_ids,
+            attention_mask=attention_mask,
+            streamer=streamer,
+            max_new_tokens=1012,
+            do_sample=True,
+            temperature=0.7,
+            top_p=0.9,
+            top_k=50,
+            repetition_penalty=1.1,
+            eos_token_id=tokenizer.eos_token_id,
+            pad_token_id=tokenizer.pad_token_id,
+        )
+        def generate():
+            model.generate(**generation_kwargs)
+
+        generation_thread = Thread(target=generate)
+        generation_thread.start()
+
+        # Stream the tokens as they are generated
+        for new_text in streamer:
+            # Yield the token to the client in the SSE format
+            data = json.dumps({"status": "generating", "generated_text": new_text})
+            yield f'data: {data}\n\n'
+
+        # Wait for the generation thread to finish
+        generation_thread.join()
+
+        # Indicate completion
+        yield 'data: {"status": "complete"}\n\n'
+
+    except Exception as e:
+        logger.error(f"Error generating LLM response: {str(e)}")
+        data = json.dumps({"status": "error", "message": str(e)})
+        yield f'data: {data}\n\n'
+
+def download_file_with_query(request):
+    file_name = request.GET.get('file')
+    if not file_name:
+        return HttpResponse("No file specified", status=400)
+
+    # Remove leading slashes to prevent absolute paths
+    file_name = file_name.lstrip('/')
+
+    # Normalize and build the full file path
+    full_path = os.path.normpath(os.path.join(settings.MEDIA_ROOT, file_name))
+    logger.info("Constructed file path:", full_path)
+
+    # Check if the path starts with the MEDIA_ROOT directory
+    if not full_path.startswith(os.path.abspath(settings.MEDIA_ROOT)):
+        logger.info("Unauthorized access attempt:", full_path)
+        raise Http404("Unauthorized access.")
+
+    # Check if the file exists and is a file
+    if os.path.exists(full_path) and os.path.isfile(full_path):
+        logger.info("File found, returning response:", full_path)
+        return FileResponse(open(full_path, 'rb'), as_attachment=True, filename=os.path.basename(full_path))
+    else:
+        logger.info("File not found:", full_path)
+        raise Http404("File not found.")
+
+
+def catch_all(request):
+    return HttpResponse("Catch-all route executed")
+
+
 # @csrf_exempt
 # def bgp_llama(request):
 #     query = request.GET.get('query', '')
@@ -354,115 +472,3 @@ def get_current_status_message():
 #     except Exception as e:
 #         logger.error(f"RAG query failed: {str(e)}")
 #         yield f'data: {json.dumps({"status": "error", "message": str(e)})}\n\n'
-
-@csrf_exempt
-def bgp_llama(request):
-    query = request.GET.get('query', '')
-    session = request.session
-
-    if not query:
-        return JsonResponse({"status": "error", "message": "No query provided"}, status=400)
-
-    # Ensure the session is saved and has a session_key
-    if not session.session_key:
-        session.save()
-
-    session_id = session.session_key
-    logger.info(f"Session ID for current request: {session_id}")
-
-    try:
-        # Directly generate the response stream from the LLM
-        input = LLAMA_SYSTEM_PROMPT + query
-        response_stream = generate_llm_response(input)
-        response = StreamingHttpResponse(response_stream, content_type="text/event-stream")
-        response['X-Accel-Buffering'] = 'no'
-        response['Cache-Control'] = 'no-cache'
-        response['Connection'] = 'keep-alive'
-        return response
-    except Exception as e:
-        logger.error(f"Error in bgp_llama view: {str(e)}")
-        return JsonResponse({"status": "error", "message": str(e)}, status=500)
-
-def generate_llm_response(query):
-    logger.info(f"User query: {query}")
-    try:
-        # Load the model and tokenizer
-        model, tokenizer, streamer = load_model()
-
-        # Tokenize the input query with attention mask
-        inputs = tokenizer(
-            query,
-            return_tensors='pt',
-            padding=True,
-            truncation=True,
-            max_length=1024
-        )
-
-        input_ids = inputs.input_ids.to(model.device)
-        attention_mask = inputs.attention_mask.to(model.device)
-        
-        # Start the generation in a separate thread
-        generation_kwargs = dict(
-            input_ids=input_ids,
-            attention_mask=attention_mask,
-            streamer=streamer,
-            max_new_tokens=600,
-            do_sample=True,
-            temperature=0.1,
-            top_p=0.9,
-            top_k=50,
-            repetition_penalty=1.1,
-            eos_token_id=tokenizer.eos_token_id,
-            pad_token_id=tokenizer.pad_token_id,
-        )
-        def generate():
-            model.generate(**generation_kwargs)
-
-        generation_thread = Thread(target=generate)
-        generation_thread.start()
-
-        # Stream the tokens as they are generated
-        for new_text in streamer:
-            # Yield the token to the client in the SSE format
-            data = json.dumps({"status": "generating", "generated_text": new_text})
-            yield f'data: {data}\n\n'
-
-        # Wait for the generation thread to finish
-        generation_thread.join()
-
-        # Indicate completion
-        yield 'data: {"status": "complete"}\n\n'
-
-    except Exception as e:
-        logger.error(f"Error generating LLM response: {str(e)}")
-        data = json.dumps({"status": "error", "message": str(e)})
-        yield f'data: {data}\n\n'
-
-def download_file_with_query(request):
-    file_name = request.GET.get('file')
-    if not file_name:
-        return HttpResponse("No file specified", status=400)
-
-    # Remove leading slashes to prevent absolute paths
-    file_name = file_name.lstrip('/')
-
-    # Normalize and build the full file path
-    full_path = os.path.normpath(os.path.join(settings.MEDIA_ROOT, file_name))
-    logger.info("Constructed file path:", full_path)
-
-    # Check if the path starts with the MEDIA_ROOT directory
-    if not full_path.startswith(os.path.abspath(settings.MEDIA_ROOT)):
-        logger.info("Unauthorized access attempt:", full_path)
-        raise Http404("Unauthorized access.")
-
-    # Check if the file exists and is a file
-    if os.path.exists(full_path) and os.path.isfile(full_path):
-        logger.info("File found, returning response:", full_path)
-        return FileResponse(open(full_path, 'rb'), as_attachment=True, filename=os.path.basename(full_path))
-    else:
-        logger.info("File not found:", full_path)
-        raise Http404("File not found.")
-
-
-def catch_all(request):
-    return HttpResponse("Catch-all route executed")

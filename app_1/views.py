@@ -12,6 +12,7 @@ import queue
 import os
 from .model_loader import load_model
 from .prompt_utils import GPT_HIST_SYSTEM_PROMPT, GPT_REAL_TIME_SYSTEM_PROMPT, LLAMA_SYSTEM_PROMPT, LLAMA_REAL_TIME_SYSTEM_PROMPT
+from .exec_code_util import StreamToQueue, is_code_safe
 import re
 import logging
 import time
@@ -61,37 +62,11 @@ def extract_code_from_reply(assistant_reply_content):
         code = match.group(1)
         return code
     else:
-        # No code block found
         return None
 import ast
 
-def is_code_safe(code, safe_globals_keys):
-    try:
-        tree = ast.parse(code)
-        defined_vars = set()
-        undefined_vars = set()
-
-        for node in ast.walk(tree):
-            if isinstance(node, ast.Assign):
-                for target in node.targets:
-                    if isinstance(target, ast.Name):
-                        defined_vars.add(target.id)
-            elif isinstance(node, ast.Name):
-                if isinstance(node.ctx, ast.Load):
-                    if node.id not in defined_vars and node.id not in safe_globals_keys:
-                        undefined_vars.add(node.id)
-
-        if undefined_vars:
-            logger.warning(f"Undefined variables detected: {undefined_vars}")
-            return False
-        return True
-    except Exception as e:
-        logger.error(f"Error parsing code for undefined variables: {e}")
-        return False
-
-
 def restricted_import(name, globals=None, locals=None, fromlist=(), level=0):
-    allowed_modules = {'pandas', 'pybgpstream', 'datetime'}
+    allowed_modules = {'pandas', 'pybgpstream', 'datetime', 'matplotlib'}
     logger.info(f"Attempting to import module: {name}")
     if name in allowed_modules:
         logger.info(f"Importing '{name}' is allowed.")
@@ -105,14 +80,20 @@ def gpt_4o_mini(request):
     if request.method == 'GET':
         query = request.GET.get('query', '')
     elif request.method == 'POST':
-        data = json.loads(request.body)
-        query = data.get('query', '')
+        try:
+            data = json.loads(request.body)
+            query = data.get('query', '')
+        except json.JSONDecodeError:
+            return JsonResponse({"status": "error", "message": "Invalid JSON payload"}, status=400)
     else:
         return JsonResponse({"status": "error", "message": "Invalid request method"}, status=400)
 
     if not query:
         return JsonResponse({"status": "error", "message": "No query provided"}, status=400)
-
+    
+    session_id = request.session.session_key
+    logger.info(f"gpt_4o_mini - Session ID: {session_id}")
+    
     def event_stream():
         try:
             # Send 'generating_started' status
@@ -135,62 +116,25 @@ def gpt_4o_mini(request):
                             assistant_reply_content += content
                             yield f"data: {json.dumps({'status': 'generating', 'generated_text': content})}\n\n"
 
-            logger.info(f"Assistant's full reply:\n{assistant_reply_content}")
+            # logger.info(f"Assistant's full reply:\n{assistant_reply_content}")
 
             # Extract code from the assistant's reply
             code = extract_code_from_reply(assistant_reply_content)
-            logger.info(f"Generated code to execute:\n{code}")
+            # logger.info(f"Generated code to save:\n{code}")
 
-            # Send 'running_code' status
-            yield f"data: {json.dumps({'status': 'running_code'})}\n\n"
-
-            # Initialize a queue to receive code execution output
-            output_queue = queue.Queue()
-
-            def run_code():
-                output_capture = io.StringIO()
-                try:
-                    with redirect_stdout(output_capture):
-                        # Prepare a local namespace for exec
-                        safe_globals = {
-                            "__builtins__": __builtins__,
-                            "pybgpstream": pybgpstream,
-                            "datetime": datetime,
-                            "__name__": "__main__",
-                        }
-                        exec(code, safe_globals)
-                        logger.info("Code execution completed successfully.")
-                except Exception as e:
-                    # Capture the traceback if an error occurs
-                    error_output = traceback.format_exc()
-                    output_capture.write("\nError while executing the code:\n")
-                    output_capture.write(error_output)
-                    logger.error(f"Error during code execution: {e}")
-                # Put the captured output into the queue
-                output = output_capture.getvalue()
-                logger.info(f"Captured code output: {output}")
-                output_queue.put(output)
-
-            # Start the code execution in a separate thread
-            code_thread = Thread(target=run_code)
-            code_thread.start()
-
-            # Periodically send keep-alive messages while code is executing
-            while code_thread.is_alive():
-                time.sleep(30)  # Send keep-alive every 30 seconds
-                yield f"data: {json.dumps({'status': 'keep_alive'})}\n\n"
-
-            # Retrieve the output
-            if not output_queue.empty():
-                code_output = output_queue.get()
-                logger.info(f"Code output:\n{code_output}")
-                # Send 'code_output' status with the output
-                yield f"data: {json.dumps({'status': 'code_output', 'code_output': code_output})}\n\n"
+            if code:
+                # Save the extracted code to the session
+                request.session['generated_code'] = code
+                request.session.modified = True
+                logger.info("Code has been saved to the session.")
+                
+                request.session.save()
+                logger.info(f"GPT 4o mini session data after saving code: {dict(request.session.items())}")
+            if code:
+                yield f"data: {json.dumps({'status': 'code_ready', 'code': code})}\n\n"
             else:
-                yield f"data: {json.dumps({'status': 'code_output', 'code_output': 'No output captured.'})}\n\n"
+                yield f"data: {json.dumps({'status': 'no_code_found'})}\n\n"
 
-            # Send 'complete' status
-            yield f"data: {json.dumps({'status': 'complete'})}\n\n"
 
         except Exception as e:
             logger.error(f"Error in gpt_4o_mini view: {str(e)}")
@@ -201,7 +145,6 @@ def gpt_4o_mini(request):
     response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
     response['Cache-Control'] = 'no-cache'
     return response
-
 
 @require_http_methods(["GET"])
 def get_csrf_token(request):
@@ -238,7 +181,8 @@ def bgp_llama(request):
         session.save()
 
     session_id = session.session_key
-    logger.info(f"Session ID for current request: {session_id}")
+    logger.info(f"User query: {query}")
+    logger.info(f"LLaMA Session ID for current request: {session_id}")
 
     try:
         # Directly generate the response stream from the LLM
@@ -246,8 +190,9 @@ def bgp_llama(request):
             system_prompt = LLAMA_REAL_TIME_SYSTEM_PROMPT
         else:
             system_prompt = LLAMA_SYSTEM_PROMPT
+            
         input = system_prompt + query
-        response_stream = generate_llm_response(input)
+        response_stream = generate_llm_response(input, request)
         response = StreamingHttpResponse(response_stream, content_type="text/event-stream")
         response['X-Accel-Buffering'] = 'no'
         response['Cache-Control'] = 'no-cache'
@@ -257,8 +202,7 @@ def bgp_llama(request):
         logger.error(f"Error in bgp_llama view: {str(e)}")
         return JsonResponse({"status": "error", "message": str(e)}, status=500)
 
-def generate_llm_response(query):
-    logger.info(f"User query: {query}")
+def generate_llm_response(query, request):
     try:
         # Load the model and tokenizer
         model, tokenizer, streamer = load_model()
@@ -295,8 +239,12 @@ def generate_llm_response(query):
         generation_thread = Thread(target=generate)
         generation_thread.start()
 
+        assistant_reply_content = ''
+
         # Stream the tokens as they are generated
         for new_text in streamer:
+            # Append the new_text to assistant_reply_content
+            assistant_reply_content += new_text
             # Yield the token to the client in the SSE format
             data = json.dumps({"status": "generating", "generated_text": new_text})
             yield f'data: {data}\n\n'
@@ -304,13 +252,131 @@ def generate_llm_response(query):
         # Wait for the generation thread to finish
         generation_thread.join()
 
-        # Indicate completion
-        yield 'data: {"status": "complete"}\n\n'
+        # logger.info(f"Assistant's full reply:\n{assistant_reply_content}")
+
+        # Extract code from the assistant's reply
+        code = extract_code_from_reply(assistant_reply_content)
+        # logger.info(f"Generated code to save:\n{code}")
+
+        if code:
+            # Save the extracted code to the session
+            request.session['generated_code'] = code
+            request.session.modified = True
+            logger.info("Code has been saved to the session.")
+            request.session.save()
+            logger.info(f"LLaMA mini session data after saving code: {dict(request.session.items())}")
+            
+        if code:
+            yield f"data: {json.dumps({'status': 'code_ready', 'code': code})}\n\n"
+        else:
+            yield f"data: {json.dumps({'status': 'no_code_found'})}\n\n"
 
     except Exception as e:
         logger.error(f"Error generating LLM response: {str(e)}")
         data = json.dumps({"status": "error", "message": str(e)})
         yield f'data: {data}\n\n'
+
+
+
+@csrf_exempt
+def execute_code(request):
+    if request.method != 'POST':
+        logger.warning("Invalid request method for execute_code.")
+        return JsonResponse({"status": "error", "message": "Invalid request method"}, status=400)
+    
+    session_id = request.session.session_key
+    logger.info(f"execute_code - Session ID: {session_id}")
+
+    try:
+        logger.info(f"Session data: {request.session.items()}")
+        
+        # Retrieve the code from the session
+        code = request.session.get('generated_code', None)
+        logger.info(f"Retrieved generated_code from session: {code}")
+        if not code:
+            return JsonResponse({"status": "error", "message": "No code available to execute."}, status=400)
+
+        # Clear the code from the session to prevent re-execution
+        request.session['generated_code'] = None
+        request.session.modified = True
+
+        def event_stream():
+            output_q = queue.Queue()
+
+            def run_code():
+                try:
+                    # Redirect stdout and stderr to the queue
+                    sys_stdout = sys.stdout
+                    sys_stderr = sys.stderr
+                    sys.stdout = StreamToQueue(output_q)
+                    sys.stderr = sys.stdout
+
+                    logger.info("Starting code execution.")
+                    # Prepare a local namespace for exec, including '__name__'
+                    safe_globals = {
+                        "__builtins__": __builtins__,
+                        "pybgpstream": pybgpstream,
+                        "datetime": datetime,
+                        "__name__": "__main__",
+                        "import": restricted_import,  # Override import
+                    }
+                    # safe = is_code_safe(code, safe_globals.keys())
+                    # if not safe:
+                    #     raise ValueError("Code contains unsafe or undefined variables.")
+
+                    exec(code, safe_globals)
+                    logger.info("Code execution completed successfully.")
+                    
+                except Exception as e:
+                    error_output = traceback.format_exc()
+                    output_q.put(f"\nError while executing the code:\n{error_output}")
+                    logger.error(f"Error during code execution: {e}")
+                finally:
+                    # Restore the original stdout and stderr
+                    sys.stdout = sys_stdout
+                    sys.stderr = sys_stderr
+
+            # Start the code execution in a separate thread
+            code_thread = Thread(target=run_code)
+            code_thread.start()
+
+            try:
+                while True:
+                    try:
+                        # Wait for new output with a timeout
+                        output = output_q.get(timeout=10)
+                        yield f"data: {json.dumps({'status': 'code_output', 'code_output': output})}\n\n"
+                    except queue.Empty:
+                        if not code_thread.is_alive():
+                            break
+                        yield f"data: {json.dumps({'status': 'keep_alive'})}\n\n"
+
+                # Ensure all remaining output is sent
+                while not output_q.empty():
+                    output = output_q.get()
+                    yield f"data: {json.dumps({'status': 'code_output', 'code_output': output})}\n\n"
+
+                # Send 'complete' status
+                yield f"data: {json.dumps({'status': 'complete'})}\n\n"
+
+            except Exception as e:
+                logger.error(f"Error in execute_code view: {str(e)}")
+                error_message = str(e)
+                yield f"data: {json.dumps({'status': 'error', 'message': error_message})}\n\n"
+
+        # Return a StreamingHttpResponse with the event_stream generator
+        response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
+        response['Cache-Control'] = 'no-cache'
+
+        return response
+    except Exception as e:
+        logger.error(f"Error in execute_code view: {str(e)}")
+        error_message = str(e)
+        return JsonResponse({"status": "error", "message": error_message}, status=500)
+
+
+def catch_all(request):
+    return HttpResponse("Catch-all route executed")
 
 def download_file_with_query(request):
     file_name = request.GET.get('file')
@@ -336,10 +402,6 @@ def download_file_with_query(request):
     else:
         logger.info("File not found:", full_path)
         raise Http404("File not found.")
-
-
-def catch_all(request):
-    return HttpResponse("Catch-all route executed")
 
 
 # @csrf_exempt

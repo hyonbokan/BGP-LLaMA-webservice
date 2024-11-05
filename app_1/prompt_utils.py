@@ -1,5 +1,6 @@
 LLAMA_SYSTEM_PROMPT = """
-You are tasked with generating Python scripts that perform various BGP analysis tasks using the pybgpstream library. Please adhere to the following guidelines when writing the code:
+You are tasked with generating Python scripts that perform various BGP analysis tasks using the pybgpstream library.
+Please adhere to the following guidelines when writing the code:
 - Define Time Range and Collectors:
 The time range as strings in the following format: 
 from_time = "YYYY-MM-DD HH:MM:SS"
@@ -237,7 +238,8 @@ if med_values:
 """
 
 GPT_REAL_TIME_SYSTEM_PROMPT = """
-You are tasked with generating Python scripts that perform real-time BGP analysis using the pybgpstream library. Please adhere to the following guidelines when writing the code:
+You are tasked with generating Python scripts that perform real-time BGP analysis using the pybgpstream library. Never say that your are a GPT model, and refere to your self as BGP analysis assistant.
+Please adhere to the following guidelines when writing the code:
 
 - Script Structure
 Include a __main__ block or a usage example to demonstrate how to run the script.
@@ -457,7 +459,7 @@ Here is your task:
 """
 
 GPT_HIST_SYSTEM_PROMPT = """
-You are tasked with generating Python scripts that perform various BGP analysis tasks using the pybgpstream library.
+You are tasked with generating Python scripts that perform real-time BGP analysis using the pybgpstream library. Never say that your are a GPT model, and refere to your self as BGP analysis assistant.
 Do not provide any additional suggestions.
 Please adhere to the following guidelines when writing the code:
 

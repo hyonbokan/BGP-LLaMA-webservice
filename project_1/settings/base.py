@@ -81,6 +81,8 @@ CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1:8000',
 ]
 
+CORS_ALLOW_CREDENTIALS = True
+
 ROOT_URLCONF = 'project_1.urls'
 
 TEMPLATES = [
@@ -104,6 +106,7 @@ WSGI_APPLICATION = 'project_1.wsgi.application'
 # Configure session settings
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_SECURE = True  # Enable this for HTTPS connections
+SESSION_COOKIE_DOMAIN = None
 SESSION_COOKIE_HTTPONLY = True  # Helps mitigate against XSS attacks
 SESSION_COOKIE_SAMESITE = 'Lax'  # Adjust as needed for your requirements
 

@@ -18,10 +18,10 @@ const ChatMessage = ({ message }) => (
       sx={{
         bgcolor: message.sender === "user" ? '#90d3ff' : '#ededed',
         borderRadius: 2,
-        maxWidth: '70%',
-        wordBreak: 'break-word', // Break long words to prevent overflow
-        overflowWrap: 'anywhere', // Allow wrapping of long URLs or strings
-        boxShadow: 'none', // Optional: Remove shadow for a cleaner look
+        maxWidth: { xs: '90%', sm: '70%', md: '60%' },
+        wordBreak: 'break-word',
+        overflowWrap: 'anywhere',
+        boxShadow: 'none',
       }}
     >
       <CardContent
@@ -63,8 +63,8 @@ const ChatMessage = ({ message }) => (
                       backgroundColor: '#f5f5f5',
                       padding: '10px',
                       borderRadius: '4px',
-                      overflow: 'auto', // Enable scrolling for long code blocks
-                      maxHeight: '900px',
+                      // overflow: 'auto', // Enable scrolling for long code blocks
+                      // maxHeight: '900px',
                     }}
                   >
                     <code className={className} {...props}>
@@ -83,7 +83,6 @@ const ChatMessage = ({ message }) => (
             }}
           />
         ) : (
-          // If message.text is a React element, render it directly
           message.text
         )}
       </CardContent>

@@ -11,7 +11,9 @@ from threading import Thread, Event
 import queue
 import os
 from .model_loader import load_model
-from .prompt_utils import GPT_HIST_SYSTEM_PROMPT, GPT_REAL_TIME_SYSTEM_PROMPT, LLAMA_SYSTEM_PROMPT, LLAMA_REAL_TIME_SYSTEM_PROMPT
+from .gpt_prompt_utils import GPT_HIST_SYSTEM_PROMPT, GPT_REAL_TIME_SYSTEM_PROMPT
+from .llama_prompt_utils import LLAMA_DEFAULT_PROMPT, LLAMA_REAL_TIME_SYSTEM_PROMPT, LLAMA_PREFIX_ANALYSYS, LLAMA_AS_PATH_OPERATIONS, LLAMA_MED_COMMUNITY, LLAMA_SYSTEM_PROMPT
+from .llama_prompt_local_run import LOCAL_OUTAGE, LOCAL_PREFIX_ANALYSYS, LOCAL_AS_PATH_ANALYSYS, LOCAL_DEFAULT, LOCAL_MED_COMMUNITY_ANALYSYS, LOCAL_HIJACKING
 from .exec_code_util import StreamToQueue, is_code_safe
 import re
 import logging
@@ -36,9 +38,13 @@ status_update_event = Event()
 def get_gpt4_output(query):
     if "real-time" in query.lower():
         system_prompt = GPT_REAL_TIME_SYSTEM_PROMPT
+    elif "hijacking" in query.lower() or "hijack" in query.lower():
+        system_prompt = LOCAL_HIJACKING
+    elif "outage" in query.lower():
+        system_prompt = LOCAL_OUTAGE
     else:
-        system_prompt = GPT_HIST_SYSTEM_PROMPT
-
+        system_prompt = LOCAL_DEFAULT
+        
     try:
         response = client.chat.completions.create(
             model='gpt-4o-mini',
@@ -185,12 +191,29 @@ def bgp_llama(request):
     logger.info(f"LLaMA Session ID for current request: {session_id}")
 
     try:
-        # Directly generate the response stream from the LLM
-        if "real-time" in query.lower():
+        # query_lower = query.lower()
+        
+        # Determine the system prompt based on the user query
+        if "real-time" in query:
             system_prompt = LLAMA_REAL_TIME_SYSTEM_PROMPT
+        elif "origin" in query or "unique prefixes" in query:
+            system_prompt = LOCAL_PREFIX_ANALYSYS
+        elif "path" in query or "as-path" in query:
+            system_prompt = LOCAL_AS_PATH_ANALYSYS
+        elif "MED" in query or "community" in query:
+            system_prompt = LOCAL_MED_COMMUNITY_ANALYSYS
+        # elif "route flapping" in query_lower:
+        #     system_prompt = LLAMA_ROUTE_FLAPPING
+        # elif "anomaly detection" in query_lower and "prefix announcement" in query_lower:
+        #     system_prompt = LLAMA_ANOMALY_DETECTION_PREFIX
+        # elif "anomaly detection" in query_lower and "as path changes" in query_lower:
+        #     system_prompt = LLAMA_ANOMALY_DETECTION_AS_PATH
+        # elif "anomaly detection" in query_lower and "potential hijacking" in query_lower:
+        #     system_prompt = LLAMA_ANOMALY_DETECTION_HIJACKING
         else:
-            system_prompt = LLAMA_SYSTEM_PROMPT
+            system_prompt = LOCAL_DEFAULT
             
+        logger.info(f"SYSTEM PROMPT: {system_prompt}")
         input = system_prompt + query
         response_stream = generate_llm_response(input, request)
         response = StreamingHttpResponse(response_stream, content_type="text/event-stream")
@@ -224,9 +247,9 @@ def generate_llm_response(query, request):
             input_ids=input_ids,
             attention_mask=attention_mask,
             streamer=streamer,
-            max_new_tokens=1012,
+            max_new_tokens=912,
             do_sample=True,
-            temperature=0.7,
+            temperature=0.70,
             top_p=0.9,
             top_k=50,
             repetition_penalty=1.1,
@@ -264,7 +287,7 @@ def generate_llm_response(query, request):
             request.session.modified = True
             logger.info("Code has been saved to the session.")
             request.session.save()
-            logger.info(f"LLaMA mini session data after saving code: {dict(request.session.items())}")
+            # logger.info(f"LLaMA mini session data after saving code: {dict(request.session.items())}")
             
         if code:
             yield f"data: {json.dumps({'status': 'code_ready', 'code': code})}\n\n"
@@ -288,11 +311,11 @@ def execute_code(request):
     logger.info(f"execute_code - Session ID: {session_id}")
 
     try:
-        logger.info(f"Session data: {request.session.items()}")
+        # logger.info(f"Session data: {request.session.items()}")
         
         # Retrieve the code from the session
         code = request.session.get('generated_code', None)
-        logger.info(f"Retrieved generated_code from session: {code}")
+        # logger.info(f"Retrieved generated_code from session: {code}")
         if not code:
             return JsonResponse({"status": "error", "message": "No code available to execute."}, status=400)
 

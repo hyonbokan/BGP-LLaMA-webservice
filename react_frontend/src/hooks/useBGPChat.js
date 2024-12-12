@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Box, CircularProgress } from '@mui/material';
 import BGPChatTutorial from '../components/BGPChatTutorial';
-import GPTChatTutorial from '../components/GPTChatTutorial';
+// import GPTChatTutorial from '../components/GPTChatTutorial';
 
 const useBGPChat = ({
     currentMessage,
@@ -39,7 +39,7 @@ const useBGPChat = ({
             case 'bgp_llama':
                 return <BGPChatTutorial />;
             case 'gpt_4o_mini':
-                return <GPTChatTutorial />;
+                return <BGPChatTutorial />;
             default:
                 return <BGPChatTutorial />;
         }
@@ -70,7 +70,7 @@ const useBGPChat = ({
     const handleNewChat = () => {
         const newChatId = chatTabs.length + 1;
         const tutorialMessage = {
-            text: selectedModel === 'bgp_llama' ? <BGPChatTutorial /> : <GPTChatTutorial />,
+            text: selectedModel === 'bgp_llama' ? <BGPChatTutorial /> : <BGPChatTutorial />,
             sender: "system"
         };
         setChatTabs([...chatTabs, { 

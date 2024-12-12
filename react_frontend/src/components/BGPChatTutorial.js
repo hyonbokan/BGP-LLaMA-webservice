@@ -1,53 +1,100 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, Card, CardContent } from '@mui/material';
 
 const BGPChatTutorial = () => (
   <Box sx={{ p: 3 }}>
     <Typography variant="h5" gutterBottom>
       Welcome to BGP-LLaMA Chat!
     </Typography>
-{/* 
-    <Typography variant="body1" paragraph>
-      Please note that the system is currently in its early stages, and user commands must be formatted correctly for optimal performance.
-    </Typography>
-    <Typography variant="body1" color="error.main" paragraph>
-      <strong>Important:</strong> Due to system limitations, data collection should not exceed <strong>30 minutes</strong>. 
-      To demonstrate the full capabilities of BGP-LLaMA and work around this limitation, a <strong>default dataset</strong> has been implemented to allow for more comprehensive interaction and exploration.
-    </Typography>
+    <Box sx={{ mt: 2 }}>
+      {/* Section: Key Information */}
+      <Card sx={{ mb: 2 }}>
+        <CardContent>
+          <Typography variant="h6">Key Information</Typography>
+          <Typography variant="body1" gutterBottom>
+            To reduce data processing overhead, we have pre-processed and stored BGP update messages from the RIPE RIS rrc00 collector for the entire month of October 2024. All queries should be limited to this time range for optimal performance.
+          </Typography>
+        </CardContent>
+      </Card>
 
-    <Typography variant="body1" paragraph>
-      The default dataset contains BGP data from Google AS15169, specifically chosen for its coverage of a notable BGP anomaly event. This dataset spans <b>2017-08-25 00:00:00</b> to <b>2017-08-25 07:00:00</b>, providing valuable insights and experience when querying the system.
-    </Typography>
+      {/* Section: Supported Analysis Queries */}
+      <Card sx={{ mb: 2 }}>
+        <CardContent>
+          <Typography variant="h6">Supported Analysis Queries</Typography>
+          <Typography variant="body1" sx={{ mb: 1 }}>
+            Below are some example queries you can use to interact with BGP-LLaMA:
+          </Typography>
 
-    <Typography variant="h6" gutterBottom>
-      1. BGP Data Collection
-    </Typography>
-    <Typography variant="body1" paragraph>
-      BGP data collection is the first step for data analysis.
-    </Typography>
-    <Typography variant="body1" paragraph>
-      To initiate a data collection, include the command <b>"collect"</b> and specify the type of collection:
-    </Typography>
+          {/* Query: Prefix and Origin Analysis */}
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="subtitle1">Prefix and Origin Analysis</Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                bgcolor: '#f4f4f4',
+                p: 2,
+                borderRadius: 1,
+                fontFamily: 'monospace',
+              }}
+            >
+              Provide a summary of unique prefixes and origin ASes associated
+              with AS4766 from Oct 28 13:00 to 13:15, 2024. Track the count of
+              unique prefixes and changes in origin ASes, if any.
+            </Typography>
+          </Box>
 
-    <Typography variant="body1" paragraph>
-      - For <b>historical data</b>, please specify the timeline in the format <i>yy-mm-dd hh:mm:ss</i>, include the specific collector (e.g., <i>route-views.amsix</i> or <i>rrc02</i>), and it is recommended to include both the target ASN and prefixes for comprehensive analysis.
-    </Typography>
-    <Typography variant="body2" paragraph>
-      Example: <i>Collect and analyze data for AS32934 from 2021-10-04 07:00:00 to 2021-10-04 07:30:00 using collector route-views.amsix for prefixes 129.134.30.0/24 and 129.134.30.0/23.</i>
-    </Typography>
+          {/* Query: AS Path Analysis */}
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="subtitle1">AS Path Analysis</Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                bgcolor: '#f4f4f4',
+                p: 2,
+                borderRadius: 1,
+                fontFamily: 'monospace',
+              }}
+            >
+              Summarize the AS paths for each prefix associated with ASN AS4766
+              over the period Oct 28 13:00 to 13:15, 2024. Provide minimum,
+              maximum, and median AS path lengths and highlight any significant
+              path changes observed in BGP updates.
+            </Typography>
+          </Box>
 
-    <Typography variant="body1" paragraph>
-      - For <b>real-time data</b>, use the term <i>"real-time"</i> along with the duration (e.g., minutes), specify target ASN and optionally prefixes. Ensure that the duration does not exceed 30 minutes.
-    </Typography>
-    <Typography variant="body2" paragraph>
-      Example: <i>Collect real-time BGP data for AS3356 for 30 minutes.</i>
-    </Typography>
+          {/* Query: MED and Community Tag Analysis */}
+          <Box>
+            <Typography variant="subtitle1">
+              MED and Community Tag Analysis
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                bgcolor: '#f4f4f4',
+                p: 2,
+                borderRadius: 1,
+                fontFamily: 'monospace',
+              }}
+            >
+              Analyze the range of MED values and the most common community
+              tags associated with BGP update messages for ASN AS4766 from Oct
+              28 13:00 to 13:15, 2024. Provide a summary of average MED values
+              and frequently observed community tags.
+            </Typography>
+          </Box>
+        </CardContent>
+      </Card>
 
-    <Typography variant="h6" gutterBottom>
-      2. Data Insights & Anomaly Detection
-    </Typography>
-    <Typography variant="body1" paragraph>
-      After data collection, you can query the system to gain insights or detect anomalies in the collected BGP data.
-    </Typography> */}
+      {/* Section: Testing Queries */}
+      <Card>
+        <CardContent>
+          <Typography variant="h6">Testing Queries</Typography>
+          <Typography variant="body1">
+            Start with the example queries above or create your own to explore
+            the full capabilities of BGP-LLaMA.
+          </Typography>
+        </CardContent>
+      </Card>
+    </Box>
   </Box>
 );
 

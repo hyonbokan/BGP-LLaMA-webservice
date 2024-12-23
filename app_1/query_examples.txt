@@ -28,6 +28,8 @@ Detect unusual AS path changes for prefixes associated with ASN AS4766 from oct 
 10. Anomaly Detection - Potential Hijacking
 Identify suspected BGP hijacking incidents involving ASN AS4766 or its prefixes from oct 28 13:00 to oct 28 13:15, 2024. Summarize the prefixes, unauthorized ASNs, and frequency of suspected hijacks.
 
+11. MOAS conflict
+Identify suspected MOAS (Multiple Origin AS) conflicts involving prefixes announced by ASN AS4766 from Oct 28, 13:00 to Oct 28, 13:15, 2024. Summarize the prefixes, list all observed origin ASNs for each conflicting prefix, and provide the total number of conflicts detected for each prefix.
 
 Anomaly detection - outage:
 detect incidents related to Facebook's (AS32934) outage that occurred on October 4, 2021.

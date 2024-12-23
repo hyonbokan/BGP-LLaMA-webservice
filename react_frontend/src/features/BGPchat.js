@@ -146,15 +146,15 @@ return (
                 onChange={handleModelChange}
                 aria-label="Model selection"
             >
-                <RoundToggleButton value="gpt_4o_mini" aria-label="BGP LLaMA">
+                {/* <RoundToggleButton value="gpt_4o_mini" aria-label="BGP LLaMA">
                     <Typography variant="caption" fontFamily='monospace' fontWeight={700}>BGP-LLaMA</Typography>
-                </RoundToggleButton>
-                {/* <RoundToggleButton value="gpt_4o_mini" aria-label="GPT-4o-mini">
+                </RoundToggleButton> */}
+                <RoundToggleButton value="gpt_4o_mini" aria-label="GPT-4o-mini">
                     <Typography variant="caption" fontFamily='monospace' fontWeight={700}>GPT-4o-mini</Typography>
                 </RoundToggleButton>
                 <RoundToggleButton value="bgp_llama" aria-label="BGP LLaMA">
                   <Typography variant="caption" fontFamily='monospace' fontWeight={700}>BGP-LLaMA</Typography>
-                </RoundToggleButton> */}
+                </RoundToggleButton>
             </ToggleButtonGroup>
         </Box>
 

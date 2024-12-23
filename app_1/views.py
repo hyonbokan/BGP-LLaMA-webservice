@@ -42,6 +42,8 @@ def get_gpt4_output(query):
         system_prompt = LOCAL_HIJACKING
     elif "outage" in query.lower():
         system_prompt = LOCAL_OUTAGE
+    elif "as path" in query.lower():
+        system_prompt = LOCAL_AS_PATH_ANALYSYS
     else:
         system_prompt = LOCAL_DEFAULT
         
@@ -98,6 +100,10 @@ def gpt_4o_mini(request):
         return JsonResponse({"status": "error", "message": "No query provided"}, status=400)
     
     session_id = request.session.session_key
+    if session_id is None:
+        request.session.save()
+        session_id = request.session.session_key
+
     logger.info(f"gpt_4o_mini - Session ID: {session_id}")
     
     def event_stream():
@@ -126,7 +132,7 @@ def gpt_4o_mini(request):
 
             # Extract code from the assistant's reply
             code = extract_code_from_reply(assistant_reply_content)
-            # logger.info(f"Generated code to save:\n{code}")
+            logger.info(f"Generated code to save:\n{code}")
 
             if code:
                 # Save the extracted code to the session

@@ -59,7 +59,7 @@ const Footer = () => {
                 <Grid item xs={12} sm={2}>
                     <Typography variant="subtitle1" sx={ titleFontStyle } gutterBottom>Learn</Typography>
                     <MUILink href="https://ieeexplore.ieee.org/document/10583947/authors#authors" underline="hover" sx={ textFontStyle }>Paper</MUILink><br />
-                    <MUILink href="https://github.com/hyonbokan/LLM-research" underline="hover" sx={ textFontStyle }>Tutotial</MUILink>
+                    <MUILink href="https://github.com/hyonbokan/LLM-research" underline="hover" sx={ textFontStyle }>Documentation</MUILink>
                 </Grid>
 
                 <Grid item xs={12} sm={2}>

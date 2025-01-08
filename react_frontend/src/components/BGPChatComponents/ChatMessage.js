@@ -18,7 +18,8 @@ const ChatMessage = ({ message }) => (
       sx={{
         bgcolor: message.sender === "user" ? '#90d3ff' : '#ededed',
         borderRadius: 2,
-        maxWidth: { xs: '90%', sm: '70%', md: '60%' },
+        width: { xs: '90%', sm: '70%', md: '60%' },
+        maxWidth: '900px',
         wordBreak: 'break-word',
         overflowWrap: 'anywhere',
         boxShadow: 'none',
@@ -63,6 +64,7 @@ const ChatMessage = ({ message }) => (
                       backgroundColor: '#f5f5f5',
                       padding: '10px',
                       borderRadius: '4px',
+                      overflowX: 'auto',
                       // overflow: 'auto', // Enable scrolling for long code blocks
                       // maxHeight: '900px',
                     }}

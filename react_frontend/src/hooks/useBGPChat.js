@@ -48,14 +48,15 @@ const useBGPChat = ({
     useEffect(() => {
         const tutorialMessage = {
             text: getTutorialMessage(selectedModel),
-            sender: "system"
+            // sender: "system"
+            sender: "tutorial"
         };
     
         setChatTabs((prevTabs) => 
             prevTabs.map((tab, index) => {
                 if (index === currentTab) {
                     const messages = [...tab.messages];
-                    if (messages.length > 0 && messages[0].sender === 'system') {
+                    if (messages.length > 0 && messages[0].sender === 'tutorial') {
                         messages[0] = tutorialMessage; // Replace existing tutorial
                     } else {
                         messages.unshift(tutorialMessage); // Add new tutorial
@@ -70,9 +71,8 @@ const useBGPChat = ({
     const handleNewChat = () => {
         const newChatId = chatTabs.length + 1;
         const tutorialMessage = {
-            // text: selectedModel === 'bgp_llama' ? <BGPChatTutorial /> : <BGPChatTutorial />,
             text: <BGPChatTutorial />,
-            sender: "system"
+            sender: "tutorial"
         };
         setChatTabs([...chatTabs, { 
             id: newChatId, 
@@ -138,7 +138,9 @@ const useBGPChat = ({
     };
 
     const handleRenameDialogSave = () => {
-        const updatedTabs = chatTabs.map(tab => tab.id === tabToEdit.id ? { ...tab, label: renameValue } : tab);
+        const updatedTabs = chatTabs.map(
+            (tab) => tab.id === tabToEdit.id ? { ...tab, label: renameValue } : tab
+        );
         setChatTabs(updatedTabs);
         setRenameDialogOpen(false);
         setRenameValue('');
@@ -193,7 +195,6 @@ const useBGPChat = ({
     
         // Handle 'code_ready' status from the backend
         if (data.status === "code_ready") {
-            console.log("Code is ready to be executed.");
             const code = data.code; // Extract code from the event data
 
             if (code) {
@@ -202,14 +203,19 @@ const useBGPChat = ({
                     text: '📄 Code is ready to be executed.',
                     sender: "system",
                 };
+                updateChatTabs(codeReadyMessage);
             }
         }
     
         // Handle 'no_code_found' status
         if (data.status === 'no_code_found') {
-            console.log("No code block was found in the response.");
+            // console.log("No code block was found in the response.");
             setGeneratedCode(false);
-        }
+            updateChatTabs({
+              text: 'No code block was found in the response.',
+              sender: 'system',
+            });
+          }
 
         // Handle 'running_code' status
         if (data.status === "running_code") {
@@ -238,7 +244,8 @@ const useBGPChat = ({
             setIsRunningCode(false);
 
             const codeOutputMessage = {
-                text: data.code_output.includes("Error") ? `⚠️ ${data.code_output}` : data.code_output,
+                text: data.code_output.includes("Error") 
+                ? `⚠️ ${data.code_output}` : data.code_output,
                 sender: "system",
             };
 
@@ -315,7 +322,6 @@ const useBGPChat = ({
         }
 
         const url = `${baseUrl}/${endpoint}?query=${encodedMessage}`;
-        console.log(`Request URL: ${url}`);
         const newEventSource = new EventSource(url);
 
         newEventSource.onmessage = function(event) {

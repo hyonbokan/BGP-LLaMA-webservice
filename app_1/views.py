@@ -71,7 +71,7 @@ def extract_code_from_reply(assistant_reply_content):
         return code
     else:
         return None
-import ast
+
 
 def restricted_import(name, globals=None, locals=None, fromlist=(), level=0):
     allowed_modules = {'pandas', 'pybgpstream', 'datetime', 'matplotlib'}
@@ -193,7 +193,7 @@ def bgp_llama(request):
         session.save()
 
     session_id = session.session_key
-    logger.info(f"User query: {query}")
+    # logger.info(f"User query: {query}")
     logger.info(f"LLaMA Session ID for current request: {session_id}")
 
     try:
@@ -253,12 +253,12 @@ def generate_llm_response(query, request):
             input_ids=input_ids,
             attention_mask=attention_mask,
             streamer=streamer,
-            max_new_tokens=912,
+            max_new_tokens=1012,
             do_sample=True,
-            temperature=0.70,
+            temperature=0.3,
             top_p=0.9,
             top_k=50,
-            repetition_penalty=1.1,
+            repetition_penalty=1.0,
             eos_token_id=tokenizer.eos_token_id,
             pad_token_id=tokenizer.pad_token_id,
         )

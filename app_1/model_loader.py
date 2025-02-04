@@ -184,13 +184,9 @@ def load_model():
                 )
                 
                 # Set padding token
-                if tokenizer.pad_token is None:
-                    tokenizer.add_special_tokens({'pad_token': '[PAD]'})
-
-                tokenizer.padding_side = "right"
-
-                # Resize model embeddings if new tokens are added
-                model.resize_token_embeddings(len(tokenizer))
+                tokenizer.pad_token = tokenizer.eos_token
+                tokenizer.padding_side = "left"
+                tokenizer.truncation_side = "left"
 
                 streamer = TextIteratorStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
                 # transformers.logging.set_verbosity(transformers.logging.CRITICAL)

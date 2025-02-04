@@ -19,7 +19,7 @@ const BGPChatTutorial = () => (
       {/* Section: Supported Analysis Queries */}
       <Card sx={{ mb: 2 }}>
         <CardContent>
-          <Typography variant="h6">Supported Analysis Queries</Typography>
+          <Typography variant="h6">Example of Analysis Queries</Typography>
           <Typography variant="body1" sx={{ mb: 1 }}>
             Below are some example queries you can use to interact with BGP-LLaMA:
           </Typography>

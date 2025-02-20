@@ -1,3 +1,27 @@
+DEFAULT_PROMPT = """
+You are tasked with generating a Python script that performs basic BGP analysis using the pybgpstream library.
+Please adhere to the following guidelines when writing the code:
+
+- Correctly import required libraries:
+from datetime import datetime, timezone
+import pybgpstream
+import os
+import re
+from collections import defaultdict, Counter
+import statistics
+
+- Directory containing BGP update files:
+Replace {year} and {month} according to the timestamp
+/home/hb/ris_bgp_updates/{year}/{month}/rrc00
+
+- Parse the time window strings into datetime objects:
+from_time = datetime.strptime(from_time_str, "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
+until_time = datetime.strptime(until_time_str, "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
+
+Here is your task:\n
+"""
+
+
 BASE_SETUP = """
 You are tasked with generating a Python script that performs BGP data analysis using the pybgpstream library.
 Please adhere to the following guidelines when writing the code. According the task below, you are allow to implement minor changes:

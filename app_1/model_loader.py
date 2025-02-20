@@ -19,9 +19,53 @@ logger.addHandler(logging.StreamHandler(stream=sys.stdout))
 # index_cache = {}
 # index_lock = Lock()
 
-# # LLM models
-LLAMA3_8B_INSTRUCT = "meta-llama/Meta-Llama-3.1-8B-Instruct"
-CUSTOM_MODEL = "hyonbokan/BGPStream13-10k-cutoff-1024-max-2048"
+# LLM models
+CUSTOM_MODEL = "hyonbokan/bgp-llama-3.1-instruct-10kSteps-2kDataset"
+
+model = None
+tokenizer = None
+streamer = None
+model_lock = Lock()
+
+def load_model():
+    global model, tokenizer, streamer
+    with model_lock:
+        if model is None or tokenizer is None or streamer is None:
+            try:
+                model_id = CUSTOM_MODEL
+                hf_auth = os.environ.get('hf_token')
+
+                model_config = AutoConfig.from_pretrained(
+                    model_id,
+                    use_auth_token=hf_auth
+                )
+                model = AutoModelForCausalLM.from_pretrained(
+                    model_id,
+                    trust_remote_code=True,
+                    config=model_config,
+                    device_map='auto',
+                    use_auth_token=hf_auth
+                )
+                tokenizer = AutoTokenizer.from_pretrained(
+                    model_id,
+                    use_auth_token=hf_auth
+                )
+                
+                # Set padding token
+                tokenizer.pad_token = tokenizer.eos_token
+                tokenizer.padding_side = "left"
+                tokenizer.truncation_side = "left"
+
+                streamer = TextIteratorStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
+                # transformers.logging.set_verbosity(transformers.logging.CRITICAL)
+
+                logging.info("Model loaded successfully")
+            except Exception as e:
+                logging.error(f"Failed to load the model: {str(e)}")
+                raise
+
+    return model, tokenizer, streamer
+
 
 # # Embed models
 # BGE_SMALL = "BAAI/bge-small-en-v1.5"
@@ -153,50 +197,6 @@ CUSTOM_MODEL = "hyonbokan/BGPStream13-10k-cutoff-1024-max-2048"
 #         logger.error(f"Error in stream_bgp_query: {str(e)}")
 #         yield f"Error: {str(e)}"
 
-
-model = None
-tokenizer = None
-streamer = None
-model_lock = Lock()
-
-def load_model():
-    global model, tokenizer, streamer
-    with model_lock:
-        if model is None or tokenizer is None or streamer is None:
-            try:
-                model_id = LLAMA3_8B_INSTRUCT
-                hf_auth = os.environ.get('hf_token')
-
-                model_config = AutoConfig.from_pretrained(
-                    model_id,
-                    use_auth_token=hf_auth
-                )
-                model = AutoModelForCausalLM.from_pretrained(
-                    model_id,
-                    trust_remote_code=True,
-                    config=model_config,
-                    device_map='auto',
-                    use_auth_token=hf_auth
-                )
-                tokenizer = AutoTokenizer.from_pretrained(
-                    model_id,
-                    use_auth_token=hf_auth
-                )
-                
-                # Set padding token
-                tokenizer.pad_token = tokenizer.eos_token
-                tokenizer.padding_side = "left"
-                tokenizer.truncation_side = "left"
-
-                streamer = TextIteratorStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
-                # transformers.logging.set_verbosity(transformers.logging.CRITICAL)
-
-                logging.info("Model loaded successfully")
-            except Exception as e:
-                logging.error(f"Failed to load the model: {str(e)}")
-                raise
-
-    return model, tokenizer, streamer
 
 # @csrf_exempt
 # def finetune_model(request):

@@ -56,8 +56,7 @@ const BGPChatTutorial = () => (
             >
               Summarize the AS paths for each prefix associated with ASN AS4766
               over the period Oct 28 13:00 to 13:15, 2024. Provide minimum,
-              maximum, and median AS path lengths and highlight any significant
-              path changes observed in BGP updates.
+              maximum, and median AS path lengths.
             </Typography>
           </Box>
 

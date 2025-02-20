@@ -12,8 +12,8 @@ import queue
 import os
 from .model_loader import load_model
 from .gpt_prompt_utils import GPT_HIST_SYSTEM_PROMPT, GPT_REAL_TIME_SYSTEM_PROMPT
-from .llama_prompt_utils import LLAMA_DEFAULT_PROMPT, LLAMA_REAL_TIME_SYSTEM_PROMPT, LLAMA_PREFIX_ANALYSYS, LLAMA_AS_PATH_OPERATIONS, LLAMA_MED_COMMUNITY, LLAMA_SYSTEM_PROMPT
-from .llama_prompt_local_run import LOCAL_OUTAGE, LOCAL_PREFIX_ANALYSYS, LOCAL_AS_PATH_ANALYSYS, LOCAL_DEFAULT, LOCAL_MED_COMMUNITY_ANALYSYS, LOCAL_HIJACKING
+# from .llama_prompt_api_run import LLAMA_DEFAULT_PROMPT, LLAMA_REAL_TIME_SYSTEM_PROMPT, LLAMA_PREFIX_ANALYSYS, LLAMA_AS_PATH_OPERATIONS, LLAMA_MED_COMMUNITY, LLAMA_SYSTEM_PROMPT
+from .llama_prompt_local_run import LOCAL_OUTAGE, LOCAL_PREFIX_ANALYSYS, LOCAL_AS_PATH_ANALYSYS, LOCAL_DEFAULT, LOCAL_MED_COMMUNITY_ANALYSYS, LOCAL_HIJACKING, BASE_SETUP, DEFAULT_PROMPT
 from .exec_code_util import StreamToQueue, is_code_safe
 import re
 import logging
@@ -34,6 +34,7 @@ client = OpenAI()
 client.api_key = os.getenv("OPENAI_API_KEY")
 
 status_update_event = Event()
+
 
 def get_gpt4_output(query):
     if "real-time" in query.lower():
@@ -197,28 +198,7 @@ def bgp_llama(request):
     logger.info(f"LLaMA Session ID for current request: {session_id}")
 
     try:
-        # query_lower = query.lower()
-        
-        # Determine the system prompt based on the user query
-        if "real-time" in query:
-            system_prompt = LLAMA_REAL_TIME_SYSTEM_PROMPT
-        elif "origin" in query or "unique prefixes" in query:
-            system_prompt = LOCAL_PREFIX_ANALYSYS
-        elif "path" in query or "as-path" in query:
-            system_prompt = LOCAL_AS_PATH_ANALYSYS
-        elif "MED" in query or "community" in query:
-            system_prompt = LOCAL_MED_COMMUNITY_ANALYSYS
-        # elif "route flapping" in query_lower:
-        #     system_prompt = LLAMA_ROUTE_FLAPPING
-        # elif "anomaly detection" in query_lower and "prefix announcement" in query_lower:
-        #     system_prompt = LLAMA_ANOMALY_DETECTION_PREFIX
-        # elif "anomaly detection" in query_lower and "as path changes" in query_lower:
-        #     system_prompt = LLAMA_ANOMALY_DETECTION_AS_PATH
-        # elif "anomaly detection" in query_lower and "potential hijacking" in query_lower:
-        #     system_prompt = LLAMA_ANOMALY_DETECTION_HIJACKING
-        else:
-            system_prompt = LOCAL_DEFAULT
-            
+        system_prompt = BASE_SETUP
         logger.info(f"SYSTEM PROMPT: {system_prompt}")
         input = system_prompt + query
         response_stream = generate_llm_response(input, request)
@@ -253,12 +233,12 @@ def generate_llm_response(query, request):
             input_ids=input_ids,
             attention_mask=attention_mask,
             streamer=streamer,
-            max_new_tokens=1012,
+            max_new_tokens=912,
             do_sample=True,
-            temperature=0.3,
-            top_p=0.9,
-            top_k=50,
-            repetition_penalty=1.0,
+            temperature=0.1,
+            # top_p=0.9,
+            # top_k=50,
+            repetition_penalty=1.1,
             eos_token_id=tokenizer.eos_token_id,
             pad_token_id=tokenizer.pad_token_id,
         )

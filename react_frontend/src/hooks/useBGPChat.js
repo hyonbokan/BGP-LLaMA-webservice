@@ -306,19 +306,19 @@ const useBGPChat = ({
         }
         generatingMessageIndexRef.current = null;
 
-        const baseUrl = 'https://llama.cnu.ac.kr/api'; // Ensure this is correct
+        const baseUrl = 'https://llama.cnu.ac.kr/api';
         let endpoint;
         
         // Determine the endpoint based on the selected model
         switch(selectedModel) {
             case 'bgp_llama':
-                endpoint = 'bgp_llama';
+                endpoint = 'bgp_llama/';
                 break;
             case 'model_3':
-                endpoint = 'model_3';
+                endpoint = 'model_3/';
                 break;
             default:
-                endpoint = 'gpt_4o_mini';
+                endpoint = 'gpt_4o_mini/';
         }
 
         const url = `${baseUrl}/${endpoint}?query=${encodedMessage}`;
@@ -349,7 +349,7 @@ const useBGPChat = ({
         setExecutionOutput('');
     
         const baseUrl = 'https://llama.cnu.ac.kr/api'; // Replace with your actual backend URL
-        const endpoint = 'execute_code';
+        const endpoint = 'execute_code/';
         const url = `${baseUrl}/${endpoint}`;
     
         try {

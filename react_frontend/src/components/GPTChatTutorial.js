@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, Card, CardContent } from '@mui/material';
 
 const GPTChatTutorial = () => (
   <Box sx={{ p: 3 }}>

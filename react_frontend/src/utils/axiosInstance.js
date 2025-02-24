@@ -5,8 +5,9 @@ const axiosInstance = axios.create({
     baseURL: 'https://llama.cnu.ac.kr/api/',
     headers: {
         'Content-Type': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest', 
+        'X-Requested-With': 'XMLHttpRequest',
     },
+    withCredentials: true  // cookes are included
 });
 
 axiosInstance.interceptors.request.use((config) => {
@@ -21,11 +22,11 @@ axiosInstance.interceptors.request.use((config) => {
 
 export const fetchCsrfToken = async () => {
     try {
-        await axiosInstance.get('get_csrf_token');
+        await axiosInstance.get('get_csrf_token/');
         const csrfToken = Cookies.get('csrftoken');
         if (csrfToken) {
             localStorage.setItem('csrfToken', csrfToken);
-            console.error('csrfToken set');
+            console.log('CSRF token set:', csrfToken);
         }
     } catch (error) {
         console.error('Error fetching CSRF token:', error);

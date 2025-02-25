@@ -1,2 +1,25 @@
-react_frontend/node_modules/.cache/
+# Ignore Python bytecode and cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore environment variables and secrets
 .env
+*.env
+
+# Ignore log files
+*.log
+debug.log
+
+# Ignore Django migrations (optional)
+**/migrations/*.pyc
+**/migrations/*.py
+
+# Ignore Node.js dependencies and cache
+react_frontend/node_modules/
+react_frontend/node_modules/.cache/
+
+# Ignore temporary system files
+.DS_Store
+Thumbs.db

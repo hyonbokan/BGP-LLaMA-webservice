@@ -20,6 +20,13 @@ debug.log
 react_frontend/node_modules/
 react_frontend/node_modules/.cache/
 
+# Ignore all pycache directories (Explicitly)
+**/__pycache__/
+
+# Ignore SQLite database files
+db.sqlite3
+*.sqlite3
+
 # Ignore temporary system files
 .DS_Store
 Thumbs.db

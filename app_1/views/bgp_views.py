@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from app_1.utils.model_loader import load_model
 from app_1.prompts.llama_prompt_local_run import BASE_SETUP
-from app_1.utils import extract_code_from_reply
+from app_1.utils.extract_code_from_reply import extract_code_from_reply
 
 logger = logging.getLogger(__name__)
 

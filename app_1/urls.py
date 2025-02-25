@@ -16,6 +16,7 @@ from app_1.views import gpt_views, bgp_views, code_execution_views, status_views
 # ]
 
 urlpatterns = [
+    path('bgp_llama/', bgp_views.bgp_llama, name='bgp-llama'),
     path('gpt_4o_mini/', gpt_views.gpt_4o_mini, name='gpt_4o_mini'),
     path('execute_code/', code_execution_views.execute_code, name='execute_code'),
     path('download/', views.download_file_with_query, name='api-download-file-query'),

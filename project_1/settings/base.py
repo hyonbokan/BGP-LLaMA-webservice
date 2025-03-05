@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'social_django',
     'taggit',
     'corsheaders',
+    'channels'
 ]
 
 MIDDLEWARE = [
@@ -101,6 +102,13 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'project_1.wsgi.application'
+ASGI_APPLICATION = "project_1.asgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}
 
 # Configure session settings
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'

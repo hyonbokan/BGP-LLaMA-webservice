@@ -30,3 +30,6 @@ db.sqlite3
 # Ignore temporary system files
 .DS_Store
 Thumbs.db
+
+# Ignore collected static files
+../staticfiles/

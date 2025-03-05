@@ -29,7 +29,7 @@ const Navbar = () => {
 
   const handleDownloadClick = () => {
     window.open(
-      'https://huggingface.co/hyonbokan/BGPStream13-10k-cutoff-1024-max-2048',
+      'https://huggingface.co/hyonbokan/bgp-llama-3.1-instruct-10kSteps-2kDataset',
       '_blank'
     );
   };

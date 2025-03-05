@@ -26,7 +26,7 @@ export const fetchCsrfToken = async () => {
         const csrfToken = Cookies.get('csrftoken');
         if (csrfToken) {
             localStorage.setItem('csrfToken', csrfToken);
-            console.log('CSRF token set:', csrfToken);
+            // console.log('CSRF token set:', csrfToken);
         }
     } catch (error) {
         console.error('Error fetching CSRF token:', error);

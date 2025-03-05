@@ -30,8 +30,10 @@ const useBGPChat = ({
     const [isRunningCode, setIsRunningCode] = useState(false);
     const [executionOutput, setExecutionOutput] = useState('');
 
-    // Ref to track the index of the ongoing message being generated
+    const [wsLLM, setWsLLM] = useState(null);
+    const [wsCode, setWsCode] = useState(null);
     const generatingMessageIndexRef = useRef(null);
+    const baseWsUrl = 'wss://llama.cnu.ac.kr/ws/';
 
 
     const getTutorialMessage = (selectedModel) => {
@@ -287,137 +289,129 @@ const useBGPChat = ({
         generatingMessageIndexRef.current = null;
     };
 
-    const handleSendMessage = async () => {
+    const handleSendMessage = () => {
         if (currentMessage.trim() === '') return;
 
         setIsGenerating(true);
-        setIsRunningCode(false);
-
         const userMessage = { text: currentMessage, sender: "user" };
         updateChatTabs(userMessage);
 
-        // Encode the currentMessage before sending
-        const encodedMessage = encodeURIComponent(currentMessage);
+        const messageToSend = currentMessage;
         setCurrentMessage('');
-        setOutputMessage('');
-
-        if (eventSource) {
-            eventSource.close();
-        }
+        
+        if (wsLLM) wsLLM.close();
         generatingMessageIndexRef.current = null;
 
-        const baseUrl = 'https://llama.cnu.ac.kr/api';
-        let endpoint;
-        
-        // Determine the endpoint based on the selected model
-        switch(selectedModel) {
-            case 'bgp_llama':
-                endpoint = 'bgp_llama/';
-                break;
-            case 'model_3':
-                endpoint = 'model_3/';
-                break;
-            default:
-                endpoint = 'gpt_4o_mini/';
-        }
+        const socketUrl = `${baseWsUrl}llm/`;
+        const newWsLLM = new WebSocket(socketUrl);
 
-        const url = `${baseUrl}/${endpoint}?query=${encodedMessage}`;
-        const newEventSource = new EventSource(url);
-
-        newEventSource.onmessage = function(event) {
-            try {
-                const data = JSON.parse(event.data);
-                handleEventSourceMessage(data);
-            } catch (err) {
-                console.error("Failed to parse event data:", err);
-            }
+        newWsLLM.onopen = () => {
+            newWsLLM.send(JSON.stringify({ query: messageToSend }));
         };
 
-        newEventSource.onerror = () => handleEventSourceError(newEventSource);
+        newWsLLM.onmessage = (event) => {
+            try {
+              const data = JSON.parse(event.data);
+              if (data.status === 'generating') {
+                // Append the new token to a system message that is already in the chat history.
+                setChatTabs(prevTabs => {
+                  const updatedTabs = [...prevTabs];
+                  const currentMessages = [...updatedTabs[currentTab].messages];
+                  // If there’s already an ongoing system message, append to it.
+                  if (currentMessages.length > 0 && currentMessages[currentMessages.length - 1].sender === 'system' && !currentMessages[currentMessages.length - 1].final) {
+                    currentMessages[currentMessages.length - 1] = {
+                      ...currentMessages[currentMessages.length - 1],
+                      text: currentMessages[currentMessages.length - 1].text + data.generated_text,
+                    };
+                  } else {
+                    // Otherwise, start a new system message.
+                    currentMessages.push({ text: data.generated_text, sender: 'system', final: false });
+                  }
+                  updatedTabs[currentTab].messages = currentMessages;
+                  return updatedTabs;
+                });
+              } else if (data.status === 'code_ready') {
+                // Mark the last system message as final (if you're using that flag)
+                setChatTabs(prevTabs => {
+                  const updatedTabs = [...prevTabs];
+                  const currentMessages = [...updatedTabs[currentTab].messages];
+                  if (currentMessages.length > 0 && currentMessages[currentMessages.length - 1].sender === 'system') {
+                    currentMessages[currentMessages.length - 1] = {
+                      ...currentMessages[currentMessages.length - 1],
+                      final: true,
+                    };
+                  }
+                  updatedTabs[currentTab].messages = currentMessages;
+                  return updatedTabs;
+                });
+                setGeneratedCode(data.code);
+              } else if (data.status === 'no_code_found') {
+                // Similar handling here.
+              } else if (data.status === 'error') {
+                console.error('Error:', data.message);
+              }
+            } catch (err) {
+              console.error("Failed to parse WebSocket message:", err);
+            }
+          };
 
-        setEventSource(newEventSource);
+        newWsLLM.onerror = (error) => {
+            console.error("WebSocket error:", error);
+            setIsGenerating(false);
+        };
+
+        newWsLLM.onclose = () => {
+            console.log("LLM WebSocket connection closed.");
+            setIsGenerating(false);
+        };
+
+        setWsLLM(newWsLLM);
     };
 
-    const handleRunCode = async () => {
+    const handleRunCode = () => {
         if (!generatedCode) {
             alert('No code to run.');
             return;
         }
     
         setIsRunningCode(true);
-        setIsGenerating(false);
         setExecutionOutput('');
     
-        const baseUrl = 'https://llama.cnu.ac.kr/api'; // Replace with your actual backend URL
-        const endpoint = 'execute_code/';
-        const url = `${baseUrl}/${endpoint}`;
+        const socketUrl = `${baseWsUrl}execute_code/`;
+        if (wsCode) wsCode.close();
+        const newWsCode = new WebSocket(socketUrl);
     
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include', // Include cookies with the request
-                body: JSON.stringify({}), // Empty body as code is retrieved from the session
-            });
+        newWsCode.onopen = () => {
+            newWsCode.send(JSON.stringify({ command: "execute" }));
+        };
     
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Unknown error during code execution.');
-            }
-    
-            const reader = response.body.getReader();
-            const decoder = new TextDecoder('utf-8');
-    
-            const stream = new ReadableStream({
-                start(controller) {
-                    function push() {
-                        reader.read().then(({ done, value }) => {
-                            if (done) {
-                                controller.close();
-                                setIsRunningCode(false);
-                                return;
-                            }
-                            const chunk = decoder.decode(value, { stream: true });
-                            const lines = chunk.split('\n\n');
-                            lines.forEach(line => {
-                                if (line.startsWith('data: ')) {
-                                    const data = line.replace('data: ', '');
-                                    try {
-                                        const parsed = JSON.parse(data);
-                                        if (parsed.status === 'code_output' && parsed.code_output) {
-                                            setExecutionOutput(prev => prev + parsed.code_output + '\n');
-                                        } else if (parsed.status === 'complete') {
-                                            setIsRunningCode(false);
-                                        } else if (parsed.status === 'error' && parsed.message) {
-                                            setExecutionOutput(prev => prev + `⚠️ ${parsed.message}\n`);
-                                            setIsRunningCode(false);
-                                        }
-                                    } catch (e) {
-                                        console.error('Failed to parse SSE data:', e);
-                                    }
-                                }
-                            });
-                            push();
-                        }).catch(error => {
-                            console.error('Stream reading error:', error);
-                            setExecutionOutput(prev => prev + `⚠️ Stream error: ${error.message}\n`);
-                            setIsRunningCode(false);
-                            controller.error(error);
-                        });
-                    }
-                    push();
+        newWsCode.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                if (data.status === 'code_output' && data.code_output) {
+                    setExecutionOutput(prev => prev + data.code_output + '\n');
+                } else if (data.status === 'complete') {
+                    setIsRunningCode(false);
+                } else if (data.status === 'error' && data.message) {
+                    setExecutionOutput(prev => prev + `⚠️ ${data.message}\n`);
+                    setIsRunningCode(false);
                 }
-            });
+            } catch (err) {
+                console.error('Failed to parse code execution message:', err);
+            }
+        };
     
-            await new Response(stream).text(); // Consume the stream
-    
-        } catch (error) {
-            console.error('Error during code execution:', error);
-            setExecutionOutput(prev => prev + `⚠️ Error: ${error.message}\n`);
+        newWsCode.onerror = (error) => {
+            console.error('Code execution WebSocket error:', error);
             setIsRunningCode(false);
-        }
+        };
+    
+        newWsCode.onclose = () => {
+            console.log('Code execution WebSocket closed.');
+            setIsRunningCode(false);
+        };
+    
+        setWsCode(newWsCode);
     };
     
     const handleMessageChange = (event) => {

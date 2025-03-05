@@ -1,6 +1,8 @@
+# app_1/routing.py
 from django.urls import re_path
-from .consumers import GPTStreamingConsumer
+from app_1.consumers.consumers import LLMConsumer, CodeExecutionConsumer
 
 websocket_urlpatterns = [
-    re_path(r"ws/gpt_stream/$", GPTStreamingConsumer.as_asgi()),
+    re_path(r"ws/llm/$", LLMConsumer.as_asgi()),
+    re_path(r"ws/execute_code/$", CodeExecutionConsumer.as_asgi()),
 ]

@@ -13,29 +13,26 @@ const useBGPChat = ({
     outputMessage,
 }) => {
     const [chatTabs, setChatTabs] = useState([
-        { 
-            id: 1, 
-            label: 'Chat 1', 
-            messages: [] 
-        }
+        { id: 1, label: 'Chat 1', messages: [] }
     ]);
     const [currentTab, setCurrentTab] = useState(0);
     const [menuAnchorEl, setMenuAnchorEl] = useState(null);
     const [renameDialogOpen, setRenameDialogOpen] = useState(false);
     const [renameValue, setRenameValue] = useState('');
     const [tabToEdit, setTabToEdit] = useState(null);
-    const [selectedModel, setSelectedModel] = useState('gpt_4o_mini');
+    const [selectedModel, setSelectedModel] = useState('gpt_4o_mini'); // or 'bgp_llama'
     
     const [generatedCode, setGeneratedCode] = useState('');
     const [isRunningCode, setIsRunningCode] = useState(false);
     const [executionOutput, setExecutionOutput] = useState('');
-
+    
     const [wsLLM, setWsLLM] = useState(null);
+    const [wsGPT, setWsGPT] = useState(null);
     const [wsCode, setWsCode] = useState(null);
     const generatingMessageIndexRef = useRef(null);
     const baseWsUrl = 'wss://llama.cnu.ac.kr/ws/';
 
-
+    // Set a tutorial message based on selected model
     const getTutorialMessage = (selectedModel) => {
         switch (selectedModel) {
             case 'bgp_llama':
@@ -50,7 +47,6 @@ const useBGPChat = ({
     useEffect(() => {
         const tutorialMessage = {
             text: getTutorialMessage(selectedModel),
-            // sender: "system"
             sender: "tutorial"
         };
     
@@ -58,10 +54,11 @@ const useBGPChat = ({
             prevTabs.map((tab, index) => {
                 if (index === currentTab) {
                     const messages = [...tab.messages];
+                    // Replace the existing tutorial if present or add one at the beginning
                     if (messages.length > 0 && messages[0].sender === 'tutorial') {
-                        messages[0] = tutorialMessage; // Replace existing tutorial
+                        messages[0] = tutorialMessage;
                     } else {
-                        messages.unshift(tutorialMessage); // Add new tutorial
+                        messages.unshift(tutorialMessage);
                     }
                     return { ...tab, messages };
                 }
@@ -69,25 +66,21 @@ const useBGPChat = ({
             })
         );
     }, [selectedModel, currentTab]);
-
+    
     const handleNewChat = () => {
         const newChatId = chatTabs.length + 1;
         const tutorialMessage = {
             text: <BGPChatTutorial />,
             sender: "tutorial"
         };
-        setChatTabs([...chatTabs, { 
-            id: newChatId, 
-            label: `Chat ${newChatId}`, 
-            messages: [tutorialMessage] 
-        }]);
+        setChatTabs([...chatTabs, { id: newChatId, label: `Chat ${newChatId}`, messages: [tutorialMessage] }]);
         setCurrentTab(newChatId - 1);
         if (eventSource) {
             eventSource.close();
         }
         generatingMessageIndexRef.current = null;
     };
-
+    
     const handleTabChange = (event, newValue) => {
         setCurrentTab(newValue);
         if (eventSource) {
@@ -95,17 +88,17 @@ const useBGPChat = ({
         }
         generatingMessageIndexRef.current = null;
     };
-
+    
     const handleMenuOpen = (event, tab) => {
         setMenuAnchorEl(event.currentTarget);
         setTabToEdit(tab);
     };
-
+    
     const handleMenuClose = () => {
         setMenuAnchorEl(null);
         setTabToEdit(null);
     };
-
+    
     const handleDeleteTab = () => {
         if (chatTabs.length === 1) {
             alert("Cannot delete the last remaining tab.");
@@ -117,7 +110,6 @@ const useBGPChat = ({
         setMenuAnchorEl(null);
         
         if (tabToEdit.id === chatTabs[currentTab].id) {
-            // Set to the first tab or the previous one
             setCurrentTab(0);
         }
         
@@ -126,19 +118,19 @@ const useBGPChat = ({
         }
         generatingMessageIndexRef.current = null;
     };
-
+    
     const handleRenameTab = () => {
         setRenameDialogOpen(true);
         setRenameValue(tabToEdit.label);
         setMenuAnchorEl(null);
     };
-
+    
     const handleRenameDialogClose = () => {
         setRenameDialogOpen(false);
         setRenameValue('');
         setTabToEdit(null);
     };
-
+    
     const handleRenameDialogSave = () => {
         const updatedTabs = chatTabs.map(
             (tab) => tab.id === tabToEdit.id ? { ...tab, label: renameValue } : tab
@@ -148,7 +140,8 @@ const useBGPChat = ({
         setRenameValue('');
         setTabToEdit(null);
     };
-
+    
+    // Append a new message to the current chat tab.
     const updateChatTabs = (newMessage) => {
         setChatTabs((prevTabs) =>
             prevTabs.map((tab, index) =>
@@ -156,218 +149,126 @@ const useBGPChat = ({
             )
         );
     };
-
-    const handleEventSourceMessage = (data) => {    
+    
+    // Handle messages received over WebSocket (both GPT and LLaMA use similar message structures)
+    const handleWebSocketMessage = (data) => {    
         if (data.status === 'generating' && data.generated_text) {        
-            // Append to the current message being generated
-            setChatTabs((prevTabs) => {
-                return prevTabs.map((tab, index) => {
-                    if (index === currentTab) {
-                        let messages = [...tab.messages];
+            setChatTabs(prevTabs => {
+                const updatedTabs = [...prevTabs];
+                const currentMessages = [...updatedTabs[currentTab].messages];
     
-                        // If no ongoing message, start a new one
-                        if (generatingMessageIndexRef.current === null) {
-                            const assistantMessage = {
-                                text: data.generated_text, // Start with the current token
-                                sender: 'system',
-                            };
-                            messages.push(assistantMessage);
-                            generatingMessageIndexRef.current = messages.length - 1; // Track the index of the ongoing message
-                        } else {
-                            // Append to the ongoing message
-                            messages = messages.map((msg, msgIndex) => {
-                                if (msgIndex === generatingMessageIndexRef.current) {
-                                    return {
-                                        ...msg,
-                                        text: (msg.text || '') + data.generated_text, // Append tokens to the same message
-                                    };
-                                } else {
-                                    return msg;
-                                }
-                            });
-                        }
-    
-                        return { ...tab, messages };
-                    } else {
-                        return tab;
-                    }
-                });
+                // If there's already an ongoing system message (not final), append the new token.
+                if (currentMessages.length > 0 && currentMessages[currentMessages.length - 1].sender === 'system' && !currentMessages[currentMessages.length - 1].final) {
+                    currentMessages[currentMessages.length - 1] = {
+                        ...currentMessages[currentMessages.length - 1],
+                        text: currentMessages[currentMessages.length - 1].text + data.generated_text,
+                    };
+                } else {
+                    // Otherwise, start a new system message.
+                    currentMessages.push({ text: data.generated_text, sender: 'system', final: false });
+                }
+                updatedTabs[currentTab].messages = currentMessages;
+                return updatedTabs;
             });
         }
     
-        // Handle 'code_ready' status from the backend
-        if (data.status === "code_ready") {
-            const code = data.code; // Extract code from the event data
-
-            if (code) {
-                setGeneratedCode(code); // Set the actual code string
-                const codeReadyMessage = {
-                    text: '📄 Code is ready to be executed.',
-                    sender: "system",
-                };
-                updateChatTabs(codeReadyMessage);
-            }
+        if (data.status === 'code_ready') {
+            // Mark the last system message as final.
+            setChatTabs(prevTabs => {
+                const updatedTabs = [...prevTabs];
+                const currentMessages = [...updatedTabs[currentTab].messages];
+                if (currentMessages.length > 0 && currentMessages[currentMessages.length - 1].sender === 'system') {
+                    currentMessages[currentMessages.length - 1] = {
+                        ...currentMessages[currentMessages.length - 1],
+                        final: true,
+                    };
+                }
+                updatedTabs[currentTab].messages = currentMessages;
+                return updatedTabs;
+            });
+            setGeneratedCode(data.code);
         }
     
-        // Handle 'no_code_found' status
         if (data.status === 'no_code_found') {
-            // console.log("No code block was found in the response.");
-            setGeneratedCode(false);
             updateChatTabs({
-              text: 'No code block was found in the response.',
-              sender: 'system',
+                text: 'No code block was found in the response.',
+                sender: 'system',
+                final: true,
             });
-          }
-
-        // Handle 'running_code' status
-        if (data.status === "running_code") {
-            console.log("\nRunning Code");
-            setIsRunningCode(true);
-
-            const runningCodeMessage = {
-                text: (
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        Running code 
-                        <Box sx={{ width: '8px' }} /> {/* Adding space */}
-                        <CircularProgress size={16} sx={{ mr: 1 }} />
-                    </Box>
-                ),
-                sender: "system"
-            };
-
-            // Add the new running message and reset generating index
-            updateChatTabs(runningCodeMessage);
-            generatingMessageIndexRef.current = null;
+            setGeneratedCode('');
         }
-
-        // Handle 'code_output' status
-        if (data.status === 'code_output' && data.code_output) {
-            console.log(`\nReceived code output: ${data.code_output}`);
-            setIsRunningCode(false);
-
-            const codeOutputMessage = {
-                text: data.code_output.includes("Error") 
-                ? `⚠️ ${data.code_output}` : data.code_output,
-                sender: "system",
-            };
-
-            updateChatTabs(codeOutputMessage);
-        }
-
-        // Handle 'keep_alive' status (optional: you can log or ignore)
-        if (data.status === 'keep_alive') {
-            console.log("Received keep_alive event.");
-            return;
-        }
-
-        // Handle 'error' status
+    
         if (data.status === 'error' && data.message) {
-            console.error('\nError event:', data.message);
-            setIsRunningCode(false);
-            setIsGenerating(false);
-            generatingMessageIndexRef.current = null; // Reset the index after message completion
-
-            const errorMessage = { text: `⚠️ Error: ${data.message}`, sender: "system" };
-            updateChatTabs(errorMessage);
+            updateChatTabs({ text: `⚠️ Error: ${data.message}`, sender: 'system', final: true });
         }
-
+    
         if (data.status === 'complete') {
-            console.log('\nCompleted output data event');
-            setGeneratedCode(false);
+            setGeneratedCode('');
             setIsRunningCode(false);
             setIsGenerating(false);
-            generatingMessageIndexRef.current = null;
-            setOutputMessage(''); // Clear the output message
         }
     };
     
-    const handleEventSourceError = (eventSourceInstance) => {
-        console.error('EventSource failed:', eventSourceInstance);
-        eventSourceInstance.close();
-        setIsGenerating(false);
-        setIsRunningCode(false);
-        generatingMessageIndexRef.current = null;
-    };
-
+    // Handle sending a message. This function chooses the correct endpoint based on the selected model.
     const handleSendMessage = () => {
         if (currentMessage.trim() === '') return;
-
+    
         setIsGenerating(true);
         const userMessage = { text: currentMessage, sender: "user" };
         updateChatTabs(userMessage);
-
+    
         const messageToSend = currentMessage;
         setCurrentMessage('');
-        
-        if (wsLLM) wsLLM.close();
-        generatingMessageIndexRef.current = null;
-
-        const socketUrl = `${baseWsUrl}llm/`;
-        const newWsLLM = new WebSocket(socketUrl);
-
-        newWsLLM.onopen = () => {
-            newWsLLM.send(JSON.stringify({ query: messageToSend }));
+    
+        // Choose endpoint based on selected model.
+        let endpoint = '';
+        if (selectedModel === 'gpt_4o_mini') {
+            endpoint = 'gpt/';
+        } else {
+            endpoint = 'llm/';
+        }
+    
+        // Close any existing WebSocket for the selected model.
+        if (selectedModel === 'gpt_4o_mini' && wsGPT) {
+            wsGPT.close();
+        }
+        if (selectedModel === 'bgp_llama' && wsLLM) {
+            wsLLM.close();
+        }
+    
+        const socketUrl = `${baseWsUrl}${endpoint}`;
+        const newWs = new WebSocket(socketUrl);
+    
+        newWs.onopen = () => {
+            newWs.send(JSON.stringify({ query: messageToSend }));
         };
-
-        newWsLLM.onmessage = (event) => {
+    
+        newWs.onmessage = (event) => {
             try {
-              const data = JSON.parse(event.data);
-              if (data.status === 'generating') {
-                // Append the new token to a system message that is already in the chat history.
-                setChatTabs(prevTabs => {
-                  const updatedTabs = [...prevTabs];
-                  const currentMessages = [...updatedTabs[currentTab].messages];
-                  // If there’s already an ongoing system message, append to it.
-                  if (currentMessages.length > 0 && currentMessages[currentMessages.length - 1].sender === 'system' && !currentMessages[currentMessages.length - 1].final) {
-                    currentMessages[currentMessages.length - 1] = {
-                      ...currentMessages[currentMessages.length - 1],
-                      text: currentMessages[currentMessages.length - 1].text + data.generated_text,
-                    };
-                  } else {
-                    // Otherwise, start a new system message.
-                    currentMessages.push({ text: data.generated_text, sender: 'system', final: false });
-                  }
-                  updatedTabs[currentTab].messages = currentMessages;
-                  return updatedTabs;
-                });
-              } else if (data.status === 'code_ready') {
-                // Mark the last system message as final (if you're using that flag)
-                setChatTabs(prevTabs => {
-                  const updatedTabs = [...prevTabs];
-                  const currentMessages = [...updatedTabs[currentTab].messages];
-                  if (currentMessages.length > 0 && currentMessages[currentMessages.length - 1].sender === 'system') {
-                    currentMessages[currentMessages.length - 1] = {
-                      ...currentMessages[currentMessages.length - 1],
-                      final: true,
-                    };
-                  }
-                  updatedTabs[currentTab].messages = currentMessages;
-                  return updatedTabs;
-                });
-                setGeneratedCode(data.code);
-              } else if (data.status === 'no_code_found') {
-                // Similar handling here.
-              } else if (data.status === 'error') {
-                console.error('Error:', data.message);
-              }
+                const data = JSON.parse(event.data);
+                handleWebSocketMessage(data);
             } catch (err) {
-              console.error("Failed to parse WebSocket message:", err);
+                console.error("Failed to parse WebSocket message:", err);
             }
-          };
-
-        newWsLLM.onerror = (error) => {
+        };
+    
+        newWs.onerror = (error) => {
             console.error("WebSocket error:", error);
             setIsGenerating(false);
         };
-
-        newWsLLM.onclose = () => {
-            console.log("LLM WebSocket connection closed.");
+    
+        newWs.onclose = () => {
+            console.log("WebSocket connection closed.");
             setIsGenerating(false);
         };
-
-        setWsLLM(newWsLLM);
+    
+        if (selectedModel === 'gpt_4o_mini') {
+            setWsGPT(newWs);
+        } else {
+            setWsLLM(newWs);
+        }
     };
-
+    
     const handleRunCode = () => {
         if (!generatedCode) {
             alert('No code to run.');
@@ -417,14 +318,14 @@ const useBGPChat = ({
     const handleMessageChange = (event) => {
         setCurrentMessage(event.target.value);
     };
-
+    
     return {
         chatTabs,
         currentTab,
         handleNewChat,
         handleTabChange,
-        handleSendMessage,    // For generating code
-        handleRunCode,        // For executing code
+        handleSendMessage,
+        handleRunCode,
         handleMessageChange,
         handleMenuOpen,
         handleMenuClose,
@@ -438,9 +339,10 @@ const useBGPChat = ({
         setRenameValue,
         selectedModel,
         setSelectedModel,
-        generatedCode,        // Return generatedCode
-        isRunningCode,        // Return isRunningCode
+        generatedCode,
+        isRunningCode,
         executionOutput,
     };
 };
+    
 export default useBGPChat;

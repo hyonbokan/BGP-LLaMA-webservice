@@ -9,7 +9,6 @@ class App1Config(AppConfig):
     def ready(self):
         if not hasattr(self, 'models_initialized'):
             try:
-                # load_model()
                 self.models_initialized = True
                 logging.info("Model loaded successfully at server startup.")
             except Exception as e:

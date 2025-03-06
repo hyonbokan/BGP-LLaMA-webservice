@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import { Box, CircularProgress } from '@mui/material';
-import BGPChatTutorial from '../components/BGPChatTutorial';
-import GPTChatTutorial from '../components/GPTChatTutorial';
+import BGPChatTutorial from '../components/BGPChatComponents/BGPChatTutorial';
+import GPTChatTutorial from '../components/BGPChatComponents/GPTChatTutorial';
 
 const useBGPChat = ({
     currentMessage,

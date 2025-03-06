@@ -1,6 +1,6 @@
 import Navbar from '../components/PageComponents/Navbar';
 import Footer from '../components/PageComponents/Footer';
-import HomePageTutorial from '../components/HomePageTutorial';
+import HomePageTutorial from '../components/BGPChatComponents/HomePageTutorial';
 import { Container, Typography, Button, Grid, Card, CardContent, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
 

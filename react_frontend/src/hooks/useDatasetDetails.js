@@ -13,7 +13,7 @@ const useDatasetDetails = () => {
     // File download handler
     const handleDownload = (fileUrl, fileName, fileExtension = '') => {
         const relativeFileUrl = fileUrl.replace(/^\/+/, '');
-        const url = `https://llama.cnu.ac.kr/api/download/?file=${encodeURIComponent(relativeFileUrl)}`;
+        const url = `https://llama.cnu.ac.kr/api/download?file=${encodeURIComponent(relativeFileUrl)}`;
 
         fetch(url, {
             method: 'GET',

@@ -60,27 +60,6 @@ const GPTChatTutorial = () => (
               path changes observed in BGP updates.
             </Typography>
           </Box>
-
-          {/* Query: MED and Community Tag Analysis */}
-          <Box>
-            <Typography variant="subtitle1">
-              MED and Community Tag Analysis
-            </Typography>
-            <Typography
-              variant="body2"
-              sx={{
-                bgcolor: '#f4f4f4',
-                p: 2,
-                borderRadius: 1,
-                fontFamily: 'monospace',
-              }}
-            >
-              Analyze the range of MED values and the most common community
-              tags associated with BGP update messages for ASN AS4766 from Oct
-              28 13:00 to 13:15, 2024. Provide a summary of average MED values
-              and frequently observed community tags.
-            </Typography>
-          </Box>
         </CardContent>
       </Card>
 

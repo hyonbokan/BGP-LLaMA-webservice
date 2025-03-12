@@ -127,7 +127,6 @@ const Navbar = () => {
 
           {/* "DOWNLOAD MODEL" Button */}
           <Button
-            color="primary"
             variant="contained"
             sx={buttonSX}
             onClick={handleDownloadClick}

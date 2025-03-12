@@ -58,6 +58,7 @@ class LLMConsumer(AsyncWebsocketConsumer):
                 "repetition_penalty": 1.1,
                 "eos_token_id": TOKENIZER.eos_token_id,
                 "pad_token_id": TOKENIZER.pad_token_id,
+                "early_stopping": True,
             }
 
             loop = asyncio.get_event_loop()

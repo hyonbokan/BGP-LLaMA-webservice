@@ -1,13 +1,14 @@
+"use client";
 import React, { useState } from "react";
 import { Card, CardContent, Typography, Button, Box } from "@mui/material";
 
 const WhatsNewCard = ({ update, buttons }) => {
   const [expanded, setExpanded] = useState(false);
-  
-  const toggleExpanded = () => setExpanded(prev => !prev);
+  const MAX_LENGTH = 200;
+  // Show toggle only if the detail text is longer than MAX_LENGTH characters.
+  const showToggle = update.detail.length > MAX_LENGTH;
 
-  // Determine whether to show the toggle button based on the text length.
-  const showToggle = update.detail.length > 150;
+  const toggleExpanded = () => setExpanded((prev) => !prev);
 
   return (
     <Card
@@ -28,15 +29,18 @@ const WhatsNewCard = ({ update, buttons }) => {
             {update.title}
           </Typography>
           <Typography
-            variant="body2"
+            variant="body1"
             sx={{
               mb: 1,
-              ...( !expanded && {
+              whiteSpace: "pre-line", // respects newline characters in update.detail
+              // When not expanded, limit display to 5 lines
+              ...(!expanded && {
                 display: "-webkit-box",
-                WebkitLineClamp: 5, // show 5 lines when collapsed
+                WebkitLineClamp: 5,
                 WebkitBoxOrient: "vertical",
                 overflow: "hidden",
               }),
+              lineHeight: 1.6,
             }}
           >
             {update.detail}
@@ -69,7 +73,7 @@ const WhatsNewCard = ({ update, buttons }) => {
             </Box>
           )}
         </Box>
-        {/* Footer: Date is always at the bottom */}
+        {/* Footer: The update date is always anchored at the bottom */}
         <Box sx={{ mt: "auto" }}>
           <Typography variant="caption" color="text.secondary">
             {update.date}

@@ -6,6 +6,7 @@ import os
 from django.http import JsonResponse, StreamingHttpResponse, FileResponse, Http404, HttpResponse
 from django.middleware.csrf import get_token
 from django.conf import settings
+from asgiref.sync import sync_to_async
 
 logger = logging.getLogger(__name__)
 
@@ -16,10 +17,14 @@ async def get_csrf_token(request):
     if request.method != "GET":
         return JsonResponse({'error': 'Method not allowed'}, status=405)
     
-    # Synchronously get the token
+    # Get the CSRF token synchronously
     token = get_token(request)
+    # Force session creation by setting a dummy variable.
+    request.session['initialized'] = True
+    # Save the session. Since session.save() is sync, we wrap it:
+    await sync_to_async(request.session.save)()
+
     response = JsonResponse({'csrfToken': token})
-    
     response.set_cookie(
         settings.CSRF_COOKIE_NAME,
         token,

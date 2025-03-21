@@ -21,7 +21,7 @@ async def get_csrf_token(request):
     token = get_token(request)
     # Force session creation by setting a dummy variable.
     request.session['initialized'] = True
-    # Save the session. Since session.save() is sync, we wrap it:
+    # Save the session by wrap the session:
     await sync_to_async(request.session.save)()
 
     response = JsonResponse({'csrfToken': token})

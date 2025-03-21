@@ -3,7 +3,7 @@ import { Box, Typography, Card, CardContent } from '@mui/material';
 const BGPChatTutorial = () => (
   <Box sx={{ p: 3 }}>
     <Typography variant="h5" gutterBottom>
-      Welcome to BGP-LLaMA Chat!
+      Welcome to BGP-LLaMA!
     </Typography>
     <Box sx={{ mt: 2 }}>
       {/* Section: Key Information */}

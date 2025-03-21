@@ -3,7 +3,7 @@ import { Box, Typography, Card, CardContent } from '@mui/material';
 const GPTChatTutorial = () => (
   <Box sx={{ p: 3 }}>
     <Typography variant="h5" gutterBottom>
-      Welcome to BGP chat with GPT 4o-mini!
+      Welcome to BGP-GPT (GPT-4o-mini)
     </Typography>
     <Box sx={{ mt: 2 }}>
       {/* Section: Key Information */}
@@ -56,8 +56,7 @@ const GPTChatTutorial = () => (
             >
               Summarize the AS paths for each prefix associated with ASN AS4766
               over the period Oct 28 13:00 to 13:15, 2024. Provide minimum,
-              maximum, and median AS path lengths and highlight any significant
-              path changes observed in BGP updates.
+              maximum, and median AS path lengths.
             </Typography>
           </Box>
         </CardContent>

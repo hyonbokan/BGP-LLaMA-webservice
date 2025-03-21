@@ -83,35 +83,37 @@ const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 const drawerWidth = 250;
 
 const drawerContent = (
-    <Box
-      sx={{
-        width: drawerWidth,
-        bgcolor: '#f4f4f8',
-        overflowY: 'auto',
-        borderRight: '1px solid #e0e0e0',
-        height: '100%',
-      }}
-    >
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-        <Button
-          variant="contained"
-          onClick={handleNewChat}
-          sx={{ m: 2, width: { xs: '100%', sm: '200px' } }}
-        >
-          <Typography sx={{ fontFamily: 'monospace'}}>
-            New Chat
-          </Typography>
-        </Button>
-      </Box>
-      <ChatTabs
-        chatTabs={chatTabs}
-        currentTab={currentTab}
-        handleTabChange={handleTabChange}
-        handleNewChat={handleNewChat}
-        handleMenuOpen={handleMenuOpen}
-      />
+  <Box
+    sx={{
+      width: drawerWidth,
+      bgcolor: '#f4f4f8',
+      overflowY: 'auto',
+      borderRight: '1px solid #e0e0e0',
+      height: '100%',
+      p: 0,
+      m: 0,
+    }}
+  >
+    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', p: 0, m: 0 }}>
+      <Button
+        variant="contained"
+        onClick={handleNewChat}
+        sx={{ m: 2, width: { xs: '100%', sm: '200px' } }}
+      >
+        <Typography sx={{ fontFamily: 'monospace' }}>
+          New Chat
+        </Typography>
+      </Button>
     </Box>
-  );
+    <ChatTabs
+      chatTabs={chatTabs}
+      currentTab={currentTab}
+      handleTabChange={handleTabChange}
+      handleNewChat={handleNewChat}
+      handleMenuOpen={handleMenuOpen}
+    />
+  </Box>
+);
 
 return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
@@ -126,7 +128,8 @@ return (
           }}
           sx={{
             '& .MuiDrawer-paper': {
-              width: drawerWidth,
+              borderBottom: 'none',
+              boxShadow: 'none',
               [theme.breakpoints.up('sm')]: {
                 width: drawerWidth,
                 position: 'relative',
@@ -146,14 +149,11 @@ return (
                 onChange={handleModelChange}
                 aria-label="Model selection"
             >
-                {/* <RoundToggleButton value="gpt_4o_mini" aria-label="BGP LLaMA">
-                    <Typography variant="caption" fontFamily='monospace' fontWeight={700}>BGP-LLaMA</Typography>
-                </RoundToggleButton> */}
-                <RoundToggleButton value="gpt_4o_mini" aria-label="GPT-4o-mini">
-                    <Typography variant="caption" fontFamily='monospace' fontWeight={700}>GPT-4o-mini</Typography>
-                </RoundToggleButton>
                 <RoundToggleButton value="bgp_llama" aria-label="BGP LLaMA">
                   <Typography variant="caption" fontFamily='monospace' fontWeight={700}>BGP-LLaMA</Typography>
+                </RoundToggleButton>
+                <RoundToggleButton value="gpt_4o_mini" aria-label="GPT-4o-mini">
+                    <Typography variant="caption" fontFamily='monospace' fontWeight={700}>BGP-GPT</Typography>
                 </RoundToggleButton>
             </ToggleButtonGroup>
         </Box>
@@ -175,9 +175,9 @@ return (
               <Box sx={{ p: 1 }}>
                   <Button 
                       variant="contained" 
-                      color="success" 
+                      color="success"
                       onClick={handleRunCode}
-                      disabled={isRunningCode} // Utilize isRunningCode from the hook
+                      disabled={isRunningCode} // isRunningCode from the hook
                       fullWidth
                   >
                       {isRunningCode ? 'Running...' : 'Run Code'}

@@ -19,7 +19,7 @@ const useBGPChat = ({
     const [renameDialogOpen, setRenameDialogOpen] = useState(false);
     const [renameValue, setRenameValue] = useState('');
     const [tabToEdit, setTabToEdit] = useState(null);
-    const [selectedModel, setSelectedModel] = useState('gpt_4o_mini'); // or 'bgp_llama'
+    const [selectedModel, setSelectedModel] = useState('bgp_llama'); // or 'gpt_4o_mini'
     
     const [generatedCode, setGeneratedCode] = useState('');
     const [isRunningCode, setIsRunningCode] = useState(false);

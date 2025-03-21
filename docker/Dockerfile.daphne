@@ -1,0 +1,31 @@
+# Use an official lightweight Python image.
+FROM python:3.9-slim
+
+# Set environment variables.
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# Install system dependencies.
+RUN apt-get update && apt-get install -y build-essential libpq-dev curl && \
+    apt-get clean
+
+# Set work directory.
+WORKDIR /app
+
+# Copy requirements file first for caching dependencies.
+COPY requirements.txt /app/
+
+# Install Python dependencies.
+RUN pip install --upgrade pip && pip install -r requirements.txt
+
+# Copy the project.
+COPY . /app/
+
+# Collect static files (if needed)
+RUN python manage.py collectstatic --noinput
+
+# Expose port 8001 for Daphne.
+EXPOSE 8001
+
+# Start Daphne (using ASGI application)
+CMD ["daphne", "-b", "0.0.0.0", "-p", "8001", "project_1.asgi:application"]

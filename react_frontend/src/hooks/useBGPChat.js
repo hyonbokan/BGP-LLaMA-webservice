@@ -29,7 +29,7 @@ const useBGPChat = ({
     const [wsGPT, setWsGPT] = useState(null);
     const [wsCode, setWsCode] = useState(null);
     const generatingMessageIndexRef = useRef(null);
-    const baseWsUrl = 'wss://llama.cnu.ac.kr/ws/';
+    const baseApiUrl = "https://llama.cnu.ac.kr/api/";
 
     // Set a tutorial message based on selected model
     const getTutorialMessage = (selectedModel) => {
@@ -211,63 +211,74 @@ const useBGPChat = ({
     // Handle sending a message. This function chooses the correct endpoint based on the selected model.
     const handleSendMessage = () => {
         if (currentMessage.trim() === '') return;
-    
+        
         setIsGenerating(true);
         const userMessage = { text: currentMessage, sender: "user" };
         updateChatTabs(userMessage);
-    
         const messageToSend = currentMessage;
         setCurrentMessage('');
-    
-        // Choose endpoint based on selected model.
-        let endpoint = '';
-        if (selectedModel === 'gpt_4o_mini') {
-            endpoint = 'gpt/';
-        } else {
-            endpoint = 'llm/';
-        }
-    
-        // Close any existing WebSocket for the selected model.
-        if (selectedModel === 'gpt_4o_mini' && wsGPT) {
-            wsGPT.close();
-        }
-        if (selectedModel === 'bgp_llama' && wsLLM) {
-            wsLLM.close();
-        }
-    
-        const socketUrl = `${baseWsUrl}${endpoint}`;
-        const newWs = new WebSocket(socketUrl);
-    
-        newWs.onopen = () => {
-            newWs.send(JSON.stringify({ query: messageToSend }));
-        };
-    
-        newWs.onmessage = (event) => {
+
+        // Build the SSE endpoint URL: we use the bgp_llama endpoint.
+        const sseUrl = `${baseApiUrl}bgp_llama?query=${encodeURIComponent(messageToSend)}`;
+        const eventSource = new EventSource(sseUrl);
+
+        eventSource.onmessage = (event) => {
             try {
                 const data = JSON.parse(event.data);
-                handleWebSocketMessage(data);
+                if (data.status === 'generating') {
+                    // Append token to the current system message.
+                    setChatTabs(prevTabs => {
+                        const updatedTabs = [...prevTabs];
+                        const currentMessages = [...updatedTabs[currentTab].messages];
+                        if (currentMessages.length > 0 && currentMessages[currentMessages.length - 1].sender === 'system' && !currentMessages[currentMessages.length - 1].final) {
+                            currentMessages[currentMessages.length - 1] = {
+                                ...currentMessages[currentMessages.length - 1],
+                                text: currentMessages[currentMessages.length - 1].text + data.generated_text,
+                            };
+                        } else {
+                            currentMessages.push({ text: data.generated_text, sender: 'system', final: false });
+                        }
+                        updatedTabs[currentTab].messages = currentMessages;
+                        return updatedTabs;
+                    });
+                } else if (data.status === 'code_ready') {
+                    setChatTabs(prevTabs => {
+                        const updatedTabs = [...prevTabs];
+                        const currentMessages = [...updatedTabs[currentTab].messages];
+                        if (currentMessages.length > 0 && currentMessages[currentMessages.length - 1].sender === 'system') {
+                            currentMessages[currentMessages.length - 1] = {
+                                ...currentMessages[currentMessages.length - 1],
+                                final: true,
+                            };
+                        }
+                        updatedTabs[currentTab].messages = currentMessages;
+                        return updatedTabs;
+                    });
+                    setGeneratedCode(data.code);
+                } else if (data.status === 'no_code_found') {
+                    updateChatTabs({ text: 'No code block was found in the response.', sender: 'system', final: true });
+                    setGeneratedCode('');
+                } else if (data.status === 'error') {
+                    console.error('Error:', data.message);
+                    updateChatTabs({ text: `⚠️ Error: ${data.message}`, sender: 'system', final: true });
+                } else if (data.status === 'complete') {
+                    setIsGenerating(false);
+                }
             } catch (err) {
-                console.error("Failed to parse WebSocket message:", err);
+                console.error("Failed to parse SSE message:", err);
             }
         };
-    
-        newWs.onerror = (error) => {
-            console.error("WebSocket error:", error);
+
+        eventSource.onerror = (err) => {
+            console.error("SSE error:", err);
             setIsGenerating(false);
+            eventSource.close();
         };
-    
-        newWs.onclose = () => {
-            console.log("WebSocket connection closed.");
-            setIsGenerating(false);
-        };
-    
-        if (selectedModel === 'gpt_4o_mini') {
-            setWsGPT(newWs);
-        } else {
-            setWsLLM(newWs);
-        }
+
+        // Save the EventSource instance if needed.
+        setEventSource(eventSource);
     };
-    
+
     const handleRunCode = () => {
         if (!generatedCode) {
             alert('No code to run.');

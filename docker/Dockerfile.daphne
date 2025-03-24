@@ -1,31 +1,102 @@
-# Use an official lightweight Python image.
+# Stage 1: Build Dependencies (wandio, BGPStream, and pybgpstream)
+FROM python:3.9-slim as build
+
+# Install system dependencies including build tools, Python headers, and Cython.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    apt-transport-https \
+    ssl-cert \
+    ca-certificates \
+    gnupg \
+    lsb-release \
+    wget \
+    build-essential \
+    python3-dev \
+    g++ \
+    zlib1g-dev \
+    libbz2-dev \
+    libcurl4-openssl-dev \
+    librdkafka-dev \
+    automake \
+    autoconf \
+    libtool \
+    pkg-config \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+# Verify that gcc is installed (optional debugging)
+RUN gcc --version
+
+# Install Cython (to help build C extensions)
+RUN pip install cython
+
+# Set up external apt repositories:
+# 1. Wandio repository
+RUN curl -1sLf 'https://dl.cloudsmith.io/public/wand/libwandio/cfg/setup/bash.deb.sh' | bash
+# 2. CAIDA repository
+RUN echo "deb https://pkg.caida.org/os/$(lsb_release -si | awk '{print tolower($0)}') $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/caida.list && \
+    wget -O /etc/apt/trusted.gpg.d/caida.gpg https://pkg.caida.org/os/ubuntu/keyring.gpg && \
+    apt-get update
+
+WORKDIR /src
+
+### Build wandio ###
+RUN curl -LO https://github.com/LibtraceTeam/wandio/archive/refs/tags/4.2.4-1.tar.gz \
+    && tar -xzf 4.2.4-1.tar.gz \
+    && cd wandio-4.2.4-1 \
+    && ./bootstrap.sh \
+    && ./configure --with-pthread-yield=sched_yield \
+    && make \
+    && make install \
+    && ldconfig
+
+### Build BGPStream ###
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpthread-stubs0-dev && \
+    curl -LO https://github.com/CAIDA/libbgpstream/releases/download/v2.2.0/libbgpstream-2.2.0.tar.gz && \
+    tar zxf libbgpstream-2.2.0.tar.gz && \
+    cd libbgpstream-2.2.0 && \
+    find . -type f -exec sed -i 's/pthread_yield/sched_yield/g' {} \; && \
+    awk 'BEGIN {count=0} {if($0 ~ /AM_INIT_AUTOMAKE/){count++; if(count==2) next} print}' configure.ac > tmp && mv tmp configure.ac && \
+    autoreconf -fi && \
+    ./configure --with-pthread-yield=sched_yield && \
+    make && make check && make install && ldconfig
+
+### Build pybgpstream from source ###
+RUN curl -LO https://github.com/CAIDA/pybgpstream/releases/download/v2.0.2/pybgpstream-2.0.2.tar.gz \
+    && tar zxf pybgpstream-2.0.2.tar.gz \
+    && cd pybgpstream-2.0.2 \
+    && python setup.py build_ext \
+    && python setup.py install
+
+# Stage 2: Build the Final Runtime Image
 FROM python:3.9-slim
 
-# Set environment variables.
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+# Install runtime dependencies and build tools required for compiling PyStemmer
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install system dependencies.
-RUN apt-get update && apt-get install -y build-essential libpq-dev curl && \
-    apt-get clean
+# Copy libraries and headers from the build stage
+COPY --from=build /usr/local/lib/ /usr/local/lib/
+COPY --from=build /usr/local/include/ /usr/local/include/
 
-# Set work directory.
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV DJANGO_SETTINGS_MODULE=project_1.settings
+
 WORKDIR /app
 
-# Copy requirements file first for caching dependencies.
+# Copy requirements file and install Python dependencies
 COPY requirements.txt /app/
-
-# Install Python dependencies.
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
-# Copy the project.
+# Copy project source code into container
 COPY . /app/
 
-# Collect static files (if needed)
 RUN python manage.py collectstatic --noinput
 
-# Expose port 8001 for Daphne.
 EXPOSE 8001
 
-# Start Daphne (using ASGI application)
 CMD ["daphne", "-b", "0.0.0.0", "-p", "8001", "project_1.asgi:application"]

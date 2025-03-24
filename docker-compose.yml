@@ -1,21 +1,29 @@
 version: '3.8'
 
 services:
-  web:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.daphne
-    command: ["daphne", "-b", "0.0.0.0", "-p", "8001", "project_1.asgi:application"]
-    volumes:
-      - .:/app
-    env_file:
-      - .env
-    expose:
-      - "8001"
+  # web:
+  #   build:
+  #     context: .
+  #     dockerfile: docker/Dockerfile.daphne
+  #   command: ["daphne", "-b", "0.0.0.0", "-p", "8001", "project_1.asgi:application"]
+  #   volumes:
+  #     - .:/app
+  #   env_file:
+  #     - .env
+  #   expose:
+  #     - "8001"
     # depends_on:
     #   - redis
     #   - db
-
+    
+  # agent:
+  #   build:
+  #     context: .
+  #     dockerfile: docker/Dockerfile.fastapi
+  #   ports:
+  #     - "8000:8000"
+  #   env_file:
+  #     - .env
   nginx:
     image: nginx:stable-alpine
     ports:
@@ -28,7 +36,7 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt:ro
     # depends_on:
     #   - web
-
+    
   # db:
   #   image: postgres:13
   #   volumes:

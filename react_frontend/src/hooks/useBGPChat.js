@@ -24,12 +24,9 @@ const useBGPChat = ({
     const [generatedCode, setGeneratedCode] = useState('');
     const [isRunningCode, setIsRunningCode] = useState(false);
     const [executionOutput, setExecutionOutput] = useState('');
-    
-    const [wsLLM, setWsLLM] = useState(null);
-    const [wsGPT, setWsGPT] = useState(null);
-    const [wsCode, setWsCode] = useState(null);
     const generatingMessageIndexRef = useRef(null);
-    const baseApiUrl = "https://llama.cnu.ac.kr/api/";
+    const baseApiUrl = "https://llama.cnu.ac.kr/";
+
 
     // Set a tutorial message based on selected model
     const getTutorialMessage = (selectedModel) => {
@@ -149,65 +146,6 @@ const useBGPChat = ({
         );
     };
     
-    // Handle messages received over WebSocket (both GPT and LLaMA use similar message structures)
-    const handleWebSocketMessage = (data) => {    
-        if (data.status === 'generating' && data.generated_text) {        
-            setChatTabs(prevTabs => {
-                const updatedTabs = [...prevTabs];
-                const currentMessages = [...updatedTabs[currentTab].messages];
-    
-                // If there's already an ongoing system message (not final), append the new token.
-                if (currentMessages.length > 0 && currentMessages[currentMessages.length - 1].sender === 'system' && !currentMessages[currentMessages.length - 1].final) {
-                    currentMessages[currentMessages.length - 1] = {
-                        ...currentMessages[currentMessages.length - 1],
-                        text: currentMessages[currentMessages.length - 1].text + data.generated_text,
-                    };
-                } else {
-                    // Otherwise, start a new system message.
-                    currentMessages.push({ text: data.generated_text, sender: 'system', final: false });
-                }
-                updatedTabs[currentTab].messages = currentMessages;
-                return updatedTabs;
-            });
-        }
-    
-        if (data.status === 'code_ready') {
-            // Mark the last system message as final.
-            setChatTabs(prevTabs => {
-                const updatedTabs = [...prevTabs];
-                const currentMessages = [...updatedTabs[currentTab].messages];
-                if (currentMessages.length > 0 && currentMessages[currentMessages.length - 1].sender === 'system') {
-                    currentMessages[currentMessages.length - 1] = {
-                        ...currentMessages[currentMessages.length - 1],
-                        final: true,
-                    };
-                }
-                updatedTabs[currentTab].messages = currentMessages;
-                return updatedTabs;
-            });
-            setGeneratedCode(data.code);
-        }
-    
-        if (data.status === 'no_code_found') {
-            updateChatTabs({
-                text: 'No code block was found in the response.',
-                sender: 'system',
-                final: true,
-            });
-            setGeneratedCode('');
-        }
-    
-        if (data.status === 'error' && data.message) {
-            updateChatTabs({ text: `⚠️ Error: ${data.message}`, sender: 'system', final: true });
-        }
-    
-        if (data.status === 'complete') {
-            setGeneratedCode('');
-            setIsRunningCode(false);
-            setIsGenerating(false);
-        }
-    };
-    
     // Handle sending a message. This function chooses the correct endpoint based on the selected model.
     const handleSendMessage = () => {
         if (currentMessage.trim() === '') return;
@@ -219,7 +157,7 @@ const useBGPChat = ({
         setCurrentMessage('');
 
         // Build the SSE endpoint URL: we use the bgp_llama endpoint.
-        const sseUrl = `${baseApiUrl}bgp_llama?query=${encodeURIComponent(messageToSend)}`;
+        const sseUrl = `${baseApiUrl}agent/bgp_llama?query=${encodeURIComponent(messageToSend)}`;
         const eventSource = new EventSource(sseUrl);
 
         eventSource.onmessage = (event) => {
@@ -279,51 +217,51 @@ const useBGPChat = ({
         setEventSource(eventSource);
     };
 
-    const handleRunCode = () => {
-        if (!generatedCode) {
-            alert('No code to run.');
-            return;
-        }
+    // const handleRunCode = () => {
+    //     if (!generatedCode) {
+    //         alert('No code to run.');
+    //         return;
+    //     }
     
-        setIsRunningCode(true);
-        setExecutionOutput('');
+    //     setIsRunningCode(true);
+    //     setExecutionOutput('');
     
-        const socketUrl = `${baseWsUrl}execute_code/`;
-        if (wsCode) wsCode.close();
-        const newWsCode = new WebSocket(socketUrl);
+    //     const socketUrl = `${baseWsUrl}execute_code/`;
+    //     if (wsCode) wsCode.close();
+    //     const newWsCode = new WebSocket(socketUrl);
     
-        newWsCode.onopen = () => {
-            newWsCode.send(JSON.stringify({ command: "execute" }));
-        };
+    //     newWsCode.onopen = () => {
+    //         newWsCode.send(JSON.stringify({ command: "execute" }));
+    //     };
     
-        newWsCode.onmessage = (event) => {
-            try {
-                const data = JSON.parse(event.data);
-                if (data.status === 'code_output' && data.code_output) {
-                    setExecutionOutput(prev => prev + data.code_output + '\n');
-                } else if (data.status === 'complete') {
-                    setIsRunningCode(false);
-                } else if (data.status === 'error' && data.message) {
-                    setExecutionOutput(prev => prev + `⚠️ ${data.message}\n`);
-                    setIsRunningCode(false);
-                }
-            } catch (err) {
-                console.error('Failed to parse code execution message:', err);
-            }
-        };
+    //     newWsCode.onmessage = (event) => {
+    //         try {
+    //             const data = JSON.parse(event.data);
+    //             if (data.status === 'code_output' && data.code_output) {
+    //                 setExecutionOutput(prev => prev + data.code_output + '\n');
+    //             } else if (data.status === 'complete') {
+    //                 setIsRunningCode(false);
+    //             } else if (data.status === 'error' && data.message) {
+    //                 setExecutionOutput(prev => prev + `⚠️ ${data.message}\n`);
+    //                 setIsRunningCode(false);
+    //             }
+    //         } catch (err) {
+    //             console.error('Failed to parse code execution message:', err);
+    //         }
+    //     };
     
-        newWsCode.onerror = (error) => {
-            console.error('Code execution WebSocket error:', error);
-            setIsRunningCode(false);
-        };
+    //     newWsCode.onerror = (error) => {
+    //         console.error('Code execution WebSocket error:', error);
+    //         setIsRunningCode(false);
+    //     };
     
-        newWsCode.onclose = () => {
-            console.log('Code execution WebSocket closed.');
-            setIsRunningCode(false);
-        };
+    //     newWsCode.onclose = () => {
+    //         console.log('Code execution WebSocket closed.');
+    //         setIsRunningCode(false);
+    //     };
     
-        setWsCode(newWsCode);
-    };
+    //     setWsCode(newWsCode);
+    // };
     
     const handleMessageChange = (event) => {
         setCurrentMessage(event.target.value);
@@ -335,7 +273,7 @@ const useBGPChat = ({
         handleNewChat,
         handleTabChange,
         handleSendMessage,
-        handleRunCode,
+        // handleRunCode,
         handleMessageChange,
         handleMenuOpen,
         handleMenuClose,

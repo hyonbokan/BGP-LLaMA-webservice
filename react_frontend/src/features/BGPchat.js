@@ -177,7 +177,7 @@ return (
                       variant="contained" 
                       color="success"
                       onClick={handleRunCode}
-                      disabled={isRunningCode} // isRunningCode from the hook
+                      disabled={isRunningCode}
                       fullWidth
                   >
                       {isRunningCode ? 'Running...' : 'Run Code'}

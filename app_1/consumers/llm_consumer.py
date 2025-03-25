@@ -43,7 +43,7 @@ class LLMConsumer(AsyncWebsocketConsumer):
                 return_tensors='pt',
                 padding=True,
                 truncation=True,
-                max_length=1500
+                max_length=100
             )
             input_ids = inputs.input_ids.to(MODEL.device)
             attention_mask = inputs.attention_mask.to(MODEL.device)

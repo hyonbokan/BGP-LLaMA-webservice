@@ -7,7 +7,7 @@ ENV PYTHONUNBUFFERED=1
 # Set the working directory
 WORKDIR /app
 
-# Install system-level dependencies (adjust if needed for your builds, e.g., for pybgpstream)
+# Install system-level dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     curl \
@@ -22,7 +22,7 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 # Copy your project source code into the container
 COPY . /app/
 
-# Expose the port (FastAPI will run on 8000)
+# Expose the port for FastAPI (8000)
 EXPOSE 8000
 
 # Command to run Uvicorn with your FastAPI application.

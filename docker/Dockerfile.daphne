@@ -84,7 +84,7 @@ COPY --from=build /usr/local/include/ /usr/local/include/
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-ENV DJANGO_SETTINGS_MODULE=project_1.settings
+ENV DJANGO_SETTINGS_MODULE=project_1.settings.production
 
 WORKDIR /app
 

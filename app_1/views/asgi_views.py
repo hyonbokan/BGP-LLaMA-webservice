@@ -13,16 +13,22 @@ logger = logging.getLogger(__name__)
 # Use an asyncio Event for asynchronous waiting
 status_update_event = asyncio.Event()
 
+@sync_to_async
+def initialize_session(request):
+    request.session['initialized'] = True
+    request.session.save()
+
 async def get_csrf_token(request):
     if request.method != "GET":
         return JsonResponse({'error': 'Method not allowed'}, status=405)
-    
-    # Get the CSRF token synchronously
+
     token = get_token(request)
-    # Force session creation by setting a dummy variable.
-    request.session['initialized'] = True
-    # Save the session by wrap the session:
-    await sync_to_async(request.session.save)()
+
+    try:
+        await initialize_session(request)
+    except Exception as e:
+        logger.warning("Session data corrupted")
+        logger.exception(e)
 
     response = JsonResponse({'csrfToken': token})
     response.set_cookie(

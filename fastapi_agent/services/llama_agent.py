@@ -3,6 +3,7 @@ import asyncio
 from app_1.utils.model_loader import load_model
 from prompts.llama_prompt_local_run import BASE_SETUP
 from app_1.utils.extract_code_from_reply import extract_code_from_reply
+from app_1.utils.stop_criteria import StoppingCriteriaList, StopOnCodeBlockComplete
 
 class LlamaAgent:
     def __init__(self):
@@ -36,6 +37,7 @@ class LlamaAgent:
             "repetition_penalty": 1.1,
             "eos_token_id": self.tokenizer.eos_token_id,
             "pad_token_id": self.tokenizer.pad_token_id,
+            "stopping_criteria": StoppingCriteriaList([StopOnCodeBlockComplete(self.tokenizer)])
             # "use_cache": False,
         }
 

@@ -26,7 +26,7 @@ function NextArrow(props) {
         height: 50,
         borderRadius: "50%",
         backgroundColor: "#fff",
-        boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
         color: "#318CE7",
         display: "flex",
         alignItems: "center",
@@ -56,7 +56,7 @@ function PrevArrow(props) {
         height: 50,
         borderRadius: "50%",
         backgroundColor: "#fff",
-        boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
         color: "#318CE7",
         display: "flex",
         alignItems: "center",
@@ -74,7 +74,7 @@ const WhatsNewCarousel = () => {
   const [refreshKey, setRefreshKey] = useState(0);
 
   const handleCardToggle = () => {
-    // Force a re-render of the slider when a card toggles
+    // Force re-render if needed when a card toggles
     setRefreshKey((prev) => prev + 1);
   };
 
@@ -110,7 +110,7 @@ const WhatsNewCarousel = () => {
         </Typography>
       </Container>
       <Slider key={refreshKey} {...settings}>
-        {whatsNewData.slice(0, 3).map((update, index) => (
+        {whatsNewData.slice(0, 10).map((update, index) => (
           <Box key={index} sx={{ px: 2 }}>
             <WhatsNewCard update={update} onToggle={handleCardToggle} />
           </Box>

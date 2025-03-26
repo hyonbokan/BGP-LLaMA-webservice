@@ -5,6 +5,7 @@ from threading import Lock
 
 logger = logging.getLogger(__name__)
 CUSTOM_MODEL = "hyonbokan/bgp-llama-3.1-instruct-10kSteps-2kDataset"
+LLAMA_MODEL = "meta-llama/Meta-Llama-3.1-8B-Instruct"
 model = None
 tokenizer = None
 model_lock = Lock()

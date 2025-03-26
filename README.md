@@ -24,6 +24,7 @@ The system allows users to interact with an **LLM-powered chatbot**, receive **n
 ### Backend:
 - Django (ASGI) – Framework for handling API endpoints, WebSockets, and LLM interactions.
 - Daphne – ASGI server to support WebSockets.
+- FastAPI - SSE support
 <!-- - PostgreSQL – Database for storing user interactions and logs. -->
 <!-- Redis – Used for session caching and performance optimization. -->
 - Hugging Face Transformers – Model integration for BGP-LLaMA.

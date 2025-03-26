@@ -149,41 +149,61 @@ const useBGPChat = ({
     // Handle sending a message. This function chooses the correct endpoint based on the selected model.
     const handleSendMessage = () => {
         if (currentMessage.trim() === '') return;
-        
+    
         setIsGenerating(true);
         const userMessage = { text: currentMessage, sender: "user" };
         updateChatTabs(userMessage);
         const messageToSend = currentMessage;
         setCurrentMessage('');
-
-        // Build the SSE endpoint URL: we use the bgp_llama endpoint.
-        const sseUrl = `${baseApiUrl}agent/bgp_llama?query=${encodeURIComponent(messageToSend)}`;
+    
+        // Decide which SSE endpoint to call based on selectedModel
+        let endpoint = '';
+        if (selectedModel === 'bgp_llama') {
+            endpoint = 'bgp_llama';
+        } else {
+            // default to llama
+            endpoint = 'bgp_gpt';
+        }
+    
+        // Build the SSE endpoint URL: "baseApiUrl + agent/ + the chosen endpoint"
+        const sseUrl = `${baseApiUrl}agent/${endpoint}?query=${encodeURIComponent(messageToSend)}`;
         const eventSource = new EventSource(sseUrl);
-
+    
         eventSource.onmessage = (event) => {
             try {
                 const data = JSON.parse(event.data);
+    
                 if (data.status === 'generating') {
                     // Append token to the current system message.
-                    setChatTabs(prevTabs => {
+                    setChatTabs((prevTabs) => {
                         const updatedTabs = [...prevTabs];
                         const currentMessages = [...updatedTabs[currentTab].messages];
-                        if (currentMessages.length > 0 && currentMessages[currentMessages.length - 1].sender === 'system' && !currentMessages[currentMessages.length - 1].final) {
+                        if (
+                            currentMessages.length > 0 &&
+                            currentMessages[currentMessages.length - 1].sender === 'system' &&
+                            !currentMessages[currentMessages.length - 1].final
+                        ) {
+                            // Append the new text
                             currentMessages[currentMessages.length - 1] = {
                                 ...currentMessages[currentMessages.length - 1],
                                 text: currentMessages[currentMessages.length - 1].text + data.generated_text,
                             };
                         } else {
+                            // Otherwise add a new system message
                             currentMessages.push({ text: data.generated_text, sender: 'system', final: false });
                         }
                         updatedTabs[currentTab].messages = currentMessages;
                         return updatedTabs;
                     });
                 } else if (data.status === 'code_ready') {
-                    setChatTabs(prevTabs => {
+                    setChatTabs((prevTabs) => {
                         const updatedTabs = [...prevTabs];
                         const currentMessages = [...updatedTabs[currentTab].messages];
-                        if (currentMessages.length > 0 && currentMessages[currentMessages.length - 1].sender === 'system') {
+                        if (
+                            currentMessages.length > 0 &&
+                            currentMessages[currentMessages.length - 1].sender === 'system'
+                        ) {
+                            // Mark the last system message as final
                             currentMessages[currentMessages.length - 1] = {
                                 ...currentMessages[currentMessages.length - 1],
                                 final: true,
@@ -194,26 +214,31 @@ const useBGPChat = ({
                     });
                     setGeneratedCode(data.code);
                 } else if (data.status === 'no_code_found') {
-                    updateChatTabs({ text: 'No code block was found in the response.', sender: 'system', final: true });
+                    updateChatTabs({
+                        text: 'No code block was found in the response.',
+                        sender: 'system',
+                        final: true
+                    });
                     setGeneratedCode('');
                 } else if (data.status === 'error') {
                     console.error('Error:', data.message);
                     updateChatTabs({ text: `⚠️ Error: ${data.message}`, sender: 'system', final: true });
                 } else if (data.status === 'complete') {
+                    // If your server sends a "complete" status at the very end, handle finishing logic
                     setIsGenerating(false);
                 }
             } catch (err) {
                 console.error("Failed to parse SSE message:", err);
             }
         };
-
+    
         eventSource.onerror = (err) => {
             console.error("SSE error:", err);
             setIsGenerating(false);
             eventSource.close();
         };
-
-        // Save the EventSource instance if needed.
+    
+        // Save the EventSource instance if needed (for manual closure).
         setEventSource(eventSource);
     };
 

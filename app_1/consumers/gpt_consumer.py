@@ -5,8 +5,8 @@ import traceback
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
 
-from app_1.prompts.gpt_prompt_utils import GPT_REAL_TIME_SYSTEM_PROMPT
-from app_1.prompts.llama_prompt_local_run import LOCAL_HIJACKING, LOCAL_OUTAGE, LOCAL_AS_PATH_ANALYSYS, LOCAL_DEFAULT
+from prompts.gpt_prompt_utils import GPT_REAL_TIME_SYSTEM_PROMPT
+from prompts.llama_prompt_local_run import LOCAL_HIJACKING, LOCAL_OUTAGE, LOCAL_AS_PATH_ANALYSYS, LOCAL_DEFAULT
 from app_1.utils.extract_code_from_reply import extract_code_from_reply
 from openai import OpenAI
 import os

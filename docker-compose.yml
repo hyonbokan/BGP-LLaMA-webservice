@@ -66,9 +66,9 @@ services:
     container_name: bgp-llama-db
     restart: always
     environment:
-      POSTGRES_DB: bgp_llama_chat_db
-      POSTGRES_USER: bgp_llama_chat_admin
-      POSTGRES_PASSWORD: dnlab2024
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - pgdata:/var/lib/postgresql/data
 

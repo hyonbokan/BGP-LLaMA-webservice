@@ -1,10 +1,18 @@
 import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
+import environ
 from .routers import llama_routes, gpt_routes
 
+env = environ.Env()
+environ.Env.read_env() 
+
 logger = logging.getLogger(__name__)
+
+
+cors_origins = env.list("CORS_ALLOWED_ORIGINS")
+csrf_origins = env.list("CSRF_TRUSTED_ORIGINS")
+allowed_hosts = env.list("ALLOWED_HOSTS")
 
 app = FastAPI(
     title="My SSE API",
@@ -15,7 +23,7 @@ app = FastAPI(
 # Add CORS if needed
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://llama.cnu.ac.kr", "http://localhost:3000"],
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

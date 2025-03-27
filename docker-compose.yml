@@ -5,51 +5,77 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile.daphne
+    container_name: bgp-llama-daphne
+    env_file: .env
+    ports:
+      - "8001:8001"
+    depends_on:
+      - db
     volumes:
-      - .:/app
-    env_file:
-      - .env
-    expose:
-      - "8001"
+      # Mount the directory where collectstatic writes files.
+      # Adjust this path if needed so that your host-level Nginx (see below) can serve these files.
+      - ./staticfiles:/app/staticfiles
     # depends_on:
     #   - redis
     #   - db
-  agent:
+  
+  fastapi:
     build:
       context: .
       dockerfile: docker/Dockerfile.fastapi
-    # ports:
-    #   - "8000:8000"
+    container_name: bgp-llama-fastapi
+    ports:
+      - "8002:8002"
     env_file:
       - .env
-    expose:
-      - "8000"
-  nginx:
-    image: nginx:stable-alpine
-    ports:
-      - "8000:80"
-      - "8443:443"
+    environment:
+      HF_HOME: /cache/huggingface
+      TRANSFORMERS_CACHE: /cache/huggingface
     volumes:
-      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./staticfiles:/app/staticfiles:ro
-      - ./media:/app/media:ro
+      - /home/hb/.cache/huggingface:/cache/huggingface
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: ["gpu"]
+    depends_on:
+      - db
+
+  nginx:
+    image: nginx:latest
+    container_name: bgp-llama-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # Mount the custom Nginx site configuration into the container
+      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      # Mount static files and media so Nginx can serve them
+      - ./staticfiles:/staticfiles:ro
+      - ./media:/media:ro
+      # Mount your SSL certificates (adjust paths as needed)
       - /etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:
-      - agent
+      - web
+      - fastapi
     
-  # db:
-  #   image: postgres:13
-  #   volumes:
-  #     - postgres_data:/var/lib/postgresql/data/
-  #   environment:
-  #     - POSTGRES_DB=name
-  #     - POSTGRES_USER=user
-  #     - POSTGRES_PASSWORD=password
+  db:
+    image: postgres:13
+    container_name: bgp-llama-db
+    restart: always
+    environment:
+      POSTGRES_DB: bgp_llama_chat_db
+      POSTGRES_USER: bgp_llama_chat_admin
+      POSTGRES_PASSWORD: dnlab2024
+    volumes:
+      - pgdata:/var/lib/postgresql/data
 
   # redis:
   #   image: redis:6-alpine
   #   ports:
   #     - "6379:6379"
+volumes:
+  pgdata:
 
-# volumes:
-#   postgres_data:

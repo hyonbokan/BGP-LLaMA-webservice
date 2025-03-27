@@ -24,9 +24,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     && rm -rf /var/lib/apt/lists/*
 
-# Verify that gcc is installed (optional debugging)
-RUN gcc --version
-
 # Install Cython (to help build C extensions)
 RUN pip install cython
 

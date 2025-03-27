@@ -1,7 +1,6 @@
 from pathlib import Path
 import environ
 import os
-from django.core.exceptions import ImproperlyConfigured
 
 # Initialize environment variables
 env = environ.Env(
@@ -122,11 +121,14 @@ SESSION_COOKIE_SAMESITE = 'Lax'  # Adjust as needed for your requirements
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST'),
+        'PORT': env('DB_PORT', default='5432'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators

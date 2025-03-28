@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  web:
+    environment:
+      - DJANGO_SETTINGS_MODULE=project_1.settings.production
+
+  fastapi:
+    environment:
+      - ENV=production
+
+  nginx:
+    ports:
+      - "80:80"
+      - "443:443"

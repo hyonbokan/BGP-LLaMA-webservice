@@ -1,0 +1,7 @@
+make up-dev        # Start dev containers
+make down-dev      # Stop dev containers
+make up-prod       # Start prod in detached mode
+make down-prod     # Stop prod
+make logs          # Tail all logs
+make rebuild-dev   # Force fresh dev build
+make clean         # Remove unused Docker resources

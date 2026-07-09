@@ -1,7 +1,9 @@
-import { useRef, type KeyboardEvent } from 'react';
+import { useLayoutEffect, useRef, type KeyboardEvent } from 'react';
 import { ArrowUp, Square } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+
+const MAX_HEIGHT = 200;
 
 export function ChatComposer({
   value,
@@ -17,6 +19,15 @@ export function ChatComposer({
   isGenerating: boolean;
 }) {
   const ref = useRef<HTMLTextAreaElement>(null);
+
+  // Auto-grow: reset to content height each render, capped at MAX_HEIGHT (then scroll).
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = `${Math.min(el.scrollHeight, MAX_HEIGHT)}px`;
+    el.style.overflowY = el.scrollHeight > MAX_HEIGHT ? 'auto' : 'hidden';
+  }, [value]);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -45,7 +56,7 @@ export function ChatComposer({
           onKeyDown={handleKeyDown}
           rows={1}
           placeholder="Ask about prefixes, AS paths, origins, anomalies…"
-          className="max-h-40 min-h-[24px] flex-1 resize-none bg-transparent px-2 py-1.5 text-sm outline-none placeholder:text-muted-foreground"
+          className="flex-1 resize-none self-center bg-transparent px-2 py-1.5 text-sm leading-relaxed outline-none placeholder:text-muted-foreground"
         />
         {isGenerating ? (
           <Button type="button" size="icon" variant="secondary" onClick={onStop} aria-label="Stop">

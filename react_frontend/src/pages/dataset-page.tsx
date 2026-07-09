@@ -1,11 +1,92 @@
 import { Link } from 'react-router-dom';
+import { ArrowRight, FileJson, Layers, Tag } from 'lucide-react';
 import { datasetSections } from '@/data/datasets';
 import { Badge } from '@/components/ui/badge';
+import type { DatasetItem, DatasetSection } from '@/types';
 
-const cropWords = (text: string, limit: number) => {
-  const words = text.split(' ');
-  return words.length > limit ? words.slice(0, limit).join(' ') + '…' : text;
-};
+function DatasetCard({ sectionId, dataset }: { sectionId: string; dataset: DatasetItem }) {
+  const categoryCount = dataset.categories ? Object.keys(dataset.categories).length : 0;
+  const fileName = dataset.fileUrl ? dataset.fileUrl.split('/').pop() : null;
+
+  return (
+    <Link
+      to={`/dataset/${sectionId}/${dataset.id}`}
+      className="group flex flex-col rounded-lg border border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5"
+    >
+      <div className="flex items-center justify-between">
+        <Badge variant="secondary" className="gap-1.5">
+          <FileJson className="h-3 w-3" />
+          {dataset.fileType}
+        </Badge>
+        <span className="font-mono text-xs text-muted-foreground">{dataset.size}</span>
+      </div>
+
+      <h3 className="mt-4 font-display text-lg font-semibold leading-tight tracking-tight">
+        {dataset.title}
+      </h3>
+
+      {/* Hero stat — datasets are about scale */}
+      <div className="mt-3 flex items-baseline gap-2">
+        <span className="font-mono text-3xl font-semibold tabular-nums text-primary">
+          {dataset.fileCount.toLocaleString()}
+        </span>
+        <span className="font-mono text-xs uppercase tracking-wide text-muted-foreground">
+          instructions
+        </span>
+      </div>
+
+      <div className="mt-3 flex flex-wrap gap-2">
+        {categoryCount > 0 && (
+          <Badge variant="outline" className="gap-1.5">
+            <Tag className="h-3 w-3" />
+            {categoryCount} topics
+          </Badge>
+        )}
+        {dataset.promptType && (
+          <Badge variant="outline" className="gap-1.5">
+            <Layers className="h-3 w-3" />
+            base prompt
+          </Badge>
+        )}
+      </div>
+
+      <p className="mt-3 line-clamp-3 flex-1 text-sm leading-relaxed text-muted-foreground">
+        {dataset.description}
+      </p>
+
+      <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
+        {fileName ? (
+          <span className="truncate font-mono text-xs text-muted-foreground">{fileName}</span>
+        ) : (
+          <span className="font-mono text-xs text-muted-foreground">—</span>
+        )}
+        <span className="flex shrink-0 items-center gap-1 font-mono text-xs font-medium text-primary">
+          View
+          <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+        </span>
+      </div>
+    </Link>
+  );
+}
+
+function Section({ section }: { section: DatasetSection }) {
+  const totalInstructions = section.datasets.reduce((sum, d) => sum + d.fileCount, 0);
+  return (
+    <section>
+      <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
+        <h2 className="font-display text-xl font-semibold tracking-tight">{section.title}</h2>
+        <span className="font-mono text-xs text-muted-foreground">
+          {section.datasets.length} datasets · {totalInstructions.toLocaleString()} instructions
+        </span>
+      </div>
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {section.datasets.map((dataset) => (
+          <DatasetCard key={dataset.id} sectionId={section.id} dataset={dataset} />
+        ))}
+      </div>
+    </section>
+  );
+}
 
 export function DatasetPage() {
   return (
@@ -21,63 +102,7 @@ export function DatasetPage() {
 
       <div className="space-y-12">
         {datasetSections.map((section) => (
-          <section key={section.id}>
-            <h2 className="mb-4 font-display text-xl font-semibold tracking-tight">
-              {section.title}
-            </h2>
-            <div className="overflow-x-auto rounded-lg border border-border">
-              <table className="w-full min-w-[720px] border-collapse text-sm">
-                <thead>
-                  <tr className="border-b border-border bg-card/60 text-left">
-                    <th className="px-4 py-3 font-mono text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                      Title
-                    </th>
-                    <th className="px-4 py-3 font-mono text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                      Description
-                    </th>
-                    <th className="px-4 py-3 text-right font-mono text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                      Instructions
-                    </th>
-                    <th className="px-4 py-3 text-right font-mono text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                      Size
-                    </th>
-                    <th className="px-4 py-3 font-mono text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                      Type
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {section.datasets.map((dataset) => (
-                    <tr
-                      key={dataset.id}
-                      className="border-b border-border transition-colors last:border-0 hover:bg-accent/40"
-                    >
-                      <td className="px-4 py-3 align-top">
-                        <Link
-                          to={`/dataset/${section.id}/${dataset.id}`}
-                          className="font-mono font-medium text-primary hover:underline"
-                        >
-                          {dataset.title}
-                        </Link>
-                      </td>
-                      <td className="max-w-md px-4 py-3 align-top text-muted-foreground">
-                        {cropWords(dataset.description, 20)}
-                      </td>
-                      <td className="px-4 py-3 text-right align-top font-mono tabular-nums">
-                        {dataset.fileCount.toLocaleString()}
-                      </td>
-                      <td className="px-4 py-3 text-right align-top font-mono tabular-nums text-muted-foreground">
-                        {dataset.size}
-                      </td>
-                      <td className="px-4 py-3 align-top">
-                        <Badge variant="secondary">{dataset.fileType}</Badge>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
+          <Section key={section.id} section={section} />
         ))}
       </div>
     </div>

@@ -6,6 +6,15 @@ export interface ChangelogEntry {
 
 export const whatsNew: ChangelogEntry[] = [
   {
+    title: 'Frontend Rebuilt with a New Design System',
+    detail:
+      'On July 10th, we rebuilt the web frontend from the ground up for a faster, cleaner, and more maintainable experience. Key updates include:\n' +
+      '• Migrated from Create React App to Vite with full TypeScript support\n' +
+      '• Redesigned the interface with Tailwind CSS and a dark, control-plane visual theme\n' +
+      '• Reworked the chat, dataset, and fine-tuning pages with clearer navigation and richer dataset detail views.',
+    date: '2026-07-10',
+  },
+  {
     title: 'Backend Refactored with SSE Integration',
     detail:
       'On March 26th, we completed a full backend refactoring to enhance performance and maintainability. Key updates include:\n' +

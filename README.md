@@ -10,6 +10,13 @@ generates for deeper investigation.
 > **Original codebase:** 2024-01-25 → 2025-04-04 is master's thesis work.
 > **Update & Refactor:** 2026-07-09 onward is refactoring
 
+## Screenshots
+
+|  |  |
+| :---: | :---: |
+| ![Home page — hero and looking-glass readout](docs/screenshots/home.png)<br>_Home — hero & looking-glass_ | ![Chat workspace](docs/screenshots/chat.png)<br>_Chat — model switch, streaming, examples_ |
+| ![Datasets listing](docs/screenshots/datasets.png)<br>_Datasets — instruction corpus_ | ![Dataset detail page](docs/screenshots/detail.png)<br>_Dataset detail — sample record & topics_ |
+
 ---
 
 ## Architecture

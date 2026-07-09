@@ -1,0 +1,54 @@
+# Tooling config for the Python backend (Django ASGI app + FastAPI agent).
+# There is no packaging here — this file only configures ruff and mypy so that
+# pre-commit and local runs share one source of truth.
+
+[tool.ruff]
+target-version = "py39"
+line-length = 100
+# Backend Python lives at the repo root; keep generated/vendored trees out.
+extend-exclude = [
+    "react_frontend",
+    "staticfiles",
+    "media",
+    "**/migrations",
+    "**/__pycache__",
+    "build",
+]
+
+[tool.ruff.lint]
+# A pragmatic set: pyflakes (F), pycodestyle (E/W), isort (I), pyupgrade (UP),
+# flake8-bugbear (B), and comprehensions (C4). Autofix handles most of these.
+select = ["E", "W", "F", "I", "UP", "B", "C4"]
+ignore = [
+    "E501",  # line length is handled by the formatter
+    "B008",  # FastAPI relies on function calls in argument defaults (Depends/Query)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]  # re-exports
+"project_1/settings/*.py" = ["F403", "F405"]  # `from .base import *` is intentional
+
+[tool.ruff.format]
+# Use ruff defaults (Black-compatible: double quotes, 4-space indent).
+
+[tool.mypy]
+python_version = "3.9"
+# Lenient on purpose: this is a legacy research codebase. Tighten over time.
+ignore_missing_imports = true
+follow_imports = "silent"
+check_untyped_defs = false
+disallow_untyped_defs = false
+warn_unused_ignores = false
+warn_redundant_casts = true
+exclude = [
+    "react_frontend/",
+    "staticfiles/",
+    "media/",
+    "build/",
+    ".*/migrations/.*",
+]
+
+# Django's dynamic attributes trip up mypy; skip the settings package.
+[[tool.mypy.overrides]]
+module = "project_1.settings.*"
+ignore_errors = true

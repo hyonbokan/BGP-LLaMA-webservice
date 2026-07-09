@@ -1,0 +1,64 @@
+# Run locally with:
+#   pip install pre-commit && pre-commit install
+#   pre-commit run --all-files
+#
+# Backend Python lives at the repo root (app_1/, project_1/, fastapi_agent/,
+# prompts/, scripts/), configured by ./pyproject.toml. Frontend hooks shell out
+# to the react_frontend package scripts.
+
+exclude: '^(react_frontend/(build|node_modules)/|staticfiles/|media/|.*/migrations/)'
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-added-large-files
+        args: [--maxkb=2048]
+      - id: check-merge-conflict
+      - id: detect-private-key
+      - id: mixed-line-ending
+        args: [--fix=lf]
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.20
+    hooks:
+      # Lint + autofix (unused imports/vars via Pyflakes, import sorting via isort).
+      - id: ruff
+        args: [--config=pyproject.toml, --fix]
+        files: ^(app_1|project_1|fastapi_agent|prompts|scripts)/
+      # Formatter (Black-compatible).
+      - id: ruff-format
+        args: [--config=pyproject.toml]
+        files: ^(app_1|project_1|fastapi_agent|prompts|scripts)/
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.13.0
+    hooks:
+      - id: mypy
+        args: [--config-file=pyproject.toml]
+        files: ^(app_1|project_1|fastapi_agent|prompts|scripts)/
+        additional_dependencies:
+          - pydantic==2.7.3
+          - types-requests
+          - types-PyYAML
+          - types-python-dateutil
+
+  - repo: local
+    hooks:
+      - id: frontend-prettier
+        name: Frontend Prettier
+        entry: bash -c 'cd react_frontend && yarn prettier'
+        language: system
+        files: ^react_frontend/src/
+        pass_filenames: false
+
+      - id: frontend-lint
+        name: Frontend Lint
+        entry: bash -c 'cd react_frontend && yarn lint'
+        language: system
+        files: ^react_frontend/src/
+        pass_filenames: false

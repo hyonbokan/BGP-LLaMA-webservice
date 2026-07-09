@@ -1,38 +1,36 @@
-# Base Docker Compose file
+# Uses Docker Compose v2 (`docker compose`, no hyphen). The compose files omit
+# the obsolete `version:` key and rely on v2 healthcheck conditions.
+COMPOSE=docker compose
 BASE_COMPOSE=docker-compose.base.yml
-
-# Development override
 DEV_COMPOSE=docker-compose.dev.yml
-
-# Production override
 PROD_COMPOSE=docker-compose.prod.yml
 
-# Build and start dev environment, then stream logs
-up-dev:
-	docker-compose -f $(BASE_COMPOSE) -f $(DEV_COMPOSE) up --build -d && \
-	docker-compose -f $(BASE_COMPOSE) -f $(DEV_COMPOSE) logs -f
+DEV=$(COMPOSE) -f $(BASE_COMPOSE) -f $(DEV_COMPOSE)
+PROD=$(COMPOSE) -f $(BASE_COMPOSE) -f $(PROD_COMPOSE)
 
-# Stop dev environment
-down-dev:
-	docker-compose -f $(BASE_COMPOSE) -f $(DEV_COMPOSE) down
+.PHONY: up-dev down-dev up-prod down-prod logs rebuild-dev clean help
 
-# Build and start prod environment, then stream logs
-up-prod:
-	docker-compose -f $(BASE_COMPOSE) -f $(PROD_COMPOSE) up --build -d && \
-	docker-compose -f $(BASE_COMPOSE) -f $(PROD_COMPOSE) logs -f
+help:  ## Show available targets
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
+		awk 'BEGIN {FS = ":.*?## "}; {printf "  %-14s %s\n", $$1, $$2}'
 
-# Stop prod environment
-down-prod:
-	docker-compose -f $(BASE_COMPOSE) -f $(PROD_COMPOSE) down
+up-dev:  ## Build and start dev containers (detached), then tail logs
+	$(DEV) up --build -d && $(DEV) logs -f
 
-# View logs from all containers
-logs:
-	docker-compose -f $(BASE_COMPOSE) -f $(PROD_COMPOSE) logs -f
+down-dev:  ## Stop dev containers
+	$(DEV) down
 
-# Rebuild and restart dev environment (force fresh image)
-rebuild-dev:
-	docker-compose -f $(BASE_COMPOSE) -f $(DEV_COMPOSE) up --build --force-recreate
+up-prod:  ## Build and start prod containers (detached), then tail logs
+	$(PROD) up --build -d && $(PROD) logs -f
 
-# Clean up unused containers and volumes
-clean:
+down-prod:  ## Stop prod containers
+	$(PROD) down
+
+logs:  ## Tail logs from all prod containers
+	$(PROD) logs -f
+
+rebuild-dev:  ## Force a fresh dev rebuild and restart
+	$(DEV) up --build --force-recreate
+
+clean:  ## Remove unused Docker resources
 	docker system prune -f

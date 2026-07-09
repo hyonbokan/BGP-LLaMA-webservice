@@ -1,5 +1,4 @@
-version: '3.8'
-
+# Production override. Use via `make up-prod`.
 services:
   web:
     environment:

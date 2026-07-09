@@ -1,38 +1,45 @@
-# Ignore Python bytecode and cache
+# --- Python ---
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+**/__pycache__/
+*.py[cod]
+*.egg-info/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
 
-# Ignore environment variables and secrets
+# --- Virtual environments ---
+.venv/
+venv/
+env/
+
+# --- Secrets & environment ---
 .env
 *.env
-
+!.env.example
 .config
 *.config
 
-# Ignore log files
+# --- Logs ---
 *.log
 debug.log
 
-# Ignore Django migrations (optional)
+# NOTE: Django migrations MUST be committed. Only ignore their bytecode.
+**/migrations/__pycache__/
 **/migrations/*.pyc
-**/migrations/*.py
 
-# Ignore Node.js dependencies and cache
+# --- Node / frontend ---
 react_frontend/node_modules/
 react_frontend/node_modules/.cache/
 
-# Ignore all pycache directories (Explicitly)
-**/__pycache__/
-
-# Ignore SQLite database files
+# --- Databases ---
 db.sqlite3
 *.sqlite3
 
-# Ignore temporary system files
+# --- Generated static files (produced by `collectstatic`) ---
+staticfiles/
+
+# --- OS / editor cruft ---
 .DS_Store
 Thumbs.db
-
-# Ignore collected static files
-../staticfiles/
+.idea/
+.vscode/

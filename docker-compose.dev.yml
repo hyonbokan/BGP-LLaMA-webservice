@@ -1,5 +1,4 @@
-version: '3.8'
-
+# Development override. Use via `make up-dev`.
 services:
   web:
     environment:

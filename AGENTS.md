@@ -8,7 +8,8 @@ components:
 - **Django backend (ASGI/Daphne)** — REST API, auth/sessions, chat-history persistence, and serves
   the built React SPA. Code in `app_1/` (app) and `project_1/` (project config).
 - **FastAPI agent** — LLaMA/GPT SSE streaming microservice. Code in `fastapi_agent/`.
-- **React frontend** — Create React App SPA (React 18 + Redux Toolkit + MUI) in `react_frontend/`.
+- **React frontend** — Vite + React 18 + **TypeScript** SPA in `react_frontend/`, styled with
+  Tailwind CSS + shadcn/ui. (Migrated off Create React App; MUI and Redux were removed.)
 
 Backend Python (Django + FastAPI) lives at the repository root — there is **no** `backend/`
 directory. See [README.md](README.md) for architecture and setup.
@@ -51,12 +52,16 @@ uvicorn fastapi_agent.main:app --host 0.0.0.0 --port 8002   # FastAPI agent
 ### Frontend (from `react_frontend/`)
 
 ```bash
-yarn install
-yarn start        # dev server on :3000
-yarn build        # production build (served by Django)
+yarn install      # Node 18+ (.yarnrc sets --ignore-engines for Node 23)
+yarn dev          # Vite dev server on :3000, proxies /api -> :8001 and /agent -> :8002
+yarn build        # production build -> build/ (served by Django under /static/)
+yarn typecheck    # tsc --noEmit
 yarn lint         # ESLint (--fix)
 yarn prettier     # Prettier (--write)
 ```
+
+Config lives in `src/config.ts`; backend origins are overridable via `VITE_API_URL` /
+`VITE_AGENT_URL` (`.env.development`). No hardcoded backend hostnames.
 
 ### Linting (from repo root)
 
@@ -69,7 +74,9 @@ pre-commit run --all-files
 
 - **Backend:** Ruff for lint + format (line-length 100, target py39) and mypy, both configured in
   `pyproject.toml`. Do not add a `backend/` prefix to paths — Python is at the root.
-- **Frontend:** ESLint (`react-app` config) + Prettier.
+- **Frontend:** TypeScript (strict), ESLint (flat config) + Prettier. Styling via Tailwind +
+  shadcn/ui primitives in `src/components/ui/`; the `cn()` helper is in `src/lib/utils.ts`. Amber
+  (`--anomaly` / the `anomaly` color) is reserved for routing anomalies/alerts — don't reuse it.
 - Django settings are split: `project_1/settings/base.py` with `development.py` / `production.py`
   overrides, selected by `DJANGO_ENV` (or an explicit `DJANGO_SETTINGS_MODULE`).
 
@@ -100,7 +107,8 @@ pre-commit run --all-files
   disable buffering.
 - The FastAPI service is GPU-backed (NVIDIA runtime) and mounts a host Hugging Face cache
   (`HF_CACHE_DIR`).
-- The React `build/` is committed and served by Django — rebuild (`yarn build`) after UI changes.
+- The React `build/` is git-ignored — run `yarn build` before `collectstatic` / Docker image builds
+  so Django can serve the SPA under `/static/`.
 
 ## Gotchas
 

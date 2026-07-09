@@ -1,3 +1,171 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* ------------------------------------------------------------------ */
+  /*  Control-plane palette. Signal cyan = healthy routing;             */
+  /*  amber (--anomaly) is reserved app-wide for leaks / hijacks /      */
+  /*  alerts so color always communicates route health.                 */
+  /* ------------------------------------------------------------------ */
+  :root {
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 204 84% 44%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 214 32% 93%;
+    --secondary-foreground: 222 47% 20%;
+
+    --muted: 214 32% 94%;
+    --muted-foreground: 215 18% 42%;
+
+    --accent: 204 70% 94%;
+    --accent-foreground: 204 84% 30%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --anomaly: 32 95% 44%;
+    --anomaly-foreground: 0 0% 100%;
+
+    --border: 214 32% 88%;
+    --input: 214 32% 88%;
+    --ring: 204 84% 44%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222 47% 7%;
+    --foreground: 213 31% 91%;
+
+    --card: 222 41% 10%;
+    --card-foreground: 213 31% 91%;
+
+    --popover: 222 44% 9%;
+    --popover-foreground: 213 31% 91%;
+
+    --primary: 204 90% 58%;
+    --primary-foreground: 222 47% 8%;
+
+    --secondary: 217 33% 16%;
+    --secondary-foreground: 213 31% 91%;
+
+    --muted: 217 33% 14%;
+    --muted-foreground: 215 20% 62%;
+
+    --accent: 217 33% 17%;
+    --accent-foreground: 204 90% 70%;
+
+    --destructive: 0 72% 62%;
+    --destructive-foreground: 0 0% 100%;
+
+    --anomaly: 38 92% 55%;
+    --anomaly-foreground: 26 83% 8%;
+
+    --border: 217 33% 18%;
+    --input: 217 33% 20%;
+    --ring: 204 90% 58%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+
+  /* Slim, theme-aware scrollbars — this is a data tool; keep chrome quiet. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 9999px;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.5);
+  }
+
+  ::selection {
+    background: hsl(var(--primary) / 0.28);
+  }
+}
+
+@layer components {
+  /* Faint dotted routing-grid background for hero / empty states. */
+  .bg-grid {
+    background-image: radial-gradient(hsl(var(--foreground) / 0.06) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  /* Uppercase technical eyebrow used above section headings. */
+  .eyebrow {
+    @apply font-mono text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground;
+  }
+
+  /* Markdown rendering for chat + dataset descriptions. */
+  .markdown {
+    @apply text-sm leading-relaxed text-foreground;
+  }
+  .markdown > * + * {
+    @apply mt-3;
+  }
+  .markdown h1,
+  .markdown h2,
+  .markdown h3 {
+    @apply font-display font-semibold tracking-tight;
+  }
+  .markdown h1 {
+    @apply text-xl;
+  }
+  .markdown h2 {
+    @apply text-lg;
+  }
+  .markdown h3 {
+    @apply text-base;
+  }
+  .markdown a {
+    @apply font-medium text-primary underline underline-offset-2;
+  }
+  .markdown ul {
+    @apply list-disc space-y-1 pl-5;
+  }
+  .markdown ol {
+    @apply list-decimal space-y-1 pl-5;
+  }
+  .markdown :not(pre) > code {
+    @apply rounded bg-muted px-1.5 py-0.5 font-mono text-[0.85em] text-foreground;
+  }
+  .markdown pre {
+    @apply overflow-x-auto rounded-lg border border-border bg-[#0d1117] p-4 font-mono text-[0.8rem] leading-relaxed;
+  }
+  .markdown pre code {
+    @apply bg-transparent p-0;
+  }
+  .markdown table {
+    @apply w-full border-collapse text-left text-xs;
+  }
+  .markdown th,
+  .markdown td {
+    @apply border border-border px-2 py-1;
+  }
+  .markdown blockquote {
+    @apply border-l-2 border-primary/50 pl-3 text-muted-foreground;
+  }
+}

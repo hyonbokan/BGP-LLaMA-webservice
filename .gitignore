@@ -30,6 +30,13 @@ debug.log
 # --- Node / frontend ---
 react_frontend/node_modules/
 react_frontend/node_modules/.cache/
+react_frontend/build/
+react_frontend/dist/
+react_frontend/.vite/
+*.tsbuildinfo
+
+# --- Local-only notes / planning / handoff (never committed) ---
+notes/
 
 # --- Databases ---
 db.sqlite3

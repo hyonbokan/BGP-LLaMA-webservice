@@ -49,7 +49,7 @@ generates for deeper investigation.
 | --------- | ------------------------------------------------------------------------------- |
 | Backend   | Django 4.2 (ASGI), Daphne, FastAPI, Django REST Framework, Channels             |
 | ML        | Hugging Face Transformers, PEFT, bitsandbytes, OpenAI API (GPT-4o-mini)         |
-| Frontend  | React 18, Redux Toolkit, Material-UI, Axios, TypeScript (partial)               |
+| Frontend  | React 18, TypeScript, Vite, Tailwind CSS, shadcn/ui, Axios                      |
 | Data      | PostgreSQL 13                                                                   |
 | Streaming | Server-Sent Events (current), WebSockets (legacy Django consumers)              |
 | DevOps    | Docker Compose, Nginx, Certbot, NVIDIA CUDA runtime                             |
@@ -69,7 +69,7 @@ generates for deeper investigation.
 │   └── services/          #   llama_agent.py, gpt_agent.py, gpt_service.py
 ├── prompts/               # Prompt templates for LLaMA / GPT
 ├── scripts/               # Data loading helpers
-├── react_frontend/        # React SPA (build/ is served by Django)
+├── react_frontend/        # React + TS SPA (Vite; build/ served by Django)
 ├── docker/                # Dockerfiles (daphne, fastapi) + nginx config
 ├── docker-compose.*.yml   # base + dev/prod overrides
 ├── pyproject.toml         # ruff + mypy config (backend)
@@ -80,7 +80,7 @@ generates for deeper investigation.
 
 - Docker & Docker Compose **v2** (`docker compose`)
 - NVIDIA GPU + drivers + NVIDIA Container Toolkit (for the LLaMA/FastAPI service)
-- For manual (non-Docker) setup: Python 3.9, Node.js 16+, PostgreSQL 14+
+- For manual (non-Docker) setup: Python 3.9, Node.js 18+, PostgreSQL 14+
 
 ## Quickstart (Docker)
 
@@ -124,12 +124,18 @@ python manage.py collectstatic --noinput
 daphne -b 0.0.0.0 -p 8001 project_1.asgi:application        # Django (ASGI)
 uvicorn fastapi_agent.main:app --host 0.0.0.0 --port 8002   # FastAPI (separate shell)
 
-# --- Frontend ---
+# --- Frontend (Vite + TypeScript) ---
 cd react_frontend
 yarn install
-yarn start        # dev server on :3000
-yarn build        # production build served by Django
+yarn dev          # dev server on :3000, proxies /api -> :8001 and /agent -> :8002
+yarn build        # production build -> react_frontend/build (served by Django under /static/)
+yarn typecheck    # tsc --noEmit
+yarn lint         # ESLint (--fix)
 ```
+
+> The dev server proxies API/SSE calls to the backends, so you can run just the frontend
+> (`yarn dev`) against a running Django + FastAPI and iterate without CORS setup. Backend base
+> URLs are configurable via `VITE_API_URL` / `VITE_AGENT_URL` (see `.env.development`).
 
 ## Environment variables
 
@@ -155,6 +161,7 @@ pre-commit run --all-files  # ruff (lint+format), mypy, hygiene, frontend pretti
 
 ## Notes
 
-- The React SPA's `build/` output is committed and served by Django (see `TEMPLATES` /
-  `STATICFILES_DIRS` in `project_1/settings/base.py`). Rebuild it (`yarn build`) after frontend changes.
+- The React SPA is built with Vite to `react_frontend/build/` and served by Django under
+  `/static/` (see `TEMPLATES` / `STATICFILES_DIRS` in `project_1/settings/base.py`). The build
+  output is **not** committed (git-ignored) — run `yarn build` before `collectstatic` / Docker.
 - WebSocket consumers under `app_1/consumers/` are retained for reference but superseded by FastAPI SSE.

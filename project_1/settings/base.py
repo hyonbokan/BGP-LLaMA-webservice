@@ -188,9 +188,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 # Static Files Configuration
+# The Vite build (react_frontend/build) is emitted with base '/static/', so its
+# hashed assets live in build/assets and are served under STATIC_URL. Run
+# `yarn build` before `collectstatic`.
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    BASE_DIR / 'react_frontend' / 'build' / 'static',  # React static files
+    BASE_DIR / 'react_frontend' / 'build',  # Vite build output (index.html + assets/)
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'  # Directory for collectstatic
 

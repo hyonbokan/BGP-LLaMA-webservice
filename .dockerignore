@@ -1,0 +1,30 @@
+# Keep build contexts small — matters most for the now-slim FastAPI image.
+.git
+.gitignore
+.venv
+venv
+env
+__pycache__
+*.pyc
+*.pyo
+
+# Frontend deps (huge). NOTE: react_frontend/build is intentionally NOT ignored —
+# the daphne image's collectstatic reads it (STATICFILES_DIRS in settings/base.py).
+react_frontend/node_modules
+node_modules
+
+# Local env / secrets — provided at runtime via env_file, never baked into images.
+.env
+.env.*
+!.env.example
+
+# Editor / OS cruft
+.DS_Store
+.idea
+.vscode
+*.log
+debug.log
+
+# Docs / research that don't belong in the image
+*.md
+!README.md

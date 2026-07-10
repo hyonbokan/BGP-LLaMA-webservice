@@ -2,9 +2,9 @@ import { cn } from '@/lib/utils';
 import type { ChatModel } from '@/types';
 import { MODEL_LABELS } from '@/components/chat/constants';
 
-const MODELS: ChatModel[] = ['bgp_llama', 'gpt_4o_mini'];
+const MODELS: ChatModel[] = ['bgp_llama', 'gpt_5_4_mini'];
 
-/** Segmented toggle between the fine-tuned LLaMA and the GPT-4o-mini backend. */
+/** Segmented toggle between the fine-tuned LLaMA and the GPT-5.4-mini backend. */
 export function ModelSwitch({
   value,
   onChange,

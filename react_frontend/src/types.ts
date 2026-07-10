@@ -1,5 +1,5 @@
 /** The two chat backends the user can toggle between. */
-export type ChatModel = 'bgp_llama' | 'gpt_4o_mini';
+export type ChatModel = 'bgp_llama' | 'gpt_5_4_mini';
 
 /** Who/what produced a chat message. */
 export type MessageSender = 'user' | 'system' | 'tutorial';

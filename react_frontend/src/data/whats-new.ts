@@ -6,6 +6,15 @@ export interface ChangelogEntry {
 
 export const whatsNew: ChangelogEntry[] = [
   {
+    title: 'Upgraded GPT Backend to GPT-5.4-mini',
+    detail:
+      'On July 10th, we migrated the GPT comparison backend from GPT-4o-mini to GPT-5.4-mini, as the GPT-4o model family reached end-of-life and was deprecated. This update brings:\n' +
+      '• A newer, more capable model for BGP analysis code generation\n' +
+      '• Continued head-to-head comparison against BGP-LLaMA\n' +
+      '• A configurable model id (via the OPENAI_MODEL environment variable) for easier future upgrades.',
+    date: '2026-07-10',
+  },
+  {
     title: 'Frontend Rebuilt with a New Design System',
     detail:
       'On July 10th, we rebuilt the web frontend from the ground up for a faster, cleaner, and more maintainable experience. Key updates include:\n' +

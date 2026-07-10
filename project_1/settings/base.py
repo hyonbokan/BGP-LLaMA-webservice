@@ -24,10 +24,6 @@ DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
-print(f"\nbase dir: {BASE_DIR}\n")
-print(f"\nmedia root: {BASE_DIR / 'media'}\n")
-print(f"\nreact dir: {BASE_DIR / 'react_frontend' / 'build' / 'static'}\n")
-
 # Application definition
 INSTALLED_APPS = [
     'app_1.apps.App1Config',
@@ -111,7 +107,10 @@ CHANNEL_LAYERS = {
 
 # Configure session settings
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
-SESSION_COOKIE_SECURE = True  # Enable this for HTTPS connections
+# Secure cookies are disabled by default so local (http) dev works; production.py
+# flips SESSION_COOKIE_SECURE / CSRF_COOKIE_SECURE on for HTTPS.
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
 SESSION_COOKIE_DOMAIN = None
 SESSION_COOKIE_HTTPONLY = True  # Helps mitigate against XSS attacks
 SESSION_COOKIE_SAMESITE = 'Lax'  # Adjust as needed for your requirements
@@ -148,25 +147,38 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOG_LEVEL = env('LOG_LEVEL', default='INFO')
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{asctime} {levelname} {name}: {message}',
+            'style': '{',
+        },
+    },
     'handlers': {
         'file': {
-            'level': 'DEBUG',
+            'level': LOG_LEVEL,
             'class': 'logging.FileHandler',
-            'filename': 'debug.log',
+            'filename': str(BASE_DIR / 'debug.log'),
+            'formatter': 'verbose',
         },
         'console': {
             'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
         },
     },
+    # Capture all three of the project's own loggers (Django app, FastAPI agent,
+    # and project config), not just app_1.
     'loggers': {
-        'app_1': {
-            'handlers': ['file', 'console'],  # Avoid attaching the same handler multiple times
-            'level': 'DEBUG',
-            'propagate': False,  # Prevent propagation to the root logger
-        },
+        name: {
+            'handlers': ['file', 'console'],
+            'level': LOG_LEVEL,
+            'propagate': False,  # Prevent duplicate records via the root logger
+        }
+        for name in ('app_1', 'fastapi_agent', 'project_1')
     },
 }
 

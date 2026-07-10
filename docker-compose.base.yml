@@ -21,7 +21,52 @@ services:
       db:
         condition: service_healthy
 
-  # FastAPI microservice for LLaMA / GPT SSE streaming (GPU-backed).
+  # vLLM serves the fine-tuned BGP-LLaMA behind an OpenAI-compatible /v1 API.
+  # The local model and hosted GPT are both reached through the same openai SDK
+  # now — the only difference is base_url/key/model (see fastapi_agent/config.py).
+  # Requires an NVIDIA GPU host. For GPU-less local dev, don't start this service
+  # and point LLAMA_BASE_URL at a vLLM running elsewhere (or use GPT only).
+  vllm:
+    image: vllm/vllm-openai:latest
+    container_name: bgp-llama-vllm
+    restart: unless-stopped
+    command:
+      - "--model=${LLAMA_MODEL:-hyonbokan/bgp-llama-3.1-instruct-10kSteps-2kDataset}"
+      - "--served-model-name=${LLAMA_MODEL:-hyonbokan/bgp-llama-3.1-instruct-10kSteps-2kDataset}"
+      - "--port=8000"
+      - "--dtype=${VLLM_DTYPE:-auto}"
+      - "--max-model-len=${VLLM_MAX_MODEL_LEN:-8192}"
+      - "--gpu-memory-utilization=${VLLM_GPU_MEMORY_UTILIZATION:-0.90}"
+      - "--tensor-parallel-size=${VLLM_TENSOR_PARALLEL_SIZE:-1}"
+    environment:
+      # Needed to pull gated/private weights from the Hub (lowercase name, matches
+      # the rest of the project). Empty is fine for a fully public repo.
+      HUGGING_FACE_HUB_TOKEN: ${hf_token:-}
+      HF_HOME: /cache/huggingface
+    shm_size: "2gb"
+    volumes:
+      - hf_cache:/cache/huggingface
+    ports:
+      - "8000:8000"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: ["gpu"]
+    healthcheck:
+      # vLLM ships python (no curl); poll its /health with urllib.
+      test:
+        - "CMD-SHELL"
+        - "python -c \"import sys,urllib.request; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/health').status==200 else 1)\""
+      interval: 15s
+      timeout: 5s
+      retries: 20
+      start_period: 300s  # first boot downloads + loads the weights
+
+  # FastAPI microservice for LLaMA / GPT SSE streaming. No longer GPU-backed —
+  # it just proxies to vLLM (local model) and OpenAI (GPT) over HTTP.
   fastapi:
     build:
       context: .
@@ -32,20 +77,13 @@ services:
     ports:
       - "8002:8002"
     environment:
-      HF_HOME: /cache/huggingface
-      TRANSFORMERS_CACHE: /cache/huggingface
-    volumes:
-      # Host HF cache, parametrized via .env (defaults to ~/.cache/huggingface).
-      - ${HF_CACHE_DIR:-~/.cache/huggingface}:/cache/huggingface
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: ["gpu"]
+      # Reach the co-located vLLM over the compose network. Overrides any
+      # LLAMA_BASE_URL in .env (which targets a host-run vLLM for local dev).
+      LLAMA_BASE_URL: http://vllm:8000/v1
     depends_on:
       db:
+        condition: service_healthy
+      vllm:
         condition: service_healthy
 
   nginx:
@@ -88,3 +126,4 @@ services:
 
 volumes:
   pgdata:
+  hf_cache:  # vLLM's Hugging Face weight/download cache (survives restarts)

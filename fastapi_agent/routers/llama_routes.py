@@ -1,21 +1,20 @@
-import asyncio
 import json
 import logging
 from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import StreamingResponse
-from fastapi_agent.services.llama_agent import LlamaAgent
+from fastapi_agent.services.llm_service import stream_chat
 from app_1.utils.extract_code_from_reply import extract_code_from_reply
 
 logger = logging.getLogger(__name__)
-
 router = APIRouter()
-llama_agent = LlamaAgent()
+
 
 def sse_event(data_dict, flush=False):
     event_str = f"data: {json.dumps(data_dict)}\n\n"
     if flush:
         event_str += ": flush\n\n"
     return event_str
+
 
 @router.get("/bgp_llama", response_class=StreamingResponse)
 async def query_llama(
@@ -25,46 +24,36 @@ async def query_llama(
     if not query:
         raise HTTPException(status_code=400, detail="Query is required.")
 
-    # Start generation in a background thread.
-    streamer, thread = llama_agent.stream_tokens(query, context)
-    assistant_reply_chunks = []
-    loop = asyncio.get_event_loop()
-
-    def get_next_token():
-        try:
-            return next(streamer)
-        except StopIteration:
-            return None
-
     async def event_generator():
-        # 1. Send an initial SSE event to tell the client we started.
+        # 1. Tell the client we started.
         yield sse_event({"status": "generating_started"})
 
+        assistant_reply_chunks = []
         batch_tokens = []
         batch_size = 3
 
-        while True:
-            token = await loop.run_in_executor(None, get_next_token)
-            if token is None:
-                # If any tokens remain in the batch, send them.
-                if batch_tokens:
+        try:
+            # The local fine-tuned BGP-LLaMA is served by vLLM over the same
+            # OpenAI-compatible API as GPT, so streaming is one async loop.
+            async for token in stream_chat("llama", query, context):
+                batch_tokens.append(token)
+                if len(batch_tokens) >= batch_size:
                     batch_text = "".join(batch_tokens)
                     assistant_reply_chunks.append(batch_text)
                     yield sse_event({"status": "generating", "generated_text": batch_text}, flush=True)
-                break
+                    batch_tokens = []
 
-            batch_tokens.append(token)
-            # When we have reached the batch size, send them as one event.
-            if len(batch_tokens) >= batch_size:
+            # Flush any remaining tokens.
+            if batch_tokens:
                 batch_text = "".join(batch_tokens)
                 assistant_reply_chunks.append(batch_text)
                 yield sse_event({"status": "generating", "generated_text": batch_text}, flush=True)
-                batch_tokens = []
+        except Exception as e:
+            logger.exception("Error while streaming LLaMA response")
+            yield sse_event({"status": "error", "message": str(e)})
+            return
 
-        # 3. Join the generation thread, ensuring it's finished.
-        thread.join()
-
-        # 4. After generation, do final processing (like code extraction).
+        # 2. After generation, do final processing (like code extraction).
         full_response = "".join(assistant_reply_chunks)
         code = extract_code_from_reply(full_response)
         if code:

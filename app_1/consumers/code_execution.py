@@ -2,19 +2,33 @@
 import json
 import logging
 import asyncio
-import traceback
+import os
+import sys
 import queue
-from threading import Thread
+import tempfile
+import threading
+import subprocess
 
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
 
-from app_1.utils.exec_code_util import restricted_import
-
-import pybgpstream
-import datetime
-
 logger = logging.getLogger(__name__)
+
+# Hard wall-clock limit for a single code run.
+CODE_EXEC_TIMEOUT = int(os.getenv("CODE_EXEC_TIMEOUT", "300"))
+
+# Env var name prefixes/substrings that must never leak into executed code.
+_SENSITIVE_ENV_MARKERS = ("SECRET", "TOKEN", "KEY", "PASSWORD", "OPENAI", "HF_", "DB_", "POSTGRES", "AWS")
+
+
+def _child_env():
+    """A copy of the environment with secrets removed, for the child process."""
+    return {
+        k: v
+        for k, v in os.environ.items()
+        if not any(marker in k.upper() for marker in _SENSITIVE_ENV_MARKERS)
+    }
+
 
 class CodeExecutionConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -42,16 +56,17 @@ class CodeExecutionConsumer(AsyncWebsocketConsumer):
             self.session["generated_code"] = None
             await sync_to_async(self.session.save)()
 
-            # Use a thread and a queue to stream code execution output.
+            # Stream code execution output from an isolated subprocess.
             output_queue = queue.Queue()
-            thread = Thread(target=self.run_code_stream, args=(code, output_queue))
+            thread = threading.Thread(target=self.run_code_stream, args=(code, output_queue))
             thread.start()
 
-            loop = asyncio.get_event_loop()
+            loop = asyncio.get_running_loop()
             while thread.is_alive() or not output_queue.empty():
                 out = await loop.run_in_executor(None, output_queue.get)
-                if out is not None:
-                    await self.send(json.dumps({"status": "code_output", "code_output": out}))
+                if out is None:
+                    break
+                await self.send(json.dumps({"status": "code_output", "code_output": out}))
             thread.join()
             await self.send(json.dumps({"status": "complete"}))
         except Exception as e:
@@ -59,26 +74,54 @@ class CodeExecutionConsumer(AsyncWebsocketConsumer):
             await self.send(json.dumps({"status": "error", "message": str(e)}))
 
     def run_code_stream(self, code, output_queue):
-        import io, sys
-        old_stdout = sys.stdout
-        old_stderr = sys.stderr
-        sys.stdout = io.StringIO()
-        sys.stderr = sys.stdout
+        """Run model-generated code in a separate Python process.
+
+        This is NOT a full security sandbox (the child can still reach the
+        network and read world-readable files), but it is a real boundary
+        compared to the previous in-process ``exec()``: the child cannot touch
+        the Django/ASGI process, secrets are scrubbed from its environment, it
+        runs in a throwaway working directory, and it is force-killed after
+        ``CODE_EXEC_TIMEOUT`` seconds. For untrusted input, run this inside a
+        locked-down container (no network beyond BGP collectors, seccomp, etc.).
+        """
+        proc = None
         try:
-            safe_globals = {
-                "__builtins__": __builtins__,
-                "pybgpstream": pybgpstream,
-                "datetime": datetime,
-                "__name__": "__main__",
-                "import": restricted_import,
-            }
-            exec(code, safe_globals)
-            output = sys.stdout.getvalue()
-            for line in output.splitlines():
-                output_queue.put(line)
+            with tempfile.TemporaryDirectory() as workdir:
+                script_path = os.path.join(workdir, "generated.py")
+                with open(script_path, "w") as f:
+                    f.write(code)
+
+                proc = subprocess.Popen(
+                    [sys.executable, "-I", script_path],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    text=True,
+                    bufsize=1,
+                    cwd=workdir,
+                    env=_child_env(),
+                )
+
+                # Watchdog: kill the process if it exceeds the time budget.
+                timer = threading.Timer(CODE_EXEC_TIMEOUT, proc.kill)
+                timer.start()
+                try:
+                    for line in proc.stdout:
+                        line = line.rstrip("\n")
+                        if line.strip():
+                            output_queue.put(line)
+                    proc.wait()
+                finally:
+                    timer.cancel()
+
+                if proc.returncode not in (0, None):
+                    output_queue.put(
+                        f"Error: process exited with code {proc.returncode} "
+                        f"(may have exceeded the {CODE_EXEC_TIMEOUT}s limit)."
+                    )
         except Exception as e:
-            output = sys.stdout.getvalue() + "\nError: " + str(e) + "\n" + traceback.format_exc()
-            output_queue.put(output)
+            output_queue.put(f"Error: {e}")
+            if proc is not None:
+                proc.kill()
         finally:
-            sys.stdout = old_stdout
-            sys.stderr = old_stderr
+            # Sentinel so the reader loop can stop promptly.
+            output_queue.put(None)

@@ -1,28 +1,33 @@
 FROM python:3.9-slim
 
-# Environment variables to improve Python behavior
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
 
-# Set the working directory
 WORKDIR /app
 
-# Install system-level dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    curl \
+# Only curl, for the container HEALTHCHECK. No build toolchain: the agent's deps
+# (fastapi, uvicorn, openai, django-environ) are pure-Python wheels. All model
+# inference lives in the vLLM service now, so torch/transformers/BGPStream and
+# their heavy build stage are gone from this image.
+RUN apt-get update && apt-get install -y --no-install-recommends curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy the requirements file first for caching dependencies
-COPY requirements.txt /app/
+# Install the slim agent-only requirements (not the root requirements.txt, which
+# carries the full Django/ML stack for the daphne image).
+COPY docker/requirements.fastapi.txt /app/requirements.fastapi.txt
+RUN pip install --upgrade pip \
+    && pip install --no-cache-dir -r requirements.fastapi.txt
 
-# Upgrade pip and install Python dependencies
-RUN pip install --upgrade pip && pip install -r requirements.txt
-
-# Copy your project source code into the container
 COPY . /app/
+
+# Run as a non-root user.
+RUN useradd --create-home --uid 10001 appuser && chown -R appuser /app
+USER appuser
 
 EXPOSE 8002
 
-# Command to run Uvicorn with your FastAPI application.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD curl -fsS http://localhost:8002/health || exit 1
+
+# Command to run Uvicorn with the FastAPI application.
 CMD ["uvicorn", "fastapi_agent.main:app", "--host", "0.0.0.0", "--port", "8002"]

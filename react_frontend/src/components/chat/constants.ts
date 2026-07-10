@@ -8,7 +8,7 @@ export const DATA_WINDOW = {
 
 export const MODEL_LABELS: Record<ChatModel, string> = {
   bgp_llama: 'BGP-LLaMA',
-  gpt_4o_mini: 'BGP-GPT',
+  gpt_5_4_mini: 'BGP-GPT',
 };
 
 export interface ExampleQuery {

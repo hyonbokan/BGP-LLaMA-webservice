@@ -16,9 +16,17 @@ load_dotenv()
 
 logger = logging.getLogger(__name__)
 
-# Initialize OpenAI client.
-client = OpenAI()
-client.api_key = os.getenv("OPENAI_API_KEY")
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-5.4-mini-2026-03-17")
+
+_client = None
+
+
+def _get_client() -> OpenAI:
+    """Lazily construct the OpenAI client so a missing key doesn't crash startup."""
+    global _client
+    if _client is None:
+        _client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    return _client
 
 def get_gpt4_output(query):
     """
@@ -36,8 +44,8 @@ def get_gpt4_output(query):
         system_prompt = LOCAL_DEFAULT
 
     try:
-        response = client.chat.completions.create(
-            model='gpt-4o-mini',
+        response = _get_client().chat.completions.create(
+            model=OPENAI_MODEL,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": query}

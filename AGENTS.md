@@ -1,13 +1,16 @@
 ## Project Overview
 
 BGP-LLaMA Webservice is an AI-powered platform for **BGP routing analysis and anomaly detection**.
-It combines an instruction fine-tuned **LLaMA** model with **GPT-4o-mini**, streams model output to
-the browser over SSE, and can execute the analysis code the model generates. It has three
-components:
+It combines an instruction fine-tuned **LLaMA** model with **GPT (gpt-5.4-mini)**, streams model
+output to the browser over SSE, and can execute the analysis code the model generates. Both models
+are reached through one OpenAI-compatible client: the local LLaMA is served by **vLLM** and GPT by
+OpenAI, so the agent differs per model only by base URL/key/model. It has three components:
 
 - **Django backend (ASGI/Daphne)** — REST API, auth/sessions, chat-history persistence, and serves
   the built React SPA. Code in `app_1/` (app) and `project_1/` (project config).
-- **FastAPI agent** — LLaMA/GPT SSE streaming microservice. Code in `fastapi_agent/`.
+- **FastAPI agent** — LLaMA/GPT SSE streaming microservice. Thin, CPU-only: it proxies to vLLM
+  (local model) and OpenAI (GPT) over HTTP — no in-process inference. Code in `fastapi_agent/`
+  (`config.py` = per-provider settings, `services/llm_service.py` = the unified streaming client).
 - **React frontend** — Vite + React 18 + **TypeScript** SPA in `react_frontend/`, styled with
   Tailwind CSS + shadcn/ui. (Migrated off Create React App; MUI and Redux were removed.)
 
@@ -105,8 +108,14 @@ pre-commit run --all-files
 - Docker Compose: `docker-compose.base.yml` + a `dev`/`prod` override (via the Makefile).
 - Nginx terminates TLS (Certbot / Let's Encrypt) and reverse-proxies both backends; SSE routes
   disable buffering.
-- The FastAPI service is GPU-backed (NVIDIA runtime) and mounts a host Hugging Face cache
-  (`HF_CACHE_DIR`).
+- The **`vllm`** service is the GPU-backed piece (NVIDIA runtime) and serves the local model over an
+  OpenAI-compatible `/v1` API; it caches weights in the `hf_cache` volume. The `fastapi` service is
+  now CPU-only and reaches it at `http://vllm:8000/v1` (set via `LLAMA_BASE_URL` on the service).
+  Tune vLLM via `VLLM_*` env vars; needs a GPU host, so on a GPU-less machine skip the `vllm`
+  service and point `LLAMA_BASE_URL` at a vLLM elsewhere (or use GPT only).
+- `docker/Dockerfile.fastapi` installs only `docker/requirements.fastapi.txt` (fastapi/uvicorn/
+  openai/django-environ) — **not** the root `requirements.txt`. The root file's `torch`/
+  `transformers`/BGPStream stack is only for the daphne image (Django + the generated-code executor).
 - The React `build/` is git-ignored — run `yarn build` before `collectstatic` / Docker image builds
   so Django can serve the SPA under `/static/`.
 

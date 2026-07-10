@@ -1,14 +1,14 @@
 # BGP-LLaMA Webservice
 
 AI-powered web application for **BGP routing analysis and anomaly detection**. It pairs an
-instruction fine-tuned **LLaMA** model with **GPT-4o-mini** to turn natural-language questions
-into BGP insights, streams the reasoning back live, and can execute the analysis code it
-generates for deeper investigation.
+instruction fine-tuned **LLaMA** model with **GPT (gpt-5.4-mini)** to turn natural-language
+questions into BGP insights and runnable analysis code, streaming the reasoning back live over SSE.
 
 🔗 **Live demo:** [llama.cnu.ac.kr](https://llama.cnu.ac.kr/)
 
-> **Original codebase:** 2024-01-25 → 2025-04-04 is master's thesis work.
-> **Update & Refactor:** 2026-07-09 onward is refactoring
+> **Original codebase:** 2024-01-25 → 2025-04-04 — master's thesis work (Django + FastAPI).
+> **Update & refactor:** 2026-07-09 onward — modernized and consolidated to a single FastAPI
+> backend with vLLM-based model serving.
 
 ## Screenshots
 
@@ -21,154 +21,166 @@ generates for deeper investigation.
 
 ## Architecture
 
+Both models are reached through **one** OpenAI-compatible client — the local fine-tuned LLaMA is
+served by **vLLM**, GPT by OpenAI — so they differ only by base URL / key / model. The FastAPI
+backend does no in-process inference; it streams tokens from whichever provider and serves file
+downloads. nginx serves the React build and proxies `/api`.
+
 ```
-                       ┌─────────────────────────────┐
-   Browser  ──────────▶│  Nginx (reverse proxy, SSL)  │
-                       └──────────────┬──────────────┘
-             /, /ws/, /static/ │              │ /agent/  (SSE, buffering off)
-                               ▼              ▼
-        ┌──────────────────────────┐   ┌──────────────────────────┐
-        │  Django ASGI (Daphne)     │   │  FastAPI agent            │
-        │  :8001                    │   │  :8002                    │
-        │  REST API + WebSockets    │   │  LLaMA / GPT SSE streaming│
-        │  serves React build       │   │  code extraction          │
-        └────────────┬─────────────┘   └────────────┬─────────────┘
-                     │                               │
-                     ▼                               ▼
-              ┌────────────┐                  ┌──────────────────┐
-              │ PostgreSQL │                  │ HF Transformers  │
-              │ (chat log) │                  │ + GPU (CUDA)     │
-              └────────────┘                  └──────────────────┘
+                    ┌────────────────────────────────────┐
+   Browser ────────▶│  nginx  — serves SPA, proxies /api   │
+                    └───────────────┬──────────────────────┘
+                            /api/*  │  (SSE: buffering off)
+                                    ▼
+                    ┌────────────────────────────────────┐
+                    │  FastAPI  (gunicorn + uvicorn) :8002 │
+                    │  /api/chat/*  SSE streaming          │
+                    │  /api/download  artifact download    │
+                    │  CPU-only — no in-process inference   │
+                    └──────┬───────────────────────┬───────┘
+                           │ OpenAI-compatible /v1 │
+                  ┌────────▼────────┐     ┌─────────▼─────────┐
+                  │ vLLM :8000       │     │ OpenAI API        │
+                  │ local BGP-LLaMA  │     │ gpt-5.4-mini      │
+                  │ (GPU / CUDA)     │     │                   │
+                  └──────────────────┘     └───────────────────┘
 ```
 
-- **Django (Daphne, ASGI)** — REST API, session/auth, chat-history persistence, and serves the
-  built React SPA. WebSocket consumers in [`app_1/consumers/`](./app_1/consumers/) are **legacy**;
-  production streaming now goes through FastAPI SSE.
-- **FastAPI agent** ([`fastapi_agent/`](./fastapi_agent/)) — SSE streaming for the LLaMA and GPT
-  chatbots, plus extraction of runnable code from model replies.
-- **React SPA** ([`react_frontend/`](./react_frontend/)) — Create React App + Redux Toolkit + MUI.
-- **PostgreSQL** — stores conversation IDs and chat history.
-- **Nginx** — TLS termination and routing between the two backends (`/agent/*` → FastAPI, rest → Django).
+- **FastAPI backend** ([`app/`](./app/)) — SSE streaming for the LLaMA and GPT chatbots and code
+  extraction from replies, plus a guarded file-download endpoint. Config is env-driven via
+  `pydantic-settings`; both providers flow through one `stream_chat()` client.
+- **vLLM** — serves the fine-tuned LLaMA over an OpenAI-compatible `/v1` API (GPU-backed). The only
+  component that needs a GPU.
+- **React SPA** ([`react_frontend/`](./react_frontend/)) — Vite + React 18 + TypeScript, Tailwind +
+  shadcn/ui.
+- **nginx** — serves the React build at the web root (SPA fallback) and reverse-proxies `/api` to
+  FastAPI with buffering disabled for SSE.
 
 ## Tech stack
 
-| Layer     | Technologies                                                                    |
-| --------- | ------------------------------------------------------------------------------- |
-| Backend   | Django 4.2 (ASGI), Daphne, FastAPI, Django REST Framework, Channels             |
-| ML        | Hugging Face Transformers, PEFT, bitsandbytes, OpenAI API (GPT-4o-mini)         |
-| Frontend  | React 18, TypeScript, Vite, Tailwind CSS, shadcn/ui, Axios                      |
-| Data      | PostgreSQL 13                                                                   |
-| Streaming | Server-Sent Events (current), WebSockets (legacy Django consumers)              |
-| DevOps    | Docker Compose, Nginx, Certbot, NVIDIA CUDA runtime                             |
+| Layer     | Technologies                                                        |
+| --------- | ------------------------------------------------------------------- |
+| Backend   | FastAPI, gunicorn + uvicorn, `openai` SDK, pydantic-settings        |
+| Serving   | vLLM (OpenAI-compatible), OpenAI API (gpt-5.4-mini)                  |
+| Frontend  | React 18, TypeScript, Vite, Tailwind CSS, shadcn/ui, Axios          |
+| Streaming | Server-Sent Events (SSE)                                            |
+| Tests     | pytest (FastAPI `TestClient`, LLM mocked)                           |
+| DevOps    | Docker Compose, nginx, NVIDIA CUDA runtime (for vLLM)               |
 
 ## Repository layout
 
 ```
 .
-├── app_1/                 # Main Django app (models, views, consumers, LLM utils)
-│   ├── consumers/         #   Legacy WebSocket consumers
-│   ├── utils/             #   Model loading, code extraction/execution, stop criteria
-│   └── views/             #   ASGI views
-├── project_1/             # Django project (asgi/wsgi, urls, settings package)
-│   └── settings/          #   base.py + development.py / production.py
-├── fastapi_agent/         # FastAPI SSE microservice
-│   ├── routers/           #   llama_routes.py, gpt_routes.py
-│   └── services/          #   llama_agent.py, gpt_agent.py, gpt_service.py
-├── prompts/               # Prompt templates for LLaMA / GPT
-├── scripts/               # Data loading helpers
-├── react_frontend/        # React + TS SPA (Vite; build/ served by Django)
-├── docker/                # Dockerfiles (daphne, fastapi) + nginx config
-├── docker-compose.*.yml   # base + dev/prod overrides
-├── pyproject.toml         # ruff + mypy config (backend)
-└── requirements.txt       # Python dependencies (pinned)
+├── app/                     # FastAPI backend
+│   ├── main.py              #   app factory (routers mounted under /api)
+│   ├── core/                #   config.py (pydantic-settings), logging.py
+│   ├── llm/                 #   providers.py (per-model config), service.py (stream_chat)
+│   ├── utils/               #   code_extract.py
+│   └── api/routes/          #   health.py, chat.py (SSE), files.py (download)
+├── prompts/                 # Prompt strings for LLaMA / GPT
+├── tests/                   # pytest suite (LLM mocked; no network)
+├── react_frontend/          # React + TS SPA (Vite; build/ served by nginx)
+├── docker/                  # Dockerfile.api + nginx config
+├── docker-compose.*.yml     # base + dev/prod overrides
+├── pyproject.toml           # ruff + mypy + pytest config
+├── requirements.txt         # backend deps (slim)
+└── requirements-dev.txt     # + pytest
 ```
 
 ## Prerequisites
 
 - Docker & Docker Compose **v2** (`docker compose`)
-- NVIDIA GPU + drivers + NVIDIA Container Toolkit (for the LLaMA/FastAPI service)
-- For manual (non-Docker) setup: Python 3.9, Node.js 18+, PostgreSQL 14+
+- NVIDIA GPU + drivers + NVIDIA Container Toolkit — required only for the `vllm` service
+- For manual (non-Docker) setup: Python 3.9, Node.js 18+
 
 ## Quickstart (Docker)
 
 ```bash
 # 1. Configure environment
 cp .env.example .env
-#    then edit .env — set SECRET_KEY, DB/POSTGRES credentials, OPENAI_API_KEY, hf_token
+#    set OPENAI_API_KEY, hf_token, and the LLAMA_* / VLLM_* values as needed
 
-# 2. Build and start the dev stack (web + fastapi + nginx + db), tailing logs
+# 2. Build the SPA so nginx has something to serve
+cd react_frontend && yarn install && yarn build && cd ..
+
+# 3. Build + start the dev stack (vllm + api + nginx), tailing logs
 make up-dev
-
-# 3. Apply database migrations (first run)
-docker compose -f docker-compose.base.yml -f docker-compose.dev.yml \
-  exec web python manage.py migrate
 
 # Stop it
 make down-dev
 ```
 
-Run `make help` to list all targets (`up-dev`, `down-dev`, `up-prod`, `down-prod`, `logs`,
-`rebuild-dev`, `clean`).
+Run `make help` to list all targets. Services once up:
 
-Services once up:
+| Service  | URL / port            |
+| -------- | --------------------- |
+| nginx    | http://localhost:80   |
+| FastAPI  | http://localhost:8002 |
+| vLLM     | http://localhost:8000 |
 
-| Service       | URL / port              |
-| ------------- | ----------------------- |
-| Django (API)  | http://localhost:8001   |
-| FastAPI agent | http://localhost:8002   |
-| Nginx         | http://localhost:80     |
+> **No GPU?** The `vllm` service needs an NVIDIA host. On a laptop, skip Docker for the backend and
+> run it directly (below), pointing `LLAMA_BASE_URL` at a remote vLLM — or just use GPT.
 
 ## Manual setup (without Docker)
 
 ```bash
 # --- Backend ---
 python3.9 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env            # edit values; set DB_HOST=localhost
+pip install -r requirements-dev.txt
+cp .env.example .env            # set OPENAI_API_KEY, LLAMA_BASE_URL, etc.
 
-python manage.py migrate
-python manage.py collectstatic --noinput
-daphne -b 0.0.0.0 -p 8001 project_1.asgi:application        # Django (ASGI)
-uvicorn fastapi_agent.main:app --host 0.0.0.0 --port 8002   # FastAPI (separate shell)
+uvicorn app.main:app --reload --port 8002       # needs a reachable model server
+pytest                                          # run the test suite
 
 # --- Frontend (Vite + TypeScript) ---
 cd react_frontend
 yarn install
-yarn dev          # dev server on :3000, proxies /api -> :8001 and /agent -> :8002
-yarn build        # production build -> react_frontend/build (served by Django under /static/)
+yarn dev          # dev server on :3000, proxies /api -> :8002
+yarn build        # production build -> react_frontend/build (served by nginx)
 yarn typecheck    # tsc --noEmit
 yarn lint         # ESLint (--fix)
 ```
 
-> The dev server proxies API/SSE calls to the backends, so you can run just the frontend
-> (`yarn dev`) against a running Django + FastAPI and iterate without CORS setup. Backend base
-> URLs are configurable via `VITE_API_URL` / `VITE_AGENT_URL` (see `.env.development`).
+> The dev server proxies `/api` to the backend, so you can run just the frontend (`yarn dev`)
+> against a running FastAPI and iterate without CORS setup. The backend base URL is configurable
+> via `VITE_API_URL`.
 
 ## Environment variables
 
-All configuration is read from `.env` (git-ignored). See [`.env.example`](./.env.example) for the
-full, documented list. Key groups:
+All configuration is read from `.env` (git-ignored) via `pydantic-settings`; unknown keys are
+ignored. See [`.env.example`](./.env.example) for the documented list. Key groups:
 
-- **Django** — `SECRET_KEY`, `DEBUG`, `DJANGO_ENV`, `ALLOWED_HOSTS`, `CORS_ALLOWED_ORIGINS`, `CSRF_TRUSTED_ORIGINS`
-- **Database** — `DB_NAME`/`DB_USER`/`DB_PASSWORD`/`DB_HOST`/`DB_PORT` (Django) and the matching
-  `POSTGRES_DB`/`POSTGRES_USER`/`POSTGRES_PASSWORD` (Postgres container)
-- **Models** — `OPENAI_API_KEY`, `hf_token`, `HF_CACHE_DIR`
+- **HTTP** — `CORS_ALLOWED_ORIGINS` (comma-separated), `LOG_LEVEL`
+- **GPT** — `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENAI_BASE_URL`, `GPT_TEMPERATURE`, `GPT_MAX_TOKENS`
+- **Local LLaMA (vLLM)** — `LLAMA_BASE_URL`, `LLAMA_MODEL`, `LLAMA_API_MODE` (`completion`|`chat`),
+  `LLAMA_TEMPERATURE`, `LLAMA_MAX_TOKENS`, `LLAMA_REPETITION_PENALTY`
+- **vLLM container** — `VLLM_DTYPE`, `VLLM_MAX_MODEL_LEN`, `VLLM_GPU_MEMORY_UTILIZATION`,
+  `VLLM_TENSOR_PARALLEL_SIZE`, `hf_token`
+
+`LLAMA_API_MODE=completion` (default) sends a raw prompt to vLLM's `/v1/completions`, matching the
+fine-tune's training format; set `chat` if you serve a chat template.
 
 ## Development tooling
 
 ```bash
+pip install -r requirements-dev.txt
+pytest                      # unit tests (config, providers, code extraction, SSE, downloads)
+
 pip install pre-commit
-pre-commit install          # install the git hook
-pre-commit run --all-files  # ruff (lint+format), mypy, hygiene, frontend prettier/eslint
+pre-commit install
+pre-commit run --all-files  # ruff (lint+format), mypy, frontend prettier/eslint
 ```
 
-- **Backend:** [ruff](https://docs.astral.sh/ruff/) for lint + format and mypy for type checks,
-  configured in [`pyproject.toml`](./pyproject.toml).
+- **Backend:** [ruff](https://docs.astral.sh/ruff/) for lint + format and mypy, configured in
+  [`pyproject.toml`](./pyproject.toml). Tests use FastAPI's `TestClient` and mock the LLM, so they
+  never hit OpenAI or vLLM.
 - **Frontend:** ESLint + Prettier (`cd react_frontend && yarn lint && yarn prettier`).
 
 ## Notes
 
-- The React SPA is built with Vite to `react_frontend/build/` and served by Django under
-  `/static/` (see `TEMPLATES` / `STATICFILES_DIRS` in `project_1/settings/base.py`). The build
-  output is **not** committed (git-ignored) — run `yarn build` before `collectstatic` / Docker.
-- WebSocket consumers under `app_1/consumers/` are retained for reference but superseded by FastAPI SSE.
+- The React SPA is built with Vite to `react_frontend/build/` and served by **nginx** at the web
+  root. The build output is git-ignored — run `yarn build` before `make up-*`.
+- TLS is not wired into the base nginx config; add a cert-aware server block in the prod override
+  before deploying publicly.
+- `requirements.legacy.txt` preserves the pre-refactor dependency set (Django + the
+  torch/transformers/BGPStream training stack) for reference only.

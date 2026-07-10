@@ -6,21 +6,13 @@ export interface ChangelogEntry {
 
 export const whatsNew: ChangelogEntry[] = [
   {
-    title: 'Upgraded GPT Backend to GPT-5.4-mini',
+    title: 'Major 2026 Refactor: New Frontend, vLLM Serving & Unified Backend',
     detail:
-      'On July 10th, we migrated the GPT comparison backend from GPT-4o-mini to GPT-5.4-mini, as the GPT-4o model family reached end-of-life and was deprecated. This update brings:\n' +
-      '• A newer, more capable model for BGP analysis code generation\n' +
-      '• Continued head-to-head comparison against BGP-LLaMA\n' +
-      '• A configurable model id (via the OPENAI_MODEL environment variable) for easier future upgrades.',
-    date: '2026-07-10',
-  },
-  {
-    title: 'Frontend Rebuilt with a New Design System',
-    detail:
-      'On July 10th, we rebuilt the web frontend from the ground up for a faster, cleaner, and more maintainable experience. Key updates include:\n' +
-      '• Migrated from Create React App to Vite with full TypeScript support\n' +
-      '• Redesigned the interface with Tailwind CSS and a dark, control-plane visual theme\n' +
-      '• Reworked the chat, dataset, and fine-tuning pages with clearer navigation and richer dataset detail views.',
+      'A ground-up modernization of the platform, spanning the whole stack:\n' +
+      '• Frontend: rebuilt from Create React App to Vite + TypeScript, redesigned with Tailwind CSS and shadcn/ui in a dark, control-plane theme, with reworked chat, dataset, and fine-tuning pages\n' +
+      '• GPT backend: migrated from GPT-4o-mini to GPT-5.4-mini (the GPT-4o family reached end-of-life), with a configurable model id via OPENAI_MODEL\n' +
+      '• Model serving: BGP-LLaMA now runs on vLLM behind an OpenAI-compatible API, so the local model and GPT share a single streaming path\n' +
+      '• Backend: consolidated the two-service (Django + FastAPI) design into one lean FastAPI service — lower-overhead streaming and a simpler, more maintainable architecture.',
     date: '2026-07-10',
   },
   {

@@ -1,13 +1,7 @@
 # Development override. Use via `make up-dev`.
 services:
-  web:
+  api:
     environment:
-      - DJANGO_SETTINGS_MODULE=project_1.settings.development
-
-  fastapi:
-    environment:
-      - ENV=development
-
-  nginx:
+      ENV: development
     ports:
-      - "80:80"
+      - "8002:8002"  # expose the backend directly for local debugging

@@ -1,9 +1,0 @@
-# Minimal deps for the FastAPI SSE agent. Inference now runs in the separate
-# vLLM service, so this image no longer needs torch / transformers / pybgpstream
-# — the agent only talks to OpenAI-compatible endpoints over HTTP.
-#
-# Versions are pinned to match the root requirements.txt (the Django/daphne image).
-fastapi==0.111.0
-uvicorn[standard]==0.31.0
-openai==1.52.2
-django-environ==0.11.2

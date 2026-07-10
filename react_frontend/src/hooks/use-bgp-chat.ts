@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
-import { agentUrl } from '@/config';
+import { apiUrl } from '@/config';
 import type { ChatMessage, ChatModel, ChatTab, SseEvent } from '@/types';
 
 let nextTabId = 2;
@@ -58,7 +58,7 @@ export function useBgpChat() {
     closeStream();
 
     const endpoint = selectedModel === 'bgp_llama' ? 'bgp_llama' : 'bgp_gpt';
-    const source = new EventSource(agentUrl(`${endpoint}?query=${encodeURIComponent(query)}`));
+    const source = new EventSource(apiUrl(`chat/${endpoint}?query=${encodeURIComponent(query)}`));
     eventSourceRef.current = source;
 
     source.onmessage = (event) => {

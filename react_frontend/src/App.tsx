@@ -1,6 +1,4 @@
-import { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { fetchCsrfToken } from '@/lib/api';
 import { RootLayout, ChatLayout } from '@/components/layout/layouts';
 import { HomePage } from '@/pages/home-page';
 import { DatasetPage } from '@/pages/dataset-page';
@@ -10,11 +8,6 @@ import { BgpChatPage } from '@/pages/bgp-chat-page';
 import { NotFoundPage } from '@/pages/not-found-page';
 
 export function App() {
-  // Prime the CSRF cookie once so later mutating requests are accepted.
-  useEffect(() => {
-    void fetchCsrfToken();
-  }, []);
-
   return (
     <Routes>
       <Route element={<RootLayout />}>

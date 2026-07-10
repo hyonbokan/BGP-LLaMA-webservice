@@ -23,11 +23,8 @@ env/
 *.log
 debug.log
 
-# NOTE: Django migrations MUST be committed. Only ignore their bytecode.
-**/migrations/__pycache__/
-**/migrations/*.pyc
-
 # --- Node / frontend ---
+node_modules/
 react_frontend/node_modules/
 react_frontend/node_modules/.cache/
 react_frontend/build/
@@ -37,10 +34,6 @@ react_frontend/.vite/
 
 # --- Local-only notes / planning / handoff (never committed) ---
 notes/
-
-# --- Databases ---
-db.sqlite3
-*.sqlite3
 
 # --- Generated static files (produced by `collectstatic`) ---
 staticfiles/

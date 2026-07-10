@@ -1,6 +1,10 @@
-# Tooling config for the Python backend (Django ASGI app + FastAPI agent).
-# There is no packaging here — this file only configures ruff and mypy so that
-# pre-commit and local runs share one source of truth.
+# Tooling config for the FastAPI backend (app/). There is no packaging here —
+# this file only configures ruff and mypy so pre-commit and local runs share one
+# source of truth.
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
 
 [tool.ruff]
 target-version = "py39"
@@ -26,7 +30,6 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]  # re-exports
-"project_1/settings/*.py" = ["F403", "F405"]  # `from .base import *` is intentional
 
 [tool.ruff.format]
 # Use ruff defaults (Black-compatible: double quotes, 4-space indent).
@@ -45,10 +48,4 @@ exclude = [
     "staticfiles/",
     "media/",
     "build/",
-    ".*/migrations/.*",
 ]
-
-# Django's dynamic attributes trip up mypy; skip the settings package.
-[[tool.mypy.overrides]]
-module = "project_1.settings.*"
-ignore_errors = true

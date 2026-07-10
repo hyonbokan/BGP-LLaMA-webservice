@@ -4,26 +4,9 @@
 # (The `version:` key is intentionally omitted — it is obsolete in Compose v2.)
 
 services:
-  # Django ASGI app served by Daphne (HTTP API + WebSockets).
-  web:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.daphne
-    container_name: bgp-llama-daphne
-    restart: unless-stopped
-    env_file: .env
-    ports:
-      - "8001:8001"
-    volumes:
-      # collectstatic writes here; host Nginx / the nginx service serves it.
-      - ./staticfiles:/app/staticfiles
-    depends_on:
-      db:
-        condition: service_healthy
-
   # vLLM serves the fine-tuned BGP-LLaMA behind an OpenAI-compatible /v1 API.
-  # The local model and hosted GPT are both reached through the same openai SDK
-  # now — the only difference is base_url/key/model (see fastapi_agent/config.py).
+  # The local model and hosted GPT are both reached through the same openai SDK;
+  # the only difference is base_url/key/model (see app/llm/providers.py).
   # Requires an NVIDIA GPU host. For GPU-less local dev, don't start this service
   # and point LLAMA_BASE_URL at a vLLM running elsewhere (or use GPT only).
   vllm:
@@ -39,8 +22,6 @@ services:
       - "--gpu-memory-utilization=${VLLM_GPU_MEMORY_UTILIZATION:-0.90}"
       - "--tensor-parallel-size=${VLLM_TENSOR_PARALLEL_SIZE:-1}"
     environment:
-      # Needed to pull gated/private weights from the Hub (lowercase name, matches
-      # the rest of the project). Empty is fine for a fully public repo.
       HUGGING_FACE_HUB_TOKEN: ${hf_token:-}
       HF_HOME: /cache/huggingface
     shm_size: "2gb"
@@ -56,7 +37,6 @@ services:
               count: all
               capabilities: ["gpu"]
     healthcheck:
-      # vLLM ships python (no curl); poll its /health with urllib.
       test:
         - "CMD-SHELL"
         - "python -c \"import sys,urllib.request; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/health').status==200 else 1)\""
@@ -65,65 +45,38 @@ services:
       retries: 20
       start_period: 300s  # first boot downloads + loads the weights
 
-  # FastAPI microservice for LLaMA / GPT SSE streaming. No longer GPU-backed —
-  # it just proxies to vLLM (local model) and OpenAI (GPT) over HTTP.
-  fastapi:
+  # The one backend: FastAPI (gunicorn + uvicorn workers). CPU-only — it proxies
+  # to vLLM (local model) and OpenAI (GPT) over HTTP. No in-process inference.
+  api:
     build:
       context: .
-      dockerfile: docker/Dockerfile.fastapi
-    container_name: bgp-llama-fastapi
+      dockerfile: docker/Dockerfile.api
+    container_name: bgp-llama-api
     restart: unless-stopped
     env_file: .env
-    ports:
-      - "8002:8002"
     environment:
       # Reach the co-located vLLM over the compose network. Overrides any
       # LLAMA_BASE_URL in .env (which targets a host-run vLLM for local dev).
       LLAMA_BASE_URL: http://vllm:8000/v1
+    volumes:
+      # Artifacts exposed by /api/download live here.
+      - ./media:/app/media:ro
     depends_on:
-      db:
-        condition: service_healthy
       vllm:
         condition: service_healthy
 
+  # nginx serves the React SPA build directly and proxies /api to the backend.
   nginx:
     image: nginx:latest
     container_name: bgp-llama-nginx
     restart: unless-stopped
     ports:
       - "80:80"
-      - "443:443"
     volumes:
       - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./staticfiles:/staticfiles:ro
-      - ./media:/media:ro
-      # SSL certificates (Certbot / Let's Encrypt on the host).
-      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - ./react_frontend/build:/usr/share/nginx/html:ro
     depends_on:
-      - web
-      - fastapi
-
-  db:
-    image: postgres:13
-    container_name: bgp-llama-db
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  # redis:
-  #   image: redis:6-alpine
-  #   ports:
-  #     - "6379:6379"
+      - api
 
 volumes:
-  pgdata:
   hf_cache:  # vLLM's Hugging Face weight/download cache (survives restarts)

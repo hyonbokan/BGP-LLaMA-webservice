@@ -1,0 +1,35 @@
+FROM python:3.9-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# Only curl, for the container HEALTHCHECK. No build toolchain: all deps
+# (fastapi, uvicorn, gunicorn, openai, pydantic-settings) are pure-Python wheels.
+# Inference lives in the vLLM service, so no torch/transformers/BGPStream here.
+RUN apt-get update && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt /app/requirements.txt
+RUN pip install --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
+
+COPY app /app/app
+COPY prompts /app/prompts
+
+# Run as a non-root user.
+RUN useradd --create-home --uid 10001 appuser && chown -R appuser /app
+USER appuser
+
+EXPOSE 8002
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD curl -fsS http://localhost:8002/api/health || exit 1
+
+# gunicorn process manager + uvicorn async workers. --timeout 300 keeps long SSE
+# streams from tripping the worker watchdog.
+CMD ["gunicorn", "app.main:app", \
+     "-k", "uvicorn.workers.UvicornWorker", \
+     "-w", "2", "-b", "0.0.0.0:8002", \
+     "--timeout", "300", "--graceful-timeout", "30"]

@@ -1,42 +1,56 @@
 ## Project Overview
 
 BGP-LLaMA Webservice is an AI-powered platform for **BGP routing analysis and anomaly detection**.
-It combines an instruction fine-tuned **LLaMA** model with **GPT (gpt-5.4-mini)**, streams model
-output to the browser over SSE, and can execute the analysis code the model generates. Both models
-are reached through one OpenAI-compatible client: the local LLaMA is served by **vLLM** and GPT by
-OpenAI, so the agent differs per model only by base URL/key/model. It has three components:
+It combines an instruction fine-tuned **LLaMA** model with **GPT (gpt-5.4-mini)** and streams model
+output to the browser over SSE. Both models are reached through one OpenAI-compatible client — the
+local LLaMA is served by **vLLM**, GPT by OpenAI — so they differ only by base URL / key / model.
+Two components:
 
-- **Django backend (ASGI/Daphne)** — REST API, auth/sessions, chat-history persistence, and serves
-  the built React SPA. Code in `app_1/` (app) and `project_1/` (project config).
-- **FastAPI agent** — LLaMA/GPT SSE streaming microservice. Thin, CPU-only: it proxies to vLLM
-  (local model) and OpenAI (GPT) over HTTP — no in-process inference. Code in `fastapi_agent/`
-  (`config.py` = per-provider settings, `services/llm_service.py` = the unified streaming client).
+- **FastAPI backend** — the single Python service (`app/`). Streams LLaMA/GPT over SSE and serves
+  file downloads. CPU-only: it proxies to vLLM (local model) and OpenAI (GPT) over HTTP — **no
+  in-process inference**. Runs under gunicorn + uvicorn workers.
 - **React frontend** — Vite + React 18 + **TypeScript** SPA in `react_frontend/`, styled with
   Tailwind CSS + shadcn/ui. (Migrated off Create React App; MUI and Redux were removed.)
 
-Backend Python (Django + FastAPI) lives at the repository root — there is **no** `backend/`
-directory. See [README.md](README.md) for architecture and setup.
+> **History:** this was a Django (Daphne) + FastAPI two-process app. Django owned auth/ORM/admin but
+> none of it was actually used (dead model, empty admin, no live auth), and Django already streamed
+> SSE natively — so it was removed. The backend is now pure FastAPI. `requirements.legacy.txt`
+> preserves the old full dependency set (Django + the torch/transformers/BGPStream training stack).
+
+Backend Python lives at the repository root under `app/` — there is **no** `backend/` directory.
+
+### Backend layout (`app/`)
+
+```
+app/
+  main.py                 # app factory: CORS, router mounts (everything under /api)
+  core/config.py          # pydantic-settings Settings (single env-driven config source)
+  llm/providers.py        # ProviderConfig + get_provider("gpt"|"llama")
+  llm/service.py          # stream_chat() — the unified OpenAI-compatible streaming client
+  utils/code_extract.py   # pull the ```python block out of a reply
+  api/routes/
+    health.py             # GET /api/health
+    chat.py               # GET /api/chat/bgp_gpt, /api/chat/bgp_llama  (SSE)
+    files.py              # GET /api/download                          (traversal-guarded)
+prompts/                  # prompt strings (pure data, no heavy imports)
+```
 
 ## Common Commands
 
 ### Docker (primary workflow)
 
 ```bash
-make up-dev        # Build + start dev stack (web + fastapi + nginx + db), tail logs
+make up-dev        # Build + start dev stack (vllm + api + nginx), tail logs
 make down-dev      # Stop dev stack
 make up-prod       # Build + start prod stack
 make down-prod     # Stop prod stack
 make logs          # Tail all logs
 make rebuild-dev   # Force a fresh dev rebuild
 make clean         # Prune unused Docker resources
-make help          # List targets
 ```
 
-Uses Docker Compose **v2** (`docker compose`). Run migrations after first start:
-
-```bash
-docker compose -f docker-compose.base.yml -f docker-compose.dev.yml exec web python manage.py migrate
-```
+Uses Docker Compose **v2** (`docker compose`). No migrations / collectstatic step anymore.
+`vllm` needs an NVIDIA GPU host (see Deployment).
 
 ### Backend (manual, from repo root)
 
@@ -46,82 +60,88 @@ Always run Python tooling through the project virtualenv, never a global `python
 python3.9 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
-python manage.py migrate
-python manage.py collectstatic --noinput
-daphne -b 0.0.0.0 -p 8001 project_1.asgi:application        # Django (ASGI)
-uvicorn fastapi_agent.main:app --host 0.0.0.0 --port 8002   # FastAPI agent
+# Dev (reload): needs a reachable model server — set LLAMA_BASE_URL / OPENAI_API_KEY in .env
+uvicorn app.main:app --reload --port 8002
+# Prod-style:
+gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 2 -b 0.0.0.0:8002 --timeout 300
 ```
 
 ### Frontend (from `react_frontend/`)
 
 ```bash
 yarn install      # Node 18+ (.yarnrc sets --ignore-engines for Node 23)
-yarn dev          # Vite dev server on :3000, proxies /api -> :8001 and /agent -> :8002
-yarn build        # production build -> build/ (served by Django under /static/)
+yarn dev          # Vite dev server on :3000, proxies /api -> :8002
+yarn build        # production build -> build/ (served by nginx at web root)
 yarn typecheck    # tsc --noEmit
 yarn lint         # ESLint (--fix)
 yarn prettier     # Prettier (--write)
 ```
 
-Config lives in `src/config.ts`; backend origins are overridable via `VITE_API_URL` /
-`VITE_AGENT_URL` (`.env.development`). No hardcoded backend hostnames.
+Config lives in `src/config.ts`; the backend origin is overridable via `VITE_API_URL`. No hardcoded
+backend hostnames.
 
-### Linting (from repo root)
+### Tests & linting (from repo root)
 
 ```bash
+pip install -r requirements-dev.txt
+pytest                      # unit tests in tests/ (LLM is mocked — no network)
+
 pre-commit install
-pre-commit run --all-files
+pre-commit run --all-files  # ruff (lint+fix), ruff-format, mypy
 ```
+
+Tests use FastAPI's `TestClient` and monkeypatch `stream_chat`, so they never hit
+OpenAI or vLLM. Cover: config parsing, provider mapping, code extraction, the SSE
+event sequence (incl. the error path), and the download traversal guard.
 
 ## Code Style
 
-- **Backend:** Ruff for lint + format (line-length 100, target py39) and mypy, both configured in
-  `pyproject.toml`. Do not add a `backend/` prefix to paths — Python is at the root.
+- **Backend:** Ruff for lint + format (line-length 100, target py39) and mypy, both in
+  `pyproject.toml`. Python is at the root under `app/` — no `backend/` prefix.
 - **Frontend:** TypeScript (strict), ESLint (flat config) + Prettier. Styling via Tailwind +
   shadcn/ui primitives in `src/components/ui/`; the `cn()` helper is in `src/lib/utils.ts`. Amber
   (`--anomaly` / the `anomaly` color) is reserved for routing anomalies/alerts — don't reuse it.
-- Django settings are split: `project_1/settings/base.py` with `development.py` / `production.py`
-  overrides, selected by `DJANGO_ENV` (or an explicit `DJANGO_SETTINGS_MODULE`).
 
 ## Development Guidelines
 
-1. **Read existing code first** — match the patterns already in `app_1/` and `fastapi_agent/`.
-2. **Reuse existing helpers** — check `app_1/utils/` (code extraction/execution, model loading,
-   stop criteria) before writing new ones.
-3. **Keep it simple** — this is a research codebase; prefer straightforward implementations.
-4. **Two backends, one repo** — Django (`:8001`) and FastAPI (`:8002`) are separate services behind
-   Nginx (`/agent/*` → FastAPI, everything else → Django). Keep that boundary clear.
-5. **SSE is the live path; WebSockets are legacy** — new streaming work goes through the FastAPI
-   agent, not the `app_1/consumers/` WebSocket consumers.
+1. **Read existing code first** — match the patterns already in `app/`.
+2. **Config is env-driven** — add settings to `app/core/config.py` (pydantic-settings), never
+   hardcode URLs / keys / model names.
+3. **One provider path** — GPT and LLaMA both flow through `stream_chat()` in `app/llm/service.py`;
+   per-model differences belong in `app/llm/providers.py`, not in the routes.
+4. **Everything under `/api`** — routers are mounted with the `/api` prefix; nginx serves the SPA and
+   proxies `/api` to the backend.
+5. **Keep it simple** — this is a research codebase; prefer straightforward implementations.
 
 ## Configuration & Secrets
 
-- All config comes from `.env` (git-ignored); template in `.env.example`.
-- `.env` is read by both Django (`project_1/settings/base.py`) and FastAPI (`fastapi_agent/main.py`)
-  via `django-environ`.
-- Keep `DB_*` (Django) and `POSTGRES_*` (Postgres container) values in sync.
-- Model access needs `OPENAI_API_KEY` and `hf_token` (note the lowercase name, read in
-  `app_1/utils/model_loader.py`).
+- All config comes from `.env` (git-ignored); template in `.env.example`. Read via
+  `pydantic-settings` in `app/core/config.py`; unknown keys are ignored.
+- Key vars: `OPENAI_API_KEY`, `OPENAI_MODEL`, the `LLAMA_*` block (`LLAMA_BASE_URL`, `LLAMA_MODEL`,
+  `LLAMA_API_MODE`=`completion`|`chat`, …), the `VLLM_*` tuning block, and `hf_token` (lowercase —
+  used by the vLLM container to pull weights).
+- `LLAMA_API_MODE=completion` (default) sends a raw prompt to vLLM's `/v1/completions`, matching the
+  fine-tune's training format; set `chat` if you serve with a chat template.
 
 ## Deployment & DevOps
 
-- Docker Compose: `docker-compose.base.yml` + a `dev`/`prod` override (via the Makefile).
-- Nginx terminates TLS (Certbot / Let's Encrypt) and reverse-proxies both backends; SSE routes
-  disable buffering.
-- The **`vllm`** service is the GPU-backed piece (NVIDIA runtime) and serves the local model over an
-  OpenAI-compatible `/v1` API; it caches weights in the `hf_cache` volume. The `fastapi` service is
-  now CPU-only and reaches it at `http://vllm:8000/v1` (set via `LLAMA_BASE_URL` on the service).
-  Tune vLLM via `VLLM_*` env vars; needs a GPU host, so on a GPU-less machine skip the `vllm`
-  service and point `LLAMA_BASE_URL` at a vLLM elsewhere (or use GPT only).
-- `docker/Dockerfile.fastapi` installs only `docker/requirements.fastapi.txt` (fastapi/uvicorn/
-  openai/django-environ) — **not** the root `requirements.txt`. The root file's `torch`/
-  `transformers`/BGPStream stack is only for the daphne image (Django + the generated-code executor).
-- The React `build/` is git-ignored — run `yarn build` before `collectstatic` / Docker image builds
-  so Django can serve the SPA under `/static/`.
+- Docker Compose: `docker-compose.base.yml` + a `dev`/`prod` override (via the Makefile). Services:
+  `vllm`, `api`, `nginx`.
+- **`vllm`** is the only GPU-backed service (NVIDIA runtime); it serves the local model over an
+  OpenAI-compatible `/v1` API and caches weights in the `hf_cache` volume. `api` reaches it at
+  `http://vllm:8000/v1` (set via `LLAMA_BASE_URL` on the service). Tune via `VLLM_*`. On a GPU-less
+  machine, skip `vllm` and point `LLAMA_BASE_URL` at a vLLM elsewhere (or use GPT only).
+- **`api`** builds from `docker/Dockerfile.api` (slim: `requirements.txt` = fastapi/uvicorn/gunicorn/
+  openai/httpx/pydantic-settings, no ML libs). Listens on `:8002`.
+- **nginx** serves `react_frontend/build` at the web root (SPA fallback to `index.html`) and proxies
+  `/api` → `api:8002` with buffering off for SSE. TLS is not wired in the base config — add a
+  cert-aware server block + Let's Encrypt mounts in the prod override when deploying publicly.
+- Run `yarn build` before `make up-*` so nginx has a build to serve (`react_frontend/build` is
+  git-ignored).
 
 ## Gotchas
 
-- Django migrations **must** be committed; `.gitignore` only excludes their bytecode.
-- `staticfiles/` is generated by `collectstatic` and git-ignored — do not hand-edit it.
-- Production channel layer uses Redis (`channels_redis`); the Redis service in compose is currently
-  commented out — enable it before relying on WebSocket production features.
+- `staticfiles/` and `debug.log` are **orphaned Django leftovers** — safe to delete.
+- `requirements.legacy.txt` is kept for reference only; nothing uses it.
+- The frontend's fine-tuning page posts to `/api/finetuning`, which **has no backend** — it's an
+  unimplemented feature, not a regression.

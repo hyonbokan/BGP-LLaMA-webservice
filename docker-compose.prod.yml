@@ -1,14 +1,8 @@
 # Production override. Use via `make up-prod`.
+# NOTE: TLS termination (443 + Let's Encrypt) needs a cert-aware nginx config;
+# the base nginx.conf is HTTP-only. Add the TLS server block + cert mounts here
+# when deploying behind a public domain.
 services:
-  web:
+  api:
     environment:
-      - DJANGO_SETTINGS_MODULE=project_1.settings.production
-
-  fastapi:
-    environment:
-      - ENV=production
-
-  nginx:
-    ports:
-      - "80:80"
-      - "443:443"
+      ENV: production

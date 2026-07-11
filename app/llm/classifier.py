@@ -11,12 +11,12 @@ from app.core.logging import get_logger
 from app.llm.clients import get_client
 from app.llm.providers import get_provider
 from app.llm.schemas import AnalysisType, BgpIntent
-from prompts.loader import load_prompt
+from prompts.loader import PromptTemplate, load_prompt
 
 logger = get_logger(__name__)
 
 # The classifier system prompt is static (no per-request variables) → load once.
-_CLASSIFY_SYSTEM = load_prompt("classify_system")
+_CLASSIFY_SYSTEM = load_prompt(PromptTemplate.CLASSIFY_SYSTEM)
 
 # Classification always runs on the hosted GPT provider; the fine-tuned LLaMA is
 # not relied on for structured output.

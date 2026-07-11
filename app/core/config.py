@@ -65,7 +65,9 @@ class Settings(BaseSettings):
     agent_pod_url: str = "http://localhost:8080"
     agent_pod_token: str = ""
     agent_model: str = "gpt-5.4-mini-2026-03-17"
-    agent_tools: str = "Bash,Read,Write"
+    # bgp_fetch_bgp_updates is the pod's MCP data tool (declared in the pod's
+    # AGENT_MCP_SERVERS); Bash/Read/Write let the agent analyze the records.
+    agent_tools: str = "bgp_fetch_bgp_updates,Bash,Read,Write"
     agent_max_budget_usd: float | None = None
     agent_request_timeout: int = 600
 

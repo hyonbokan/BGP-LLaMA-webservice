@@ -9,6 +9,7 @@ of silently leaking a placeholder — callers must pass the full variable set
 
 from __future__ import annotations
 
+from enum import StrEnum
 from functools import lru_cache
 from pathlib import Path
 
@@ -17,6 +18,20 @@ from jinja2 import Environment, FileSystemLoader, StrictUndefined
 from prompts.jinja_env import build_prompt_environment
 
 _TEMPLATES_DIR = Path(__file__).parent / "templates"
+
+
+class PromptTemplate(StrEnum):
+    """Fixed template stems that aren't analysis types (those live in ``AnalysisType``).
+
+    The value is the file stem under ``templates/`` (without ``.j2``). Referencing a
+    prompt through this enum keeps the name in one place instead of scattered string
+    literals, so a rename or typo is caught rather than failing at render time.
+    """
+
+    AGENT_SYSTEM = "agent_system"
+    BASE_SETUP = "base_setup"
+    CLASSIFY_SYSTEM = "classify_system"
+    COMPACT_SYSTEM = "compact_system"
 
 
 @lru_cache(maxsize=1)

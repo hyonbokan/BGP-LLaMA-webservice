@@ -16,6 +16,7 @@ a running heartbeat.
 import json
 from collections.abc import AsyncIterator
 from dataclasses import dataclass
+from enum import StrEnum
 from pathlib import Path
 from typing import Any
 
@@ -24,13 +25,21 @@ import httpx
 from app.core.config import Settings, get_settings
 from app.core.logging import get_logger
 from app.llm.classifier import classify_intent
-from app.llm.service import build_prompt
+from app.llm.schemas import BgpIntent
+from prompts.loader import PromptTemplate, load_prompt
 
 logger = get_logger(__name__)
 
 
 class PodError(Exception):
     """The pod could not be reached or refused the run (bad config, auth, or HTTP status)."""
+
+
+class PodEvent(StrEnum):
+    """Named SSE events the pod emits that this client acts on (others are ignored)."""
+
+    COST = "cost"
+    DONE = "done"
 
 
 @dataclass
@@ -68,7 +77,7 @@ async def run_agent(query: str, prior_findings: str | None = None) -> AsyncItera
         raise PodError("AGENT_POD_TOKEN is not set; the pod refuses unauthenticated runs")
 
     intent = await classify_intent(query)
-    system_prompt = build_prompt("gpt", intent)
+    system_prompt = _agent_system_prompt(intent)
     if prior_findings:
         system_prompt = f"{system_prompt}\n\n## Prior findings\n{prior_findings}"
 
@@ -88,6 +97,23 @@ async def run_agent(query: str, prior_findings: str | None = None) -> AsyncItera
                     yield event
     except httpx.HTTPError as exc:  # connection refused, read timeout, etc.
         raise PodError(f"could not reach the agent pod: {exc}") from exc
+
+
+def _agent_system_prompt(intent: BgpIntent) -> str:
+    """Render the autonomous-analyst system prompt, seeding any parsed parameters.
+
+    Unlike the generate-only chat prompt, this instructs the agent to write and run
+    pybgpstream code and report findings without asking clarifying questions.
+    """
+    window = intent.time_window
+    return load_prompt(
+        PromptTemplate.AGENT_SYSTEM,
+        target_asn=intent.target_asn,
+        prefixes=intent.prefixes,
+        from_time=window.from_time if window else None,
+        until_time=window.until_time if window else None,
+        collectors=intent.collectors,
+    )
 
 
 def _run_body(settings: Settings, system_prompt: str, prompt: str) -> dict:
@@ -134,7 +160,7 @@ async def _relay(response: httpx.Response) -> AsyncIterator[AgentEvent]:
             yield Running()
             continue
         if line == "":  # blank line terminates a frame
-            if event_name == "done" and data_lines:
+            if event_name == PodEvent.DONE and data_lines:
                 yield _to_result(json.loads("\n".join(data_lines)))
             event_name, data_lines = None, []
             continue

@@ -18,7 +18,7 @@ from app.core.logging import get_logger
 from app.llm.clients import get_client
 from app.llm.providers import ProviderConfig, get_provider
 from app.llm.schemas import Turn
-from prompts.loader import load_prompt
+from prompts.loader import PromptTemplate, load_prompt
 
 logger = get_logger(__name__)
 
@@ -27,7 +27,7 @@ _CHARS_PER_TOKEN = 4
 # Compaction always summarizes through the hosted GPT provider (reliable, and it
 # keeps the summarization off the small local model even on the LLaMA path).
 _SUMMARIZER_PROVIDER = "gpt"
-_COMPACT_SYSTEM = load_prompt("compact_system")
+_COMPACT_SYSTEM = load_prompt(PromptTemplate.COMPACT_SYSTEM)
 
 
 @dataclass

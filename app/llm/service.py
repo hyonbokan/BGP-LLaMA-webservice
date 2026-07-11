@@ -15,7 +15,7 @@ from app.llm.classifier import classify_intent
 from app.llm.generation import Compacted, Event, generate
 from app.llm.memory import compact_history
 from app.llm.schemas import BgpIntent, Turn
-from prompts.loader import load_prompt
+from prompts.loader import PromptTemplate, load_prompt
 
 logger = get_logger(__name__)
 
@@ -42,7 +42,7 @@ def build_prompt(provider: str, intent: BgpIntent, summary: str | None = None) -
     parameters are filled into either. A compaction `summary` of earlier turns,
     when present, is appended so the model retains that context.
     """
-    template = "base_setup" if provider == "llama" else intent.analysis_type.value
+    template = PromptTemplate.BASE_SETUP if provider == "llama" else intent.analysis_type.value
     prompt = load_prompt(template, **_render_vars(intent))
     if summary:
         prompt = f"{prompt}\n\n## Earlier conversation (summarized)\n{summary}"

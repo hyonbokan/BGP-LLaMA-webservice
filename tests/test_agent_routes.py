@@ -121,6 +121,35 @@ def test_to_result_defaults_on_sparse_payload():
     assert result.text == "" and result.is_error is False and result.subtype is None
 
 
+def test_agent_system_prompt_is_autonomous_and_tool_driven():
+    from app.llm.agent import _agent_system_prompt
+    from app.llm.schemas import BgpIntent, TimeWindow
+
+    prompt = _agent_system_prompt(
+        BgpIntent(
+            target_asn="15169",
+            prefixes=["8.8.8.0/24"],
+            time_window=TimeWindow(from_time="2026-07-11 00:00:00", until_time="2026-07-11 00:20:00"),
+        )
+    )
+    low = prompt.lower()
+    # Autonomous (no clarifying questions) and driven by the fetch tool, not hand-written pybgpstream.
+    assert "bgp_fetch_bgp_updates" in prompt
+    assert "not write pybgpstream" in low
+    assert "never ask" in low and "autonomous" in low
+    # Parsed parameters are threaded into the prompt.
+    assert "8.8.8.0/24" in prompt and "AS15169" in prompt
+
+
+def test_agent_system_prompt_omits_parameter_block_when_empty():
+    from app.llm.agent import _agent_system_prompt
+    from app.llm.schemas import BgpIntent
+
+    prompt = _agent_system_prompt(BgpIntent())
+    assert "Parameters parsed from the request" not in prompt
+    assert "bgp_fetch_bgp_updates" in prompt
+
+
 # --------------------------------------------------------------------------- #
 # Client: run_agent builds the pod body and parses the pod's SSE (httpx faked).
 # --------------------------------------------------------------------------- #
@@ -200,7 +229,7 @@ def test_run_agent_parses_pod_stream_and_builds_body(monkeypatch):
         return BgpIntent()
 
     monkeypatch.setattr(agent_mod, "classify_intent", fake_classify)
-    monkeypatch.setattr(agent_mod, "build_prompt", lambda provider, intent, summary=None: "SYSTEM")
+    monkeypatch.setattr(agent_mod, "_agent_system_prompt", lambda intent: "SYSTEM")
     monkeypatch.setattr(
         agent_mod.httpx, "AsyncClient", lambda *a, **k: _FakeClientCtx(200, _POD_STREAM, capture)
     )
@@ -242,7 +271,7 @@ def test_run_agent_includes_workspace_when_data_root_exists(monkeypatch, tmp_pat
         return BgpIntent()
 
     monkeypatch.setattr(agent_mod, "classify_intent", fake_classify)
-    monkeypatch.setattr(agent_mod, "build_prompt", lambda provider, intent, summary=None: "SYSTEM")
+    monkeypatch.setattr(agent_mod, "_agent_system_prompt", lambda intent: "SYSTEM")
     monkeypatch.setattr(
         agent_mod.httpx, "AsyncClient", lambda *a, **k: _FakeClientCtx(200, _POD_STREAM, capture)
     )
@@ -278,7 +307,7 @@ def test_run_agent_raises_on_non_200(monkeypatch):
         return BgpIntent()
 
     monkeypatch.setattr(agent_mod, "classify_intent", fake_classify)
-    monkeypatch.setattr(agent_mod, "build_prompt", lambda provider, intent, summary=None: "SYSTEM")
+    monkeypatch.setattr(agent_mod, "_agent_system_prompt", lambda intent: "SYSTEM")
     monkeypatch.setattr(
         agent_mod.httpx, "AsyncClient", lambda *a, **k: _FakeClientCtx(401, [], capture)
     )

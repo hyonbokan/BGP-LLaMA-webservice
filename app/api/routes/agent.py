@@ -8,6 +8,7 @@ and re-streams the outcome over this backend's SSE. Distinct from `/api/chat/*`
 """
 
 import json
+from enum import StrEnum
 
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
@@ -18,6 +19,15 @@ from app.llm.agent import Running, RunResult, run_agent
 
 logger = get_logger(__name__)
 router = APIRouter()
+
+
+class AgentStatus(StrEnum):
+    """The `status` value on each SSE frame this endpoint emits."""
+
+    STARTED = "agent_started"
+    RUNNING = "running"
+    RESULT = "result"
+    ERROR = "error"
 
 
 class AgentRequest(BaseModel):
@@ -36,15 +46,15 @@ def _sse(data: dict) -> str:
 
 
 async def _event_stream(query: str, prior_findings: str | None):
-    yield _sse({"status": "agent_started"})
+    yield _sse({"status": AgentStatus.STARTED})
     try:
         async for event in run_agent(query, prior_findings):
             if isinstance(event, Running):
-                yield _sse({"status": "running"})
+                yield _sse({"status": AgentStatus.RUNNING})
             elif isinstance(event, RunResult):
                 yield _sse(
                     {
-                        "status": "result",
+                        "status": AgentStatus.RESULT,
                         "text": event.text,
                         "is_error": event.is_error,
                         "subtype": event.subtype,
@@ -56,7 +66,7 @@ async def _event_stream(query: str, prior_findings: str | None):
                 )
     except Exception as e:  # surface to the client instead of a dropped stream
         logger.exception("Agent run failed")
-        yield _sse({"status": "error", "message": str(e)})
+        yield _sse({"status": AgentStatus.ERROR, "message": str(e)})
         return
 
 

@@ -76,10 +76,13 @@ export function BgpAgentPage() {
   );
 }
 
+// Fully-specified tasks: the agent runs autonomously and won't ask follow-ups,
+// so a good prompt names the prefix, time window, collector, and expected origin.
 const EXAMPLES = [
-  'Analyze prefix 8.8.8.0/24 over the last 24 hours and flag any origin changes.',
-  'Did AS3356 announce any more-specific prefixes for AS15169 recently?',
-  'Check for MOAS conflicts on 1.1.1.0/24 in the latest RIB.',
+  'Analyze prefix 8.8.8.0/24 on RIPE RIS collector rrc00 between 2026-07-11 00:00 and ' +
+    '00:20 UTC. Treat AS15169 as the expected origin and flag any origin or AS-path changes.',
+  'Over the last 30 minutes on RIPE RIS (rrc00), check whether the origin AS for 1.1.1.0/24 ' +
+    'changed from AS13335, and report any MOAS conflicts.',
 ];
 
 function EmptyState({ onPick }: { onPick: (value: string) => void }) {
@@ -109,6 +112,10 @@ function EmptyState({ onPick }: { onPick: (value: string) => void }) {
         <div className="mt-8 flex flex-col gap-2">
           <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
             Try one
+          </p>
+          <p className="mb-1 text-xs text-muted-foreground/80">
+            The agent runs autonomously and won&apos;t ask follow-ups — be specific about the prefix,
+            time window, collector, and expected origin.
           </p>
           {EXAMPLES.map((example) => (
             <button

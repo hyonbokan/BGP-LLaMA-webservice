@@ -1,0 +1,4 @@
+# Runtime deps for the BGP MCP server. This layers onto the libBGPStream image
+# (docker/Dockerfile.bgpstream) — pybgpstream is built there, not pip-installable here.
+# `mcp` is the Model Context Protocol SDK (provides FastMCP).
+mcp>=1.2

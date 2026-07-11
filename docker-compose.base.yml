@@ -58,6 +58,14 @@ services:
       # Reach the co-located vLLM over the compose network. Overrides any
       # LLAMA_BASE_URL in .env (which targets a host-run vLLM for local dev).
       LLAMA_BASE_URL: http://vllm:8000/v1
+      # Reach the opencode-agent-pod for the BGP Agent feature. The pod runs on
+      # the host (`cd ../opencode-agent-pod && python -m pod`), not in this stack.
+      # Inside the container `localhost` is the container itself, so the .env
+      # value (localhost, for the host-run `make dev` backend) can't reach it;
+      # host.docker.internal resolves to the host on Docker Desktop. Overrides
+      # AGENT_POD_URL from .env; AGENT_POD_TOKEN/AGENT_MODEL still come from .env.
+      # (On a Linux host, also add: extra_hosts: ["host.docker.internal:host-gateway"].)
+      AGENT_POD_URL: http://host.docker.internal:8080
     volumes:
       # Fine-tuning corpus exposed by /api/download lives here.
       - ./finetuning-dataset:/app/finetuning-dataset:ro

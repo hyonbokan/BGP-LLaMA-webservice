@@ -27,21 +27,27 @@ app/
   core/config.py          # pydantic-settings Settings (single env-driven config source)
   llm/providers.py        # ProviderConfig + get_provider("gpt"|"llama")
   llm/service.py          # stream_chat() — the unified OpenAI-compatible streaming client
+  llm/agent.py            # pod client: classify -> render task -> POST /agent/run, relay SSE
   utils/code_extract.py   # pull the ```python block out of a reply
   api/routes/
     health.py             # GET /api/health
     chat.py               # POST /api/chat/bgp_gpt, /api/chat/bgp_llama (SSE; body = query + history)
+    agent.py              # POST /api/agent/run (SSE; proxies one autonomous run to opencode-agent-pod)
     files.py              # GET /api/download                          (traversal-guarded)
 prompts/                  # prompt strings (pure data, no heavy imports)
 ```
 
-## Planned: agentic BGP analysis via opencode-agent-pod
+## Agentic BGP analysis via opencode-agent-pod (built + e2e-verified)
 
-**Status.** The feature *shell* is built: the left nav rail, the **BGP Agent** entry, the `/bgp_agent`
-route, and its placeholder page (`react_frontend/src/pages/bgp-agent-page.tsx`) all exist, as does the
-new logo/favicon. What's **not** built is the run itself — the `/api/agent/run` backend endpoint, the
-pod client, the interactive agent page, and BGP-data staging. This section is the spec for that
-remaining work; see "Implementing the agent run" below for the concrete starting points.
+**Status.** Built and verified end to end (2026-07-12). The `POST /api/agent/run` endpoint
+(`app/api/routes/agent.py`), the pod client (`app/llm/agent.py`), and the run-and-observe console
+(`react_frontend/src/pages/bgp-agent-page.tsx` + `hooks/use-bgp-agent.ts` +
+`components/agent/agent-run-card.tsx`) are all in place. A live smoke drove a real question through
+this backend to a locally-running pod and back: a natural-language query returned an answer, and a
+`Bash`-tool run analyzed a hand-staged workspace over 3 turns (the pod staged the `file://` pointer,
+ran, and reaped it). What's still **not** built: real BGP-data staging (the smoke used a
+hand-staged directory) and the live per-step tool trace (a pod dependency — see below). This section
+documents the shape; see "How the agent run is wired" below.
 
 Today the backend streams model **text** (`llm/service.py` → `stream_chat()`): the chat feature
 *generates* a pybgpstream script but never runs it. The planned next step adds a **code-executing**
@@ -107,27 +113,52 @@ VS Code / Linear pattern, so the chat/agent workspaces don't stack two unrelated
 The chat and agent pages keep their per-feature sidebars (chat tabs / agent runs) to the right of the
 rail.
 
-### Implementing the agent run (start here, next session)
+### How the agent run is wired (built)
 
-What already exists to build on: the `bgp-agent-page.tsx` **stub** (replace it), the classify→prompt
-pipeline (`classify_intent` + `build_prompt` in `app/llm/`), and the **fetch-POST SSE reader** pattern
-in `hooks/use-bgp-chat.ts` (copy it for the agent stream). Suggested shape, matching existing patterns:
-
-- **Config (add to `app/core/config.py` + `.env.example`):** `agent_pod_url` (e.g.
-  `http://localhost:8080`) and `agent_pod_token` (bearer). Env-driven, never hardcoded.
-- **Backend:** `app/llm/agent.py` — a thin pod client that builds the `/agent/run` body (reusing
-  `build_prompt` for `system_prompt`/`prompt`, `BgpScript.model_json_schema()` for `response_schema`)
-  and proxies the pod's SSE. `app/api/routes/agent.py` — `POST /api/agent/run`, mounted under `/api`.
-- **SSE vocab (v1):** the frontend is a new page, so pick a small agent-specific set, e.g.
-  `agent_started` → `running` (from the pod's keep-alives) → `result` (carrying the `OpencodeResult`
-  text/structured-output + cost/turns/subtype) → `error`. The step/tool-call trace statuses come later,
-  gated on the pod's live `token`/`tool` events.
-- **Frontend:** `hooks/use-bgp-agent.ts` (mirror `use-bgp-chat.ts`) + flesh out `bgp-agent-page.tsx`
-  into the run-and-observe console.
-- **Minimum end-to-end (GPT path):** run the pod locally (`cd ../opencode-agent-pod && python -m pod`,
-  bearer + provider key set there), drop a few MRT update files under `BGP_DATA_ROOT`, and pass
-  `workspace: {source: "file://$BGP_DATA_ROOT", mode: "ro"}` (pod v1 stages local paths only). A
-  GPT/Anthropic `model` avoids the deferred vLLM gate.
+- **Config (`app/core/config.py`, `.env.example`):** `AGENT_POD_URL`, `AGENT_POD_TOKEN`,
+  `AGENT_MODEL`, `AGENT_TOOLS` (comma-separated → the `agent_tool_list` property),
+  `AGENT_MAX_BUDGET_USD`, `AGENT_REQUEST_TIMEOUT`. Env-driven, never hardcoded.
+- **Backend:** `app/llm/agent.py` — the pod client. `run_agent(query, prior_findings?)` classifies the
+  query, renders a **dedicated autonomous system prompt** (`prompts/templates/agent_system.j2` via
+  `_agent_system_prompt`) — *not* the generate-only chat template, which asks clarifying questions and
+  assumes local files. The agent prompt tells the model to write and RUN pybgpstream code, pull data
+  from the public collector broker (or staged local files), and report findings without asking. It
+  POSTs one run with the bearer token and translates the pod's `event:`-framed SSE
+  (`: keep-alive` → `cost` → `done`) into typed `Running` / `RunResult` events.
+  `app/api/routes/agent.py` — `POST /api/agent/run`, mounted under `/api`, re-streams those as this
+  backend's `data:{status}` frames.
+- **BGP data via a thin MCP tool (`bgp_mcp/`).** Rather than have the LLM hand-write pybgpstream, a
+  small MCP server (`bgp_mcp/`, backed by pybgpstream) exposes `fetch_bgp_updates(prefix, from_time,
+  until_time, collectors, …)` returning raw update records; the agent calls the tool and analyzes the
+  records in ordinary Python. This keeps the pybgpstream dependency and hallucination surface out of
+  the LLM's output, and keeps the pod's own code domain-free (the pod just launches the server).
+- **Deployment (not yet wired):** the pod must run the server — declare it in the pod's
+  `AGENT_MCP_SERVERS` (`[{"name":"bgp","command":["python","-m","bgp_mcp"],"tools":["fetch_bgp_updates"]}]`,
+  gated tool id `bgp_fetch_bgp_updates`) on an image that has `bgp_mcp` + `mcp` + **pybgpstream**
+  (`docker/Dockerfile.bgpstream` is the base) and egress to the RIS/RouteViews broker. Until that
+  runtime exists, the agent proceeds autonomously but reports the data tool is unavailable rather than
+  producing analysis. (Fully removing pybgpstream from the pod image would need *remote* MCP — a pod
+  registry extension, later.)
+- **SSE vocab (v1):** `agent_started` → `running` (one frame per pod keep-alive) → `result` (the
+  answer plus cost/turns/duration/subtype) → `error`. The per-step tool trace waits on the pod's live
+  `token`/`tool` events (still deferred pod-side).
+- **Frontend:** `hooks/use-bgp-agent.ts` (mirrors `use-bgp-chat.ts`; threads the last successful run's
+  answer forward as `prior_findings`, the memory unit) + `pages/bgp-agent-page.tsx` (the console) +
+  `components/agent/agent-run-card.tsx` (question → live "working" timer → result card with metadata
+  badges). Errors use `destructive`; the reserved amber `anomaly` is untouched.
+- **v1 sends no `response_schema`** (a free-text answer suits an execute-and-report agent better than
+  the generate-only `BgpScript` schema); the pod contract allows adding a schema later. The client
+  attaches `workspace: {source: "file://<BGP_DATA_ROOT>", mode: "ro"}` only when that directory
+  exists, otherwise the run gets an empty scratch dir.
+- **Run it locally:** `cd ../opencode-agent-pod && .venv/bin/python -m pod` — the pod now auto-loads
+  that repo's `.env`, so just set `AGENT_POD_TOKEN` + a provider key there. A dev token
+  (`local-dev-pod-token`) is already wired in both repos' `.env`; the matching `AGENT_POD_TOKEN` /
+  `AGENT_POD_URL` are set here. Then a question at `/bgp_agent` runs end to end.
+- **Two caveats from the 2026-07-12 smoke:** (1) the code default `AGENT_MODEL=gpt-5.4-mini-…` is
+  **unverified** against the pinned opencode 1.17.11 (a 2026 model on an older binary); the local
+  `.env` pins the smoke-verified `claude-haiku-4-5-20251001`. Revisit the default (or add the pod's
+  version-gate) before relying on the GPT path. (2) Real BGP-data staging is still unbuilt — the smoke
+  hand-staged a directory under `BGP_DATA_ROOT`.
 
 ## Common Commands
 

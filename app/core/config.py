@@ -59,6 +59,12 @@ class Settings(BaseSettings):
     # File download root (served by /api/download) — the fine-tuning corpus
     dataset_root: str = "finetuning-dataset"
 
+    # Root directory generated pybgpstream scripts read BGP update files from.
+    # Filled into the prompt templates and used to rewrite any personal data
+    # path the fine-tuned model reproduces from its training data, so no such
+    # path leaks into returned code.
+    bgp_data_root: str = "/data/bgp"
+
     @property
     def cors_origins(self) -> list[str]:
         return [o.strip() for o in self.cors_allowed_origins.split(",") if o.strip()]

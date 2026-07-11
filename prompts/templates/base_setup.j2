@@ -31,7 +31,7 @@ until_time = datetime.strptime(until_time_str, "%Y-%m-%d %H:%M:%S").replace(tzin
 
 Directory containing BGP update files:
 Replace {year} and {month} according to the timestamp
-/home/hb/ris_bgp_updates/{year}/{month}/rrc00
+{{ data_root }}/{year}/{month}/rrc00
 
 Define Regular Expression Pattern to Match Filenames:
 pattern = r'^updates\.(\d{8})\.(\d{4})\.(bz2|gz)$'

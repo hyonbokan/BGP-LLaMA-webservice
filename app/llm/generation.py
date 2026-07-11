@@ -16,15 +16,34 @@ and a single terminal `Result` carrying the script and analysis type.
 """
 
 import ast
+import re
 from collections.abc import AsyncIterator
 from dataclasses import dataclass
 
+from app.core.config import get_settings
 from app.core.logging import get_logger
 from app.llm.clients import get_client
 from app.llm.providers import ProviderConfig, get_provider
 from app.llm.schemas import AnalysisType, BgpScript, Turn
 
 logger = get_logger(__name__)
+
+# The fine-tuned model reproduces the absolute data directory it was trained on
+# (/home/<user>/ris_bgp_updates); this matches that prefix for any username so it
+# can be rewritten to the configured data root before the script is returned.
+_LEAKED_DATA_PATH = re.compile(r"/home/[\w.-]+/ris_bgp_updates")
+
+
+def sanitize_script(script: str | None) -> str | None:
+    """Rewrite a leaked personal data path in generated code to the configured root.
+
+    Even when the prompt uses a neutral path, the fine-tuned model can emit the
+    training directory baked into its weights; this keeps that path out of the
+    returned script regardless of which model produced it.
+    """
+    if not script:
+        return script
+    return _LEAKED_DATA_PATH.sub(get_settings().bgp_data_root, script)
 
 
 @dataclass
@@ -120,7 +139,7 @@ async def _generate_chat(
         return
     if len(parsed.explanation) > emitted:
         yield TextDelta(parsed.explanation[emitted:])
-    yield Result(script=parsed.script, analysis_type=parsed.analysis_type)
+    yield Result(script=sanitize_script(parsed.script), analysis_type=parsed.analysis_type)
 
 
 async def _generate_completion(
@@ -161,7 +180,7 @@ async def _generate_completion(
         return
     if len(parsed.explanation) > emitted:
         yield TextDelta(parsed.explanation[emitted:])
-    yield Result(script=parsed.script, analysis_type=parsed.analysis_type)
+    yield Result(script=sanitize_script(parsed.script), analysis_type=parsed.analysis_type)
 
 
 def _flatten(turns: list[Turn]) -> str:

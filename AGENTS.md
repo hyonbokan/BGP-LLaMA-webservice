@@ -39,26 +39,64 @@ prompts/                  # prompt strings (pure data, no heavy imports)
 
 Not built yet — recorded here so the integration can be picked up from either side.
 
-Today the backend streams model **text** (`llm/service.py` → `stream_chat()`); it cannot let the
-model write and run analysis code. The planned next step adds a **code-executing** path backed by a
-sibling service, **opencode-agent-pod** (`../opencode-agent-pod`) — a standalone, deployable
-container running an autonomous agent that writes a BGP analysis script, runs it (`Bash`) against
-staged RIB/pybgpstream data, observes, self-corrects, and streams the reason-execute-observe trace.
+Today the backend streams model **text** (`llm/service.py` → `stream_chat()`): the chat feature
+*generates* a pybgpstream script but never runs it. The planned next step adds a **code-executing**
+path backed by a sibling service, **opencode-agent-pod** (`../opencode-agent-pod`) — a standalone,
+deployable container running an autonomous agent that writes a BGP analysis script, runs it (`Bash`)
+against staged RIB/pybgpstream data, observes, self-corrects, and streams the reason-execute-observe
+trace.
 
-- **Contract:** `POST /agent/run` (bearer token), body `{model, prompt, tools:["Bash","Read","Write"],
-  workspace:{source,mode}, response_schema?, max_budget_usd?}` → `text/event-stream`; the terminal
-  `done` event carries the result (free text or structured output, plus cost/turns/subtype). Wire
-  that SSE through this backend's existing `/api/chat/*` streaming.
-- **Workspace by reference:** the pod holds no state. This backend stages BGP data to storage and
-  passes a pointer (not bytes), and threads distilled prior findings forward itself; the pod forgets
-  each run.
+- **Separate feature, not folded into chat.** This ships as its own thing: a new nav entry (**"BGP
+  Agent"**), its own route (`/bgp_agent`), and its own backend endpoint (**`POST /api/agent/run`**,
+  distinct from `/api/chat/*`). The existing generate-only BGP Chat (`bgp_llama`/`bgp_gpt`) stays
+  exactly as is — the agent is an addition, not a replacement.
+- **Feature-page shape — a run-and-observe console, not a two-bubble chat.** A user poses a question;
+  the assistant "turn" expands into the agent's **step / tool-call (`Bash`,`Read`,`Write`) / output
+  trace**, ending in a result card (the answer plus run metadata: cost, turns, duration, subtype).
+  Follow-ups are new single-shot runs. **v1** shows *submit → running → terminal result only*,
+  because the pod's live `token`/`tool` SSE events aren't built yet (pod DESIGN §9); the live
+  step-by-step trace lands once the pod ships those events. Treat the live trace as a pod dependency,
+  not something this repo can deliver alone.
+- **Reuse the existing pipeline for the prompt.** The classify → jinja-template machinery
+  (`classify_intent` + `prompts/templates/*`) renders the pod's `system_prompt`/`prompt`; the agent
+  receives a *rendered task*, not the raw query. `BgpScript` (or a purpose-built schema) can be passed
+  as the pod's `response_schema` for structured output.
+- **Contract:** `POST /api/agent/run` on this backend proxies to the pod's `POST /agent/run` (bearer
+  token), body `{model, system_prompt?, prompt, tools:["Bash","Read","Write"], response_schema?,
+  max_budget_usd?, workspace:{source,mode}}` → `text/event-stream`; the terminal `done` event carries
+  the `OpencodeResult` (free text or structured output, plus cost/turns/subtype). Re-stream it over
+  this backend's SSE (same frame format as `/api/chat/*`).
+- **Workspace by reference — an unbuilt prerequisite.** The pod holds no state: this backend must
+  stage BGP data (RIB/pybgpstream) to storage and pass a *pointer* (not bytes). **No staging layer
+  exists yet** (data provisioning was explicitly deferred). `BGP_DATA_ROOT` is the seam — it is both
+  what generated scripts read and where staged data would land, i.e. it maps onto the pod's ephemeral
+  workspace cwd. Note the pod's **v1 stages only local `file://`/bare paths (not `s3://`)** — so a
+  single-host deploy shares a local directory; object storage is a later extension.
+- **Multi-turn memory:** thread the pod's structured output / a distilled summary forward as *prior
+  findings*, **not** the raw agent transcript (pod DESIGN §5). This lines up with the chat's
+  compaction-summary unit — the summary *is* the memory unit.
 - **Keys & security:** provider keys live inside the pod (a key-injecting proxy keeps them out of the
   agent's shell); this backend never sends or receives a provider key to/from the pod. The pod's
   egress lockdown is a deploy-time network policy.
 - **Model path:** use the **GPT/Anthropic** path first. The pod can address a local vLLM model, but
   that is deferred (no GPU) — the same constraint as this repo's LLaMA-via-vLLM story.
 - **Authoritative design** lives in the pod's own `DESIGN.md` / `PLAN.md` (kept local in that repo):
-  DESIGN §8 (response), §9 (API surface), §12 (this consumer), and the PLAN "Phase consumer" section.
+  DESIGN §4 (workspace by reference), §5 (multi-turn), §8 (response), §9 (API surface), §12 (this
+  consumer), and the PLAN "Phase consumer" section.
+
+### Frontend navigation (planned reshape)
+
+Adding a second interactive feature (BGP Agent) alongside BGP Chat outgrows the flat top navbar, so
+the shell moves to a **left icon rail** (global feature nav) + each feature's own contextual sidebar
+where it has one — the VS Code / Linear pattern, which avoids stacking two unrelated sidebars on the
+chat/agent workspaces. Proposed grouping:
+
+- **Analyze** — *BGP Chat* (generate-only, existing) · *BGP Agent* (run-and-observe, new)
+- **Explore** — *Dataset* · *Fine-tuning*
+- Rail footer keeps the theme toggle + "Download model"; the brand/logo links home.
+
+The chat and agent pages keep their per-feature sidebars (chat tabs / agent run history) to the right
+of the rail. This is a UX plan, not built yet.
 
 ## Common Commands
 
@@ -195,6 +233,11 @@ these projects); keep them consistent.
 - Generated scripts are syntax-checked (`ast.parse`, never run) before `code_ready`; a bad parse
   ships the code with a `warning` field, surfaced as a UI notice. Running the script (and repairing
   runtime errors) belongs to the planned opencode-agent-pod, not this backend.
+- Generated scripts read BGP update files from `BGP_DATA_ROOT` (filled into the prompt templates).
+  Because the fine-tuned LLaMA has its training data directory (`/home/<user>/ris_bgp_updates`) baked
+  into its weights and reproduces it regardless of the prompt, `sanitize_script` rewrites that prefix
+  to `BGP_DATA_ROOT` before the script is returned — so no personal path leaks into output on either
+  model path.
 
 ## Deployment & DevOps
 

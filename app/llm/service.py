@@ -9,6 +9,7 @@ generation streams — both handled downstream.
 
 from collections.abc import AsyncIterator
 
+from app.core.config import get_settings
 from app.core.logging import get_logger
 from app.llm.classifier import classify_intent
 from app.llm.generation import Compacted, Event, generate
@@ -29,6 +30,7 @@ def _render_vars(intent: BgpIntent) -> dict:
         "until_time": window.until_time if window else None,
         "collectors": intent.collectors,
         "collection_duration": None,
+        "data_root": get_settings().bgp_data_root,
     }
 
 

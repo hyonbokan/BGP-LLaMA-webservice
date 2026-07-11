@@ -11,8 +11,10 @@ const SOCIALS = [
 ];
 
 const FEATURES = [
+  { label: 'BGP Chat', to: '/bgp_chat' as const },
+  { label: 'BGP Agent', to: '/bgp_agent' as const },
   { label: 'Dataset', to: '/dataset' as const },
-  { label: 'BGP-LLaMA', to: '/bgp_chat' as const },
+  { label: 'Fine-tuning', to: '/finetuning' as const },
 ];
 
 const LEARN = [

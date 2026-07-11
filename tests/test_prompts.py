@@ -12,6 +12,7 @@ FULL = {
     "until_time": "2020-01-02 00:00:00",
     "collectors": ["rrc00"],
     "collection_duration": 300,
+    "data_root": "/data/bgp",
 }
 
 
@@ -19,6 +20,12 @@ def test_renders_params_into_template():
     out = load_prompt("hijacking", **FULL)
     assert 'asn = "3356"' in out
     assert "192.0.2.0/24" in out
+
+
+def test_data_root_replaces_personal_path():
+    out = load_prompt("base_setup", **FULL)
+    assert "/data/bgp/{year}/{month}/rrc00" in out
+    assert "/home/hb" not in out
 
 
 def test_base_setup_included_in_type_template():

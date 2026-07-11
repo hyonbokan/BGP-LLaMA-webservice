@@ -6,7 +6,9 @@ from app.llm.schemas import AnalysisType, BgpIntent
 
 
 def _settings(**kw) -> Settings:
-    return Settings(_env_file=None, **kw)
+    # Spread via a dict so the pydantic-settings `_env_file` kwarg (unmodelled by
+    # the mypy plugin when combined with **kw) type-checks cleanly.
+    return Settings(**{"_env_file": None, **kw})
 
 
 class _FakeCompletions:

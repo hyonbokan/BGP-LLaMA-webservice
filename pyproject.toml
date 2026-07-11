@@ -13,7 +13,7 @@ line-length = 100
 extend-exclude = [
     "react_frontend",
     "staticfiles",
-    "media",
+    "finetuning-dataset",
     "**/migrations",
     "**/__pycache__",
     "build",
@@ -46,6 +46,6 @@ warn_redundant_casts = true
 exclude = [
     "react_frontend/",
     "staticfiles/",
-    "media/",
+    "finetuning-dataset/",
     "build/",
 ]

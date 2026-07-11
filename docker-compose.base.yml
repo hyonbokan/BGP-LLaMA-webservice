@@ -59,8 +59,8 @@ services:
       # LLAMA_BASE_URL in .env (which targets a host-run vLLM for local dev).
       LLAMA_BASE_URL: http://vllm:8000/v1
     volumes:
-      # Artifacts exposed by /api/download live here.
-      - ./media:/app/media:ro
+      # Fine-tuning corpus exposed by /api/download lives here.
+      - ./finetuning-dataset:/app/finetuning-dataset:ro
     depends_on:
       vllm:
         condition: service_healthy

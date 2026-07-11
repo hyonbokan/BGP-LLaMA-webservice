@@ -46,8 +46,8 @@ class Settings(BaseSettings):
     llama_repetition_penalty: float = 1.1
     llama_api_mode: str = "completion"  # "completion" (raw prompt) or "chat"
 
-    # File download root (served by /api/download)
-    media_root: str = "media"
+    # File download root (served by /api/download) — the fine-tuning corpus
+    dataset_root: str = "finetuning-dataset"
 
     @property
     def cors_origins(self) -> list[str]:

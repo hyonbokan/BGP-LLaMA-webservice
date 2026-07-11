@@ -17,3 +17,9 @@ def test_defaults():
     assert s.llama_api_mode == "completion"
     assert s.openai_base_url is None
     assert s.llm_request_timeout == 120
+
+
+def test_classifier_defaults():
+    s = Settings(_env_file=None)
+    assert s.classifier_enabled is True
+    assert s.classifier_model is None

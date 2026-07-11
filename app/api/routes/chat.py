@@ -5,13 +5,13 @@ from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import StreamingResponse
 
 from app.core.logging import get_logger
+from app.llm.generation import Result, TextDelta
 from app.llm.service import stream_chat
-from app.utils.code_extract import extract_code_from_reply
 
 logger = get_logger(__name__)
 router = APIRouter()
 
-# Coalesce tokens into fewer SSE frames: flush once BUFFER_SIZE tokens pile up
+# Coalesce deltas into fewer SSE frames: flush once BUFFER_SIZE deltas pile up
 # or BUFFER_TIME seconds pass, whichever comes first.
 BUFFER_SIZE = 3
 BUFFER_TIME = 0.1
@@ -28,19 +28,26 @@ async def _event_stream(provider: str, query: str, context: str = ""):
     logger.debug("SSE stream start: provider=%s", provider)
     yield _sse({"status": "generating_started"})
 
-    accumulated, buffer = [], []
+    buffer = []
     loop = asyncio.get_running_loop()
     last_yield = loop.time()
+    script = None
+    produced_text = False
 
     try:
-        async for token in stream_chat(provider, query, context):
-            buffer.append(token)
-            accumulated.append(token)
-            now = loop.time()
-            if len(buffer) >= BUFFER_SIZE or (now - last_yield) > BUFFER_TIME:
-                yield _sse({"status": "generating", "generated_text": "".join(buffer)}, flush=True)
-                buffer.clear()
-                last_yield = now
+        async for event in stream_chat(provider, query, context):
+            if isinstance(event, TextDelta):
+                produced_text = True
+                buffer.append(event.text)
+                now = loop.time()
+                if len(buffer) >= BUFFER_SIZE or (now - last_yield) > BUFFER_TIME:
+                    yield _sse(
+                        {"status": "generating", "generated_text": "".join(buffer)}, flush=True
+                    )
+                    buffer.clear()
+                    last_yield = now
+            elif isinstance(event, Result):
+                script = event.script
         if buffer:
             yield _sse({"status": "generating", "generated_text": "".join(buffer)}, flush=True)
     except Exception as e:  # surface to the client instead of a dropped stream
@@ -48,11 +55,9 @@ async def _event_stream(provider: str, query: str, context: str = ""):
         yield _sse({"status": "error", "message": str(e)})
         return
 
-    full_response = "".join(accumulated)
-    if not full_response:
+    if not produced_text:
         logger.warning("%s stream produced no output", provider)
-    code = extract_code_from_reply(full_response)
-    yield _sse({"status": "code_ready", "code": code} if code else {"status": "no_code_found"})
+    yield _sse({"status": "code_ready", "code": script} if script else {"status": "no_code_found"})
 
 
 def _sse_response(generator) -> StreamingResponse:

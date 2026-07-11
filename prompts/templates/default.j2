@@ -1,0 +1,93 @@
+{% include "base_setup.j2" %}
+
+Initialize counters and data structures for the analysis tasks you need:
+- Basic update counts (announcements, withdrawals)
+- Prefix analysis (unique prefixes and occurrences)
+- MED analysis (MED values)
+- Community analysis (community tag frequencies)
+- AS path analysis (path lengths and changes)
+- Origin AS analysis (origin ASNs per prefix, MOAS detection)
+
+Iterate Over Files in the Directory and Filter by Time Window:
+for root, _, files in os.walk(directory):
+    for file in files:
+        match = re.match(pattern, file)
+        if not match:
+            continue
+        date_str = match.group(1)  # YYYYMMDD
+        time_str = match.group(2)  # HHMM
+        file_timestamp_str = date_str + time_str
+        file_time = datetime.strptime(file_timestamp_str, "%Y%m%d%H%M").replace(tzinfo=timezone.utc)
+        if file_time < from_time or file_time > until_time:
+            continue
+
+        file_path = os.path.join(root, file)
+        stream = pybgpstream.BGPStream(data_interface="singlefile")
+        stream.set_data_interface_option("singlefile", "upd-file", file_path)
+
+        for rec in stream.records():
+            for elem in rec:
+                elem_time = datetime.utcfromtimestamp(elem.time).replace(tzinfo=timezone.utc)
+                if elem_time < from_time or elem_time > until_time:
+                    continue
+
+                elem_type = elem.type  # 'A' announcements, 'W' withdrawals
+                fields = elem.fields
+                prefix = fields.get("prefix")
+                if prefix is None:
+                    continue
+
+                as_path_str = fields.get('as-path', "")
+                as_path = as_path_str.split()
+                med = fields.get('med')
+                communities = fields.get('communities', [])
+
+                # Filter for the target ASN in the AS path (if required)
+                if target_asn not in as_path:
+                    continue
+
+                # Basic update counting
+                if elem_type == 'A':
+                    total_announcements += 1
+                elif elem_type == 'W':
+                    total_withdrawals += 1
+
+                # Prefix analysis
+                prefix_counts[prefix] += 1
+                unique_prefixes.add(prefix)
+
+                # MED analysis
+                if med is not None:
+                    try:
+                        med_values.append(int(med))
+                    except ValueError:
+                        pass
+
+                # Community analysis
+                for comm in communities:
+                    community_str = f"{comm[0]}:{comm[1]}"
+                    community_counts[community_str] += 1
+
+                # AS path analysis (lengths and changes)
+                if prefix in as_paths_per_prefix and as_paths_per_prefix[prefix]:
+                    if as_path != as_paths_per_prefix[prefix][-1]:
+                        as_path_changes[prefix] += 1
+                as_paths_per_prefix[prefix].append(as_path)
+
+                # Origin AS analysis (MOAS detection)
+                origin_asn = as_path[-1] if as_path else None
+                if origin_asn:
+                    origin_as_counts[prefix].add(origin_asn)
+
+After processing all files, compute statistics:
+total_updates = total_announcements + total_withdrawals
+
+Output results in a human-readable format:
+- Total updates, announcements, withdrawals
+- Prefix analysis results
+- MED stats if any
+- Top communities if any
+- AS path length stats and changes
+- MOAS conflicts (prefixes with more than one origin AS)
+
+Here is your task:

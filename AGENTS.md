@@ -35,6 +35,31 @@ app/
 prompts/                  # prompt strings (pure data, no heavy imports)
 ```
 
+## Planned: agentic BGP analysis via opencode-agent-pod
+
+Not built yet — recorded here so the integration can be picked up from either side.
+
+Today the backend streams model **text** (`llm/service.py` → `stream_chat()`); it cannot let the
+model write and run analysis code. The planned next step adds a **code-executing** path backed by a
+sibling service, **opencode-agent-pod** (`../opencode-agent-pod`) — a standalone, deployable
+container running an autonomous agent that writes a BGP analysis script, runs it (`Bash`) against
+staged RIB/pybgpstream data, observes, self-corrects, and streams the reason-execute-observe trace.
+
+- **Contract:** `POST /agent/run` (bearer token), body `{model, prompt, tools:["Bash","Read","Write"],
+  workspace:{source,mode}, response_schema?, max_budget_usd?}` → `text/event-stream`; the terminal
+  `done` event carries the result (free text or structured output, plus cost/turns/subtype). Wire
+  that SSE through this backend's existing `/api/chat/*` streaming.
+- **Workspace by reference:** the pod holds no state. This backend stages BGP data to storage and
+  passes a pointer (not bytes), and threads distilled prior findings forward itself; the pod forgets
+  each run.
+- **Keys & security:** provider keys live inside the pod (a key-injecting proxy keeps them out of the
+  agent's shell); this backend never sends or receives a provider key to/from the pod. The pod's
+  egress lockdown is a deploy-time network policy.
+- **Model path:** use the **GPT/Anthropic** path first. The pod can address a local vLLM model, but
+  that is deferred (no GPU) — the same constraint as this repo's LLaMA-via-vLLM story.
+- **Authoritative design** lives in the pod's own `DESIGN.md` / `PLAN.md` (kept local in that repo):
+  DESIGN §8 (response), §9 (API surface), §12 (this consumer), and the PLAN "Phase consumer" section.
+
 ## Common Commands
 
 ### Docker (primary workflow)
@@ -57,7 +82,7 @@ Uses Docker Compose **v2** (`docker compose`). No migrations / collectstatic ste
 Always run Python tooling through the project virtualenv, never a global `python`.
 
 ```bash
-python3.9 -m venv .venv && source .venv/bin/activate
+python3.12 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
 # Dev (reload): needs a reachable model server — set LLAMA_BASE_URL / OPENAI_API_KEY in .env
@@ -91,16 +116,40 @@ pre-commit run --all-files  # ruff (lint+fix), ruff-format, mypy
 ```
 
 Tests use FastAPI's `TestClient` and monkeypatch `stream_chat`, so they never hit
-OpenAI or vLLM. Cover: config parsing, provider mapping, code extraction, the SSE
-event sequence (incl. the error path), and the download traversal guard.
+OpenAI or vLLM. Cover: config parsing, provider mapping, query classification (with a
+faked LLM + the heuristic fallback), prompt-template rendering, the SSE event sequence
+(incl. the error path), and the download traversal guard.
 
 ## Code Style
 
-- **Backend:** Ruff for lint + format (line-length 100, target py39) and mypy, both in
+- **Backend:** Python 3.12. Ruff for lint + format (line-length 100, target py312) and mypy, both in
   `pyproject.toml`. Python is at the root under `app/` — no `backend/` prefix.
 - **Frontend:** TypeScript (strict), ESLint (flat config) + Prettier. Styling via Tailwind +
   shadcn/ui primitives in `src/components/ui/`; the `cn()` helper is in `src/lib/utils.ts`. Amber
   (`--anomaly` / the `anomaly` color) is reserved for routing anomalies/alerts — don't reuse it.
+
+### Docstrings, comments & coding style
+
+These mirror the conventions in the sibling `opencode-agent-pod` (the most recently maintained of
+these projects); keep them consistent.
+
+- **Docstrings and comments are self-contained and describe behaviour, not the repo.** A docstring
+  says, clearly and concisely, what the thing does; a function's docstring describes what that
+  function does. Don't reference design/plan/PR notes ("as decided…", "see the plan") and don't name
+  other functions, variables, or modules to explain a line — if the reader has to go elsewhere to
+  understand it, rewrite it to stand alone. Env var names and external tools (`vLLM`, `opencode`) are
+  fine; they are the interface, not cross-references. Terse and plain: one line where it fits, no
+  `Args:`/`Returns:` restating the signature.
+- **Favor readability over brevity.** Descriptive names, no cryptic abbreviations; code should read
+  as its own explanation. Flatten deep nesting, preferring early returns over pyramids of
+  `if`/`try`. Keep private helpers at the bottom of the file, and split them into a dedicated module
+  once there are many, letting the larger function coordinate them.
+- **Error-handling posture: critical paths fail loudly, non-critical fail soft.** Auth, config, and
+  the request path surface failures rather than swallowing them; best-effort work (query
+  classification, teardown, tracing) may suppress and log at warning level with a sensible fallback,
+  never crashing a request over it.
+- **Match the surrounding file** — comment density, naming, and idiom — and reuse an existing helper
+  before adding a new one.
 
 ## Development Guidelines
 
@@ -118,8 +167,11 @@ event sequence (incl. the error path), and the download traversal guard.
 - All config comes from `.env` (git-ignored); template in `.env.example`. Read via
   `pydantic-settings` in `app/core/config.py`; unknown keys are ignored.
 - Key vars: `OPENAI_API_KEY`, `OPENAI_MODEL`, the `LLAMA_*` block (`LLAMA_BASE_URL`, `LLAMA_MODEL`,
-  `LLAMA_API_MODE`=`completion`|`chat`, …), the `VLLM_*` tuning block, and `hf_token` (lowercase —
-  used by the vLLM container to pull weights).
+  `LLAMA_API_MODE`=`completion`|`chat`, …), the classifier controls (`CLASSIFIER_ENABLED`,
+  `CLASSIFIER_MODEL`), the `VLLM_*` tuning block, and `hf_token` (lowercase — used by the vLLM
+  container to pull weights).
+- Query classification is a best-effort GPT call: with `CLASSIFIER_ENABLED=false` or no
+  `OPENAI_API_KEY`, chat falls back to a substring heuristic (same routing as before).
 - `LLAMA_API_MODE=completion` (default) sends a raw prompt to vLLM's `/v1/completions`, matching the
   fine-tune's training format; set `chat` if you serve with a chat template.
 

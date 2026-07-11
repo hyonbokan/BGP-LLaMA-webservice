@@ -7,7 +7,7 @@ testpaths = ["tests"]
 pythonpath = ["."]
 
 [tool.ruff]
-target-version = "py39"
+target-version = "py312"
 line-length = 100
 # Backend Python lives at the repo root; keep generated/vendored trees out.
 extend-exclude = [
@@ -35,7 +35,7 @@ ignore = [
 # Use ruff defaults (Black-compatible: double quotes, 4-space indent).
 
 [tool.mypy]
-python_version = "3.9"
+python_version = "3.12"
 # Lenient on purpose: this is a legacy research codebase. Tighten over time.
 ignore_missing_imports = true
 follow_imports = "silent"

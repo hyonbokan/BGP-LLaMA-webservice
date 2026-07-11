@@ -1,5 +1,4 @@
 from dataclasses import dataclass, field
-from typing import Optional
 
 from app.core.config import Settings, get_settings
 
@@ -10,7 +9,7 @@ class ProviderConfig:
 
     model: str
     api_key: str
-    base_url: Optional[str] = None  # None => OpenAI's default (api.openai.com/v1)
+    base_url: str | None = None  # None => OpenAI's default (api.openai.com/v1)
     temperature: float = 0.7
     max_tokens: int = 2000
     # "chat" hits /v1/chat/completions (system+user, chat template applied

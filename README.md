@@ -21,10 +21,42 @@ questions into BGP insights and runnable analysis code, streaming the reasoning 
 
 ## Architecture
 
-Both models are reached through **one** OpenAI-compatible client — the local fine-tuned LLaMA is
-served by **vLLM**, GPT by OpenAI — so they differ only by base URL / key / model. The FastAPI
-backend does no in-process inference; it streams tokens from whichever provider and serves file
-downloads. nginx serves the React build and proxies `/api`.
+A natural-language query is **classified** — a structured GPT call returns the analysis type plus any
+extracted parameters (target ASN, prefixes, time window) — which selects a **Jinja2 prompt template**.
+The chosen model then **generates** the answer as structured output: the natural-language analysis
+streams live over SSE while the pybgpstream script is returned as a dedicated field (no fragile
+fenced-block parsing). Both models are reached through **one** OpenAI-compatible client — the local
+fine-tuned LLaMA is served by **vLLM**, GPT by OpenAI — so they differ only by base URL / key / model.
+The FastAPI backend does no in-process inference; nginx serves the React build and proxies `/api`.
+
+```mermaid
+flowchart LR
+    Browser(["Browser"])
+    nginx["nginx — SPA + /api proxy"]
+
+    subgraph backend["FastAPI backend · app/llm"]
+        direction TB
+        classify["1 · Classify (GPT) → BgpIntent"]
+        prompt["2 · Jinja2 prompt template"]
+        generate["3 · Generate — structured output<br/>explanation streams · script field"]
+        classify --> prompt --> generate
+    end
+
+    subgraph models["Model serving"]
+        vllm["vLLM · BGP-LLaMA (GPU)"]
+        openai["OpenAI · gpt-5.4-mini"]
+    end
+
+    Browser -->|query| nginx
+    nginx -->|/api/chat| classify
+    generate -->|/v1| vllm
+    generate -->|/v1| openai
+    generate -. SSE .-> Browser
+```
+
+
+<details>
+<summary>Original ASCII diagram (archived)</summary>
 
 ```
                     ┌────────────────────────────────────┐
@@ -46,9 +78,11 @@ downloads. nginx serves the React build and proxies `/api`.
                   └──────────────────┘     └───────────────────┘
 ```
 
-- **FastAPI backend** ([`app/`](./app/)) — SSE streaming for the LLaMA and GPT chatbots and code
-  extraction from replies, plus a guarded file-download endpoint. Config is env-driven via
-  `pydantic-settings`; both providers flow through one `stream_chat()` client.
+</details>
+
+- **FastAPI backend** ([`app/`](./app/)) — the classify → prompt → generate pipeline (`app/llm/`),
+  SSE streaming for the LLaMA and GPT chatbots, and a guarded file-download endpoint. Config is
+  env-driven via `pydantic-settings`; both providers flow through one OpenAI-compatible client.
 - **vLLM** — serves the fine-tuned LLaMA over an OpenAI-compatible `/v1` API (GPU-backed). The only
   component that needs a GPU.
 - **React SPA** ([`react_frontend/`](./react_frontend/)) — Vite + React 18 + TypeScript, Tailwind +
@@ -60,7 +94,7 @@ downloads. nginx serves the React build and proxies `/api`.
 
 | Layer     | Technologies                                                        |
 | --------- | ------------------------------------------------------------------- |
-| Backend   | FastAPI, gunicorn + uvicorn, `openai` SDK, pydantic-settings        |
+| Backend   | FastAPI, gunicorn + uvicorn, `openai` SDK, pydantic-settings, Jinja2 |
 | Serving   | vLLM (OpenAI-compatible), OpenAI API (gpt-5.4-mini)                  |
 | Frontend  | React 18, TypeScript, Vite, Tailwind CSS, shadcn/ui, Axios          |
 | Streaming | Server-Sent Events (SSE)                                            |
@@ -74,10 +108,10 @@ downloads. nginx serves the React build and proxies `/api`.
 ├── app/                     # FastAPI backend
 │   ├── main.py              #   app factory (routers mounted under /api)
 │   ├── core/                #   config.py (pydantic-settings), logging.py
-│   ├── llm/                 #   providers.py (per-model config), service.py (stream_chat)
-│   ├── utils/               #   code_extract.py
+│   ├── llm/                 #   schemas.py (BgpIntent/BgpScript), classifier.py,
+│   │                        #   generation.py (streaming SO), providers.py, service.py
 │   └── api/routes/          #   health.py, chat.py (SSE), files.py (download)
-├── prompts/                 # Prompt strings for LLaMA / GPT
+├── prompts/                 # Jinja2 templates (templates/*.j2) + loader.py
 ├── tests/                   # pytest suite (LLM mocked; no network)
 ├── react_frontend/          # React + TS SPA (Vite; build/ served by nginx)
 ├── docker/                  # Dockerfile.api + nginx config
@@ -91,7 +125,7 @@ downloads. nginx serves the React build and proxies `/api`.
 
 - Docker & Docker Compose **v2** (`docker compose`)
 - NVIDIA GPU + drivers + NVIDIA Container Toolkit — required only for the `vllm` service
-- For manual (non-Docker) setup: Python 3.9, Node.js 18+
+- For manual (non-Docker) setup: Python 3.12, Node.js 18+
 
 ## Quickstart (Docker)
 
@@ -125,7 +159,7 @@ Run `make help` to list all targets. Services once up:
 
 ```bash
 # --- Backend ---
-python3.9 -m venv .venv && source .venv/bin/activate
+python3.12 -m venv .venv && source .venv/bin/activate
 pip install -r requirements-dev.txt
 cp .env.example .env            # set OPENAI_API_KEY, LLAMA_BASE_URL, etc.
 
@@ -164,7 +198,7 @@ fine-tune's training format; set `chat` if you serve a chat template.
 
 ```bash
 pip install -r requirements-dev.txt
-pytest                      # unit tests (config, providers, code extraction, SSE, downloads)
+pytest                      # unit tests (config, providers, classification, prompts, SSE, downloads)
 
 pip install pre-commit
 pre-commit install

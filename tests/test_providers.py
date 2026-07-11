@@ -42,6 +42,8 @@ def test_get_provider_unknown_raises():
 
 
 def test_get_provider_dispatch(monkeypatch):
-    monkeypatch.setattr(providers, "get_settings", lambda: Settings(_env_file=None, openai_model="x"))
+    monkeypatch.setattr(
+        providers, "get_settings", lambda: Settings(_env_file=None, openai_model="x")
+    )
     assert get_provider("gpt").model == "x"
     assert get_provider("llama").mode == "completion"

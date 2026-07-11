@@ -1,0 +1,92 @@
+You are tasked with generating a Python script that performs BGP data analysis using the pybgpstream library for anomaly detection.
+The script should process BGP update files locally, filter data within a specified time window for a specific ASN, and detect prefix hijacking.
+Please adhere to the following guidelines when writing the code:
+
+Correctly import required libraries:
+import os
+import re
+import pybgpstream
+import pandas as pd
+from datetime import datetime, timezone
+from collections import defaultdict, Counter
+
+Define Time Window and Target ASN:
+asn = "{{ target_asn if target_asn else 'ASN_NUMBER' }}"  # the authorized/expected origin ASN
+from_time_str = "{{ from_time if from_time else 'YYYY-MM-DD HH:MM:SS' }}"
+until_time_str = "{{ until_time if until_time else 'YYYY-MM-DD HH:MM:SS' }}"
+
+Define the known (legitimately owned) prefixes for that ASN:
+{% if prefixes %}
+known_prefixes = set({{ prefixes }})
+{% else %}
+known_prefixes = set([
+    # "177.93.174.0/23",
+    # "138.59.238.0/23",
+])
+{% endif %}
+
+Parse the time window strings into datetime objects:
+from_time = datetime.strptime(from_time_str, "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
+until_time = datetime.strptime(until_time_str, "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
+
+Directory containing BGP update files (replace year and month accordingly):
+/home/hb/ris_bgp_updates/{year}/{month}/rrc00
+
+Define Regular Expression Pattern to Match Filenames:
+pattern = r'^updates\.(\d{8})\.(\d{4})\.(bz2|gz)$'
+
+Prepare a structure for detected hijack attempts:
+hijack_attempts = {}
+
+Iterate Over Files in the Directory and Filter by Time Window:
+for root, _, files in os.walk(directory):
+    for file in files:
+        match = re.match(pattern, file)
+        if not match:
+            continue
+        date_str = match.group(1)  # YYYYMMDD
+        time_str = match.group(2)  # HHMM
+        file_timestamp_str = date_str + time_str
+        file_time = datetime.strptime(file_timestamp_str, "%Y%m%d%H%M").replace(tzinfo=timezone.utc)
+        if file_time < from_time or file_time > until_time:
+            continue
+
+        file_path = os.path.join(root, file)
+        stream = pybgpstream.BGPStream(data_interface="singlefile")
+        stream.set_data_interface_option("singlefile", "upd-file", file_path)
+
+        for rec in stream.records():
+            for elem in rec:
+                if elem.type != 'A':
+                    continue
+                prefix = elem.fields.get('prefix')
+                as_path_list = elem.fields.get('as-path', '').strip().split()
+                origin_asn = as_path_list[-1] if as_path_list else None
+
+                # A known prefix announced by an unexpected origin is a suspected hijack
+                if prefix in known_prefixes and origin_asn != asn:
+                    entry = hijack_attempts.setdefault(prefix, {'unauthorized_asns': set(), 'count': 0})
+                    entry['unauthorized_asns'].add(origin_asn)
+                    entry['count'] += 1
+
+Summarize the results:
+results = [
+    {
+        'prefix': prefix,
+        'unauthorized_asns': list(data['unauthorized_asns']),
+        'frequency_of_suspected_hijacks': data['count'],
+    }
+    for prefix, data in hijack_attempts.items()
+]
+df_hijacks = pd.DataFrame(results)
+if not df_hijacks.empty:
+    print(f"Suspected BGP hijacking incidents involving ASN {asn}:")
+    for index, row in df_hijacks.iterrows():
+        print(f"Incident {index + 1}:")
+        print(f"  Prefix: {row['prefix']}")
+        print(f"  Unauthorized ASNs: {row['unauthorized_asns']}")
+        print(f"  Frequency: {row['frequency_of_suspected_hijacks']}")
+else:
+    print(f"No suspected hijacking incidents detected for ASN {asn} in the given time period.")
+
+Here is your task:

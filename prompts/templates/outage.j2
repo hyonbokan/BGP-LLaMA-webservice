@@ -1,0 +1,77 @@
+{% include "base_setup.j2" %}
+
+{% if prefixes %}
+Known prefixes to monitor:
+known_prefixes = {{ prefixes }}
+{% else %}
+Define the set of known prefixes to monitor (replace with the prefixes of interest):
+known_prefixes = set()
+{% endif %}
+
+Prepare data structures to store counts and detected anomalies:
+announcements = defaultdict(int)
+withdrawals = defaultdict(int)
+outage_events = defaultdict(int)
+flapping_events = defaultdict(int)
+route_leaks = defaultdict(int)
+
+FLAPPING_THRESHOLD = 10  # tune to the analysis
+
+Iterate Over Files in the Directory:
+for root, _, files in os.walk(directory):
+    for file in files:
+        match = re.match(pattern, file)
+        if not match:
+            continue
+        date_str = match.group(1)  # YYYYMMDD
+        time_str = match.group(2)  # HHMM
+        file_timestamp_str = date_str + time_str
+        file_time = datetime.strptime(file_timestamp_str, "%Y%m%d%H%M").replace(tzinfo=timezone.utc)
+        if file_time < from_time or file_time > until_time:
+            continue
+
+        file_path = os.path.join(root, file)
+        stream = pybgpstream.BGPStream(data_interface="singlefile")
+        stream.set_data_interface_option("singlefile", "upd-file", file_path)
+
+        for rec in stream.records():
+            for elem in rec:
+                fields = elem.fields
+                prefix = fields.get("prefix")
+                as_path_str = fields.get('as-path', "")
+                as_path = as_path_str.split()
+
+                # Count Announcements and Withdrawals
+                if elem.type == 'A':
+                    announcements[prefix] += 1
+                elif elem.type == 'W':
+                    withdrawals[prefix] += 1
+
+                # Outage Detection: known prefix no longer carrying the target ASN
+                if prefix in known_prefixes and target_asn not in as_path:
+                    outage_events[prefix] += 1
+
+                # Flapping Detection: frequent announcements
+                if announcements[prefix] > FLAPPING_THRESHOLD:
+                    flapping_events[prefix] += 1
+
+                # Route Leak Detection: unexpected AS path patterns
+                if detect_route_leak(as_path):
+                    route_leaks[prefix] += 1
+
+Define the route-leak helper:
+def detect_route_leak(as_path_list):
+    # Define criteria for route leak detection, e.g. unexpected ASNs in the path
+    suspicious_asns = set()  # Replace with relevant ASNs
+    return any(asn in suspicious_asns for asn in as_path_list)
+
+Summarize the results:
+for prefix in known_prefixes:
+    print(f"Prefix: {prefix}")
+    print(f"  Announcements: {announcements.get(prefix, 0)}")
+    print(f"  Withdrawals: {withdrawals.get(prefix, 0)}")
+    print(f"  Outage events: {outage_events.get(prefix, 0)}")
+    print(f"  Flapping events: {flapping_events.get(prefix, 0)}")
+    print(f"  Route leaks: {route_leaks.get(prefix, 0)}")
+
+Here is your task:

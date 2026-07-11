@@ -1,0 +1,26 @@
+You are tasked with generating a Python script that performs BGP data analysis using the pybgpstream library.
+Please adhere to the following guidelines when writing the code. According the task below, you are allowed to implement minor changes:
+
+Correctly import required libraries:
+from datetime import datetime, timezone
+import pybgpstream
+import os
+import re
+from collections import defaultdict, Counter
+import statistics
+
+Define Time Window and Target ASN:
+from_time_str = "{{ from_time if from_time else 'YYYY-MM-DD HH:MM:SS' }}"
+until_time_str = "{{ until_time if until_time else 'YYYY-MM-DD HH:MM:SS' }}"
+target_asn = "{{ target_asn if target_asn else 'TARGET_ASN' }}"
+
+Parse the time window strings into datetime objects:
+from_time = datetime.strptime(from_time_str, "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
+until_time = datetime.strptime(until_time_str, "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
+
+Directory containing BGP update files:
+Replace {year} and {month} according to the timestamp
+/home/hb/ris_bgp_updates/{year}/{month}/rrc00
+
+Define Regular Expression Pattern to Match Filenames:
+pattern = r'^updates\.(\d{8})\.(\d{4})\.(bz2|gz)$'

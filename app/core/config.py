@@ -1,5 +1,4 @@
 from functools import lru_cache
-from typing import Optional
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -28,9 +27,15 @@ class Settings(BaseSettings):
     # Hosted GPT (OpenAI, or any OpenAI-compatible gateway via OPENAI_BASE_URL)
     openai_api_key: str = ""
     openai_model: str = "gpt-5.4-mini-2026-03-17"
-    openai_base_url: Optional[str] = None
+    openai_base_url: str | None = None
     gpt_temperature: float = 0.7
     gpt_max_tokens: int = 2000
+
+    # Query classification (structured LLM call, always GPT-backed). When
+    # disabled or when no OpenAI key is set, chat falls back to a substring
+    # heuristic — same routing as before, so nothing regresses.
+    classifier_enabled: bool = True
+    classifier_model: str | None = None  # None => use openai_model
 
     # Local fine-tuned BGP-LLaMA served by vLLM
     llama_base_url: str = "http://host.docker.internal:8000/v1"

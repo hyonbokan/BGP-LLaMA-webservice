@@ -1,0 +1,45 @@
+{% include "base_setup.j2" %}
+
+Set up a dictionary mapping each prefix to the set of origin ASes announcing it:
+prefix_origins = defaultdict(set)
+
+Iterate Over Files in the Directory:
+for root, _, files in os.walk(directory):
+    for file in files:
+        match = re.match(pattern, file)
+        if not match:
+            continue
+        date_str = match.group(1)  # YYYYMMDD
+        time_str = match.group(2)  # HHMM
+        file_timestamp_str = date_str + time_str
+        file_time = datetime.strptime(file_timestamp_str, "%Y%m%d%H%M").replace(tzinfo=timezone.utc)
+        if file_time < from_time or file_time > until_time:
+            continue
+
+        file_path = os.path.join(root, file)
+        stream = pybgpstream.BGPStream(data_interface="singlefile")
+        stream.set_data_interface_option("singlefile", "upd-file", file_path)
+
+        for rec in stream.records():
+            for elem in rec:
+                if elem.type != 'A':
+                    continue
+                fields = elem.fields
+                prefix = fields.get("prefix")
+                if prefix is None:
+                    continue
+                as_path = fields.get('as-path', "").split()
+                origin_asn = as_path[-1] if as_path else None
+                if origin_asn:
+                    prefix_origins[prefix].add(origin_asn)
+
+Report MOAS conflicts — prefixes announced by more than one origin AS:
+moas = {p: origins for p, origins in prefix_origins.items() if len(origins) > 1}
+if moas:
+    print(f"Detected {len(moas)} MOAS conflict(s):")
+    for prefix, origins in moas.items():
+        print(f"  Prefix: {prefix} — origin ASes: {', '.join(sorted(origins))}")
+else:
+    print("No MOAS conflicts detected in the given time period.")
+
+Here is your task:

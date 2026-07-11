@@ -1,17 +1,23 @@
 import app.api.routes.chat as chat_module
+from app.llm.generation import Result, TextDelta
+from app.llm.schemas import AnalysisType
 
 
-def _fake_stream(tokens):
+def _fake_stream(events):
     async def gen(provider, query, context=""):
-        for tok in tokens:
-            yield tok
+        for ev in events:
+            yield ev
 
     return gen
 
 
 def test_streams_generating_and_code_ready(client, monkeypatch):
-    tokens = ["Here is code:\n```python\n", "print('x')\n", "```\n"]
-    monkeypatch.setattr(chat_module, "stream_chat", _fake_stream(tokens))
+    events = [
+        TextDelta("Analyzing "),
+        TextDelta("AS3356 ..."),
+        Result(script="print('x')", analysis_type=AnalysisType.prefix),
+    ]
+    monkeypatch.setattr(chat_module, "stream_chat", _fake_stream(events))
 
     resp = client.get("/api/chat/bgp_gpt?query=hi")
     assert resp.status_code == 200
@@ -23,7 +29,8 @@ def test_streams_generating_and_code_ready(client, monkeypatch):
 
 
 def test_no_code_found(client, monkeypatch):
-    monkeypatch.setattr(chat_module, "stream_chat", _fake_stream(["just prose, no code"]))
+    events = [TextDelta("just prose"), Result(script=None, analysis_type=AnalysisType.knowledge)]
+    monkeypatch.setattr(chat_module, "stream_chat", _fake_stream(events))
 
     resp = client.get("/api/chat/bgp_llama?query=hi")
     assert resp.status_code == 200

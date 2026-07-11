@@ -3,7 +3,9 @@ from app.core.config import Settings
 
 
 def _use_media_root(monkeypatch, path):
-    monkeypatch.setattr(files_module, "get_settings", lambda: Settings(_env_file=None, media_root=str(path)))
+    monkeypatch.setattr(
+        files_module, "get_settings", lambda: Settings(_env_file=None, media_root=str(path))
+    )
 
 
 def test_download_success(client, tmp_path, monkeypatch):

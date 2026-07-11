@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.routes import chat, files, health
+from app.api.routes import agent, chat, files, health
 from app.core.config import get_settings
 from app.core.logging import get_logger, setup_logging
 
@@ -28,6 +28,7 @@ def create_app() -> FastAPI:
     # Everything lives under /api; nginx serves the SPA and proxies /api here.
     app.include_router(health.router, prefix="/api")
     app.include_router(chat.router, prefix="/api")
+    app.include_router(agent.router, prefix="/api")
     app.include_router(files.router, prefix="/api")
 
     return app

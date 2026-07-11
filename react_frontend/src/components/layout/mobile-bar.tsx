@@ -55,9 +55,7 @@ export function MobileBar() {
                       key={item.title}
                       to={item.to ?? '/'}
                       onClick={() => setOpen(false)}
-                      className={({ isActive }) =>
-                        cn(cls, isActive && 'text-foreground')
-                      }
+                      className={({ isActive }) => cn(cls, isActive && 'text-foreground')}
                     >
                       <Icon className="h-4 w-4" /> {item.title}
                     </NavLink>

@@ -56,6 +56,19 @@ class Settings(BaseSettings):
     llama_repetition_penalty: float = 1.1
     llama_api_mode: str = "completion"  # "completion" (raw prompt) or "chat"
 
+    # Agentic BGP analysis (opencode-agent-pod). The pod runs an autonomous agent
+    # that writes a BGP script, runs it against staged data, and streams a result;
+    # provider keys live in the pod, so this backend sends a rendered task and a
+    # bearer token, never a key. agent_model is any id the pod resolves (a bare
+    # catalog id like the GPT default, or a qualified "provider/model"). The
+    # timeout is generous: an autonomous run can take minutes.
+    agent_pod_url: str = "http://localhost:8080"
+    agent_pod_token: str = ""
+    agent_model: str = "gpt-5.4-mini-2026-03-17"
+    agent_tools: str = "Bash,Read,Write"
+    agent_max_budget_usd: float | None = None
+    agent_request_timeout: int = 600
+
     # File download root (served by /api/download) — the fine-tuning corpus
     dataset_root: str = "finetuning-dataset"
 
@@ -68,6 +81,11 @@ class Settings(BaseSettings):
     @property
     def cors_origins(self) -> list[str]:
         return [o.strip() for o in self.cors_allowed_origins.split(",") if o.strip()]
+
+    @property
+    def agent_tool_list(self) -> list[str]:
+        """The tools the agent may use, parsed from the comma-separated env value."""
+        return [t.strip() for t in self.agent_tools.split(",") if t.strip()]
 
 
 @lru_cache

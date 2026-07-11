@@ -40,6 +40,46 @@ export interface SseEvent {
   summarized?: boolean;
 }
 
+// ---- BGP Agent (autonomous run-and-observe) ----
+
+/** How a single agent run is progressing. */
+export type AgentRunStatus = 'running' | 'done' | 'error';
+
+/** The terminal outcome of a run: the answer plus run metadata. */
+export interface AgentRunResult {
+  text: string;
+  isError: boolean;
+  subtype: string | null;
+  costUsd: number | null;
+  durationMs: number | null;
+  numTurns: number | null;
+  structuredOutput: unknown;
+}
+
+/** One question posed to the agent and the run it kicked off. */
+export interface AgentRun {
+  id: number;
+  query: string;
+  status: AgentRunStatus;
+  /** Wall-clock start (ms), used to show a live elapsed timer while running. */
+  startedAt: number;
+  result?: AgentRunResult;
+  error?: string;
+}
+
+/** SSE payload shape the agent endpoint emits (`/api/agent/run`). */
+export interface AgentSseEvent {
+  status: 'agent_started' | 'running' | 'result' | 'error';
+  text?: string;
+  is_error?: boolean;
+  subtype?: string | null;
+  cost_usd?: number | null;
+  duration_ms?: number | null;
+  num_turns?: number | null;
+  structured_output?: unknown;
+  message?: string;
+}
+
 // ---- Datasets ----
 
 export interface DatasetItem {

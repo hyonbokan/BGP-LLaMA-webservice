@@ -73,7 +73,11 @@ function RailLink({ item }: { item: NavItem }) {
             {body}
           </a>
         ) : (
-          <NavLink to={item.to ?? '/'} aria-label={item.title} className={cn(RAIL_LINK, RAIL_ACTIVE)}>
+          <NavLink
+            to={item.to ?? '/'}
+            aria-label={item.title}
+            className={cn(RAIL_LINK, RAIL_ACTIVE)}
+          >
             {body}
           </NavLink>
         )}

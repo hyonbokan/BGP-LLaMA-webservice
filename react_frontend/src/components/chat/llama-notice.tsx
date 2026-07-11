@@ -14,9 +14,7 @@ export function LlamaNotice() {
     >
       <Info className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
       <span>
-        <span className="font-mono font-semibold text-foreground">
-          {MODEL_LABELS.bgp_llama}
-        </span>{' '}
+        <span className="font-mono font-semibold text-foreground">{MODEL_LABELS.bgp_llama}</span>{' '}
         runs on a locally hosted model served by vLLM (GPU required). If requests fail, switch to{' '}
         <span className="font-mono font-semibold text-foreground">{MODEL_LABELS.gpt_5_4_mini}</span>{' '}
         instead.

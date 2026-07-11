@@ -30,7 +30,7 @@ app/
   utils/code_extract.py   # pull the ```python block out of a reply
   api/routes/
     health.py             # GET /api/health
-    chat.py               # GET /api/chat/bgp_gpt, /api/chat/bgp_llama  (SSE)
+    chat.py               # POST /api/chat/bgp_gpt, /api/chat/bgp_llama (SSE; body = query + history)
     files.py              # GET /api/download                          (traversal-guarded)
 prompts/                  # prompt strings (pure data, no heavy imports)
 ```
@@ -66,6 +66,7 @@ staged RIB/pybgpstream data, observes, self-corrects, and streams the reason-exe
 
 ```bash
 make up-dev        # Build + start dev stack (vllm + api + nginx), tail logs
+make up-nogpu      # api + nginx only, no vllm (--no-deps): GPT path, no GPU needed
 make down-dev      # Stop dev stack
 make up-prod       # Build + start prod stack
 make down-prod     # Stop prod stack
@@ -80,6 +81,9 @@ Uses Docker Compose **v2** (`docker compose`). No migrations / collectstatic ste
 ### Backend (manual, from repo root)
 
 Always run Python tooling through the project virtualenv, never a global `python`.
+
+`make dev` (→ `scripts/dev.sh`) runs the backend (:8002) and the Vite frontend (:3000) together for
+local no-Docker work; open http://localhost:3000 and Ctrl-C stops both. The steps it wraps:
 
 ```bash
 python3.12 -m venv .venv && source .venv/bin/activate
@@ -168,12 +172,29 @@ these projects); keep them consistent.
   `pydantic-settings` in `app/core/config.py`; unknown keys are ignored.
 - Key vars: `OPENAI_API_KEY`, `OPENAI_MODEL`, the `LLAMA_*` block (`LLAMA_BASE_URL`, `LLAMA_MODEL`,
   `LLAMA_API_MODE`=`completion`|`chat`, …), the classifier controls (`CLASSIFIER_ENABLED`,
-  `CLASSIFIER_MODEL`), the `VLLM_*` tuning block, and `hf_token` (lowercase — used by the vLLM
-  container to pull weights).
+  `CLASSIFIER_MODEL`), the `VLLM_*` tuning block, the conversation-memory controls
+  (`GPT_HISTORY_MAX_TOKENS`, `LLAMA_HISTORY_MAX_TOKENS`, `HISTORY_KEEP_RECENT_TURNS`), and `hf_token`
+  (lowercase — used by the vLLM container to pull weights).
 - Query classification is a best-effort GPT call: with `CLASSIFIER_ENABLED=false` or no
   `OPENAI_API_KEY`, chat falls back to a substring heuristic (same routing as before).
 - `LLAMA_API_MODE=completion` (default) sends a raw prompt to vLLM's `/v1/completions`, matching the
   fine-tune's training format; set `chat` if you serve with a chat template.
+
+## Conversation memory
+
+- **The chat request is a POST** (`{query, history}`) streamed back as SSE — the frontend reads the
+  stream with `fetch` + a reader, not native `EventSource` (which is GET-only and can't carry
+  history). The SSE frame format is unchanged.
+- The frontend holds the whole conversation and sends prior turns as `history` on every request, so
+  the model can refine across turns. `app/llm/memory.py` estimates the size (~4 chars/token, no
+  tokenizer dependency) and, once it exceeds the provider's window (`*_HISTORY_MAX_TOKENS`),
+  summarizes the oldest turns into a running summary while keeping the last `HISTORY_KEEP_RECENT_TURNS`
+  verbatim (Claude-Code-style compaction). Summarization is best-effort GPT; on failure or no key it
+  degrades to plain truncation. When compaction happens the stream emits a `compacted` event and the
+  UI shows a notice.
+- Generated scripts are syntax-checked (`ast.parse`, never run) before `code_ready`; a bad parse
+  ships the code with a `warning` field, surfaced as a UI notice. Running the script (and repairing
+  runtime errors) belongs to the planned opencode-agent-pod, not this backend.
 
 ## Deployment & DevOps
 
@@ -183,13 +204,21 @@ these projects); keep them consistent.
   OpenAI-compatible `/v1` API and caches weights in the `hf_cache` volume. `api` reaches it at
   `http://vllm:8000/v1` (set via `LLAMA_BASE_URL` on the service). Tune via `VLLM_*`. On a GPU-less
   machine, skip `vllm` and point `LLAMA_BASE_URL` at a vLLM elsewhere (or use GPT only).
-- **`api`** builds from `docker/Dockerfile.api` (slim: `requirements.txt` = fastapi/uvicorn/gunicorn/
-  openai/httpx/pydantic-settings, no ML libs). Listens on `:8002`.
-- **nginx** serves `react_frontend/build` at the web root (SPA fallback to `index.html`) and proxies
-  `/api` → `api:8002` with buffering off for SSE. TLS is not wired in the base config — add a
-  cert-aware server block + Let's Encrypt mounts in the prod override when deploying publicly.
-- Run `yarn build` before `make up-*` so nginx has a build to serve (`react_frontend/build` is
-  git-ignored).
+- **`api`** builds from `docker/Dockerfile.api` (`python:3.12-slim`; `requirements.txt` = fastapi/
+  uvicorn/gunicorn/openai/httpx/pydantic-settings, no ML libs). Listens on `:8002`.
+- **nginx** builds from `docker/Dockerfile.web` — a multi-stage image that runs `yarn install` +
+  `yarn build` (Node only in the build stage) and serves the SPA at the web root (fallback to
+  `index.html`), proxying `/api` → `api:8002` with buffering off for SSE. So `make up-*` needs no
+  host Node and no manual `yarn build`. TLS is not wired in the base config — add a cert-aware server
+  block + Let's Encrypt mounts in the prod override when deploying publicly.
+- **`docker/Dockerfile.bgpstream`** is a **standalone** image (not in the compose stack) that compiles
+  CAIDA wandio + libBGPStream and installs pybgpstream on the same `python:3.12-slim` base — the
+  runtime the planned opencode-agent-pod script-execution path will build on. Multi-stage keeps it
+  lean (~250 MB vs ~880 MB unsplit): a builder compiles the C libs, the final stage copies only the
+  installed libraries + a prebuilt pybgpstream wheel + the runtime-only `.so` packages. Build once by
+  hand: `docker build -f docker/Dockerfile.bgpstream -t bgpstream:local .` — it is not rebuilt by
+  `make up-*`, and its heavy compile layers are Docker-cached so rebuilds are near-instant unless the
+  recipe changes.
 
 ## Gotchas
 

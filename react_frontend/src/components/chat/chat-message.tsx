@@ -1,7 +1,7 @@
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
-import { Bot, User } from 'lucide-react';
+import { Bot, Info, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { ChatMessage as ChatMessageType } from '@/types';
 import 'highlight.js/styles/github-dark.css';
@@ -13,6 +13,17 @@ export function ChatMessage({
   message: ChatMessageType;
   streaming?: boolean;
 }) {
+  // A notice is a centered, muted status line (compaction, code warnings) — not
+  // an avatar-bearing chat bubble.
+  if (message.kind === 'notice') {
+    return (
+      <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
+        <Info className="h-3.5 w-3.5 shrink-0" />
+        <span>{message.text}</span>
+      </div>
+    );
+  }
+
   const isUser = message.sender === 'user';
 
   return (

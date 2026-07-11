@@ -19,6 +19,9 @@ class ProviderConfig:
     # Extra sampling params the OpenAI schema doesn't cover (e.g. vLLM's
     # repetition_penalty), forwarded verbatim via the request's extra_body.
     extra_body: dict = field(default_factory=dict)
+    # Estimated-token budget for threaded conversation history before older
+    # turns are summarized away. Sized to the backend's context window.
+    history_max_tokens: int = 100_000
 
 
 def _openai_provider(s: Settings) -> ProviderConfig:
@@ -29,6 +32,7 @@ def _openai_provider(s: Settings) -> ProviderConfig:
         temperature=s.gpt_temperature,
         max_tokens=s.gpt_max_tokens,
         mode="chat",
+        history_max_tokens=s.gpt_history_max_tokens,
     )
 
 
@@ -41,6 +45,7 @@ def _llama_provider(s: Settings) -> ProviderConfig:
         max_tokens=s.llama_max_tokens,
         mode=s.llama_api_mode,
         extra_body={"repetition_penalty": s.llama_repetition_penalty},
+        history_max_tokens=s.llama_history_max_tokens,
     )
 
 

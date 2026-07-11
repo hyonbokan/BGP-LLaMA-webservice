@@ -15,8 +15,21 @@ non-critical step — a bad param must never fail the whole request.
 import ipaddress
 from datetime import datetime
 from enum import StrEnum
+from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
+
+
+class Turn(BaseModel):
+    """One conversation message: who spoke and what they said.
+
+    `user` is a human query, `assistant` a prior model reply. The chat request
+    carries the earlier turns so the model can refine across the conversation.
+    """
+
+    role: Literal["user", "assistant"]
+    content: str
+
 
 _TIME_FORMATS = (
     "%Y-%m-%d %H:%M:%S",
@@ -140,5 +153,18 @@ class BgpScript(BaseModel):
     """
 
     analysis_type: AnalysisType = AnalysisType.default
-    explanation: str = ""
-    script: str | None = None
+    explanation: str = Field(
+        default="",
+        description=(
+            "The natural-language analysis for the user: what the analysis does, the ASN/prefixes/"
+            "time window in scope, the metrics computed, and how to read the results. Written as "
+            "prose for a human reader, not code comments. Always populated — never empty."
+        ),
+    )
+    script: str | None = Field(
+        default=None,
+        description=(
+            "The complete, runnable pybgpstream Python script that performs the analysis, or null "
+            "for a knowledge answer that needs no code."
+        ),
+    )

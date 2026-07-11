@@ -65,16 +65,16 @@ services:
       vllm:
         condition: service_healthy
 
-  # nginx serves the React SPA build directly and proxies /api to the backend.
+  # The web tier: builds the React SPA and serves it with nginx, proxying /api to
+  # the backend. Self-contained — no host Node or manual `yarn build` needed.
   nginx:
-    image: nginx:latest
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.web
     container_name: bgp-llama-nginx
     restart: unless-stopped
     ports:
       - "80:80"
-    volumes:
-      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./react_frontend/build:/usr/share/nginx/html:ro
     depends_on:
       - api
 

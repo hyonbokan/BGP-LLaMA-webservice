@@ -1,4 +1,5 @@
-# Keep build contexts small — matters most for the now-slim FastAPI image.
+# Keep build contexts small and reproducible. Applies to both images
+# (docker/Dockerfile.api and docker/Dockerfile.web) — context is the repo root.
 .git
 .gitignore
 .venv
@@ -8,12 +9,17 @@ __pycache__
 *.pyc
 *.pyo
 
-# Frontend deps (huge). NOTE: react_frontend/build is intentionally NOT ignored —
-# the daphne image's collectstatic reads it (STATICFILES_DIRS in settings/base.py).
-react_frontend/node_modules
+# Frontend artifacts: the web image runs `yarn install` + `yarn build` itself,
+# so the host's node_modules and build output must never be copied in.
 node_modules
+react_frontend/node_modules
+react_frontend/build
 
-# Local env / secrets — provided at runtime via env_file, never baked into images.
+# The fine-tuning corpus is large and mounted at runtime, never baked into an
+# image — exclude it from the build context.
+finetuning-dataset
+
+# Local env / secrets — provided at runtime via env_file, never baked in.
 .env
 .env.*
 !.env.example

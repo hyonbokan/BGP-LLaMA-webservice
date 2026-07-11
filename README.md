@@ -114,7 +114,7 @@ flowchart LR
 ├── prompts/                 # Jinja2 templates (templates/*.j2) + loader.py
 ├── tests/                   # pytest suite (LLM mocked; no network)
 ├── react_frontend/          # React + TS SPA (Vite; build/ served by nginx)
-├── docker/                  # Dockerfile.api + nginx config
+├── docker/                  # Dockerfile.api, Dockerfile.web (SPA build + nginx), nginx config
 ├── docker-compose.*.yml     # base + dev/prod overrides
 ├── pyproject.toml           # ruff + mypy + pytest config
 ├── requirements.txt         # backend deps (slim)
@@ -134,28 +134,31 @@ flowchart LR
 cp .env.example .env
 #    set OPENAI_API_KEY, hf_token, and the LLAMA_* / VLLM_* values as needed
 
-# 2. Build the SPA so nginx has something to serve
-cd react_frontend && yarn install && yarn build && cd ..
-
-# 3. Build + start the dev stack (vllm + api + nginx), tailing logs
-make up-dev
-
-# Stop it
-make down-dev
+# 2. Build + start the dev stack (vllm + api + nginx), tailing logs
+#    The web image builds the SPA itself — no host Node or manual yarn build.
+make up-dev        # full stack (needs an NVIDIA GPU host for vllm)
+make up-nogpu      # api + nginx only — skips vllm entirely (GPT path); no GPU
+make down-dev      # stop whichever you started
 ```
 
 Run `make help` to list all targets. Services once up:
 
-| Service  | URL / port            |
-| -------- | --------------------- |
-| nginx    | http://localhost:80   |
-| FastAPI  | http://localhost:8002 |
-| vLLM     | http://localhost:8000 |
+| Service  | URL / port            | Started by            |
+| -------- | --------------------- | --------------------- |
+| nginx    | http://localhost:80   | `up-dev`, `up-nogpu`  |
+| FastAPI  | http://localhost:8002 | `up-dev`, `up-nogpu`  |
+| vLLM     | http://localhost:8000 | `up-dev` only         |
 
-> **No GPU?** The `vllm` service needs an NVIDIA host. On a laptop, skip Docker for the backend and
-> run it directly (below), pointing `LLAMA_BASE_URL` at a remote vLLM — or just use GPT.
+> **No GPU?** The `vllm` image is large and needs an NVIDIA host. Use **`make up-nogpu`** to run just
+> `api + nginx` under Docker (uses `--no-deps`, so vllm is never pulled and the health-gate is
+> skipped) — the local-LLaMA chat won't work, but the GPT path and the SPA do. Point `LLAMA_BASE_URL`
+> at a remote vLLM if you want the LLaMA path too, or use `make dev` for the no-Docker host workflow.
 
 ## Manual setup (without Docker)
+
+The fastest path once the venv and `node_modules` exist: **`make dev`** starts the backend (:8002)
+and the Vite frontend (:3000) together — open http://localhost:3000, and Ctrl-C stops both. The
+individual steps below are what it runs.
 
 ```bash
 # --- Backend ---
@@ -212,8 +215,9 @@ pre-commit run --all-files  # ruff (lint+format), mypy, frontend prettier/eslint
 
 ## Notes
 
-- The React SPA is built with Vite to `react_frontend/build/` and served by **nginx** at the web
-  root. The build output is git-ignored — run `yarn build` before `make up-*`.
+- The React SPA is built with Vite and served by **nginx** at the web root. Under Docker the web
+  image builds it in a multi-stage `docker/Dockerfile.web` (no host Node needed); for the manual
+  workflow `yarn dev` serves it directly. The `react_frontend/build/` output is git-ignored.
 - TLS is not wired into the base nginx config; add a cert-aware server block in the prod override
   before deploying publicly.
 - `requirements.legacy.txt` preserves the pre-refactor dependency set (Django + the

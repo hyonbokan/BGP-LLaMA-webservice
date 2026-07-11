@@ -10,6 +10,8 @@ export interface ChatMessage {
   sender: MessageSender;
   /** True once the model has finished streaming this message. */
   final?: boolean;
+  /** A `notice` is a centered status line (e.g. compaction / code warnings), not a chat bubble. */
+  kind?: 'notice';
 }
 
 export interface ChatTab {
@@ -21,10 +23,21 @@ export interface ChatTab {
 /** SSE payload shape emitted by the FastAPI agent. */
 export interface SseEvent {
   status:
-    'generating_started' | 'generating' | 'code_ready' | 'no_code_found' | 'error' | 'complete';
+    | 'generating_started'
+    | 'generating'
+    | 'compacted'
+    | 'code_ready'
+    | 'no_code_found'
+    | 'error'
+    | 'complete';
   generated_text?: string;
   code?: string;
   message?: string;
+  /** `code_ready`: set when the generated script failed a syntax check. */
+  warning?: string;
+  /** `compacted`: how many earlier turns were folded away, and whether summarized. */
+  dropped?: number;
+  summarized?: boolean;
 }
 
 // ---- Datasets ----

@@ -8,16 +8,22 @@ PROD_COMPOSE=docker-compose.prod.yml
 DEV=$(COMPOSE) -f $(BASE_COMPOSE) -f $(DEV_COMPOSE)
 PROD=$(COMPOSE) -f $(BASE_COMPOSE) -f $(PROD_COMPOSE)
 
-.PHONY: up-dev down-dev up-prod down-prod logs rebuild-dev clean help
+.PHONY: dev up-dev up-nogpu down-dev up-prod down-prod logs rebuild-dev clean help
 
 help:  ## Show available targets
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
 		awk 'BEGIN {FS = ":.*?## "}; {printf "  %-14s %s\n", $$1, $$2}'
 
+dev:  ## Run backend (:8002) + frontend (:3000) locally without Docker; Ctrl-C stops both
+	./scripts/dev.sh
+
 up-dev:  ## Build and start dev containers (detached), then tail logs
 	$(DEV) up --build -d && $(DEV) logs -f
 
-down-dev:  ## Stop dev containers
+up-nogpu:  ## Start api + nginx only, skipping the GPU-only vLLM (GPT path only); no GPU needed
+	$(DEV) up --build -d --no-deps api nginx && $(DEV) logs -f api nginx
+
+down-dev:  ## Stop dev containers (also tears down anything started by up-nogpu)
 	$(DEV) down
 
 up-prod:  ## Build and start prod containers (detached), then tail logs

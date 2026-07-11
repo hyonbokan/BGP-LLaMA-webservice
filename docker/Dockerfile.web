@@ -1,0 +1,25 @@
+# syntax=docker/dockerfile:1
+# The web tier: build the React SPA, then serve it with nginx. Node exists only
+# in the build stage — the final image ships static assets, no Node runtime — so
+# `docker compose up` needs neither Node nor a manual `yarn build` on the host.
+
+# --- Stage 1: build the SPA (Vite -> react_frontend/build) -------------------
+FROM node:20-slim AS build
+WORKDIR /app
+
+# Install against the lockfile first so this layer caches until deps change.
+# `.yarnrc` sets ignore-engines, so the pinned Node here needn't match the host.
+COPY react_frontend/package.json react_frontend/yarn.lock react_frontend/.yarnrc ./
+RUN yarn install --frozen-lockfile
+
+COPY react_frontend/ ./
+RUN yarn build
+
+# --- Stage 2: serve with nginx ----------------------------------------------
+FROM nginx:1.27-alpine
+# SPA fallback + /api reverse proxy (SSE-friendly). Baked in, not bind-mounted,
+# so the image is self-contained; a prod override can still mount a TLS config.
+COPY docker/nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/build /usr/share/nginx/html
+
+EXPOSE 80

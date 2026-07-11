@@ -11,8 +11,9 @@ from collections.abc import AsyncIterator
 
 from app.core.logging import get_logger
 from app.llm.classifier import classify_intent
-from app.llm.generation import Event, generate
-from app.llm.schemas import BgpIntent
+from app.llm.generation import Compacted, Event, generate
+from app.llm.memory import compact_history
+from app.llm.schemas import BgpIntent, Turn
 from prompts.loader import load_prompt
 
 logger = get_logger(__name__)
@@ -31,27 +32,41 @@ def _render_vars(intent: BgpIntent) -> dict:
     }
 
 
-def build_prompt(provider: str, intent: BgpIntent) -> str:
+def build_prompt(provider: str, intent: BgpIntent, summary: str | None = None) -> str:
     """Render the system prompt for a run.
 
     The fine-tuned LLaMA always gets the shared base setup (the format it was
     trained on); GPT gets the template routed by analysis type. Extracted
-    parameters are filled into either.
+    parameters are filled into either. A compaction `summary` of earlier turns,
+    when present, is appended so the model retains that context.
     """
     template = "base_setup" if provider == "llama" else intent.analysis_type.value
-    return load_prompt(template, **_render_vars(intent))
+    prompt = load_prompt(template, **_render_vars(intent))
+    if summary:
+        prompt = f"{prompt}\n\n## Earlier conversation (summarized)\n{summary}"
+    return prompt
 
 
-async def stream_chat(provider: str, query: str, context: str = "") -> AsyncIterator[Event]:
-    """Stream the analysis for a query.
+async def stream_chat(
+    provider: str, query: str, history: list[Turn] | None = None
+) -> AsyncIterator[Event]:
+    """Stream the analysis for a query, threading prior conversation turns.
 
-    Yields `TextDelta` chunks of the natural-language analysis as it is written,
-    then a terminal `Result` carrying the generated pybgpstream script (or None).
+    Classifies the query, compacts overflowing history (emitting a `Compacted`
+    event when it does), builds the routed system prompt, then yields
+    `TextDelta` chunks of the analysis and a terminal `Result` carrying the
+    generated pybgpstream script (or None).
     """
+    history = history or []
     intent = await classify_intent(query)
-    system_prompt = build_prompt(provider, intent)
-    user_content = f"{context}\n\n{query}" if context else query
+
+    compaction = await compact_history(history, provider)
+    if compaction.dropped:
+        yield Compacted(dropped=compaction.dropped, summarized=compaction.summary is not None)
+
+    system_prompt = build_prompt(provider, intent, compaction.summary)
+    turns = [*compaction.turns, Turn(role="user", content=query)]
     logger.debug("stream provider=%s analysis_type=%s", provider, intent.analysis_type.value)
 
-    async for event in generate(provider, system_prompt, user_content):
+    async for event in generate(provider, system_prompt, turns):
         yield event

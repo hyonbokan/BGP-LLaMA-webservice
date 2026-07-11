@@ -7,6 +7,8 @@ import { ChatComposer } from '@/components/chat/chat-composer';
 import { ChatEmptyState } from '@/components/chat/chat-empty-state';
 import { CodePanel } from '@/components/chat/code-panel';
 import { ModelSwitch } from '@/components/chat/model-switch';
+import { LlamaNotice } from '@/components/chat/llama-notice';
+import { ChatThinking } from '@/components/chat/chat-thinking';
 import { Button } from '@/components/ui/button';
 
 export function BgpChatPage() {
@@ -19,6 +21,17 @@ export function BgpChatPage() {
   }, [chat.messages, chat.generatedCode]);
 
   const hasMessages = chat.messages.length > 0;
+
+  // Show the "working" animation while a request is in flight but the assistant
+  // hasn't started streaming text yet (classification + generation start-up, or
+  // a code-only reply whose explanation is still empty).
+  const lastMessage = chat.messages[chat.messages.length - 1];
+  const awaitingReply =
+    chat.isGenerating &&
+    (!lastMessage ||
+      lastMessage.sender === 'user' ||
+      lastMessage.kind === 'notice' ||
+      (lastMessage.sender === 'system' && !lastMessage.text));
 
   return (
     <div className="flex h-full">
@@ -52,6 +65,12 @@ export function BgpChatPage() {
           </div>
         </header>
 
+        {chat.selectedModel === 'bgp_llama' && (
+          <div className="border-b border-border px-4 py-2">
+            <LlamaNotice />
+          </div>
+        )}
+
         <div ref={scrollRef} className="flex-1 overflow-y-auto">
           {hasMessages ? (
             <div className="mx-auto flex max-w-3xl flex-col gap-6 px-4 py-6">
@@ -67,6 +86,7 @@ export function BgpChatPage() {
                   />
                 );
               })}
+              {awaitingReply && <ChatThinking />}
               {chat.generatedCode && (
                 <div className="px-0">
                   <CodePanel code={chat.generatedCode} />

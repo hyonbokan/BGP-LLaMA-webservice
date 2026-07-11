@@ -15,13 +15,14 @@ and a single terminal `Result` carrying the script and analysis type.
   training distribution — best-effort.
 """
 
+import ast
 from collections.abc import AsyncIterator
 from dataclasses import dataclass
 
 from app.core.logging import get_logger
 from app.llm.clients import get_client
 from app.llm.providers import ProviderConfig, get_provider
-from app.llm.schemas import AnalysisType, BgpScript
+from app.llm.schemas import AnalysisType, BgpScript, Turn
 
 logger = get_logger(__name__)
 
@@ -34,6 +35,14 @@ class TextDelta:
 
 
 @dataclass
+class Compacted:
+    """Signals that older conversation turns were compacted before this run."""
+
+    dropped: int
+    summarized: bool
+
+
+@dataclass
 class Result:
     """The terminal generation result: the script (or None) and the analysis type."""
 
@@ -41,36 +50,57 @@ class Result:
     analysis_type: AnalysisType
 
 
-Event = TextDelta | Result
+Event = TextDelta | Compacted | Result
 
 
-async def generate(provider: str, system_prompt: str, user_content: str) -> AsyncIterator[Event]:
-    """Stream `TextDelta`s of the explanation, then a terminal `Result`."""
+def script_syntax_error(script: str | None) -> str | None:
+    """Return a message if the script is not syntactically valid Python, else None.
+
+    Parses only (never imports or runs), so it needs neither pybgpstream nor a
+    network — it just catches truncated or malformed generations.
+    """
+    if not script:
+        return None
+    try:
+        ast.parse(script)
+    except SyntaxError as exc:
+        return f"{exc.msg} (line {exc.lineno})"
+    return None
+
+
+async def generate(provider: str, system_prompt: str, turns: list[Turn]) -> AsyncIterator[Event]:
+    """Stream `TextDelta`s of the explanation, then a terminal `Result`.
+
+    `turns` is the conversation history plus the current query as the final
+    user turn — the model sees prior turns so it can refine across the chat.
+    """
     cfg = get_provider(provider)
     client = get_client(cfg.base_url, cfg.api_key)
     logger.debug("generate provider=%s mode=%s model=%s", provider, cfg.mode, cfg.model)
 
     if cfg.mode == "completion":
-        gen = _generate_completion(client, cfg, system_prompt, user_content)
+        gen = _generate_completion(client, cfg, system_prompt, turns)
     else:
-        gen = _generate_chat(client, cfg, system_prompt, user_content)
+        gen = _generate_chat(client, cfg, system_prompt, turns)
     async for event in gen:
         yield event
 
 
 async def _generate_chat(
-    client, cfg: ProviderConfig, system_prompt: str, user_content: str
+    client, cfg: ProviderConfig, system_prompt: str, turns: list[Turn]
 ) -> AsyncIterator[Event]:
     emitted = 0
     async with client.beta.chat.completions.stream(
         model=cfg.model,
         messages=[
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_content},
+            *({"role": t.role, "content": t.content} for t in turns),
         ],
         response_format=BgpScript,
         temperature=cfg.temperature,
-        max_tokens=cfg.max_tokens,
+        # Current OpenAI chat models reject the legacy `max_tokens`; the vLLM
+        # completions path below still uses it.
+        max_completion_tokens=cfg.max_tokens,
     ) as stream:
         async for event in stream:
             if event.type != "content.delta":
@@ -94,11 +124,12 @@ async def _generate_chat(
 
 
 async def _generate_completion(
-    client, cfg: ProviderConfig, system_prompt: str, user_content: str
+    client, cfg: ProviderConfig, system_prompt: str, turns: list[Turn]
 ) -> AsyncIterator[Event]:
-    # Fold setup + task into one raw prompt, the way the fine-tune saw it, and
-    # constrain the output to the BgpScript schema via vLLM guided decoding.
-    prompt = f"{system_prompt}\n\n{user_content}"
+    # Fold setup + conversation into one raw prompt, the way the fine-tune saw
+    # it, and constrain the output to the BgpScript schema via vLLM guided
+    # decoding. A single-turn chat is just "{setup}\n\n{query}" as before.
+    prompt = f"{system_prompt}\n\n{_flatten(turns)}"
     extra_body = dict(cfg.extra_body or {})
     extra_body["guided_json"] = BgpScript.model_json_schema()
 
@@ -131,6 +162,19 @@ async def _generate_completion(
     if len(parsed.explanation) > emitted:
         yield TextDelta(parsed.explanation[emitted:])
     yield Result(script=parsed.script, analysis_type=parsed.analysis_type)
+
+
+def _flatten(turns: list[Turn]) -> str:
+    """Render conversation turns into one raw prompt block.
+
+    A single user turn renders as just its content (the format the fine-tune was
+    trained on); a multi-turn chat is rendered as a speaker-labelled transcript
+    ending on the latest user turn.
+    """
+    if len(turns) == 1:
+        return turns[0].content
+    labels = {"user": "User", "assistant": "Assistant"}
+    return "\n\n".join(f"{labels.get(t.role, t.role)}: {t.content}" for t in turns)
 
 
 def _safe_parse(raw: str) -> BgpScript | None:

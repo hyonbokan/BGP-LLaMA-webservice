@@ -1,0 +1,81 @@
+# pybgpstream (CAIDA libBGPStream) on the same base as the API image.
+#
+# This is a standalone image, NOT part of the compose stack — it's the runtime
+# the planned script-execution path (opencode-agent-pod) will build on. The API
+# service stays slim and BGPStream-free. Build it once by hand:
+#
+#   docker build -f docker/Dockerfile.bgpstream -t bgpstream:local .
+#
+# Multi-stage: the builder compiles wandio + libBGPStream with a full toolchain;
+# the final stage carries only the installed libraries plus the runtime-only
+# shared-object packages, so none of the compiler/autotools bulk ships.
+
+# --- builder -----------------------------------------------------------------
+FROM python:3.12-slim AS builder
+
+# Build toolchain + the C deps CAIDA lists for Debian/Ubuntu. autoconf/automake/
+# libtool/pkg-config are needed because wandio's GitHub source archive ships
+# without a pre-generated ./configure.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        build-essential autoconf automake libtool pkg-config \
+        curl ca-certificates \
+        zlib1g-dev libbz2-dev libcurl4-openssl-dev librdkafka-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /src
+
+# wandio must be installed before libBGPStream.
+RUN curl -fsSL -o wandio.tar.gz \
+        https://github.com/LibtraceTeam/wandio/archive/refs/tags/4.2.4-1.tar.gz \
+    && tar xf wandio.tar.gz \
+    && cd wandio-4.2.4-1 \
+    && (./bootstrap.sh || autoreconf -fi) \
+    && ./configure \
+    && make -j"$(nproc)" \
+    && make install \
+    && ldconfig
+
+# libBGPStream v2.2.0. glibc >= 2.34 (bookworm) dropped pthread_yield, so rewrite
+# every reference in the C sources to sched_yield, and neutralize the configure
+# abort that hard-fails when it can't find pthread_yield. Only the C sources are
+# edited (not the autotools inputs), so no maintainer-mode regeneration is
+# triggered; editing the generated ./configure (not configure.ac) likewise avoids
+# a rebuild.
+RUN curl -fsSL -o libbgpstream.tar.gz \
+        https://github.com/CAIDA/libbgpstream/releases/download/v2.2.0/libbgpstream-2.2.0.tar.gz \
+    && tar xf libbgpstream.tar.gz \
+    && cd libbgpstream-2.2.0 \
+    && find . \( -name '*.c' -o -name '*.h' \) -exec sed -i 's/pthread_yield/sched_yield/g' {} + \
+    && sed -i '/could not find pthread_yield function/ s/.*/:/' configure \
+    && ./configure \
+    && make -j"$(nproc)" \
+    && make install \
+    && ldconfig
+
+# Build the pybgpstream wheel against the freshly installed libBGPStream and
+# stash it so the final stage installs without a compiler.
+RUN pip wheel --no-cache-dir --wheel-dir /wheels pybgpstream
+
+# --- final -------------------------------------------------------------------
+FROM python:3.12-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+# Runtime-only shared libraries the compiled code links against (the non-`-dev`
+# packages). No build toolchain here.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        zlib1g libbz2-1.0 libcurl4 librdkafka1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# The compiled wandio + libBGPStream (installed under /usr/local by the builder).
+COPY --from=builder /usr/local/lib/ /usr/local/lib/
+COPY --from=builder /usr/local/include/ /usr/local/include/
+COPY --from=builder /usr/local/bin/ /usr/local/bin/
+RUN ldconfig
+
+# pybgpstream from the prebuilt wheel.
+COPY --from=builder /wheels /wheels
+RUN pip install --no-cache-dir /wheels/*.whl && rm -rf /wheels
+
+RUN python -c "import pybgpstream; print('pybgpstream import OK:', pybgpstream.BGPStream)"

@@ -1,15 +1,25 @@
 import asyncio
 import json
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
 
 from app.core.logging import get_logger
-from app.llm.generation import Result, TextDelta
+from app.llm.generation import Compacted, Result, TextDelta, script_syntax_error
+from app.llm.schemas import Turn
 from app.llm.service import stream_chat
 
 logger = get_logger(__name__)
 router = APIRouter()
+
+
+class ChatRequest(BaseModel):
+    """A chat turn: the new query plus the prior conversation for context."""
+
+    query: str
+    history: list[Turn] = []
+
 
 # Coalesce deltas into fewer SSE frames: flush once BUFFER_SIZE deltas pile up
 # or BUFFER_TIME seconds pass, whichever comes first.
@@ -24,18 +34,18 @@ def _sse(data: dict, flush: bool = False) -> str:
     return msg
 
 
-async def _event_stream(provider: str, query: str, context: str = ""):
+async def _event_stream(provider: str, query: str, history: list[Turn]):
     logger.debug("SSE stream start: provider=%s", provider)
     yield _sse({"status": "generating_started"})
 
     buffer = []
     loop = asyncio.get_running_loop()
     last_yield = loop.time()
-    script = None
+    result: Result | None = None
     produced_text = False
 
     try:
-        async for event in stream_chat(provider, query, context):
+        async for event in stream_chat(provider, query, history):
             if isinstance(event, TextDelta):
                 produced_text = True
                 buffer.append(event.text)
@@ -46,8 +56,16 @@ async def _event_stream(provider: str, query: str, context: str = ""):
                     )
                     buffer.clear()
                     last_yield = now
+            elif isinstance(event, Compacted):
+                yield _sse(
+                    {
+                        "status": "compacted",
+                        "dropped": event.dropped,
+                        "summarized": event.summarized,
+                    }
+                )
             elif isinstance(event, Result):
-                script = event.script
+                result = event
         if buffer:
             yield _sse({"status": "generating", "generated_text": "".join(buffer)}, flush=True)
     except Exception as e:  # surface to the client instead of a dropped stream
@@ -57,7 +75,17 @@ async def _event_stream(provider: str, query: str, context: str = ""):
 
     if not produced_text:
         logger.warning("%s stream produced no output", provider)
-    yield _sse({"status": "code_ready", "code": script} if script else {"status": "no_code_found"})
+
+    script = result.script if result else None
+    if not script:
+        yield _sse({"status": "no_code_found"})
+        return
+    frame = {"status": "code_ready", "code": script}
+    warning = script_syntax_error(script)
+    if warning:
+        logger.warning("Generated script has a syntax error: %s", warning)
+        frame["warning"] = f"The generated script may not run: {warning}"
+    yield _sse(frame)
 
 
 def _sse_response(generator) -> StreamingResponse:
@@ -70,18 +98,15 @@ def _sse_response(generator) -> StreamingResponse:
     )
 
 
-@router.get("/chat/bgp_gpt")
-async def bgp_gpt(query: str = Query(..., description="User query")):
-    if not query:
+@router.post("/chat/bgp_gpt")
+async def bgp_gpt(req: ChatRequest):
+    if not req.query.strip():
         raise HTTPException(status_code=400, detail="Query is required.")
-    return _sse_response(_event_stream("gpt", query))
+    return _sse_response(_event_stream("gpt", req.query, req.history))
 
 
-@router.get("/chat/bgp_llama")
-async def bgp_llama(
-    query: str = Query(..., description="User query"),
-    context: str = Query("", description="Optional context"),
-):
-    if not query:
+@router.post("/chat/bgp_llama")
+async def bgp_llama(req: ChatRequest):
+    if not req.query.strip():
         raise HTTPException(status_code=400, detail="Query is required.")
-    return _sse_response(_event_stream("llama", query, context))
+    return _sse_response(_event_stream("llama", req.query, req.history))

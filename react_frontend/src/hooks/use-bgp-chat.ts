@@ -6,11 +6,35 @@ let nextTabId = 2;
 
 const INITIAL_TABS: ChatTab[] = [{ id: 1, label: 'Chat 1', messages: [] }];
 
+/** A conversation turn as the backend expects it in the request body. */
+type HistoryTurn = { role: 'user' | 'assistant'; content: string };
+
 /**
- * Owns chat state and the SSE stream to the FastAPI agent. Streaming semantics
- * mirror the original: `generating` appends tokens to the open system message,
- * `code_ready` finalizes it and surfaces the extracted code, and terminal
- * statuses stop the spinner.
+ * Distill the visible messages into the role-tagged history the backend threads
+ * back into the model. User bubbles map to `user`, finished assistant bubbles to
+ * `assistant`; notices, tutorials, and still-streaming text are skipped.
+ */
+function toHistory(messages: ChatMessage[]): HistoryTurn[] {
+  return messages
+    .filter(
+      (m) =>
+        typeof m.text === 'string' &&
+        m.kind !== 'notice' &&
+        (m.sender === 'user' || m.sender === 'system')
+    )
+    .map((m) => ({
+      role: m.sender === 'user' ? 'user' : 'assistant',
+      content: m.text as string,
+    }));
+}
+
+/**
+ * Owns chat state and the streamed connection to the FastAPI agent. The request
+ * is a POST carrying the query plus prior turns (so the model refines across the
+ * conversation); the SSE body is read with fetch + a stream reader. `generating`
+ * appends tokens to the open system message, `compacted` drops in a status
+ * notice, `code_ready` finalizes the message and surfaces the script (with an
+ * optional syntax warning), and the stream ending stops the spinner.
  */
 export function useBgpChat() {
   const [tabs, setTabs] = useState<ChatTab[]>(INITIAL_TABS);
@@ -20,11 +44,11 @@ export function useBgpChat() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedCode, setGeneratedCode] = useState('');
 
-  const eventSourceRef = useRef<EventSource | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
   const closeStream = useCallback(() => {
-    eventSourceRef.current?.close();
-    eventSourceRef.current = null;
+    abortRef.current?.abort();
+    abortRef.current = null;
   }, []);
 
   const appendMessage = useCallback(
@@ -47,34 +71,13 @@ export function useBgpChat() {
     [currentTab]
   );
 
-  const sendMessage = useCallback(() => {
-    const query = input.trim();
-    if (!query || isGenerating) return;
-
-    appendMessage({ text: query, sender: 'user' });
-    setInput('');
-    setIsGenerating(true);
-    setGeneratedCode('');
-    closeStream();
-
-    const endpoint = selectedModel === 'bgp_llama' ? 'bgp_llama' : 'bgp_gpt';
-    const source = new EventSource(apiUrl(`chat/${endpoint}?query=${encodeURIComponent(query)}`));
-    eventSourceRef.current = source;
-
-    source.onmessage = (event) => {
-      let data: SseEvent;
-      try {
-        data = JSON.parse(event.data);
-      } catch (err) {
-        console.error('Failed to parse SSE message:', err);
-        return;
-      }
-
+  const handleEvent = useCallback(
+    (data: SseEvent) => {
       switch (data.status) {
         case 'generating':
           patchCurrentMessages((messages) => {
             const last = messages[messages.length - 1];
-            if (last && last.sender === 'system' && !last.final) {
+            if (last && last.sender === 'system' && last.kind !== 'notice' && !last.final) {
               const updated = [...messages];
               updated[updated.length - 1] = {
                 ...last,
@@ -89,10 +92,22 @@ export function useBgpChat() {
           });
           break;
 
+        case 'compacted': {
+          const dropped = data.dropped ?? 0;
+          const how = data.summarized ? 'into a summary' : 'to stay within context';
+          appendMessage({
+            text: `Compacted ${dropped} earlier message${dropped === 1 ? '' : 's'} ${how}.`,
+            sender: 'system',
+            final: true,
+            kind: 'notice',
+          });
+          break;
+        }
+
         case 'code_ready':
           patchCurrentMessages((messages) => {
             const last = messages[messages.length - 1];
-            if (last && last.sender === 'system') {
+            if (last && last.sender === 'system' && last.kind !== 'notice') {
               const updated = [...messages];
               updated[updated.length - 1] = { ...last, final: true };
               return updated;
@@ -100,6 +115,9 @@ export function useBgpChat() {
             return messages;
           });
           setGeneratedCode(data.code ?? '');
+          if (data.warning) {
+            appendMessage({ text: data.warning, sender: 'system', final: true, kind: 'notice' });
+          }
           break;
 
         case 'no_code_found':
@@ -113,23 +131,83 @@ export function useBgpChat() {
         case 'error':
           console.error('Agent error:', data.message);
           appendMessage({ text: `⚠️ Error: ${data.message}`, sender: 'system', final: true });
-          setIsGenerating(false);
-          closeStream();
-          break;
-
-        case 'complete':
-          setIsGenerating(false);
-          closeStream();
           break;
       }
-    };
+    },
+    [appendMessage, patchCurrentMessages]
+  );
 
-    source.onerror = (err) => {
-      console.error('SSE error:', err);
-      setIsGenerating(false);
-      closeStream();
-    };
-  }, [input, isGenerating, selectedModel, appendMessage, patchCurrentMessages, closeStream]);
+  const sendMessage = useCallback(() => {
+    const query = input.trim();
+    if (!query || isGenerating) return;
+
+    const history = toHistory(tabs[currentTab]?.messages ?? []);
+    appendMessage({ text: query, sender: 'user' });
+    setInput('');
+    setIsGenerating(true);
+    setGeneratedCode('');
+    closeStream();
+
+    const endpoint = selectedModel === 'bgp_llama' ? 'bgp_llama' : 'bgp_gpt';
+    const controller = new AbortController();
+    abortRef.current = controller;
+
+    // EventSource can't POST, so read the SSE body off a fetch stream, splitting
+    // on the blank-line frame boundary and parsing each `data:` payload.
+    (async () => {
+      try {
+        const res = await fetch(apiUrl(`chat/${endpoint}`), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query, history }),
+          signal: controller.signal,
+        });
+        if (!res.ok || !res.body) throw new Error(`Request failed (${res.status})`);
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+        for (;;) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          let boundary: number;
+          while ((boundary = buffer.indexOf('\n\n')) !== -1) {
+            const frame = buffer.slice(0, boundary);
+            buffer = buffer.slice(boundary + 2);
+            const line = frame.split('\n').find((l) => l.startsWith('data:'));
+            if (!line) continue; // skip `: flush` keep-alive comments
+            try {
+              handleEvent(JSON.parse(line.slice(5).trim()));
+            } catch (err) {
+              console.error('Failed to parse SSE message:', err);
+            }
+          }
+        }
+      } catch (err) {
+        if (!controller.signal.aborted) {
+          console.error('SSE error:', err);
+          appendMessage({
+            text: `⚠️ Error: ${(err as Error).message}`,
+            sender: 'system',
+            final: true,
+          });
+        }
+      } finally {
+        if (abortRef.current === controller) abortRef.current = null;
+        setIsGenerating(false);
+      }
+    })();
+  }, [
+    input,
+    isGenerating,
+    selectedModel,
+    tabs,
+    currentTab,
+    appendMessage,
+    handleEvent,
+    closeStream,
+  ]);
 
   const stopGenerating = useCallback(() => {
     setIsGenerating(false);

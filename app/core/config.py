@@ -24,6 +24,16 @@ class Settings(BaseSettings):
     # Shared LLM client
     llm_request_timeout: int = 120
 
+    # Conversation memory. History is threaded into each request; when it grows
+    # past a provider's window the oldest turns are summarized (Claude-Code
+    # style) into a running summary, keeping the most recent turns verbatim.
+    # Thresholds are provider-aware: GPT has a large context, the local LLaMA a
+    # much smaller one. Token counts are estimated (~4 chars/token), so no
+    # tokenizer dependency is pulled into the slim API image.
+    gpt_history_max_tokens: int = 100_000
+    llama_history_max_tokens: int = 6_000
+    history_keep_recent_turns: int = 4
+
     # Hosted GPT (OpenAI, or any OpenAI-compatible gateway via OPENAI_BASE_URL)
     openai_api_key: str = ""
     openai_model: str = "gpt-5.4-mini-2026-03-17"

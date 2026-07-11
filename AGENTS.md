@@ -37,7 +37,11 @@ prompts/                  # prompt strings (pure data, no heavy imports)
 
 ## Planned: agentic BGP analysis via opencode-agent-pod
 
-Not built yet — recorded here so the integration can be picked up from either side.
+**Status.** The feature *shell* is built: the left nav rail, the **BGP Agent** entry, the `/bgp_agent`
+route, and its placeholder page (`react_frontend/src/pages/bgp-agent-page.tsx`) all exist, as does the
+new logo/favicon. What's **not** built is the run itself — the `/api/agent/run` backend endpoint, the
+pod client, the interactive agent page, and BGP-data staging. This section is the spec for that
+remaining work; see "Implementing the agent run" below for the concrete starting points.
 
 Today the backend streams model **text** (`llm/service.py` → `stream_chat()`): the chat feature
 *generates* a pybgpstream script but never runs it. The planned next step adds a **code-executing**
@@ -84,19 +88,46 @@ trace.
   DESIGN §4 (workspace by reference), §5 (multi-turn), §8 (response), §9 (API surface), §12 (this
   consumer), and the PLAN "Phase consumer" section.
 
-### Frontend navigation (planned reshape)
+### Frontend shell (built)
 
-Adding a second interactive feature (BGP Agent) alongside BGP Chat outgrows the flat top navbar, so
-the shell moves to a **left icon rail** (global feature nav) + each feature's own contextual sidebar
-where it has one — the VS Code / Linear pattern, which avoids stacking two unrelated sidebars on the
-chat/agent workspaces. Proposed grouping:
+The app uses a **left icon rail** (global feature nav) + each feature's own contextual sidebar — the
+VS Code / Linear pattern, so the chat/agent workspaces don't stack two unrelated sidebars. Pieces:
 
-- **Analyze** — *BGP Chat* (generate-only, existing) · *BGP Agent* (run-and-observe, new)
-- **Explore** — *Dataset* · *Fine-tuning*
-- Rail footer keeps the theme toggle + "Download model"; the brand/logo links home.
+- `components/layout/nav-links.ts` — `NAV_GROUPS`, the single source for both rail and mobile drawer:
+  **Analyze** (BGP Chat · BGP Agent) and **Explore** (Dataset · Fine-tuning · Download model).
+- `components/layout/side-rail.tsx` — desktop rail (icon + short label, grouped, tooltips). Active
+  state is set via `aria-current` variants (a *function* `className` on `NavLink` breaks inside the
+  tooltip's `asChild` slot — don't reintroduce it).
+- `components/layout/mobile-bar.tsx` — the `md:hidden` top bar + grouped drawer.
+- `components/layout/layouts.tsx` — `ContentLayout` (rail + scrolling content + footer) and
+  `WorkspaceLayout` (rail + full-height, no footer, used by `/bgp_chat` and `/bgp_agent`).
+- `components/logo.tsx` — the AS-path mark as one theme-aware inline SVG (edges/relay nodes on
+  `currentColor`, destination node on `--primary`); `public/favicon.svg` is the matching favicon.
 
-The chat and agent pages keep their per-feature sidebars (chat tabs / agent run history) to the right
-of the rail. This is a UX plan, not built yet.
+The chat and agent pages keep their per-feature sidebars (chat tabs / agent runs) to the right of the
+rail.
+
+### Implementing the agent run (start here, next session)
+
+What already exists to build on: the `bgp-agent-page.tsx` **stub** (replace it), the classify→prompt
+pipeline (`classify_intent` + `build_prompt` in `app/llm/`), and the **fetch-POST SSE reader** pattern
+in `hooks/use-bgp-chat.ts` (copy it for the agent stream). Suggested shape, matching existing patterns:
+
+- **Config (add to `app/core/config.py` + `.env.example`):** `agent_pod_url` (e.g.
+  `http://localhost:8080`) and `agent_pod_token` (bearer). Env-driven, never hardcoded.
+- **Backend:** `app/llm/agent.py` — a thin pod client that builds the `/agent/run` body (reusing
+  `build_prompt` for `system_prompt`/`prompt`, `BgpScript.model_json_schema()` for `response_schema`)
+  and proxies the pod's SSE. `app/api/routes/agent.py` — `POST /api/agent/run`, mounted under `/api`.
+- **SSE vocab (v1):** the frontend is a new page, so pick a small agent-specific set, e.g.
+  `agent_started` → `running` (from the pod's keep-alives) → `result` (carrying the `OpencodeResult`
+  text/structured-output + cost/turns/subtype) → `error`. The step/tool-call trace statuses come later,
+  gated on the pod's live `token`/`tool` events.
+- **Frontend:** `hooks/use-bgp-agent.ts` (mirror `use-bgp-chat.ts`) + flesh out `bgp-agent-page.tsx`
+  into the run-and-observe console.
+- **Minimum end-to-end (GPT path):** run the pod locally (`cd ../opencode-agent-pod && python -m pod`,
+  bearer + provider key set there), drop a few MRT update files under `BGP_DATA_ROOT`, and pass
+  `workspace: {source: "file://$BGP_DATA_ROOT", mode: "ro"}` (pod v1 stages local paths only). A
+  GPT/Anthropic `model` avoids the deferred vLLM gate.
 
 ## Common Commands
 

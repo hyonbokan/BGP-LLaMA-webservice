@@ -8,17 +8,28 @@ A separate **BGP Agent** mode goes further — it *runs* the analysis autonomous
 [opencode](https://opencode.ai)) and streams a live tool-by-tool trace. See
 [BGP Agent — autonomous analysis](#bgp-agent--autonomous-analysis) below.
 
-🔗 **Live demo:** [llama.cnu.ac.kr](https://llama.cnu.ac.kr/)
+**Live demo (retired):** was hosted at `llama.cnu.ac.kr` during the thesis — CNU provided the domain
+for a ~6-month arrangement — and is no longer online.
 
 > **Original codebase:** 2024-01-25 → 2025-04-04 — master's thesis work.
+>
 > **Update & refactor:** 2026-07-09 onward — modernized and consolidated to a single FastAPI
 > backend with vLLM-based model serving.
+>
+> **Agentic BGP analysis:** 2026-07 — added **BGP Agent**, an autonomous code-executing analyst
+> backed by [opencode-agent-pod](https://github.com/hyonbokan/opencode-agent-pod): the backend
+> gathers and stages the BGP data, the pod runs the agent loop over it, and the UI streams a live
+> tool-by-tool trace.
 
 ## Screenshots
 
+**BGP Agent** — dispatch an autonomous run and watch the live step trace, ending in a result card:
+
+![BGP Agent — dispatch console and live step trace](docs/screenshots/agent.png)
+
 |  |  |
 | :---: | :---: |
-| ![Home page — hero and looking-glass readout](docs/screenshots/home.png)<br>_Home — hero & looking-glass_ | ![Chat workspace](docs/screenshots/chat.png)<br>_Chat — model switch, streaming, examples_ |
+| ![Home page — hero and looking-glass readout](docs/screenshots/home.png)<br>_Home — hero & looking-glass_ | ![BGP Chat workspace](docs/screenshots/chat.png)<br>_BGP Chat — model switch, streaming, script output_ |
 | ![Datasets listing](docs/screenshots/datasets.png)<br>_Datasets — instruction corpus_ | ![Dataset detail page](docs/screenshots/detail.png)<br>_Dataset detail — sample record & topics_ |
 
 ---

@@ -3,7 +3,6 @@ import {
   Database,
   Download,
   MessagesSquare,
-  SlidersHorizontal,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -39,7 +38,6 @@ export const NAV_GROUPS: NavGroup[] = [
     label: 'Explore',
     items: [
       { title: 'Dataset', short: 'Dataset', icon: Database, to: '/dataset' },
-      { title: 'Fine-tuning', short: 'Tuning', icon: SlidersHorizontal, to: '/finetuning' },
       { title: 'Download model', short: 'Model', icon: Download, href: MODEL_DOWNLOAD_URL },
     ],
   },

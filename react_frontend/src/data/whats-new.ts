@@ -9,7 +9,7 @@ export const whatsNew: ChangelogEntry[] = [
     title: 'Major 2026 Refactor: New Frontend, vLLM Serving & Unified Backend',
     detail:
       'A ground-up modernization of the platform, spanning the whole stack:\n' +
-      '• Frontend: rebuilt from Create React App to Vite + TypeScript, redesigned with Tailwind CSS and shadcn/ui in a dark, control-plane theme, with reworked chat, dataset, and fine-tuning pages\n' +
+      '• Frontend: rebuilt from Create React App to Vite + TypeScript, redesigned with Tailwind CSS and shadcn/ui in a dark, control-plane theme, with reworked chat and dataset pages\n' +
       '• GPT backend: migrated from GPT-4o-mini to GPT-5.4-mini (the GPT-4o family reached end-of-life), with a configurable model id via OPENAI_MODEL\n' +
       '• Model serving: BGP-LLaMA now runs on vLLM behind an OpenAI-compatible API, so the local model and GPT share a single streaming path\n' +
       '• Backend: consolidated the two-service (Django + FastAPI) design into one lean FastAPI service — lower-overhead streaming and a simpler, more maintainable architecture.',

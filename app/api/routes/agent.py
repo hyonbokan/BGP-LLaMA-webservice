@@ -3,8 +3,8 @@
 `POST /api/agent/run` renders the query into a task, runs it on the agent pod,
 and re-streams the outcome over this backend's SSE. Distinct from `/api/chat/*`
 (which only generates a script): this path runs the analysis. The frame vocab is
-`agent_started` -> `running` (a heartbeat per pod keep-alive) -> `result` ->
-`error`; the live per-step trace lands once the pod ships token/tool events.
+`agent_started` -> `token`/`tool` (the live step trace) / `running` (a heartbeat
+per pod keep-alive) -> `result` -> `error`.
 """
 
 import json
@@ -15,7 +15,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
 from app.core.logging import get_logger
-from app.llm.agent import Running, RunResult, run_agent
+from app.llm.agent import Running, RunResult, Token, ToolCall, run_agent
 
 logger = get_logger(__name__)
 router = APIRouter()
@@ -26,6 +26,8 @@ class AgentStatus(StrEnum):
 
     STARTED = "agent_started"
     RUNNING = "running"
+    TOKEN = "token"
+    TOOL = "tool"
     RESULT = "result"
     ERROR = "error"
 
@@ -51,6 +53,19 @@ async def _event_stream(query: str, prior_findings: str | None):
         async for event in run_agent(query, prior_findings):
             if isinstance(event, Running):
                 yield _sse({"status": AgentStatus.RUNNING})
+            elif isinstance(event, Token):
+                yield _sse({"status": AgentStatus.TOKEN, "text": event.text})
+            elif isinstance(event, ToolCall):
+                yield _sse(
+                    {
+                        "status": AgentStatus.TOOL,
+                        "id": event.id,
+                        "name": event.name,
+                        "state": event.status,
+                        "input": event.input,
+                        "output": event.output,
+                    }
+                )
             elif isinstance(event, RunResult):
                 yield _sse(
                     {

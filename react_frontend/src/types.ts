@@ -56,6 +56,24 @@ export interface AgentRunResult {
   structuredOutput: unknown;
 }
 
+/** One tool call in the live trace, updated in place as it moves pending -> completed. */
+export interface AgentToolTrace {
+  kind: 'tool';
+  id: string;
+  name: string;
+  state: string;
+  input?: unknown;
+  output?: unknown;
+}
+
+/** A run of streamed answer text in the live trace (consecutive token deltas, joined). */
+export interface AgentTextTrace {
+  kind: 'text';
+  text: string;
+}
+
+export type AgentTraceItem = AgentToolTrace | AgentTextTrace;
+
 /** One question posed to the agent and the run it kicked off. */
 export interface AgentRun {
   id: number;
@@ -63,14 +81,23 @@ export interface AgentRun {
   status: AgentRunStatus;
   /** Wall-clock start (ms), used to show a live elapsed timer while running. */
   startedAt: number;
+  /** The live step trace (tool calls + streamed text), appended as events arrive. */
+  trace?: AgentTraceItem[];
   result?: AgentRunResult;
   error?: string;
 }
 
 /** SSE payload shape the agent endpoint emits (`/api/agent/run`). */
 export interface AgentSseEvent {
-  status: 'agent_started' | 'running' | 'result' | 'error';
+  status: 'agent_started' | 'running' | 'token' | 'tool' | 'result' | 'error';
+  /** `token`: an answer-text chunk. `result`: the final answer. */
   text?: string;
+  /** `tool` frame fields. */
+  id?: string;
+  name?: string;
+  state?: string;
+  input?: unknown;
+  output?: unknown;
   is_error?: boolean;
   subtype?: string | null;
   cost_usd?: number | null;

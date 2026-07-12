@@ -1,0 +1,362 @@
+[
+  {
+    "time": 1783728030.0,
+    "type": "A",
+    "peer_asn": "3333",
+    "prefix": "8.8.8.0/24",
+    "as_path": [
+      "3356",
+      "15169"
+    ],
+    "origin": "15169",
+    "communities": [
+      "15169:1000"
+    ],
+    "med": null
+  },
+  {
+    "time": 1783728060.0,
+    "type": "A",
+    "peer_asn": "12654",
+    "prefix": "8.8.8.0/24",
+    "as_path": [
+      "174",
+      "15169"
+    ],
+    "origin": "15169",
+    "communities": [],
+    "med": null
+  },
+  {
+    "time": 1783728120.0,
+    "type": "A",
+    "peer_asn": "34549",
+    "prefix": "8.8.8.0/24",
+    "as_path": [
+      "2914",
+      "15169"
+    ],
+    "origin": "15169",
+    "communities": [
+      "15169:1000"
+    ],
+    "med": null
+  },
+  {
+    "time": 1783728300.0,
+    "type": "A",
+    "peer_asn": "3333",
+    "prefix": "8.8.8.0/24",
+    "as_path": [
+      "174",
+      "3356",
+      "15169"
+    ],
+    "origin": "15169",
+    "communities": [
+      "15169:1000"
+    ],
+    "med": null
+  },
+  {
+    "time": 1783728520.0,
+    "type": "A",
+    "peer_asn": "12654",
+    "prefix": "8.8.8.0/24",
+    "as_path": [
+      "174",
+      "15169"
+    ],
+    "origin": "15169",
+    "communities": [],
+    "med": null
+  },
+  {
+    "time": 1783728700.0,
+    "type": "A",
+    "peer_asn": "3333",
+    "prefix": "8.8.8.0/24",
+    "as_path": [
+      "3356",
+      "7922"
+    ],
+    "origin": "7922",
+    "communities": [
+      "7922:200"
+    ],
+    "med": null
+  },
+  {
+    "time": 1783728715.0,
+    "type": "A",
+    "peer_asn": "34549",
+    "prefix": "8.8.8.0/24",
+    "as_path": [
+      "2914",
+      "7922"
+    ],
+    "origin": "7922",
+    "communities": [
+      "7922:200"
+    ],
+    "med": null
+  },
+  {
+    "time": 1783728780.0,
+    "type": "A",
+    "peer_asn": "3333",
+    "prefix": "8.8.8.0/24",
+    "as_path": [
+      "3356",
+      "15169"
+    ],
+    "origin": "15169",
+    "communities": [
+      "15169:1000"
+    ],
+    "med": null
+  },
+  {
+    "time": 1783729000.0,
+    "type": "A",
+    "peer_asn": "12654",
+    "prefix": "8.8.8.0/24",
+    "as_path": [
+      "2914",
+      "15169"
+    ],
+    "origin": "15169",
+    "communities": [],
+    "med": null
+  },
+  {
+    "time": 1783729150.0,
+    "type": "A",
+    "peer_asn": "34549",
+    "prefix": "8.8.8.0/24",
+    "as_path": [
+      "6939",
+      "174",
+      "15169"
+    ],
+    "origin": "15169",
+    "communities": [
+      "15169:1000"
+    ],
+    "med": null
+  },
+  {
+    "time": 1783827015.0,
+    "type": "A",
+    "peer_asn": "3333",
+    "prefix": "1.1.1.0/24",
+    "as_path": [
+      "3356",
+      "13335"
+    ],
+    "origin": "13335",
+    "communities": [
+      "13335:10020"
+    ],
+    "med": 0
+  },
+  {
+    "time": 1783827042.0,
+    "type": "A",
+    "peer_asn": "12654",
+    "prefix": "1.1.1.0/24",
+    "as_path": [
+      "174",
+      "13335"
+    ],
+    "origin": "13335",
+    "communities": [
+      "13335:10030"
+    ],
+    "med": null
+  },
+  {
+    "time": 1783827088.0,
+    "type": "A",
+    "peer_asn": "34549",
+    "prefix": "1.1.1.0/24",
+    "as_path": [
+      "6939",
+      "13335"
+    ],
+    "origin": "13335",
+    "communities": [
+      "13335:10020"
+    ],
+    "med": null
+  },
+  {
+    "time": 1783827130.0,
+    "type": "A",
+    "peer_asn": "3333",
+    "prefix": "1.1.1.0/24",
+    "as_path": [
+      "3356",
+      "13335"
+    ],
+    "origin": "13335",
+    "communities": [
+      "13335:10020"
+    ],
+    "med": 0
+  },
+  {
+    "time": 1783827205.0,
+    "type": "A",
+    "peer_asn": "12654",
+    "prefix": "1.1.1.0/24",
+    "as_path": [
+      "2914",
+      "13335"
+    ],
+    "origin": "13335",
+    "communities": [
+      "13335:10030"
+    ],
+    "med": null
+  },
+  {
+    "time": 1783827360.0,
+    "type": "A",
+    "peer_asn": "34549",
+    "prefix": "1.1.1.0/24",
+    "as_path": [
+      "6939",
+      "13335"
+    ],
+    "origin": "13335",
+    "communities": [
+      "13335:10020"
+    ],
+    "med": null
+  },
+  {
+    "time": 1783827540.0,
+    "type": "A",
+    "peer_asn": "3333",
+    "prefix": "1.1.1.0/24",
+    "as_path": [
+      "3356",
+      "13335"
+    ],
+    "origin": "13335",
+    "communities": [
+      "13335:10020"
+    ],
+    "med": 0
+  },
+  {
+    "time": 1783827905.0,
+    "type": "A",
+    "peer_asn": "3333",
+    "prefix": "1.1.1.0/24",
+    "as_path": [
+      "3356",
+      "64500"
+    ],
+    "origin": "64500",
+    "communities": [
+      "64500:100"
+    ],
+    "med": 0
+  },
+  {
+    "time": 1783827922.0,
+    "type": "A",
+    "peer_asn": "12654",
+    "prefix": "1.1.1.0/24",
+    "as_path": [
+      "174",
+      "64500"
+    ],
+    "origin": "64500",
+    "communities": [
+      "64500:100"
+    ],
+    "med": null
+  },
+  {
+    "time": 1783827970.0,
+    "type": "A",
+    "peer_asn": "34549",
+    "prefix": "1.1.1.0/24",
+    "as_path": [
+      "64500"
+    ],
+    "origin": "64500",
+    "communities": [
+      "64500:100"
+    ],
+    "med": null
+  },
+  {
+    "time": 1783828010.0,
+    "type": "A",
+    "peer_asn": "3333",
+    "prefix": "1.1.1.0/24",
+    "as_path": [
+      "3356",
+      "13335"
+    ],
+    "origin": "13335",
+    "communities": [
+      "13335:10020"
+    ],
+    "med": 0
+  },
+  {
+    "time": 1783828120.0,
+    "type": "A",
+    "peer_asn": "12654",
+    "prefix": "1.1.1.0/24",
+    "as_path": [
+      "2914",
+      "13335"
+    ],
+    "origin": "13335",
+    "communities": [
+      "13335:10030"
+    ],
+    "med": null
+  },
+  {
+    "time": 1783828450.0,
+    "type": "W",
+    "peer_asn": "3333",
+    "prefix": "1.1.1.0/24",
+    "as_path": [],
+    "origin": null,
+    "communities": [],
+    "med": null
+  },
+  {
+    "time": 1783828470.0,
+    "type": "W",
+    "peer_asn": "12654",
+    "prefix": "1.1.1.0/24",
+    "as_path": [],
+    "origin": null,
+    "communities": [],
+    "med": null
+  },
+  {
+    "time": 1783828600.0,
+    "type": "A",
+    "peer_asn": "34549",
+    "prefix": "1.1.1.0/24",
+    "as_path": [
+      "6939",
+      "13335"
+    ],
+    "origin": "13335",
+    "communities": [
+      "13335:10020"
+    ],
+    "med": null
+  }
+]

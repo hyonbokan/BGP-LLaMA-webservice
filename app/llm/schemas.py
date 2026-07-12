@@ -69,8 +69,14 @@ def _normalize_time(value: object) -> str | None:
 class TimeWindow(BaseModel):
     """A historical analysis window; each bound is a canonical timestamp or None."""
 
-    from_time: str | None = None
-    until_time: str | None = None
+    from_time: str | None = Field(
+        default=None,
+        description="Window start, UTC 'YYYY-MM-DD HH:MM:SS'. Null when the query gives no start.",
+    )
+    until_time: str | None = Field(
+        default=None,
+        description="Window end, UTC 'YYYY-MM-DD HH:MM:SS'. Null when the query gives no end.",
+    )
 
     @field_validator("from_time", "until_time", mode="before")
     @classmethod
@@ -83,11 +89,26 @@ class BgpIntent(BaseModel):
 
     model_config = ConfigDict(extra="ignore")
 
-    analysis_type: AnalysisType = AnalysisType.default
-    target_asn: str | None = None
-    prefixes: list[str] = []
-    time_window: TimeWindow | None = None
-    collectors: list[str] = []
+    analysis_type: AnalysisType = Field(
+        default=AnalysisType.default,
+        description="Kind of BGP analysis the query asks for; 'default' when none clearly applies.",
+    )
+    target_asn: str | None = Field(
+        default=None,
+        description="AS number the query is about, digits only (no 'AS' prefix). Null if none named.",
+    )
+    prefixes: list[str] | None = Field(
+        default=None,
+        description="CIDR prefixes the query targets, e.g. '8.8.8.0/24'. Null when the query names none.",
+    )
+    time_window: TimeWindow | None = Field(
+        default=None,
+        description="Historical window to analyze. Null for a real-time or time-unscoped query.",
+    )
+    collectors: list[str] | None = Field(
+        default=None,
+        description="RIS/RouteViews collectors to read, e.g. 'rrc00'. Null to let the backend default.",
+    )
 
     @field_validator("analysis_type", mode="before")
     @classmethod

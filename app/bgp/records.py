@@ -1,6 +1,6 @@
 """Shape BGPStream elements into compact, JSON-serializable update records.
 
-Kept free of the pybgpstream and MCP imports so the record logic can be unit-tested
+Kept free of the pybgpstream import so the record logic can be unit-tested
 without the native BGPStream library installed.
 """
 
@@ -33,8 +33,8 @@ def element_to_record(elem: Any) -> dict[str, Any]:
 def collect_records(elements: Iterable[Any], max_records: int) -> tuple[list[dict[str, Any]], bool]:
     """Shape up to ``max_records`` elements into records, flagging truncation.
 
-    Returns the records and whether the stream was cut short, so the caller can tell the
-    agent to narrow its window rather than trust a partial result as complete.
+    Returns the records and whether the stream was cut short, so the caller can narrow
+    its window rather than trust a partial result as complete.
     """
     records: list[dict[str, Any]] = []
     truncated = False

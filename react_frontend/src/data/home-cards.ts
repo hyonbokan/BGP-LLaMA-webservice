@@ -20,7 +20,7 @@ export const homeCards: HomeCard[] = [
     kind: 'code',
     title: 'Web app source code',
     description:
-      'The full source for this web app — Django, FastAPI, and the React frontend. Star it if you find it useful.',
+      'The full source for this web app — the FastAPI backend and the React frontend. Star it if you find it useful.',
     buttonText: 'View on GitHub',
     link: 'https://github.com/hyonbokan/BGP-LLaMA-webservice',
   },

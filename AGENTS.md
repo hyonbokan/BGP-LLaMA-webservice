@@ -12,11 +12,6 @@ Two components:
 - **React frontend** — Vite + React 18 + **TypeScript** SPA in `react_frontend/`, styled with
   Tailwind CSS + shadcn/ui. (Migrated off Create React App; MUI and Redux were removed.)
 
-> **History:** this was a Django (Daphne) + FastAPI two-process app. Django owned auth/ORM/admin but
-> none of it was actually used (dead model, empty admin, no live auth), and Django already streamed
-> SSE natively — so it was removed. The backend is now pure FastAPI. `requirements.legacy.txt`
-> preserves the old full dependency set (Django + the torch/transformers/BGPStream training stack).
-
 Backend Python lives at the repository root under `app/` — there is **no** `backend/` directory.
 
 ### Backend layout (`app/`)
@@ -45,9 +40,16 @@ prompts/                  # prompt strings (pure data, no heavy imports)
 `components/agent/agent-run-card.tsx`) are all in place. A live smoke drove a real question through
 this backend to a locally-running pod and back: a natural-language query returned an answer, and a
 `Bash`-tool run analyzed a hand-staged workspace over 3 turns (the pod staged the `file://` pointer,
-ran, and reaped it). What's still **not** built: real BGP-data staging (the smoke used a
-hand-staged directory) and the live per-step tool trace (a pod dependency — see below). This section
-documents the shape; see "How the agent run is wired" below.
+ran, and reaped it). **The live per-step trace is now built and verified end to end (2026-07-12):**
+the pod streams `token`/`tool` events, this backend's `_relay` turns them into typed
+`Token`/`ToolCall` events, the route re-emits them as `token`/`tool` SSE frames, and the console
+renders a live tool-call trace (pending→running→completed with input/output) plus the streaming
+answer — verified by driving `run_agent` against a live pod (two tool calls traced, answer streamed,
+terminal result). **Real BGP-data gather-and-stage is now built too (2026-07-12):** `app/bgp/` turns a
+classified intent into a bounded plan (`build_fetch_plan`), gathers the scoped updates with pybgpstream,
+reduces them, and stages `updates.json` + a manifest as the agent's workspace, reaped after the run —
+with a lazy pybgpstream import so a dev host without it falls back to a static `BGP_DATA_ROOT`. This
+section documents the shape; see "How the agent run is wired" below.
 
 Today the backend streams model **text** (`llm/service.py` → `stream_chat()`): the chat feature
 *generates* a pybgpstream script but never runs it. The planned next step adds a **code-executing**
@@ -63,10 +65,10 @@ trace.
 - **Feature-page shape — a run-and-observe console, not a two-bubble chat.** A user poses a question;
   the assistant "turn" expands into the agent's **step / tool-call (`Bash`,`Read`,`Write`) / output
   trace**, ending in a result card (the answer plus run metadata: cost, turns, duration, subtype).
-  Follow-ups are new single-shot runs. **v1** shows *submit → running → terminal result only*,
-  because the pod's live `token`/`tool` SSE events aren't built yet (pod DESIGN §9); the live
-  step-by-step trace lands once the pod ships those events. Treat the live trace as a pod dependency,
-  not something this repo can deliver alone.
+  Follow-ups are new single-shot runs. The pod now ships live `token`/`tool` SSE events (pod DESIGN
+  §9), so the console renders the live step trace — each tool call as it transitions
+  pending→running→completed (with its input/output) and the answer text as it streams — ahead of the
+  result card. Built and verified end to end 2026-07-12.
 - **Reuse the existing pipeline for the prompt.** The classify → jinja-template machinery
   (`classify_intent` + `prompts/templates/*`) renders the pod's `system_prompt`/`prompt`; the agent
   receives a *rendered task*, not the raw query. `BgpScript` (or a purpose-built schema) can be passed
@@ -115,50 +117,104 @@ rail.
 
 ### How the agent run is wired (built)
 
+> **Current status (2026-07-12): caller-side gather-and-stage is BUILT.** `app/bgp/` now gathers the
+> scoped updates with pybgpstream, reduces them via `records.py`, and stages `updates.json` + a
+> manifest as the agent's read-only workspace; `build_fetch_plan` is the deterministic guardrail and
+> `run_agent` wires gather → stage → workspace → reap. pybgpstream is imported lazily, so a dev host
+> without the native library (or a failed gather) **falls back to a statically staged `BGP_DATA_ROOT`**
+> — verified end to end 2026-07-12 (a scoped MOAS query gathered-or-fell-back, then the agent analyzed
+> the staged records and reported the conflict). The real network gather runs where BGPStream is
+> installed (the `docker/Dockerfile.bgpstream` image); the slim `api` image and macOS dev hosts use the
+> fallback. **Config env format:** `AGENT_TOOLS` and `CORS_ALLOWED_ORIGINS` are `list[str]` read as
+> **JSON arrays** (pydantic-settings' native format), e.g. `AGENT_TOOLS=["Bash","Read","Write"]`. A
+> stale comma-separated value fails at boot — migrate any live `.env` to JSON (see `.env.example`).
+
 - **Config (`app/core/config.py`, `.env.example`):** `AGENT_POD_URL`, `AGENT_POD_TOKEN`,
-  `AGENT_MODEL`, `AGENT_TOOLS` (comma-separated → the `agent_tool_list` property),
-  `AGENT_MAX_BUDGET_USD`, `AGENT_REQUEST_TIMEOUT`. Env-driven, never hardcoded.
+  `AGENT_MODEL`, `AGENT_TOOLS`, `AGENT_MAX_BUDGET_USD`, `AGENT_REQUEST_TIMEOUT`. Env-driven, never
+  hardcoded. List fields (`AGENT_TOOLS`, `CORS_ALLOWED_ORIGINS`) are JSON arrays.
 - **Backend:** `app/llm/agent.py` — the pod client. `run_agent(query, prior_findings?)` classifies the
   query, renders a **dedicated autonomous system prompt** (`prompts/templates/agent_system.j2` via
   `_agent_system_prompt`) — *not* the generate-only chat template, which asks clarifying questions and
-  assumes local files. The agent prompt tells the model to write and RUN pybgpstream code, pull data
-  from the public collector broker (or staged local files), and report findings without asking. It
+  assumes local files. The agent prompt tells the model to analyze the BGP data the backend has already
+  gathered and staged as a read-only workspace, in ordinary Python, and report findings without asking —
+  it does not fetch and does not write pybgpstream. It
   POSTs one run with the bearer token and translates the pod's `event:`-framed SSE
   (`: keep-alive` → `cost` → `done`) into typed `Running` / `RunResult` events.
   `app/api/routes/agent.py` — `POST /api/agent/run`, mounted under `/api`, re-streams those as this
   backend's `data:{status}` frames.
-- **BGP data via a thin MCP tool (`bgp_mcp/`).** Rather than have the LLM hand-write pybgpstream, a
-  small MCP server (`bgp_mcp/`, backed by pybgpstream) exposes `fetch_bgp_updates(prefix, from_time,
-  until_time, collectors, …)` returning raw update records; the agent calls the tool and analyzes the
-  records in ordinary Python. This keeps the pybgpstream dependency and hallucination surface out of
-  the LLM's output, and keeps the pod's own code domain-free (the pod just launches the server).
-- **Deployment (not yet wired):** the pod must run the server — declare it in the pod's
-  `AGENT_MCP_SERVERS` (`[{"name":"bgp","command":["python","-m","bgp_mcp"],"tools":["fetch_bgp_updates"]}]`,
-  gated tool id `bgp_fetch_bgp_updates`) on an image that has `bgp_mcp` + `mcp` + **pybgpstream**
-  (`docker/Dockerfile.bgpstream` is the base) and egress to the RIS/RouteViews broker. Until that
-  runtime exists, the agent proceeds autonomously but reports the data tool is unavailable rather than
-  producing analysis. (Fully removing pybgpstream from the pod image would need *remote* MCP — a pod
-  registry extension, later.)
-- **SSE vocab (v1):** `agent_started` → `running` (one frame per pod keep-alive) → `result` (the
-  answer plus cost/turns/duration/subtype) → `error`. The per-step tool trace waits on the pod's live
-  `token`/`tool` events (still deferred pod-side).
+- **BGP data: the backend gathers and stages it; the agent only analyzes (architecture decision,
+  2026-07-12).** An earlier version gave the agent a thin MCP fetch tool (`bgp_mcp/`, backed by
+  pybgpstream) it called at runtime — **now removed.** Why: a BGP fetch is slow network I/O (tens of
+  seconds — see latency below), and opencode caps a single MCP tool call with an internal timeout the
+  pod does not surface, so wide fetches were aborted mid-call. The fix follows the `ai-auditor`
+  isolated-scan-pod pattern (`~/Desktop/ai-auditor`, `backend/isolated_scanner`): **stage the slow data
+  before the run; let the agent work over local files.** `app/bgp/` gathers updates with pybgpstream
+  (in-process, async, parallelizable across windows/collectors, under the backend's *own* timeout — no
+  per-tool-call ceiling) and reduces them to an analysis-ready dataset (`app/bgp/records.py` shapes each
+  element into a compact JSON record — the reusable piece kept from `bgp_mcp/`). `run_agent` stages that
+  dir and passes it as the pod's read-only `workspace` (`file://` by reference; the pod copies it into a
+  throwaway cwd per run, via its `stage_workspace`). The agent reads the staged files with
+  Bash/Read/Write — no fetch, no pybgpstream, no MCP. This keeps the pod domain-free and the slow work
+  under the backend's control, where longer ranges and multiple timelines become "gather more windows in
+  parallel before dispatch." **Built (2026-07-12):** `app/bgp/gather.py` `gather_and_stage(plan, settings)`
+  reads each collector concurrently in worker threads under `bgp_gather_timeout_seconds`, reduces via
+  `records.py`, writes `updates.json` + `manifest.json` to a throwaway dir, and returns it; `run_agent`
+  passes `file://<dir>` as the workspace and reaps it after the run. pybgpstream is a lazy import — its
+  absence raises `GatherUnavailable` and `run_agent` falls back to a statically staged `BGP_DATA_ROOT`.
+- **The fetch is a guarded plan, not the agent's free choice.** The shared `classify_intent → BgpIntent`
+  step (used by both chat `service.py` and agent `agent.py`) extracts the filter (prefixes, target_asn,
+  time_window, collectors) via structured output; its field `description`s steer the classifier LLM at
+  no prompt-token cost. `BgpIntent` is deliberately tolerant (bad param → None, never raises) so chat
+  can't fail on it — so it is **not** the guardrail. A deterministic gate on the agent branch
+  (`app/bgp/fetch_plan.py` `build_fetch_plan(intent, settings) → FetchSpec | None`, built) enforces the
+  gather bounds: scope required (prefix or ASN, else None → skip gather), window defaulted + capped
+  (`bgp_gather_default/max_window_minutes`), collectors defaulted + capped (`bgp_gather_default/max_collectors`).
+  Required
+  schema fields only make the LLM *fill* a value; the hard bounds must be code (an LLM will fill a
+  "required" window with a 30-day span). Chat is untouched — it generates a script the user runs; the
+  two flows share the front and diverge at execution.
+- **Gather latency (measured — why staging wins):** network-bound, ~30 s fixed floor (broker + archive
+  open) + ~3 s/min of window (1 min ≈ 31 s, 5 min ≈ 41 s, 20 min ≈ 88 s; sparse windows still scan fully
+  because the prefix filter runs in libBGPStream). A prefix-filtered gather *emits* only matching records
+  (KBs–MBs) even though it *scans* GBs — the GBs live and die inside the gather step and never cross to
+  the pod, so the staged workspace stays small. Because the backend owns this wait (not a tool call), a
+  long or multi-timeline analysis is bounded only by the pod's env-configurable `AGENT_POD_SESSION_TIMEOUT`
+  / `AGENT_POD_MAX_TURNS`, never by opencode's hidden tool-call timeout.
+- **SSE vocab:** `agent_started` → `token` (an answer-text chunk) / `tool` (a tool-call transition:
+  `id`, `name`, `state`, `input`, `output`) / `running` (one frame per pod keep-alive) → `result`
+  (the answer plus cost/turns/duration/subtype) → `error`. The `token`/`tool` frames are the pod's
+  live events, relayed one-for-one (`app/llm/agent.py` `_relay` → typed `Token`/`ToolCall` →
+  `app/api/routes/agent.py`).
 - **Frontend:** `hooks/use-bgp-agent.ts` (mirrors `use-bgp-chat.ts`; threads the last successful run's
-  answer forward as `prior_findings`, the memory unit) + `pages/bgp-agent-page.tsx` (the console) +
-  `components/agent/agent-run-card.tsx` (question → live "working" timer → result card with metadata
-  badges). Errors use `destructive`; the reserved amber `anomaly` is untouched.
+  answer forward as `prior_findings`, the memory unit; merges `token`/`tool` frames into a per-run
+  `trace`) + `pages/bgp-agent-page.tsx` (the console) + `components/agent/agent-run-card.tsx`
+  (question → live tool-call trace + streaming answer → result card with metadata badges). Errors use
+  `destructive`; the reserved amber `anomaly` is untouched.
 - **v1 sends no `response_schema`** (a free-text answer suits an execute-and-report agent better than
-  the generate-only `BgpScript` schema); the pod contract allows adding a schema later. The client
-  attaches `workspace: {source: "file://<BGP_DATA_ROOT>", mode: "ro"}` only when that directory
-  exists, otherwise the run gets an empty scratch dir.
+  the generate-only `BgpScript` schema); the pod contract allows adding a schema later. The workspace
+  is the freshly gathered-and-staged dataset (`_prepare_workspace` → `gather_and_stage`), passed as
+  `workspace: {source: "file://<staged-dir>", mode: "ro"}`; on a no-scope query or a gather miss it
+  falls back to a static `BGP_DATA_ROOT` (attached only when that directory exists, else an empty
+  scratch dir).
 - **Run it locally:** `cd ../opencode-agent-pod && .venv/bin/python -m pod` — the pod now auto-loads
   that repo's `.env`, so just set `AGENT_POD_TOKEN` + a provider key there. A dev token
   (`local-dev-pod-token`) is already wired in both repos' `.env`; the matching `AGENT_POD_TOKEN` /
   `AGENT_POD_URL` are set here. Then a question at `/bgp_agent` runs end to end.
-- **Two caveats from the 2026-07-12 smoke:** (1) the code default `AGENT_MODEL=gpt-5.4-mini-…` is
-  **unverified** against the pinned opencode 1.17.11 (a 2026 model on an older binary); the local
-  `.env` pins the smoke-verified `claude-haiku-4-5-20251001`. Revisit the default (or add the pod's
-  version-gate) before relying on the GPT path. (2) Real BGP-data staging is still unbuilt — the smoke
-  hand-staged a directory under `BGP_DATA_ROOT`.
+- **Runtime note (not a caveat — built):** live gather needs pybgpstream at runtime. It's excluded
+  from the slim `api` image and won't `pip install` on macOS. So `_prepare_workspace` gathers when
+  pybgpstream is importable; otherwise it falls back, in order, to a configured `BGP_DATA_ROOT` (if the
+  dir exists) then the **bundled synthetic `sample_bgp_data/`** (`bgp_sample_data_root`, default on) —
+  so the demo works out of the box on a dev host with no config, logging a loud "SYNTHETIC sample"
+  warning. Set `BGP_SAMPLE_DATA_ROOT=` empty to disable the fallback (an empty workspace is then
+  preferable to fake data). Verified 2026-07-12: with default `BGP_DATA_ROOT=/data/bgp` (absent) and no
+  pybgpstream, a scoped MOAS query auto-staged the sample and the agent reported the AS13335→AS64500
+  conflict. In production, run the gather where BGPStream is installed — the `docker/Dockerfile.bgpstream`
+  runtime. (The earlier "is the GPT default verified?" caveat is now
+  **closed**: with a real `OPENAI_API_KEY` in the pod's `.env`, `AGENT_MODEL=gpt-5.4-mini-2026-03-17`
+  ran end to end on opencode 1.17.11 — verified 2026-07-12 via the pod's `scripts/live_events_probe.py`:
+  a real multi-turn tool loop, live token/tool trace, success in 3 turns for ~$0.007. Anthropic
+  (`claude-haiku-4-5-20251001`) works too. The pod loads `.env` once at startup, so a running pod must
+  be restarted to pick up changed keys.)
 
 ## Common Commands
 
@@ -316,18 +372,19 @@ these projects); keep them consistent.
   `index.html`), proxying `/api` → `api:8002` with buffering off for SSE. So `make up-*` needs no
   host Node and no manual `yarn build`. TLS is not wired in the base config — add a cert-aware server
   block + Let's Encrypt mounts in the prod override when deploying publicly.
-- **`docker/Dockerfile.bgpstream`** is a **standalone** image (not in the compose stack) that compiles
-  CAIDA wandio + libBGPStream and installs pybgpstream on the same `python:3.12-slim` base — the
-  runtime the planned opencode-agent-pod script-execution path will build on. Multi-stage keeps it
-  lean (~250 MB vs ~880 MB unsplit): a builder compiles the C libs, the final stage copies only the
-  installed libraries + a prebuilt pybgpstream wheel + the runtime-only `.so` packages. Build once by
-  hand: `docker build -f docker/Dockerfile.bgpstream -t bgpstream:local .` — it is not rebuilt by
-  `make up-*`, and its heavy compile layers are Docker-cached so rebuilds are near-instant unless the
-  recipe changes.
+- **`docker/Dockerfile.bgpstream`** is a **standalone** image (not in the compose stack) that provides
+  the pybgpstream runtime for the backend's BGP gather step (see the BGP agent section). Multi-stage:
+  the builder compiles CAIDA wandio + libBGPStream 2.2.0 from source (glibc-2.36 workaround — rewrite
+  `pthread_yield` → `sched_yield` and neutralize the `configure` abort) and builds a pybgpstream wheel;
+  the final stage carries only the runtime shared libs + that wheel, so no toolchain ships. The `api`
+  image stays slim and BGPStream-free. The **pod** runs the plain domain-free `opencode-agent-pod` image
+  — no BGP runtime in it; egress to the RIS/RouteViews broker is needed only where gather runs (the
+  backend). For a separate-host (K8s) deploy where a `file://` workspace isn't shared between backend and
+  pod, add a generic object-store (`s3://`) source to the pod's `stage_workspace` (domain-agnostic) and
+  hand off by key. (The removed MCP path had a `bgp-pod.Dockerfile` + `run-bgp-pod.bash` that layered
+  pybgpstream + `bgp_mcp` onto the pod base; both are deleted.)
 
 ## Gotchas
 
-- `staticfiles/` and `debug.log` are **orphaned Django leftovers** — safe to delete.
-- `requirements.legacy.txt` is kept for reference only; nothing uses it.
 - The frontend's fine-tuning page posts to `/api/finetuning`, which **has no backend** — it's an
   unimplemented feature, not a regression.

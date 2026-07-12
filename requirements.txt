@@ -1,7 +1,7 @@
 # BGP-LLaMA webservice — pure FastAPI backend.
 # All inference runs in the separate vLLM service; the app only talks to
-# OpenAI-compatible endpoints over HTTP. No Django / torch / transformers /
-# pybgpstream — the old full stack is preserved in requirements.legacy.txt.
+# OpenAI-compatible endpoints over HTTP. Intentionally slim: no ML libraries
+# (torch/transformers) and no pybgpstream — those live in their own images.
 fastapi==0.111.0
 uvicorn[standard]==0.31.0
 gunicorn==23.0.0

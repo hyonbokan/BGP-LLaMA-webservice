@@ -1,10 +1,14 @@
 from functools import lru_cache
+from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+# Repository root (app/core/config.py → repo root), used to locate the bundled sample dataset.
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+
 
 class Settings(BaseSettings):
-    """Typed, env-driven configuration (replaces the Django settings split).
+    """Typed, env-driven configuration — the app's single settings source.
 
     Field names map to upper-case env vars case-insensitively, e.g.
     ``openai_api_key`` <- ``OPENAI_API_KEY``. Unknown env keys are ignored so a
@@ -16,10 +20,9 @@ class Settings(BaseSettings):
     # Logging
     log_level: str = "INFO"
 
-    # HTTP / CORS. Kept as a raw comma-separated string (django-environ style)
-    # and split via the `cors_origins` property — a plain str avoids
-    # pydantic-settings' JSON-decoding of List fields from env.
-    cors_allowed_origins: str = "http://localhost:3000"
+    # HTTP / CORS. A list[str] read from env as a JSON array, e.g.
+    # CORS_ALLOWED_ORIGINS=["http://localhost:3000","https://app.example.com"].
+    cors_allowed_origins: list[str] = ["http://localhost:3000"]
 
     # Shared LLM client
     llm_request_timeout: int = 120
@@ -34,12 +37,12 @@ class Settings(BaseSettings):
     llama_history_max_tokens: int = 6_000
     history_keep_recent_turns: int = 4
 
-    # Hosted GPT (OpenAI, or any OpenAI-compatible gateway via OPENAI_BASE_URL)
+    # Hosted GPT (OpenAI, or any OpenAI-compatible gateway via OPENAI_BASE_URL).
+    # No temperature / max-tokens knobs: reasoning models ignore them, so the GPT
+    # path sends neither (see app/llm/providers.py + generation.py).
     openai_api_key: str = ""
     openai_model: str = "gpt-5.4-mini-2026-03-17"
     openai_base_url: str | None = None
-    gpt_temperature: float = 0.7
-    gpt_max_tokens: int = 2000
 
     # Query classification (structured LLM call, always GPT-backed). When
     # disabled or when no OpenAI key is set, chat falls back to a substring
@@ -57,17 +60,19 @@ class Settings(BaseSettings):
     llama_api_mode: str = "completion"  # "completion" (raw prompt) or "chat"
 
     # Agentic BGP analysis (opencode-agent-pod). The pod runs an autonomous agent
-    # that writes a BGP script, runs it against staged data, and streams a result;
-    # provider keys live in the pod, so this backend sends a rendered task and a
-    # bearer token, never a key. agent_model is any id the pod resolves (a bare
-    # catalog id like the GPT default, or a qualified "provider/model"). The
-    # timeout is generous: an autonomous run can take minutes.
+    # that analyzes the backend-staged BGP data and streams a result; provider keys
+    # live in the pod, so this backend sends a rendered task and a bearer token,
+    # never a key. agent_model is any id the pod resolves (a bare catalog id like
+    # the GPT default, or a qualified "provider/model"). The timeout is generous:
+    # an autonomous run can take minutes.
     agent_pod_url: str = "http://localhost:8080"
     agent_pod_token: str = ""
     agent_model: str = "gpt-5.4-mini-2026-03-17"
-    # bgp_fetch_bgp_updates is the pod's MCP data tool (declared in the pod's
-    # AGENT_MCP_SERVERS); Bash/Read/Write let the agent analyze the records.
-    agent_tools: str = "bgp_fetch_bgp_updates,Bash,Read,Write"
+    # The agent analyzes BGP data the backend has already gathered and staged as a
+    # read-only workspace; Bash/Read/Write are all it needs. It does not fetch (no
+    # data tool) — see AGENTS.md, BGP agent. A list[str] read from env as a JSON
+    # array, e.g. AGENT_TOOLS=["Bash","Read","Write"].
+    agent_tools: list[str] = ["Bash", "Read", "Write"]
     agent_max_budget_usd: float | None = None
     agent_request_timeout: int = 600
 
@@ -77,17 +82,31 @@ class Settings(BaseSettings):
     # Root directory generated pybgpstream scripts read BGP update files from.
     # Filled into the prompt templates and used to rewrite any personal data
     # path the fine-tuned model reproduces from its training data, so no such
-    # path leaks into returned code.
+    # path leaks into returned code. On the agent path it is also the fallback
+    # workspace when a live gather is skipped or unavailable (see below).
     bgp_data_root: str = "/data/bgp"
 
-    @property
-    def cors_origins(self) -> list[str]:
-        return [o.strip() for o in self.cors_allowed_origins.split(",") if o.strip()]
+    # BGP gather (agent path). Before an agent run, the backend fetches the
+    # scoped updates with pybgpstream, reduces them to records, and stages them
+    # as the agent's read-only workspace. These are the hard bounds on that
+    # gather — enforced in code, never by the classifier, since an LLM will fill
+    # a "required" window with a 30-day span. The window is defaulted to the last
+    # N minutes when the query names none and clamped to the max; collectors are
+    # defaulted and capped likewise. Staged runs land under bgp_stage_root (empty
+    # => the system temp dir), each in its own directory, reaped after the run.
+    bgp_gather_default_window_minutes: int = 30
+    bgp_gather_max_window_minutes: int = 120
+    bgp_gather_default_collectors: list[str] = ["rrc00"]
+    bgp_gather_max_collectors: int = 3
+    bgp_gather_max_records: int = 50_000
+    bgp_gather_timeout_seconds: int = 180
+    bgp_stage_root: str = ""
 
-    @property
-    def agent_tool_list(self) -> list[str]:
-        """The tools the agent may use, parsed from the comma-separated env value."""
-        return [t.strip() for t in self.agent_tools.split(",") if t.strip()]
+    # Last-resort workspace when a live gather can't run (no pybgpstream) and no real
+    # BGP_DATA_ROOT is present: a bundled SYNTHETIC sample so the agent demo works out of the
+    # box on a dev host. Defaults to the repo's sample_bgp_data/; set empty to disable (e.g. in
+    # production, where an empty workspace is preferable to fake data).
+    bgp_sample_data_root: str = str(_REPO_ROOT / "sample_bgp_data")
 
 
 @lru_cache

@@ -10,14 +10,13 @@ def test_openai_provider_maps_settings():
         _env_file=None,
         openai_model="m",
         openai_api_key="k",
-        gpt_temperature=0.5,
-        gpt_max_tokens=10,
     )
     cfg = providers._openai_provider(s)
     assert cfg.model == "m"
     assert cfg.api_key == "k"
-    assert cfg.temperature == 0.5
-    assert cfg.max_tokens == 10
+    # GPT omits sampling knobs (reasoning models ignore them) => None => not sent.
+    assert cfg.temperature is None
+    assert cfg.max_tokens is None
     assert cfg.mode == "chat"
     assert cfg.base_url is None
     assert cfg.extra_body == {}

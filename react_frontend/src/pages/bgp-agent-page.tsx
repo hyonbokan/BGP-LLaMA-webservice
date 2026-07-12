@@ -1,23 +1,15 @@
 import { useEffect, useRef } from 'react';
-import { Bot, Play, RotateCcw, Terminal, Wrench } from 'lucide-react';
+import { RotateCcw, Waypoints } from 'lucide-react';
 import { useBgpAgent } from '@/hooks/use-bgp-agent';
 import { AgentRunCard } from '@/components/agent/agent-run-card';
-import { ChatComposer } from '@/components/chat/chat-composer';
+import { AgentComposer } from '@/components/agent/agent-composer';
 import { Button } from '@/components/ui/button';
 
-const STEPS = [
-  { icon: Wrench, text: 'Writes a pybgpstream analysis script for your question' },
-  { icon: Terminal, text: 'Runs it against staged BGP data and reads the output' },
-  { icon: Play, text: 'Self-corrects on errors, then reports the result with its metrics' },
-];
-
 /**
- * The BGP Agent run-and-observe console. Each question kicks off one autonomous
- * run on the agent pod: the card shows a live "working" indicator while the pod
- * runs, then a result card with the answer and run metadata. Follow-ups thread
- * the previous run's findings forward. The live per-step tool trace lands once
- * the pod ships token/tool events; today the console shows submit → running →
- * result.
+ * The BGP Agent dispatch console. Each question dispatches one autonomous run on
+ * the agent pod: the card streams a live step trace — the agent's tool calls and
+ * its answer as they arrive — then a result card with run metadata. Follow-ups
+ * thread the previous run's findings forward.
  */
 export function BgpAgentPage() {
   const agent = useBgpAgent();
@@ -31,14 +23,12 @@ export function BgpAgentPage() {
   const hasRuns = agent.runs.length > 0;
 
   return (
-    <div className="flex min-w-0 flex-1 flex-col">
+    <div className="flex h-full min-w-0 flex-col">
       <header className="flex items-center justify-between gap-2 border-b border-border px-4 py-2.5">
         <div className="flex items-center gap-2">
-          <Bot className="h-4 w-4 text-primary" />
+          <Waypoints className="h-4 w-4 text-primary" />
           <span className="font-display text-sm font-semibold tracking-tight">BGP Agent</span>
-          <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-            Run &amp; observe
-          </span>
+          <span className="eyebrow hidden sm:inline">Autonomous analyst</span>
         </div>
         {hasRuns && (
           <Button
@@ -65,68 +55,82 @@ export function BgpAgentPage() {
         )}
       </div>
 
-      <ChatComposer
+      <AgentComposer
         value={agent.input}
         onChange={agent.setInput}
         onSend={agent.submit}
         onStop={agent.stop}
-        isGenerating={agent.isRunning}
+        isRunning={agent.isRunning}
       />
     </div>
   );
 }
 
-// Fully-specified tasks: the agent runs autonomously and won't ask follow-ups,
-// so a good prompt names the prefix, time window, collector, and expected origin.
-const EXAMPLES = [
-  'Analyze prefix 8.8.8.0/24 on RIPE RIS collector rrc00 between 2026-07-11 00:00 and ' +
-    '00:20 UTC. Treat AS15169 as the expected origin and flag any origin or AS-path changes.',
-  'Over the last 30 minutes on RIPE RIS (rrc00), check whether the origin AS for 1.1.1.0/24 ' +
-    'changed from AS13335, and report any MOAS conflicts.',
+// Preset investigations. Each fills the composer with a fully-specified task —
+// the agent is autonomous and won't ask follow-ups, so the prefix, window,
+// collector, and expected origin are all named up front.
+const PRESETS = [
+  {
+    title: 'Origin & AS-path changes',
+    scope: '8.8.8.0/24 · rrc00',
+    query:
+      'Analyze prefix 8.8.8.0/24 on RIPE RIS collector rrc00 between 2026-07-11 00:00 and ' +
+      '00:20 UTC. Treat AS15169 as the expected origin and flag any origin or AS-path changes.',
+  },
+  {
+    title: 'MOAS conflict check',
+    scope: '1.1.1.0/24 · rrc00',
+    query:
+      'Over the last 30 minutes on RIPE RIS (rrc00), check whether the origin AS for 1.1.1.0/24 ' +
+      'changed from AS13335, and report any MOAS conflicts.',
+  },
 ];
 
 function EmptyState({ onPick }: { onPick: (value: string) => void }) {
   return (
-    <div className="flex h-full items-center justify-center p-6">
-      <div className="max-w-md text-center">
-        <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-xl border border-border bg-card text-primary">
-          <Bot className="h-7 w-7" />
+    <div className="bg-grid flex h-full items-center justify-center p-6">
+      <div className="w-full max-w-xl py-8">
+        <div className="flex items-center gap-2.5">
+          <span className="flex h-9 w-9 items-center justify-center rounded-md border border-border bg-card text-primary">
+            <Waypoints className="h-5 w-5" />
+          </span>
+          <span className="eyebrow">Autonomous analyst</span>
         </div>
-        <h1 className="font-display text-2xl font-bold tracking-tight">BGP Agent</h1>
-        <p className="mt-4 text-sm text-muted-foreground">
-          Unlike BGP Chat, which hands you a script to run yourself, the agent runs the analysis for
-          you — an autonomous loop that executes code and reports back.
+
+        <h1 className="mt-5 font-display text-3xl font-bold tracking-tight">
+          Dispatch a routing investigation
+        </h1>
+        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+          Frame a prefix, ASN, and window. The agent gathers the BGP updates, writes and runs the
+          analysis in Python, self-corrects, and reports what changed — you watch each step as it
+          runs. Unlike BGP Chat, it runs the analysis instead of handing you a script.
         </p>
 
-        <ul className="mx-auto mt-6 flex max-w-sm flex-col gap-3 text-left">
-          {STEPS.map(({ icon: Icon, text }) => (
-            <li key={text} className="flex items-start gap-3 text-sm">
-              <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-border bg-card text-muted-foreground">
-                <Icon className="h-4 w-4" />
-              </span>
-              <span className="text-muted-foreground">{text}</span>
-            </li>
-          ))}
-        </ul>
-
-        <div className="mt-8 flex flex-col gap-2">
-          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-            Try one
-          </p>
-          <p className="mb-1 text-xs text-muted-foreground/80">
-            The agent runs autonomously and won&apos;t ask follow-ups — be specific about the prefix,
-            time window, collector, and expected origin.
-          </p>
-          {EXAMPLES.map((example) => (
+        <p className="eyebrow mt-9">Preset tasks</p>
+        <div className="mt-3 flex flex-col gap-2">
+          {PRESETS.map((preset) => (
             <button
-              key={example}
-              onClick={() => onPick(example)}
-              className="rounded-lg border border-border bg-card px-3 py-2 text-left text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+              key={preset.query}
+              onClick={() => onPick(preset.query)}
+              className="group flex items-center gap-3 rounded-lg border border-border bg-card/60 px-4 py-3 text-left transition-colors hover:border-primary/40 hover:bg-card"
             >
-              {example}
+              <span
+                aria-hidden
+                className="select-none font-mono text-sm text-primary/50 transition-colors group-hover:text-primary"
+              >
+                ⟩
+              </span>
+              <span className="text-sm font-medium text-foreground">{preset.title}</span>
+              <span className="ml-auto shrink-0 font-mono text-[11px] text-primary/80">
+                {preset.scope}
+              </span>
             </button>
           ))}
         </div>
+
+        <p className="mt-6 font-mono text-[11px] leading-relaxed text-muted-foreground/80">
+          The agent won't ask follow-ups — name the prefix, window, collector, and expected origin.
+        </p>
       </div>
     </div>
   );

@@ -1,14 +1,28 @@
 from app.core.config import Settings
 
 
-def test_cors_origins_splits_and_trims_csv():
-    s = Settings(_env_file=None, cors_allowed_origins="http://a, http://b ,, http://c")
-    assert s.cors_origins == ["http://a", "http://b", "http://c"]
+def test_list_field_defaults_are_lists():
+    s = Settings(_env_file=None)
+    assert s.cors_allowed_origins == ["http://localhost:3000"]
+    assert s.agent_tools == ["Bash", "Read", "Write"]
 
 
-def test_cors_origins_single_value():
-    s = Settings(_env_file=None, cors_allowed_origins="http://only")
-    assert s.cors_origins == ["http://only"]
+def test_list_fields_from_init_kwargs():
+    s = Settings(
+        _env_file=None,
+        cors_allowed_origins=["http://a", "http://b"],
+        agent_tools=["Bash"],
+    )
+    assert s.cors_allowed_origins == ["http://a", "http://b"]
+    assert s.agent_tools == ["Bash"]
+
+
+def test_list_fields_parse_json_array_from_env(monkeypatch):
+    monkeypatch.setenv("CORS_ALLOWED_ORIGINS", '["http://x", "http://y"]')
+    monkeypatch.setenv("AGENT_TOOLS", '["Read", "Write"]')
+    s = Settings(_env_file=None)
+    assert s.cors_allowed_origins == ["http://x", "http://y"]
+    assert s.agent_tools == ["Read", "Write"]
 
 
 def test_defaults():

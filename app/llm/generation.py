@@ -109,18 +109,22 @@ async def _generate_chat(
     client, cfg: ProviderConfig, system_prompt: str, turns: list[Turn]
 ) -> AsyncIterator[Event]:
     emitted = 0
-    async with client.beta.chat.completions.stream(
-        model=cfg.model,
-        messages=[
+    params: dict = {
+        "model": cfg.model,
+        "messages": [
             {"role": "system", "content": system_prompt},
             *({"role": t.role, "content": t.content} for t in turns),
         ],
-        response_format=BgpScript,
-        temperature=cfg.temperature,
-        # Current OpenAI chat models reject the legacy `max_tokens`; the vLLM
-        # completions path below still uses it.
-        max_completion_tokens=cfg.max_tokens,
-    ) as stream:
+        "response_format": BgpScript,
+    }
+    # Only send sampling knobs when the provider set them — reasoning models (GPT)
+    # leave them None and ignore/reject these. Chat models use `max_completion_tokens`,
+    # not the legacy `max_tokens` (the vLLM completions path below still uses that).
+    if cfg.temperature is not None:
+        params["temperature"] = cfg.temperature
+    if cfg.max_tokens is not None:
+        params["max_completion_tokens"] = cfg.max_tokens
+    async with client.beta.chat.completions.stream(**params) as stream:
         async for event in stream:
             if event.type != "content.delta":
                 continue
@@ -152,14 +156,17 @@ async def _generate_completion(
     extra_body = dict(cfg.extra_body or {})
     extra_body["guided_json"] = BgpScript.model_json_schema()
 
-    stream = await client.completions.create(
-        model=cfg.model,
-        prompt=prompt,
-        temperature=cfg.temperature,
-        max_tokens=cfg.max_tokens,
-        stream=True,
-        extra_body=extra_body,
-    )
+    params: dict = {
+        "model": cfg.model,
+        "prompt": prompt,
+        "stream": True,
+        "extra_body": extra_body,
+    }
+    if cfg.temperature is not None:
+        params["temperature"] = cfg.temperature
+    if cfg.max_tokens is not None:
+        params["max_tokens"] = cfg.max_tokens
+    stream = await client.completions.create(**params)
     raw = ""
     emitted = 0
     async for chunk in stream:

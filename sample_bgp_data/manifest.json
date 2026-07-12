@@ -1,0 +1,40 @@
+{
+  "note": "SYNTHETIC demo data \u2014 not real RIS/RouteViews records. Covers both BGP Agent examples.",
+  "prefixes": [
+    "8.8.8.0/24",
+    "1.1.1.0/24"
+  ],
+  "collectors": [
+    "rrc00"
+  ],
+  "from": "2026-07-11T00:00:00+00:00",
+  "until": "2026-07-12T04:00:00+00:00",
+  "record_count": 25,
+  "record_fields": [
+    "time",
+    "type",
+    "peer_asn",
+    "prefix",
+    "as_path",
+    "origin",
+    "communities",
+    "med"
+  ],
+  "files": [
+    "updates.json"
+  ],
+  "scenarios": [
+    {
+      "prefix": "8.8.8.0/24",
+      "expected_origin": "15169",
+      "window": "2026-07-11 00:00-00:20",
+      "anomaly": "AS-path changes + brief origin deviation to AS7922"
+    },
+    {
+      "prefix": "1.1.1.0/24",
+      "expected_origin": "13335",
+      "window": "2026-07-12 03:30-04:00",
+      "anomaly": "MOAS conflict with AS64500"
+    }
+  ]
+}

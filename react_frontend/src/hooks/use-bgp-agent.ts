@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
 import { apiUrl } from '@/config';
-import type { AgentRun, AgentSseEvent } from '@/types';
+import type { AgentRun, AgentSseEvent, AgentTraceItem } from '@/types';
 
 let nextRunId = 1;
 
@@ -13,14 +13,49 @@ function lastFindings(runs: AgentRun[]): string | null {
   return null;
 }
 
+/** Append a token delta, joining it onto a trailing text run rather than starting a new one. */
+function appendToken(trace: AgentTraceItem[] | undefined, text: string): AgentTraceItem[] {
+  const items = trace ?? [];
+  const last = items[items.length - 1];
+  if (last?.kind === 'text') {
+    return [...items.slice(0, -1), { ...last, text: last.text + text }];
+  }
+  return [...items, { kind: 'text', text }];
+}
+
+/** Update the tool step with this id in place (pending -> running -> completed), else append it. */
+function mergeTool(trace: AgentTraceItem[] | undefined, ev: AgentSseEvent): AgentTraceItem[] {
+  const items = trace ?? [];
+  const step: AgentTraceItem = {
+    kind: 'tool',
+    id: ev.id ?? '',
+    name: ev.name ?? '?',
+    state: ev.state ?? '',
+    input: ev.input,
+    output: ev.output,
+  };
+  const at = items.findIndex((item) => item.kind === 'tool' && item.id === step.id);
+  if (at === -1) return [...items, step];
+  const prev = items[at] as Extract<AgentTraceItem, { kind: 'tool' }>;
+  // A later transition may omit fields an earlier one carried (input on running, output on
+  // completed), so keep the last non-nullish value for each.
+  const merged: AgentTraceItem = {
+    ...step,
+    input: step.input ?? prev.input,
+    output: step.output ?? prev.output,
+  };
+  return items.map((item, i) => (i === at ? merged : item));
+}
+
 /**
  * Owns the BGP Agent console: a log of autonomous runs and the streamed
  * connection to the FastAPI agent endpoint. Each submit is one single-shot run —
  * the request POSTs the query plus the last run's distilled findings (the memory
  * unit that carries context forward without replaying a transcript), and the SSE
- * body is read with fetch + a stream reader. `running` frames are a heartbeat
- * while the pod works (no live token/tool trace yet); `result` fills the run's
- * result card; `error` marks it failed. The stream ending stops the spinner.
+ * body is read with fetch + a stream reader. `token`/`tool` frames build the live
+ * step trace, `running` frames are a heartbeat while the pod is otherwise idle,
+ * `result` fills the run's result card, and `error` marks it failed. The stream
+ * ending stops the spinner.
  */
 export function useBgpAgent() {
   const [runs, setRuns] = useState<AgentRun[]>([]);
@@ -44,6 +79,14 @@ export function useBgpAgent() {
         case 'agent_started':
         case 'running':
           // The pod is working; the run card shows a live "working" indicator.
+          break;
+
+        case 'token':
+          patchRun(id, (run) => ({ ...run, trace: appendToken(run.trace, data.text ?? '') }));
+          break;
+
+        case 'tool':
+          patchRun(id, (run) => ({ ...run, trace: mergeTool(run.trace, data) }));
           break;
 
         case 'result':

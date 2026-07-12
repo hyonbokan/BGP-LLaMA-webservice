@@ -3,10 +3,14 @@
 AI-powered web application for **BGP routing analysis and anomaly detection**. It pairs an
 instruction fine-tuned **LLaMA** model with **GPT (gpt-5.4-mini)** to turn natural-language
 questions into BGP insights and runnable analysis code, streaming the reasoning back live over SSE.
+A separate **BGP Agent** mode goes further — it *runs* the analysis autonomously via
+[opencode-agent-pod](https://github.com/hyonbokan/opencode-agent-pod) (built on
+[opencode](https://opencode.ai)) and streams a live tool-by-tool trace. See
+[BGP Agent — autonomous analysis](#bgp-agent--autonomous-analysis) below.
 
 🔗 **Live demo:** [llama.cnu.ac.kr](https://llama.cnu.ac.kr/)
 
-> **Original codebase:** 2024-01-25 → 2025-04-04 — master's thesis work (Django + FastAPI).
+> **Original codebase:** 2024-01-25 → 2025-04-04 — master's thesis work.
 > **Update & refactor:** 2026-07-09 onward — modernized and consolidated to a single FastAPI
 > backend with vLLM-based model serving.
 
@@ -22,41 +26,58 @@ questions into BGP insights and runnable analysis code, streaming the reasoning 
 ## Architecture
 
 A natural-language query is **classified** — a structured GPT call returns the analysis type plus any
-extracted parameters (target ASN, prefixes, time window) — which selects a **Jinja2 prompt template**.
-The chosen model then **generates** the answer as structured output: the natural-language analysis
-streams live over SSE while the pybgpstream script is returned as a dedicated field (no fragile
-fenced-block parsing). Both models are reached through **one** OpenAI-compatible client — the local
-fine-tuned LLaMA is served by **vLLM**, GPT by OpenAI — so they differ only by base URL / key / model.
-The FastAPI backend does no in-process inference; nginx serves the React build and proxies `/api`.
+extracted parameters (target ASN, prefixes, time window). From there the request takes one of two
+paths:
+
+- **BGP Chat** *generates* the answer. A Jinja2 template routes the query; the chosen model returns
+  structured output — the natural-language analysis streams over SSE while a pybgpstream script comes
+  back as a dedicated field (no fragile fenced-block parsing). You run the script yourself.
+- **BGP Agent** *runs* the analysis. The backend gathers the scoped updates with pybgpstream, stages
+  them as a read-only workspace, and dispatches one autonomous run to **opencode-agent-pod** — a
+  separate service that holds the provider keys and drives an opencode agent loop (write code, run it,
+  observe, self-correct) over the staged data, streaming a live tool-by-tool trace back.
+
+Chat models are reached through **one** OpenAI-compatible client — the fine-tuned LLaMA via **vLLM**,
+GPT via OpenAI — so they differ only by base URL / key / model. The FastAPI backend does no
+in-process inference; nginx serves the React build and proxies `/api`.
 
 ```mermaid
 flowchart LR
-    Browser(["Browser"])
-    nginx["nginx — SPA + /api proxy"]
+    Browser(["Browser · SPA<br/>BGP Chat + BGP Agent"])
+    nginx["nginx<br/>SPA + /api proxy"]
 
-    subgraph backend["FastAPI backend · app/llm"]
+    subgraph backend["FastAPI backend · app/ (CPU-only, no inference)"]
         direction TB
-        classify["1 · Classify (GPT) → BgpIntent"]
-        prompt["2 · Jinja2 prompt template"]
-        generate["3 · Generate — structured output<br/>explanation streams · script field"]
-        classify --> prompt --> generate
+        classify["Classify (GPT)<br/>→ BgpIntent"]
+        chat["Chat · /api/chat/*<br/>generate script + explanation"]
+        agent["Agent · /api/agent/run<br/>plan → gather → stage → relay trace"]
+        classify --> chat
+        classify --> agent
     end
 
-    subgraph models["Model serving"]
+    subgraph models["Model serving · OpenAI-compatible /v1"]
         vllm["vLLM · BGP-LLaMA (GPU)"]
-        openai["OpenAI · gpt-5.4-mini"]
+        openai["OpenAI · GPT"]
     end
 
-    Browser -->|query| nginx
-    nginx -->|/api/chat| classify
-    generate -->|/v1| vllm
-    generate -->|/v1| openai
-    generate -. SSE .-> Browser
+    pod["opencode-agent-pod<br/>holds provider keys ·<br/>opencode agent loop over<br/>Bash / Read / Write on the workspace"]
+    ris(["RIS / RouteViews<br/>collectors"])
+
+    Browser <-->|"/api · SSE"| nginx
+    nginx --> classify
+    classify -->|/v1| openai
+    chat -->|/v1| vllm
+    chat -->|/v1| openai
+
+    ris -.->|"pybgpstream gather"| agent
+    agent -->|"file:// workspace"| pod
+    pod -.->|"token / tool / done SSE"| agent
+    pod -->|/v1| openai
 ```
 
 
 <details>
-<summary>Original ASCII diagram (archived)</summary>
+<summary>Original ASCII diagram (archived — chat path only, pre-agent)</summary>
 
 ```
                     ┌────────────────────────────────────┐
@@ -80,9 +101,19 @@ flowchart LR
 
 </details>
 
-- **FastAPI backend** ([`app/`](./app/)) — the classify → prompt → generate pipeline (`app/llm/`),
-  SSE streaming for the LLaMA and GPT chatbots, and a guarded file-download endpoint. Config is
-  env-driven via `pydantic-settings`; both providers flow through one OpenAI-compatible client.
+- **FastAPI backend** ([`app/`](./app/)) — two SSE paths over one classifier: **Chat** (`/api/chat/*`,
+  the classify → template → generate pipeline in `app/llm/`) and **Agent** (`/api/agent/run`, which
+  gathers + stages BGP data and proxies an autonomous run to the pod), plus a guarded file-download
+  endpoint. Config is env-driven via `pydantic-settings`; chat providers flow through one
+  OpenAI-compatible client.
+- **opencode-agent-pod** ([`opencode-agent-pod`](https://github.com/hyonbokan/opencode-agent-pod)) — a separate, reusable
+  service (built on [opencode](https://opencode.ai)) that runs the autonomous agent loop and **holds
+  the provider keys**; the backend proxies one run per BGP Agent question and relays its
+  `token`/`tool`/`done` SSE. Keys never cross back into this backend. See
+  [BGP Agent](#bgp-agent--autonomous-analysis).
+- **BGP data layer** ([`app/bgp/`](./app/bgp/)) — turns a classified intent into a bounded gather plan,
+  fetches the scoped updates with **pybgpstream**, reduces them to compact records, and stages them as
+  the agent's workspace (falls back to a bundled synthetic sample on a host without BGPStream).
 - **vLLM** — serves the fine-tuned LLaMA over an OpenAI-compatible `/v1` API (GPU-backed). The only
   component that needs a GPU.
 - **React SPA** ([`react_frontend/`](./react_frontend/)) — Vite + React 18 + TypeScript, Tailwind +
@@ -110,7 +141,7 @@ flowchart LR
 │   ├── core/                #   config.py (pydantic-settings), logging.py
 │   ├── llm/                 #   schemas.py (BgpIntent/BgpScript), classifier.py,
 │   │                        #   generation.py (streaming SO), providers.py, service.py
-│   └── api/routes/          #   health.py, chat.py (SSE), files.py (download)
+│   └── api/routes/          #   health.py, chat.py (SSE), agent.py (SSE → pod), files.py (download)
 ├── prompts/                 # Jinja2 templates (templates/*.j2) + loader.py
 ├── tests/                   # pytest suite (LLM mocked; no network)
 ├── react_frontend/          # React + TS SPA (Vite; build/ served by nginx)
@@ -182,17 +213,88 @@ yarn lint         # ESLint (--fix)
 > against a running FastAPI and iterate without CORS setup. The backend base URL is configurable
 > via `VITE_API_URL`.
 
+## BGP Agent — autonomous analysis
+
+The **BGP Agent** (nav **BGP Agent**, route `/bgp_agent`) *runs* the analysis for you instead of
+handing you a script: an autonomous loop that writes Python, executes it, self-corrects, and streams a
+live **step trace** — each `Bash`/`Read`/`Write` call (pending → running → completed, with its command
+and output) and the answer as it's written — ending in a result card with cost, turns, and duration.
+
+The agent loop and the provider keys live in a separate service,
+**[opencode-agent-pod](https://github.com/hyonbokan/opencode-agent-pod)**, built on
+**[opencode](https://opencode.ai)** — this
+backend proxies one run per question and re-streams the pod's events. **Keys never cross into this
+backend.**
+
+### Two ways to run
+
+The only difference is where the agent's BGP data comes from. When pybgpstream is importable the
+backend gathers the scoped updates live; otherwise it automatically stages the bundled synthetic
+sample (`sample_bgp_data/`) — so the **quick demo works out of the box on any host, no BGPStream and
+no config needed.** The setup steps below are identical for both.
+
+| | **Quick demo** | **Full data** |
+| --- | --- | --- |
+| Data source | bundled synthetic sample (used automatically) | live gather via **pybgpstream** |
+| Setup | none | install the BGPStream runtime (`docker/Dockerfile.bgpstream`; won't `pip install` on macOS) |
+| Good for | seeing the trace; both example queries answer | real routing analysis |
+
+For real data, install pybgpstream **or** point `BGP_DATA_ROOT` at a directory of already-staged
+records. Set `BGP_SAMPLE_DATA_ROOT=` (empty) to turn the synthetic fallback off entirely.
+
+### Setup (3 steps)
+
+**Prereqs:** the pod ([opencode-agent-pod](https://github.com/hyonbokan/opencode-agent-pod)) cloned
+next to this repo at `../opencode-agent-pod`, with its own `.venv`,
+**[opencode](https://opencode.ai)** on `PATH` (`opencode --version` → **1.17.11**; or run the pod's
+Docker image instead — see its `DEPLOY.md`), and a provider key for the agent model.
+
+**1 · Start the pod** (Terminal A) — it holds the keys and the agent loop:
+
+```bash
+cd ../opencode-agent-pod && cp env.example .env
+# In .env set:  AGENT_POD_TOKEN=local-dev-pod-token   (required; the pod fails closed without it)
+#               OPENAI_API_KEY=sk-...                  (a REAL key — env.example ships a placeholder)
+.venv/bin/python -m pod          # http://localhost:8080  ·  check: curl -s localhost:8080/health
+```
+
+**2 · Start the backend + frontend** (Terminal B) — set in **this** repo's `.env`:
+
+```bash
+AGENT_POD_URL=http://localhost:8080
+AGENT_POD_TOKEN=local-dev-pod-token           # must match the pod's token
+OPENAI_API_KEY=sk-...                         # for the query classifier
+# AGENT_MODEL defaults to gpt-5.4-mini-2026-03-17 (OpenAI). Anthropic instead:
+#   AGENT_MODEL=claude-haiku-4-5-20251001  (+ set ANTHROPIC_API_KEY in the pod)
+# BGP_DATA_ROOT — leave unset for the quick demo (the synthetic sample is used automatically).
+```
+
+```bash
+make dev     # backend :8002 + Vite :3000  (needs the venv + node_modules from "Manual setup")
+```
+
+**3 · Run it** — open **http://localhost:3000 → BGP Agent** and click a suggested example (or ask your
+own). Watch the live tool trace stream, then the result card. The bundled `sample_bgp_data/` answers
+both suggested examples (`8.8.8.0/24` / AS15169 and `1.1.1.0/24` / AS13335).
+
 ## Environment variables
 
 All configuration is read from `.env` (git-ignored) via `pydantic-settings`; unknown keys are
 ignored. See [`.env.example`](./.env.example) for the documented list. Key groups:
 
-- **HTTP** — `CORS_ALLOWED_ORIGINS` (comma-separated), `LOG_LEVEL`
-- **GPT** — `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENAI_BASE_URL`, `GPT_TEMPERATURE`, `GPT_MAX_TOKENS`
+- **HTTP** — `CORS_ALLOWED_ORIGINS` (JSON array), `LOG_LEVEL`
+- **GPT** — `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENAI_BASE_URL`
 - **Local LLaMA (vLLM)** — `LLAMA_BASE_URL`, `LLAMA_MODEL`, `LLAMA_API_MODE` (`completion`|`chat`),
   `LLAMA_TEMPERATURE`, `LLAMA_MAX_TOKENS`, `LLAMA_REPETITION_PENALTY`
 - **vLLM container** — `VLLM_DTYPE`, `VLLM_MAX_MODEL_LEN`, `VLLM_GPU_MEMORY_UTILIZATION`,
   `VLLM_TENSOR_PARALLEL_SIZE`, `hf_token`
+- **BGP Agent (opencode-agent-pod)** — `AGENT_POD_URL`, `AGENT_POD_TOKEN` (must match the pod),
+  `AGENT_MODEL`, `AGENT_TOOLS` (JSON array), `AGENT_MAX_BUDGET_USD`, `AGENT_REQUEST_TIMEOUT`,
+  `BGP_DATA_ROOT` (fallback workspace). See [BGP Agent — autonomous analysis](#bgp-agent--autonomous-analysis)
+- **BGP gather bounds (agent path)** — `BGP_GATHER_DEFAULT_WINDOW_MINUTES`,
+  `BGP_GATHER_MAX_WINDOW_MINUTES`, `BGP_GATHER_DEFAULT_COLLECTORS` (JSON array),
+  `BGP_GATHER_MAX_COLLECTORS`, `BGP_GATHER_MAX_RECORDS`, `BGP_GATHER_TIMEOUT_SECONDS`, `BGP_STAGE_ROOT`,
+  `BGP_SAMPLE_DATA_ROOT` (synthetic fallback dataset; empty disables it)
 
 `LLAMA_API_MODE=completion` (default) sends a raw prompt to vLLM's `/v1/completions`, matching the
 fine-tune's training format; set `chat` if you serve a chat template.
@@ -220,5 +322,3 @@ pre-commit run --all-files  # ruff (lint+format), mypy, frontend prettier/eslint
   workflow `yarn dev` serves it directly. The `react_frontend/build/` output is git-ignored.
 - TLS is not wired into the base nginx config; add a cert-aware server block in the prod override
   before deploying publicly.
-- `requirements.legacy.txt` preserves the pre-refactor dependency set (Django + the
-  torch/transformers/BGPStream training stack) for reference only.

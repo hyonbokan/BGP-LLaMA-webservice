@@ -1,4 +1,4 @@
-from bgp_mcp.records import collect_records, element_to_record
+from app.bgp.records import collect_records, element_to_record
 
 
 class _Elem:

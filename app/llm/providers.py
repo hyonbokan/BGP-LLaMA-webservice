@@ -10,8 +10,10 @@ class ProviderConfig:
     model: str
     api_key: str
     base_url: str | None = None  # None => OpenAI's default (api.openai.com/v1)
-    temperature: float = 0.7
-    max_tokens: int = 2000
+    # None => omit from the request. Reasoning models (GPT) ignore these, so the
+    # GPT provider leaves them unset; the fine-tuned LLaMA still sets both.
+    temperature: float | None = None
+    max_tokens: int | None = None
     # "chat" hits /v1/chat/completions (system+user, chat template applied
     # server-side). "completion" hits /v1/completions with one raw prompt —
     # matches how the fine-tuned LLaMA was trained (no chat template).
@@ -29,8 +31,7 @@ def _openai_provider(s: Settings) -> ProviderConfig:
         model=s.openai_model,
         api_key=s.openai_api_key,
         base_url=s.openai_base_url or None,
-        temperature=s.gpt_temperature,
-        max_tokens=s.gpt_max_tokens,
+        # No temperature/max_tokens: reasoning models ignore them (left as None => not sent).
         mode="chat",
         history_max_tokens=s.gpt_history_max_tokens,
     )

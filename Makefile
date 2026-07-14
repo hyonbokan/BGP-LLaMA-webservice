@@ -4,11 +4,13 @@ COMPOSE=docker compose
 BASE_COMPOSE=docker-compose.base.yml
 DEV_COMPOSE=docker-compose.dev.yml
 PROD_COMPOSE=docker-compose.prod.yml
+POD_COMPOSE=docker-compose.pod.yml
 
 DEV=$(COMPOSE) -f $(BASE_COMPOSE) -f $(DEV_COMPOSE)
 PROD=$(COMPOSE) -f $(BASE_COMPOSE) -f $(PROD_COMPOSE)
+AGENT=$(COMPOSE) -f $(BASE_COMPOSE) -f $(DEV_COMPOSE) -f $(POD_COMPOSE)
 
-.PHONY: dev up-dev up-nogpu down-dev up-prod down-prod logs rebuild-dev clean help
+.PHONY: dev up-dev up-nogpu up-agent down-dev down-agent up-prod down-prod logs rebuild-dev clean help
 
 help:  ## Show available targets
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
@@ -22,6 +24,12 @@ up-dev:  ## Build and start dev containers (detached), then tail logs
 
 up-nogpu:  ## Start api + nginx only, skipping the GPU-only vLLM (GPT path only); no GPU needed
 	$(DEV) up --build -d --no-deps api nginx && $(DEV) logs -f api nginx
+
+up-agent:  ## Isolated-agent stack: api + nginx + pod + minio + egress (GPT path, no GPU). Run ./scripts/gen_minio_cert.sh first
+	$(AGENT) up --build -d --no-deps api nginx pod minio egress && $(AGENT) logs -f api pod
+
+down-agent:  ## Stop the isolated-agent stack
+	$(AGENT) down
 
 down-dev:  ## Stop dev containers (also tears down anything started by up-nogpu)
 	$(DEV) down

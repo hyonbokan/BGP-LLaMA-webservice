@@ -1,0 +1,8 @@
+# Provider hosts the pod is allowed to reach (POSIX extended regex, one per line). These are the
+# upstreams the pod's in-process key proxy forwards to. Add a custom provider's host here if you
+# configure one. MinIO is NOT listed — the pod reaches it directly on the internal network (see
+# NO_PROXY in docker-compose.pod.yml), so it never transits this proxy.
+^api\.openai\.com$
+^api\.anthropic\.com$
+^generativelanguage\.googleapis\.com$
+^api\.x\.ai$

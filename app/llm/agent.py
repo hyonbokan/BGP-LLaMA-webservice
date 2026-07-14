@@ -17,7 +17,7 @@ are the live step trace a run-and-observe console renders.
 """
 
 import json
-from collections.abc import AsyncIterator
+from collections.abc import AsyncIterator, Callable
 from dataclasses import dataclass
 from enum import StrEnum
 from pathlib import Path
@@ -30,6 +30,7 @@ from app.core.config import Settings, get_settings
 from app.core.logging import get_logger
 from app.llm.classifier import classify_intent
 from app.llm.schemas import BgpIntent
+from app.llm.workspace import no_cleanup, publish_workspace
 from prompts.loader import PromptTemplate, load_prompt
 
 logger = get_logger(__name__)
@@ -107,27 +108,32 @@ async def run_agent(query: str, prior_findings: str | None = None) -> AsyncItera
     if prior_findings:
         system_prompt = f"{system_prompt}\n\n## Prior findings\n{prior_findings}"
 
-    workspace_source, staged_dir = await _prepare_workspace(intent, settings)
+    local_dir, reap_local = await _prepare_workspace(intent, settings)
     try:
-        body = _run_body(settings, system_prompt, query, workspace_source)
-        url = f"{settings.agent_pod_url.rstrip('/')}/agent/run"
-        headers = {"Authorization": f"Bearer {settings.agent_pod_token}"}
-        logger.debug("agent run: model=%s tools=%s -> %s", settings.agent_model, body["tools"], url)
-
-        timeout = httpx.Timeout(settings.agent_request_timeout, connect=10.0)
+        workspace_source, release_source = await publish_workspace(local_dir, settings)
         try:
-            async with httpx.AsyncClient(timeout=timeout) as client:
-                async with client.stream("POST", url, json=body, headers=headers) as response:
-                    if response.status_code != 200:
-                        detail = (await response.aread()).decode(errors="replace")
-                        raise PodError(f"pod returned {response.status_code}: {detail}")
-                    async for event in _relay(response):
-                        yield event
-        except httpx.HTTPError as exc:  # connection refused, read timeout, etc.
-            raise PodError(f"could not reach the agent pod: {exc}") from exc
+            body = _run_body(settings, system_prompt, query, workspace_source)
+            url = f"{settings.agent_pod_url.rstrip('/')}/agent/run"
+            headers = {"Authorization": f"Bearer {settings.agent_pod_token}"}
+            logger.debug(
+                "agent run: model=%s tools=%s -> %s", settings.agent_model, body["tools"], url
+            )
+
+            timeout = httpx.Timeout(settings.agent_request_timeout, connect=10.0)
+            try:
+                async with httpx.AsyncClient(timeout=timeout) as client:
+                    async with client.stream("POST", url, json=body, headers=headers) as response:
+                        if response.status_code != 200:
+                            detail = (await response.aread()).decode(errors="replace")
+                            raise PodError(f"pod returned {response.status_code}: {detail}")
+                        async for event in _relay(response):
+                            yield event
+            except httpx.HTTPError as exc:  # connection refused, read timeout, etc.
+                raise PodError(f"could not reach the agent pod: {exc}") from exc
+        finally:
+            release_source()  # drop the uploaded workspace (no-op for the file transport)
     finally:
-        if staged_dir is not None:
-            reap_stage(staged_dir)
+        reap_local()  # reap a freshly gathered dir; a no-op for a static fallback root
 
 
 def _agent_system_prompt(intent: BgpIntent) -> str:
@@ -165,35 +171,36 @@ def _run_body(
 
 async def _prepare_workspace(
     intent: BgpIntent, settings: Settings
-) -> tuple[str | None, str | None]:
-    """Prepare the agent's workspace, returning a `file://` source and the directory to reap.
+) -> tuple[str | None, Callable[[], None]]:
+    """Prepare the agent's local workspace directory, returning it plus a cleanup to run after the
+    run.
 
-    Gathers the scoped BGP updates live and stages them when the intent carries a gatherable
-    scope. Falls back to a static workspace — reaping nothing — when there is no scope to gather,
+    Gathers the scoped BGP updates live into a fresh directory (which the returned cleanup reaps)
+    when the intent carries a gatherable scope. Falls back to a static directory — with a no-op
+    cleanup, since a static root is not this run's to delete — when there is no scope to gather,
     when pybgpstream is absent (e.g. a dev host), or when a gather fails, so a run still gets data
-    rather than an empty directory. The reap directory is None in that fallback since a static root
-    is not this run's to delete.
+    rather than an empty directory. Transport of the directory to the pod is a separate step.
     """
     plan = build_fetch_plan(intent, settings)
     if plan is not None:
         try:
             staged = await gather_and_stage(plan, settings)
-            return f"file://{staged}", staged
+            return staged, lambda: reap_stage(staged)
         except GatherUnavailable:
             logger.warning("pybgpstream unavailable; falling back to static BGP data")
         except Exception as exc:  # a gather/staging failure must not fail the run
             logger.warning("BGP gather failed (%s); falling back to static BGP data", exc)
-    return _fallback_workspace(settings), None
+    return _fallback_dir(settings), no_cleanup
 
 
-def _fallback_workspace(settings: Settings) -> str | None:
-    """A `file://` workspace for a run that didn't gather live: the configured `BGP_DATA_ROOT`
-    if it exists, else the bundled synthetic sample (so the demo works on a host without
-    pybgpstream), else None (an empty scratch dir).
+def _fallback_dir(settings: Settings) -> str | None:
+    """A static workspace directory for a run that didn't gather live: the configured
+    `BGP_DATA_ROOT` if it exists, else the bundled synthetic sample (so the demo works on a host
+    without pybgpstream), else None (an empty scratch dir).
     """
-    configured = _workspace_source(settings.bgp_data_root)
-    if configured is not None:
-        return configured
+    root = Path(settings.bgp_data_root)
+    if root.exists():
+        return str(root.resolve())
 
     sample = settings.bgp_sample_data_root
     if sample and Path(sample).is_dir():
@@ -203,20 +210,12 @@ def _fallback_workspace(settings: Settings) -> str | None:
             settings.bgp_data_root,
             sample,
         )
-        return f"file://{Path(sample).resolve()}"
+        return str(Path(sample).resolve())
 
     logger.warning(
         "no BGP data available (no gather, no BGP_DATA_ROOT, no sample); empty workspace"
     )
     return None
-
-
-def _workspace_source(bgp_data_root: str) -> str | None:
-    """A `file://` pointer to a staged BGP data directory, or None when it is absent."""
-    root = Path(bgp_data_root)
-    if not root.exists():
-        return None
-    return f"file://{root.resolve()}"
 
 
 async def _relay(response: httpx.Response) -> AsyncIterator[AgentEvent]:

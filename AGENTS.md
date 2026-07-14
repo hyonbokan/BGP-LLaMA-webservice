@@ -132,6 +132,14 @@ rail.
 - **Config (`app/core/config.py`, `.env.example`):** `AGENT_POD_URL`, `AGENT_POD_TOKEN`,
   `AGENT_MODEL`, `AGENT_TOOLS`, `AGENT_MAX_BUDGET_USD`, `AGENT_REQUEST_TIMEOUT`. Env-driven, never
   hardcoded. List fields (`AGENT_TOOLS`, `CORS_ALLOWED_ORIGINS`) are JSON arrays.
+- **Workspace transport (`WORKSPACE_TRANSPORT`, `MINIO_*`):** how the gathered workspace reaches the
+  pod. `file` (default) passes a `file://` path — the pod must share this host's filesystem
+  (single-host dev). `minio` uploads the workspace as an archive to an S3-compatible store
+  (`MINIO_ENDPOINT`/`MINIO_ACCESS_KEY`/`MINIO_SECRET_KEY`/`MINIO_BUCKET`/`MINIO_SECURE`/
+  `MINIO_CERT_CHECK`) and hands the pod a pre-signed https URL it pulls over the network, so the pod
+  shares **no filesystem** with this backend. `app/llm/workspace.py` `publish_workspace(local_dir,
+  settings)` does this (and returns the post-run cleanup); `_prepare_workspace` produces the local
+  dir, `run_agent` publishes then reaps. Tested in `tests/test_workspace_transport.py`.
 - **Backend:** `app/llm/agent.py` — the pod client. `run_agent(query, prior_findings?)` classifies the
   query, renders a **dedicated autonomous system prompt** (`prompts/templates/agent_system.j2` via
   `_agent_system_prompt`) — *not* the generate-only chat template, which asks clarifying questions and
@@ -215,6 +223,40 @@ rail.
   a real multi-turn tool loop, live token/tool trace, success in 3 turns for ~$0.007. Anthropic
   (`claude-haiku-4-5-20251001`) works too. The pod loads `.env` once at startup, so a running pod must
   be restarted to pick up changed keys.)
+
+### Isolated deployment (`make up-agent`) — built + verified 2026-07-14
+
+For the decoupled, security-correct topology (pod shares no filesystem or network with this
+backend), `docker-compose.pod.yml` overlays the dev stack with three services and an internal
+network:
+
+- **pod** — the `opencode-agent-pod`, built from `../opencode-agent-pod`, on an `internal` network
+  with **no route to the internet**. It reaches providers only through the egress proxy
+  (`HTTP(S)_PROXY`), pulls workspaces from MinIO directly (`NO_PROXY`), and accepts MinIO's
+  self-signed cert (`AGENT_POD_WORKSPACE_TLS_VERIFY=0`, `AGENT_POD_WORKSPACE_HOST_ALLOWLIST=minio`).
+- **minio** — neutral S3-compatible workspace storage over TLS (self-signed dev cert from
+  `./scripts/gen_minio_cert.sh`). The backend uploads here and the pod pulls a pre-signed URL.
+- **egress** — a deny-by-default `tinyproxy` allowlisting only the provider hosts
+  (`docker/egress/filter`); the only egress hole from the pod's internal network.
+
+The overlay also mounts `./sample_bgp_data` into the api container at `/app/sample_bgp_data:ro`.
+The image ships no BGP data and has no `pybgpstream`, so the agent path falls back to the bundled
+synthetic sample — without the mount the fallback yields `None`, no workspace is staged, and the
+MinIO transport is skipped (the pod gets an empty cwd). Mount it so a real workspace is actually
+pushed through MinIO.
+
+Run: `./scripts/gen_minio_cert.sh` once, set `AGENT_POD_TOKEN` + a provider key in `.env`, then
+`make up-agent` (GPT path, no GPU).
+
+**Verified end to end 2026-07-14.** A real `POST /api/agent/run` (anomaly query on `8.8.8.0/24`)
+completed with `subtype=success` in 5 turns / $0.024, and the agent correctly identified the
+sample's designed AS7922 origin hijack. All three isolation properties were exercised in that one
+run: the api tarred the workspace and published a pre-signed object to MinIO; the pod fetched that
+exact `https://minio:9000/...` URL over the internal net (TLS-verify-off warning as designed); and
+the GPT call reached OpenAI only through the egress proxy (the pod has no other route out). Isolation
+mechanics were separately probed: `example.com` refused (proxy `403`), no direct internet without the
+proxy (DNS fails). Arch note: the amd64 `tinyproxy` image runs emulated on arm64 (restart policy
+covers the occasional hiccup); use a native-arm64 proxy image for steadiness.
 
 ## Common Commands
 

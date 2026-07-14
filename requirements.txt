@@ -9,3 +9,4 @@ openai==1.52.2
 httpx==0.27.0  # pin: openai 1.52.2 passes proxies= which httpx>=0.28 removed
 pydantic-settings==2.5.2
 jinja2==3.1.4  # prompt template store (app/llm builds prompts from prompts/templates/*.j2)
+minio==7.2.9  # optional: uploads the agent workspace to an S3-compatible store (WORKSPACE_TRANSPORT=minio)

@@ -1,0 +1,103 @@
+# Isolated-agent overlay. Runs the opencode-agent-pod in its OWN container, with MinIO as neutral
+# workspace storage and a deny-by-default egress proxy. Together these give the pod all three
+# isolation properties the design calls for, on one host:
+#   - separate filesystem  — the pod is a distinct container, so it cannot see the backend's disk;
+#                            file:// staging can't cross, forcing the network pull.
+#   - workspace by network — the backend uploads the workspace to MinIO and hands the pod a
+#                            pre-signed https URL it pulls (WORKSPACE_TRANSPORT=minio).
+#   - egress jail          — the pod sits on an `internal` network with no route out except an
+#                            allowlisting proxy, so a Bash run can reach provider hosts but nothing
+#                            else.
+#
+# Bring up (GPU-less GPT path shown; drop --no-deps / add vllm for the local model):
+#   ./scripts/gen_minio_cert.sh                 # once: self-signed dev cert for MinIO
+#   make up-agent                               # = base + dev + this overlay
+#
+# Requires in .env: AGENT_POD_TOKEN and a provider key (OPENAI_API_KEY / ANTHROPIC_API_KEY).
+
+services:
+  api:
+    # The backend joins the internal pod network too, so it can reach the pod and upload to MinIO,
+    # while keeping its own external access (OpenAI classification, serving the SPA) on `default`.
+    networks: [default, pod-net]
+    volumes:
+      # The image ships no BGP data and pybgpstream isn't installed here, so the agent path falls
+      # back to the bundled synthetic sample. Mount it so a real workspace is staged and pushed
+      # through MinIO (an empty fallback would skip the transport entirely).
+      - ./sample_bgp_data:/app/sample_bgp_data:ro
+    environment:
+      AGENT_POD_URL: http://pod:8080
+      WORKSPACE_TRANSPORT: minio
+      MINIO_ENDPOINT: minio:9000
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:-podminio}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-podminio-secret}
+      MINIO_BUCKET: bgp-workspaces
+      MINIO_SECURE: "true"
+      MINIO_CERT_CHECK: "false"  # MinIO uses a self-signed dev cert
+    depends_on:
+      pod:
+        condition: service_started
+      minio:
+        condition: service_started
+
+  # The agent pod, built from the sibling repo. On the internal network only — no direct route to
+  # the internet; provider calls go through the egress proxy, workspace pulls go to MinIO.
+  pod:
+    build:
+      context: ../opencode-agent-pod
+      dockerfile: Dockerfile
+    image: opencode-agent-pod:dev
+    container_name: bgp-agent-pod
+    restart: unless-stopped
+    environment:
+      AGENT_POD_TOKEN: ${AGENT_POD_TOKEN:?set AGENT_POD_TOKEN in .env}
+      AGENT_POD_HOST: 0.0.0.0
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      # Accept MinIO's self-signed dev cert, and only ever fetch a workspace from MinIO.
+      AGENT_POD_WORKSPACE_TLS_VERIFY: "0"
+      AGENT_POD_WORKSPACE_HOST_ALLOWLIST: minio
+      # Route outbound provider traffic through the allowlisting egress proxy. Loopback (the pod's
+      # in-process key proxy) and MinIO are reached directly, so they bypass it.
+      HTTP_PROXY: http://egress:8888
+      HTTPS_PROXY: http://egress:8888
+      NO_PROXY: 127.0.0.1,localhost,minio
+    networks: [pod-net]
+    depends_on:
+      egress:
+        condition: service_started
+
+  # Neutral workspace storage. S3-compatible; the backend uploads an archive and pre-signs a GET
+  # URL the pod pulls. TLS with a self-signed dev cert (see scripts/gen_minio_cert.sh).
+  minio:
+    image: minio/minio:latest
+    container_name: bgp-agent-minio
+    restart: unless-stopped
+    command: server /data --certs-dir /certs --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-podminio}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-podminio-secret}
+    volumes:
+      - ./docker/minio/certs:/certs:ro
+      - minio_data:/data
+    networks: [pod-net]
+
+  # Deny-by-default forward proxy: the only egress hole from the pod's internal network. Allowlists
+  # the provider hosts the pod actually calls; everything else (data exfiltration to an arbitrary
+  # host) is refused. It bridges the internal pod network and the external default network.
+  egress:
+    image: vimagick/tinyproxy:latest
+    container_name: bgp-agent-egress
+    restart: unless-stopped
+    volumes:
+      - ./docker/egress/tinyproxy.conf:/etc/tinyproxy/tinyproxy.conf:ro
+      - ./docker/egress/filter:/etc/tinyproxy/filter:ro
+    networks: [default, pod-net]
+
+networks:
+  pod-net:
+    driver: bridge
+    internal: true  # no default route to the internet — the pod's containment boundary
+
+volumes:
+  minio_data:

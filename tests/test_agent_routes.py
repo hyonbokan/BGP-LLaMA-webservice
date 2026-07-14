@@ -12,8 +12,8 @@ from app.llm.agent import (
     RunResult,
     Token,
     ToolCall,
+    _fallback_dir,
     _to_result,
-    _workspace_source,
 )
 from app.llm.schemas import BgpIntent
 
@@ -124,12 +124,14 @@ def test_missing_query_is_422(client):
 # --------------------------------------------------------------------------- #
 
 
-def test_workspace_source_is_none_when_dir_absent():
-    assert _workspace_source("/definitely/not/here/xyz") is None
+def test_fallback_dir_is_none_when_absent():
+    settings = SimpleNamespace(bgp_data_root="/definitely/not/here/xyz", bgp_sample_data_root="")
+    assert _fallback_dir(settings) is None
 
 
-def test_workspace_source_points_at_existing_dir(tmp_path):
-    assert _workspace_source(str(tmp_path)) == f"file://{tmp_path.resolve()}"
+def test_fallback_dir_points_at_existing_dir(tmp_path):
+    settings = SimpleNamespace(bgp_data_root=str(tmp_path), bgp_sample_data_root="")
+    assert _fallback_dir(settings) == str(tmp_path.resolve())
 
 
 def test_to_result_reads_opencode_payload():
@@ -359,6 +361,7 @@ def test_run_agent_includes_workspace_when_data_root_exists(monkeypatch, tmp_pat
         agent_request_timeout=600,
         bgp_data_root=str(tmp_path),
         bgp_sample_data_root="",
+        workspace_transport="file",
     )
     monkeypatch.setattr(agent_mod, "get_settings", lambda: settings)
 
@@ -388,6 +391,7 @@ def _scoped_settings(**overrides):
         "agent_request_timeout": 600,
         "bgp_data_root": "/definitely/not/here/xyz",
         "bgp_sample_data_root": "",
+        "workspace_transport": "file",
     }
     base.update(overrides)
     return SimpleNamespace(**base)

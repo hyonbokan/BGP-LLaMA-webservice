@@ -76,6 +76,19 @@ class Settings(BaseSettings):
     agent_max_budget_usd: float | None = None
     agent_request_timeout: int = 600
 
+    # How the gathered workspace reaches the pod. "file" passes a file:// path, which assumes the
+    # pod shares this host's filesystem (single-host dev). "minio" uploads the workspace as an
+    # archive to an S3-compatible store and passes a pre-signed https URL the pod pulls over the
+    # network, so the pod shares no disk with this backend — the mode for a decoupled deployment.
+    workspace_transport: str = "file"  # "file" | "minio"
+    minio_endpoint: str = ""  # host:port of the S3-compatible store, e.g. "minio:9000"
+    minio_access_key: str = ""
+    minio_secret_key: str = ""
+    minio_bucket: str = "bgp-workspaces"
+    minio_secure: bool = True  # https to the store (a self-signed dev cert still works)
+    minio_cert_check: bool = True  # verify the store's TLS cert; off accepts a self-signed dev cert
+    minio_url_expiry_seconds: int = 3600
+
     # File download root (served by /api/download) — the fine-tuning corpus
     dataset_root: str = "finetuning-dataset"
 
